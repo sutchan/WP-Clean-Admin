@@ -1,10 +1,17 @@
 ﻿=== WP Clean Admin ===
+
 Contributors: yourusername
+
 Tags: admin, dashboard, clean, minimal, ui, simplify
+
 Requires at least: 5.0
+
 Tested up to: 6.5
+
 Stable tag: 1.0.0
+
 License: GPLv2 or later
+
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Simplify and customize your WordPress admin dashboard with a flat, minimal, and fresh UI.
@@ -53,3 +60,4 @@ No, WP Clean Admin only modifies the appearance and functionality of the WordPre
 = 1.0.0 =
 
 Initial release of WP Clean Admin.
+
