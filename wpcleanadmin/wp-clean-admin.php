@@ -26,6 +26,15 @@ if ( ! defined( 'WPCA_PLUGIN_URL' ) ) {
     define( 'WPCA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 }
 
+// Define additional constants for new features
+if ( ! defined( 'WPCA_RESPONSIVE_BREAKPOINT' ) ) {
+    define( 'WPCA_RESPONSIVE_BREAKPOINT', '782px' ); // WordPress admin breakpoint
+}
+
+if ( ! defined( 'WPCA_EXPORT_KEY' ) ) {
+    define( 'WPCA_EXPORT_KEY', 'wpca_settings_export' );
+}
+
 /**
  * Load plugin textdomain.
  */
@@ -37,13 +46,43 @@ add_action( 'plugins_loaded', 'wpca_load_textdomain' );
 // Include core files
 require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-settings.php';
 require_once WPCA_PLUGIN_DIR . 'includes/wpca-core-functions.php';
+require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-export-import.php'; // New export/import feature
+require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-user-roles.php'; // User role permissions
 
 /**
  * Initialize the plugin.
  */
 function wpca_run_plugin() {
-    new WPCA_Settings();
+    // Initialize core components
+    $settings = new WPCA_Settings();
+    
+    // Only load advanced features for admin users
+    if (current_user_can('manage_options')) {
+        new WPCA_Export_Import();
+        new WPCA_User_Roles();
+    }
+
     // Core functions are hooked directly in wpca-core-functions.php
+    
+    // Add responsive design support
+    add_action('admin_head', function() {
+        echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
+    });
+
+    // Add theme presets
+    add_filter('wpca_theme_presets', function($presets) {
+        $presets['modern'] = [
+            'primary_color' => '#3a86ff',
+            'background_color' => '#f8f9fa',
+            'text_color' => '#212529'
+        ];
+        $presets['dark'] = [
+            'primary_color' => '#6c757d',
+            'background_color' => '#212529',
+            'text_color' => '#f8f9fa'
+        ];
+        return $presets;
+    });
 }
 add_action( 'plugins_loaded', 'wpca_run_plugin' );
 
