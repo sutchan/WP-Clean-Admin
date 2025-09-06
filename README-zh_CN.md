@@ -60,3 +60,7 @@
 = 1.0.0 =
 
 WP Clean Admin的初始版本。
+
+== 语言版本 ==
+
+* [English Version](README.MD)

@@ -61,4 +61,8 @@ No, WP Clean Admin only modifies the appearance and functionality of the WordPre
 
 Initial release of WP Clean Admin.
 
+== Language Versions ==
+
+* [中文版文档](README-zh_CN.md)
+
 
