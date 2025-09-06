@@ -46,6 +46,7 @@ class WPCA_Settings {
             'theme_style'            => 'default',
             'hide_admin_menu_items'  => array(),
             'hide_admin_bar_items'   => array(),
+            'menu_order'            => array(),    // New: Menu order settings
             'layout_density'         => 'standard', // standard, compact, spacious
             'border_radius_style'    => 'small',    // none, small, large
             'shadow_style'           => 'subtle',   // none, subtle
@@ -213,6 +214,15 @@ class WPCA_Settings {
             'wpca_hide_admin_menu_items',
             __( 'Hide Admin Menu Items', 'wp-clean-admin' ),
             array( $this, 'hide_admin_menu_items_render' ),
+            'wpcaSettingsGroup',
+            'wpca_settings_menu_section'
+        );
+
+        // New setting field: Menu Order
+        add_settings_field(
+            'wpca_menu_order',
+            __( 'Menu Order', 'wp-clean-admin' ),
+            array( $this, 'menu_order_render' ),
             'wpcaSettingsGroup',
             'wpca_settings_menu_section'
         );
@@ -500,6 +510,55 @@ class WPCA_Settings {
     /**
      * Render Hide Admin Bar Items field.
      */
+    /**
+     * Render Menu Order field
+     */
+    public function menu_order_render() {
+        $options = $this->options;
+        $menu_order = $options['menu_order'] ?? array();
+        $default_menu_items = array(
+            'dashboard' => __('Dashboard'),
+            'posts' => __('Posts'),
+            'media' => __('Media'),
+            'pages' => __('Pages'),
+            'comments' => __('Comments'),
+            'themes.php' => __('Appearance'),
+            'plugins.php' => __('Plugins'),
+            'users.php' => __('Users'),
+            'tools.php' => __('Tools'),
+            'options-general.php' => __('Settings')
+        );
+        ?>
+        <div class="wpca-menu-order-wrapper">
+            <p class="description"><?php _e('Drag and drop to reorder menu items', 'wp-clean-admin'); ?></p>
+            <ul id="wpca-menu-order" class="wpca-sortable-list">
+                <?php 
+                // Display saved order first
+                foreach ($menu_order as $item_slug) {
+                    if (isset($default_menu_items[$item_slug])) {
+                        echo '<li data-slug="'.esc_attr($item_slug).'">';
+                        echo '<span class="dashicons dashicons-menu"></span> ';
+                        echo esc_html($default_menu_items[$item_slug]);
+                        echo '<input type="hidden" name="wpca_settings[menu_order][]" value="'.esc_attr($item_slug).'">';
+                        echo '</li>';
+                    }
+                }
+                // Display remaining items not in saved order
+                foreach ($default_menu_items as $item_slug => $item_name) {
+                    if (!in_array($item_slug, $menu_order)) {
+                        echo '<li data-slug="'.esc_attr($item_slug).'">';
+                        echo '<span class="dashicons dashicons-menu"></span> ';
+                        echo esc_html($item_name);
+                        echo '<input type="hidden" name="wpca_settings[menu_order][]" value="'.esc_attr($item_slug).'">';
+                        echo '</li>';
+                    }
+                }
+                ?>
+            </ul>
+        </div>
+        <?php
+    }
+
     public function hide_admin_bar_items_render() {
         $options = $this->options; // Use loaded options
         $admin_bar_items_to_hide = $options['hide_admin_bar_items'] ?? array();

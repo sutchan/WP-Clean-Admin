@@ -48,6 +48,7 @@ require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-settings.php';
 require_once WPCA_PLUGIN_DIR . 'includes/wpca-core-functions.php';
 require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-export-import.php'; // New export/import feature
 require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-user-roles.php'; // User role permissions
+require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-menu-customizer.php'; // Menu customization
 
 /**
  * Initialize the plugin.
@@ -60,9 +61,50 @@ function wpca_run_plugin() {
     if (current_user_can('manage_options')) {
         new WPCA_Export_Import();
         new WPCA_User_Roles();
+        new WPCA_Menu_Customizer();
+        
+        // Add admin menu
+        add_action('admin_menu', 'wpca_add_admin_menu');
     }
 
     // Core functions are hooked directly in wpca-core-functions.php
+    
+    /**
+     * Add admin menu item
+     */
+    function wpca_add_admin_menu() {
+        add_menu_page(
+            __('WP Clean Admin Settings', 'wp-clean-admin'),
+            __('Clean Admin', 'wp-clean-admin'),
+            'manage_options',
+            'wp-clean-admin',
+            'wpca_render_settings_page',
+            'dashicons-admin-appearance',
+            80
+        );
+    }
+    
+    /**
+     * Render settings page
+     */
+    function wpca_render_settings_page() {
+        if (!current_user_can('manage_options')) {
+            wp_die(__('You do not have sufficient permissions to access this page.'));
+        }
+        
+        ?>
+        <div class="wrap">
+            <h1><?php esc_html_e('WP Clean Admin Settings', 'wp-clean-admin'); ?></h1>
+            <form method="post" action="options.php">
+                <?php
+                settings_fields('wpca_settings_group');
+                do_settings_sections('wp-clean-admin');
+                submit_button();
+                ?>
+            </form>
+        </div>
+        <?php
+    }
     
     // Add responsive design support
     add_action('admin_head', function() {
@@ -96,3 +138,13 @@ function wpca_activate() {
     }
 }
 register_activation_hook( __FILE__, 'wpca_activate' );
+
+/**
+ * Add settings link to plugin actions
+ */
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'wpca_add_settings_link');
+function wpca_add_settings_link($links) {
+    $settings_link = '<a href="options-general.php?page=wp_clean_admin">' . __('Settings') . '</a>';
+    array_unshift($links, $settings_link);
+    return $links;
+}
