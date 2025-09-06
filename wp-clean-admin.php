@@ -1,17 +1,16 @@
 <?php
 /**
  * Plugin Name: WP Clean Admin
- * Plugin URI:  https://github.com/yourusername/WPCleanAdmin
- * Description: A WordPress plugin to clean up and customize the admin dashboard.
+ * Plugin URI:  https://github.com/sutchan/WP-Clean-Admin
+ * Description: Simplify and customize your WordPress admin dashboard with a flat, minimal, and fresh UI.
  * Version:     1.0.0
- * Author:      Sut
- * Author URI:  https://github.com/yourusername
- * License:     MIT
- * License URI: https://opensource.org/licenses/MIT
+ * Author:      sutchan
+ * Author URI:  https://github.com/sutchan
+ * License:     GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: wp-clean-admin
  * Domain Path: /languages
  */
-
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly
 }
