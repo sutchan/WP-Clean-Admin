@@ -5,10 +5,11 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: \n"
+"Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.4.2\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_x\n"
@@ -16,229 +17,229 @@ msgstr ""
 
 # Main plugin strings
 msgid "WP Clean Admin Settings"
-msgstr ""
+msgstr "WP Clean Admin Settings"
 
 msgid "WP Clean Admin"
-msgstr ""
+msgstr "WP Clean Admin"
 
 msgid "You do not have sufficient permissions to access this page."
-msgstr ""
+msgstr "You do not have sufficient permissions to access this page."
 
 msgid "Configure the appearance and behavior of your admin dashboard."
-msgstr ""
+msgstr "Configure the appearance and behavior of your admin dashboard."
 
 msgid "Visual Style Customization"
-msgstr ""
+msgstr "Visual Style Customization"
 
 msgid "Customize the overall visual theme and colors."
-msgstr ""
+msgstr "Customize the overall visual theme and colors."
 
 msgid "Layout & Typography"
-msgstr ""
+msgstr "Layout & Typography"
 
 msgid "Adjust layout density, element rounding, and font styles."
-msgstr ""
+msgstr "Adjust layout density, element rounding, and font styles."
 
 msgid "Menu Customization"
-msgstr ""
+msgstr "Menu Customization"
 
 msgid "Select which admin menu items to hide."
-msgstr ""
+msgstr "Select which admin menu items to hide."
 
 msgid "Admin Bar Customization"
-msgstr ""
+msgstr "Admin Bar Customization"
 
 msgid "Select which admin bar items to hide."
-msgstr ""
+msgstr "Select which admin bar items to hide."
 
 msgid "Hide Dashboard Widgets"
-msgstr ""
+msgstr "Hide Dashboard Widgets"
 
 msgid "Right Now"
-msgstr ""
+msgstr "Right Now"
 
 msgid "Activity"
-msgstr ""
+msgstr "Activity"
 
 msgid "Quick Draft"
-msgstr ""
+msgstr "Quick Draft"
 
 msgid "WordPress Events and News"
-msgstr ""
+msgstr "WordPress Events and News"
 
-msgid "Site Health Status
-msgstr ""
+msgid "Site Health Status"
+msgstr "Site Health Status"
 
 msgid "At a Glance"
-msgstr ""
+msgstr "At a Glance"
 
 msgid "Admin Theme Style"
-msgstr ""
+msgstr "Admin Theme Style"
 
 msgid "Choose a predefined theme or select \"Custom Colors\" to define your own."
-msgstr ""
+msgstr "Choose a predefined theme or select \"Custom Colors\" to define your own."
 
 msgid "Primary Color"
-msgstr ""
+msgstr "Primary Color"
 
 msgid "Choose the primary accent color for links, buttons, and active states."
-msgstr ""
+msgstr "Choose the primary accent color for links, buttons, and active states."
 
 msgid "Background Color"
-msgstr ""
+msgstr "Background Color"
 
 msgid "Choose the main background color of the admin area."
-msgstr ""
+msgstr "Choose the main background color of the admin area."
 
 msgid "Text Color"
-msgstr ""
+msgstr "Text Color"
 
 msgid "Choose the default text color."
-msgstr ""
+msgstr "Choose the default text color."
 
 msgid "Shadow Style"
-msgstr ""
+msgstr "Shadow Style"
 
 msgid "Choose the shadow style for elements like post boxes and buttons."
-msgstr ""
+msgstr "Choose the shadow style for elements like post boxes and buttons."
 
 msgid "Layout Density"
-msgstr ""
+msgstr "Layout Density"
 
 msgid "Adjust the spacing and padding of elements in the admin interface."
-msgstr ""
+msgstr "Adjust the spacing and padding of elements in the admin interface."
 
 msgid "Border Radius Style"
-msgstr ""
+msgstr "Border Radius Style"
 
 msgid "Choose the border-radius style for various elements."
-msgstr ""
+msgstr "Choose the border-radius style for various elements."
 
 msgid "Font Stack"
-msgstr ""
+msgstr "Font Stack"
 
 msgid "Select the font stack to be used in the admin area."
-msgstr ""
+msgstr "Select the font stack to be used in the admin area."
 
 msgid "Base Font Size"
-msgstr ""
+msgstr "Base Font Size"
 
 msgid "Adjust the base font size for the admin interface."
-msgstr ""
+msgstr "Adjust the base font size for the admin interface."
 
 msgid "Icon Style"
-msgstr ""
+msgstr "Icon Style"
 
 msgid "Choose the icon set for the admin interface."
-msgstr ""
+msgstr "Choose the icon set for the admin interface."
 
 msgid "Hide Admin Menu Items"
-msgstr ""
+msgstr "Hide Admin Menu Items"
 
 msgid "Dashboard"
-msgstr ""
+msgstr "Dashboard"
 
 msgid "Posts"
-msgstr ""
+msgstr "Posts"
 
 msgid "Media"
-msgstr ""
+msgstr "Media"
 
 msgid "Pages"
-msgstr ""
+msgstr "Pages"
 
 msgid "Comments"
-msgstr ""
+msgstr "Comments"
 
 msgid "Appearance"
-msgstr ""
+msgstr "Appearance"
 
 msgid "Plugins"
-msgstr ""
+msgstr "Plugins"
 
 msgid "Users"
-msgstr ""
+msgstr "Users"
 
 msgid "Tools"
-msgstr ""
+msgstr "Tools"
 
 msgid "Settings"
-msgstr ""
+msgstr "Settings"
 
 msgid "Menu Order"
-msgstr ""
+msgstr "Menu Order"
 
 msgid "Drag and drop to reorder menu items"
-msgstr ""
+msgstr "Drag and drop to reorder menu items"
 
 msgid "Hide Admin Bar Items"
-msgstr ""
+msgstr "Hide Admin Bar Items"
 
 msgid "WordPress Logo"
-msgstr ""
+msgstr "WordPress Logo"
 
 msgid "Site Name"
-msgstr ""
+msgstr "Site Name"
 
 msgid "Updates"
-msgstr ""
+msgstr "Updates"
 
 msgid "New Content"
-msgstr ""
+msgstr "New Content"
 
 msgid "My Account"
-msgstr ""
+msgstr "My Account"
 
 msgid "None"
-msgstr ""
+msgstr "None"
 
 msgid "Subtle (Default)"
-msgstr ""
+msgstr "Subtle (Default)"
 
 msgid "Compact"
-msgstr ""
+msgstr "Compact"
 
 msgid "Standard (Default)"
-msgstr ""
+msgstr "Standard (Default)"
 
 msgid "Spacious"
-msgstr ""
+msgstr "Spacious"
 
 msgid "None (Sharp Corners)"
-msgstr ""
+msgstr "None (Sharp Corners)"
 
 msgid "Small (4px, Default)"
-msgstr ""
+msgstr "Small (4px, Default)"
 
 msgid "Large (8px, Rounded)"
-msgstr ""
+msgstr "Large (8px, Rounded)"
 
 msgid "System Default"
-msgstr ""
+msgstr "System Default"
 
 msgid "Small"
-msgstr ""
+msgstr "Small"
 
 msgid "Medium (Default)"
-msgstr ""
+msgstr "Medium (Default)"
 
 msgid "Large"
-msgstr ""
+msgstr "Large"
 
 msgid "WordPress Dashicons"
-msgstr ""
+msgstr "WordPress Dashicons"
 
 msgid "Default (Flat & Clean)"
-msgstr ""
+msgstr "Default (Flat & Clean)"
 
 msgid "Light Blue Gray"
-msgstr ""
+msgstr "Light Blue Gray"
 
 msgid "Mint Green"
-msgstr ""
+msgstr "Mint Green"
 
 msgid "Dark Mode"
-msgstr ""
+msgstr "Dark Mode"
 
 msgid "Custom Colors"
-msgstr ""
+msgstr "Custom Colors"
