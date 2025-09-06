@@ -1,6 +1,6 @@
 ﻿=== WP Clean Admin ===
 
-Contributors: yourusername
+Contributors: SutChan
 
 Tags: admin, dashboard, clean, minimal, ui, simplify
 
@@ -60,4 +60,5 @@ No, WP Clean Admin only modifies the appearance and functionality of the WordPre
 = 1.0.0 =
 
 Initial release of WP Clean Admin.
+
 
