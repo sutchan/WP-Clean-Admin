@@ -1,7 +1,6 @@
 ﻿=== WP Clean Admin ===
 
 Contributors: SutChan
-
 Tags: admin, dashboard, clean, minimal, ui, simplify
 Requires at least: 5.0
 Tested up to: 6.5
