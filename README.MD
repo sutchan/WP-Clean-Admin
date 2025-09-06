@@ -2,6 +2,7 @@
 
 Contributors: SutChan
 Tags: admin, dashboard, clean, minimal, ui, simplify
+
 Requires at least: 5.0
 Tested up to: 6.5
 Stable tag: 1.0.0
