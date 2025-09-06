@@ -1,5 +1,7 @@
 === WP Clean Admin 简体中文 ===
 
+[View in English](README.MD)
+
 贡献者: SutChan
 
 标签: 管理后台, 仪表盘, 简洁, 极简, 界面, 简化
@@ -61,6 +63,3 @@
 
 WP Clean Admin的初始版本。
 
-== 语言版本 ==
-
-* [English Version](README.MD)
