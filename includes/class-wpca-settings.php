@@ -46,6 +46,15 @@ class WPCA_Settings {
             'theme_style'            => 'default',
             'hide_admin_menu_items'  => array(),
             'hide_admin_bar_items'   => array(),
+            'layout_density'         => 'standard', // standard, compact, spacious
+            'border_radius_style'    => 'small',    // none, small, large
+            'shadow_style'           => 'subtle',   // none, subtle
+            'primary_color'          => '#4A90E2',  // New default: 清新蓝
+            'background_color'       => '#F8F9FA',  // New default
+            'text_color'             => '#2D3748',  // New default
+            'font_stack'             => 'system',   // system, google_fonts (future)
+            'font_size_base'         => 'medium',   // small, medium, large
+            'icon_style'             => 'dashicons',// dashicons, linear_icons (future)
         );
     }
 
@@ -70,7 +79,7 @@ class WPCA_Settings {
 
         // Main section
         add_settings_section(
-            'wpca_settings_general_section', // Changed section ID for clarity
+            'wpca_settings_general_section',
             __( 'General Settings', 'wp-clean-admin' ),
             array( $this, 'settings_section_callback' ),
             'wpcaSettingsGroup'
@@ -82,16 +91,113 @@ class WPCA_Settings {
             __( 'Hide Dashboard Widgets', 'wp-clean-admin' ),
             array( $this, 'hide_dashboard_widgets_render' ),
             'wpcaSettingsGroup',
-            'wpca_settings_general_section' // Use new section ID
+            'wpca_settings_general_section'
         );
 
-        // Example setting field: Theme Style
+        // New section: Visual Style Customization
+        add_settings_section(
+            'wpca_settings_visual_style_section',
+            __( 'Visual Style Customization', 'wp-clean-admin' ),
+            array( $this, 'visual_style_section_callback' ),
+            'wpcaSettingsGroup'
+        );
+
+        // Setting field: Theme Style
         add_settings_field(
             'wpca_theme_style',
             __( 'Admin Theme Style', 'wp-clean-admin' ),
             array( $this, 'theme_style_render' ),
             'wpcaSettingsGroup',
-            'wpca_settings_general_section' // Use new section ID
+            'wpca_settings_visual_style_section'
+        );
+
+        // Setting field: Primary Color
+        add_settings_field(
+            'wpca_primary_color',
+            __( 'Primary Color', 'wp-clean-admin' ),
+            array( $this, 'primary_color_render' ),
+            'wpcaSettingsGroup',
+            'wpca_settings_visual_style_section'
+        );
+
+        // Setting field: Background Color
+        add_settings_field(
+            'wpca_background_color',
+            __( 'Background Color', 'wp-clean-admin' ),
+            array( $this, 'background_color_render' ),
+            'wpcaSettingsGroup',
+            'wpca_settings_visual_style_section'
+        );
+
+        // Setting field: Text Color
+        add_settings_field(
+            'wpca_text_color',
+            __( 'Text Color', 'wp-clean-admin' ),
+            array( $this, 'text_color_render' ),
+            'wpcaSettingsGroup',
+            'wpca_settings_visual_style_section'
+        );
+
+        // Setting field: Shadow Style
+        add_settings_field(
+            'wpca_shadow_style',
+            __( 'Shadow Style', 'wp-clean-admin' ),
+            array( $this, 'shadow_style_render' ),
+            'wpcaSettingsGroup',
+            'wpca_settings_visual_style_section'
+        );
+
+        // New section: Layout & Typography
+        add_settings_section(
+            'wpca_settings_layout_typography_section',
+            __( 'Layout & Typography', 'wp-clean-admin' ),
+            array( $this, 'layout_typography_section_callback' ),
+            'wpcaSettingsGroup'
+        );
+
+        // Setting field: Layout Density
+        add_settings_field(
+            'wpca_layout_density',
+            __( 'Layout Density', 'wp-clean-admin' ),
+            array( $this, 'layout_density_render' ),
+            'wpcaSettingsGroup',
+            'wpca_settings_layout_typography_section'
+        );
+
+        // Setting field: Border Radius Style
+        add_settings_field(
+            'wpca_border_radius_style',
+            __( 'Border Radius Style', 'wp-clean-admin' ),
+            array( $this, 'border_radius_style_render' ),
+            'wpcaSettingsGroup',
+            'wpca_settings_layout_typography_section'
+        );
+
+        // Setting field: Font Stack
+        add_settings_field(
+            'wpca_font_stack',
+            __( 'Font Stack', 'wp-clean-admin' ),
+            array( $this, 'font_stack_render' ),
+            'wpcaSettingsGroup',
+            'wpca_settings_layout_typography_section'
+        );
+
+        // Setting field: Base Font Size
+        add_settings_field(
+            'wpca_font_size_base',
+            __( 'Base Font Size', 'wp-clean-admin' ),
+            array( $this, 'font_size_base_render' ),
+            'wpcaSettingsGroup',
+            'wpca_settings_layout_typography_section'
+        );
+
+        // Setting field: Icon Style
+        add_settings_field(
+            'wpca_icon_style',
+            __( 'Icon Style', 'wp-clean-admin' ),
+            array( $this, 'icon_style_render' ),
+            'wpcaSettingsGroup',
+            'wpca_settings_layout_typography_section'
         );
 
         // New section: Menu Customization
@@ -134,6 +240,20 @@ class WPCA_Settings {
      */
     public function settings_section_callback() {
         echo __( 'Configure the appearance and behavior of your admin dashboard.', 'wp-clean-admin' );
+    }
+
+    /**
+     * Visual Style section callback.
+     */
+    public function visual_style_section_callback() {
+        echo __( 'Customize the overall visual theme and colors.', 'wp-clean-admin' );
+    }
+
+    /**
+     * Layout & Typography section callback.
+     */
+    public function layout_typography_section_callback() {
+        echo __( 'Adjust layout density, element rounding, and font styles.', 'wp-clean-admin' );
     }
 
     /**
@@ -195,9 +315,132 @@ class WPCA_Settings {
         ?>
         <select name="wpca_settings[theme_style]">
             <option value="default" <?php selected( $options['theme_style'] ?? '', 'default' ); ?>><?php _e( 'Default (Flat & Clean)', 'wp-clean-admin' ); ?></option>
+            <option value="light_blue_gray" <?php selected( $options['theme_style'] ?? '', 'light_blue_gray' ); ?>><?php _e( 'Light Blue Gray', 'wp-clean-admin' ); ?></option>
             <option value="mint" <?php selected( $options['theme_style'] ?? '', 'mint' ); ?>><?php _e( 'Mint Green', 'wp-clean-admin' ); ?></option>
             <option value="dark" <?php selected( $options['theme_style'] ?? '', 'dark' ); ?>><?php _e( 'Dark Mode', 'wp-clean-admin' ); ?></option>
+            <option value="custom" <?php selected( $options['theme_style'] ?? '', 'custom' ); ?>><?php _e( 'Custom Colors', 'wp-clean-admin' ); ?></option>
         </select>
+        <p class="description"><?php _e( 'Choose a predefined theme or select "Custom Colors" to define your own.', 'wp-clean-admin' ); ?></p>
+        <?php
+    }
+
+    /**
+     * Render Primary Color field.
+     */
+    public function primary_color_render() {
+        $options = $this->options;
+        ?>
+        <input type="text" name="wpca_settings[primary_color]" value="<?php echo esc_attr( $options['primary_color'] ); ?>" class="wpca-color-picker" data-default-color="<?php echo esc_attr( self::get_default_settings()['primary_color'] ); ?>">
+        <p class="description"><?php _e( 'Choose the primary accent color for links, buttons, and active states.', 'wp-clean-admin' ); ?></p>
+        <?php
+    }
+
+    /**
+     * Render Background Color field.
+     */
+    public function background_color_render() {
+        $options = $this->options;
+        ?>
+        <input type="text" name="wpca_settings[background_color]" value="<?php echo esc_attr( $options['background_color'] ); ?>" class="wpca-color-picker" data-default-color="<?php echo esc_attr( self::get_default_settings()['background_color'] ); ?>">
+        <p class="description"><?php _e( 'Choose the main background color of the admin area.', 'wp-clean-admin' ); ?></p>
+        <?php
+    }
+
+    /**
+     * Render Text Color field.
+     */
+    public function text_color_render() {
+        $options = $this->options;
+        ?>
+        <input type="text" name="wpca_settings[text_color]" value="<?php echo esc_attr( $options['text_color'] ); ?>" class="wpca-color-picker" data-default-color="<?php echo esc_attr( self::get_default_settings()['text_color'] ); ?>">
+        <p class="description"><?php _e( 'Choose the default text color.', 'wp-clean-admin' ); ?></p>
+        <?php
+    }
+
+    /**
+     * Render Shadow Style field.
+     */
+    public function shadow_style_render() {
+        $options = $this->options;
+        ?>
+        <select name="wpca_settings[shadow_style]">
+            <option value="none" <?php selected( $options['shadow_style'] ?? '', 'none' ); ?>><?php _e( 'None', 'wp-clean-admin' ); ?></option>
+            <option value="subtle" <?php selected( $options['shadow_style'] ?? '', 'subtle' ); ?>><?php _e( 'Subtle (Default)', 'wp-clean-admin' ); ?></option>
+        </select>
+        <p class="description"><?php _e( 'Choose the shadow style for elements like post boxes and buttons.', 'wp-clean-admin' ); ?></p>
+        <?php
+    }
+
+    /**
+     * Render Layout Density field.
+     */
+    public function layout_density_render() {
+        $options = $this->options;
+        ?>
+        <select name="wpca_settings[layout_density]">
+            <option value="compact" <?php selected( $options['layout_density'] ?? '', 'compact' ); ?>><?php _e( 'Compact', 'wp-clean-admin' ); ?></option>
+            <option value="standard" <?php selected( $options['layout_density'] ?? '', 'standard' ); ?>><?php _e( 'Standard (Default)', 'wp-clean-admin' ); ?></option>
+            <option value="spacious" <?php selected( $options['layout_density'] ?? '', 'spacious' ); ?>><?php _e( 'Spacious', 'wp-clean-admin' ); ?></option>
+        </select>
+        <p class="description"><?php _e( 'Adjust the spacing and padding of elements in the admin interface.', 'wp-clean-admin' ); ?></p>
+        <?php
+    }
+
+    /**
+     * Render Border Radius Style field.
+     */
+    public function border_radius_style_render() {
+        $options = $this->options;
+        ?>
+        <select name="wpca_settings[border_radius_style]">
+            <option value="none" <?php selected( $options['border_radius_style'] ?? '', 'none' ); ?>><?php _e( 'None (Sharp Corners)', 'wp-clean-admin' ); ?></option>
+            <option value="small" <?php selected( $options['border_radius_style'] ?? '', 'small' ); ?>><?php _e( 'Small (4px, Default)', 'wp-clean-admin' ); ?></option>
+            <option value="large" <?php selected( $options['border_radius_style'] ?? '', 'large' ); ?>><?php _e( 'Large (8px, Rounded)', 'wp-clean-admin' ); ?></option>
+        </select>
+        <p class="description"><?php _e( 'Choose the border-radius style for various elements.', 'wp-clean-admin' ); ?></p>
+        <?php
+    }
+
+    /**
+     * Render Font Stack field.
+     */
+    public function font_stack_render() {
+        $options = $this->options;
+        ?>
+        <select name="wpca_settings[font_stack]">
+            <option value="system" <?php selected( $options['font_stack'] ?? '', 'system' ); ?>><?php _e( 'System Default', 'wp-clean-admin' ); ?></option>
+            <!-- Future: <option value="google_fonts" <?php selected( $options['font_stack'] ?? '', 'google_fonts' ); ?>><?php _e( 'Google Fonts', 'wp-clean-admin' ); ?></option> -->
+        </select>
+        <p class="description"><?php _e( 'Select the font stack to be used in the admin area.', 'wp-clean-admin' ); ?></p>
+        <?php
+    }
+
+    /**
+     * Render Base Font Size field.
+     */
+    public function font_size_base_render() {
+        $options = $this->options;
+        ?>
+        <select name="wpca_settings[font_size_base]">
+            <option value="small" <?php selected( $options['font_size_base'] ?? '', 'small' ); ?>><?php _e( 'Small', 'wp-clean-admin' ); ?></option>
+            <option value="medium" <?php selected( $options['font_size_base'] ?? '', 'medium' ); ?>><?php _e( 'Medium (Default)', 'wp-clean-admin' ); ?></option>
+            <option value="large" <?php selected( $options['font_size_base'] ?? '', 'large' ); ?>><?php _e( 'Large', 'wp-clean-admin' ); ?></option>
+        </select>
+        <p class="description"><?php _e( 'Adjust the base font size for the admin interface.', 'wp-clean-admin' ); ?></p>
+        <?php
+    }
+
+    /**
+     * Render Icon Style field.
+     */
+    public function icon_style_render() {
+        $options = $this->options;
+        ?>
+        <select name="wpca_settings[icon_style]">
+            <option value="dashicons" <?php selected( $options['icon_style'] ?? '', 'dashicons' ); ?>><?php _e( 'WordPress Dashicons', 'wp-clean-admin' ); ?></option>
+            <!-- Future: <option value="linear_icons" <?php selected( $options['icon_style'] ?? '', 'linear_icons' ); ?>><?php _e( 'Linear Icons', 'wp-clean-admin' ); ?></option> -->
+        </select>
+        <p class="description"><?php _e( 'Choose the icon set for the admin interface.', 'wp-clean-admin' ); ?></p>
         <?php
     }
 
