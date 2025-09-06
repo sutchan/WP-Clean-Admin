@@ -1,68 +1,65 @@
-﻿=== WP Clean Admin ===
+=== WP Clean Admin 简体中文 ===
 
-[View in 简体中文](README-zh_CN.md)
+[View in English](README-en_US.md)
 
-Contributors: SutChan
+贡献者: SutChan
 
-Tags: admin, dashboard, clean, minimal, ui, simplify
+标签: 管理后台, 仪表盘, 简洁, 极简, 界面, 简化
 
-Requires at least: 5.0
+最低要求: WordPress 5.0
 
-Tested up to: 6.5
+测试版本: 6.5
 
-Stable tag: 1.0.0
+稳定版本: 1.0.0
 
-License: GPLv2 or later
+许可证: GPLv2 或更高
 
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+许可证URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Simplify and customize your WordPress admin dashboard with a flat, minimal, and fresh UI.
+通过扁平化、极简和清新的UI来简化和自定义您的WordPress管理后台。
 
-== Description ==
+== 描述 ==
 
-**WP Clean Admin** helps you declutter and personalize your WordPress admin area. It offers a range of options to hide unnecessary elements and apply a clean, modern visual style, making your dashboard more efficient and pleasant to use.
+**WP Clean Admin** 帮助您整理和个性化WordPress管理后台。它提供了一系列选项来隐藏不必要的元素并应用干净、现代的视觉风格，使您的仪表盘更高效、更易于使用。
 
-**Key Features:**
+**主要功能:**
 
-*   **Interface Simplification:** Easily hide unused menus, dashboard widgets, and editor elements.
-*   **Visual Customization:** Choose from preset themes or tweak colors and layout for a personalized look.
-*   **Flat & Minimal Design:** Embrace a clean aesthetic that reduces visual noise and focuses on what's important.
-*   **User-Friendly Settings:** A dedicated settings page lets you configure the plugin without touching code.
+*   **界面简化:** 轻松隐藏未使用的菜单、仪表板小工具和编辑器元素
+*   **视觉定制:** 从预设主题中选择或调整颜色和布局以获得个性化外观
+*   **扁平化和极简设计:** 采用简洁美观的设计，减少视觉干扰，专注于重要内容
+*   **用户友好设置:** 专用设置页面让您无需接触代码即可配置插件
 
-Get a cleaner, faster, and more enjoyable WordPress admin experience with WP Clean Admin.
+使用WP Clean Admin获得更干净、更快速、更愉快的WordPress管理体验。
 
-== Installation ==
+== 安装 ==
 
-1. Upload the `wp-clean-admin` folder to the `/wp-content/plugins/` directory.
-2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Navigate to `Settings > WP Clean Admin` to configure your preferences.
+1. 上传`wp-clean-admin`文件夹到`/wp-content/plugins/`目录
+2. 通过WordPress的"插件"菜单激活插件
+3. 导航到`设置 > WP Clean Admin`配置您的偏好
 
-== Frequently Asked Questions ==
+== 常见问题 ==
 
-= Can I customize which menus or widgets are hidden? =
+= 我可以自定义隐藏哪些菜单或小工具吗? =
 
-Yes, the settings page provides options to select which elements you want to hide.
+是的，设置页面提供了选择要隐藏元素的选项。
 
-= Will this plugin affect my website's frontend? =
+= 这个插件会影响我网站的前台吗? =
 
-No, WP Clean Admin only modifies the appearance and functionality of the WordPress admin dashboard.
+不会，WP Clean Admin只修改WordPress管理后台的外观和功能。
 
-== Screenshots ==
+== 截图 ==
 
-1. Settings page showing options to hide dashboard widgets.
-2. Settings page with theme style selection.
+1. 显示隐藏仪表板小工具选项的设置页面
+2. 主题样式选择的设置页面
 
-== Changelog ==
-
-= 1.0.0 =
-* Initial release.
-
-== Upgrade Notice ==
+== 更新日志 ==
 
 = 1.0.0 =
+* 初始版本
 
-Initial release of WP Clean Admin.
+== 升级提示 ==
 
+= 1.0.0 =
 
-
+WP Clean Admin的初始版本。
 
