@@ -89,6 +89,15 @@ class WPCA_Settings {
                 border-left: 3px solid #ddd;
                 position: relative;
             }
+            .wpca-menu-sortable li.level-1 {
+                padding-left: 45px;
+            }
+            .wpca-menu-sortable li.level-2 {
+                padding-left: 60px;
+            }
+            .wpca-menu-sortable li.level-3 {
+                padding-left: 75px;
+            }
             .wpca-menu-sortable li:hover {
                 background: #f9f9f9;
             }
@@ -168,14 +177,14 @@ class WPCA_Settings {
      * Initialize settings.
      */
     public function settings_init() {
-        register_setting( 'wpcaSettingsGroup', 'wpca_settings' );
+        register_setting( 'wpca_settings', 'wpca_settings' );
 
         // Main section
         add_settings_section(
             'wpca_settings_general_section',
             __( 'General Settings', 'wp-clean-admin' ),
             array( $this, 'settings_section_callback' ),
-            'wpcaSettingsGroup'
+            'wpca_settings'
         );
 
         // Example setting field: Hide Dashboard Widgets
@@ -183,7 +192,7 @@ class WPCA_Settings {
             'wpca_hide_dashboard_widgets',
             __( 'Hide Dashboard Widgets', 'wp-clean-admin' ),
             array( $this, 'hide_dashboard_widgets_render' ),
-            'wpcaSettingsGroup',
+            'wpca_settings',
             'wpca_settings_general_section'
         );
 
@@ -662,21 +671,42 @@ class WPCA_Settings {
                     }
                 }
                 
-                // Render all items in a flat list
+                // Render items with hierarchy
+                $render_menu_items = function($items, $level = 0) use (&$render_menu_items) {
+                    foreach ($items as $slug => $item) {
+                        $is_submenu = $level > 0;
+                        $indent = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $level);
+                        
+                        echo '<li data-menu-slug="'.esc_attr($slug).'" data-item-type="'.($is_submenu ? 'sub' : 'top').'"';
+                        echo $is_submenu ? ' data-parent-slug="'.esc_attr($item['parent']).'"' : '';
+                        echo $is_submenu ? ' class="submenu-item level-'.$level.'"' : '';
+                        echo '>';
+                        echo '<span class="dashicons dashicons-menu"></span> ';
+                        echo $indent . esc_html(preg_replace('/<span.*?<\/span>/', '', $item['title']));
+                        echo '<input type="hidden" name="wpca_settings[menu_order][]" value="'.esc_attr($slug).'">';
+                        echo '</li>';
+                        
+                        // Render children if exists
+                        if (!empty($item['children'])) {
+                            $render_menu_items($item['children'], $level + 1);
+                        }
+                    }
+                };
+                
+                // Build hierarchical menu structure
+                $hierarchical_items = [];
                 foreach ($all_items as $slug => $item) {
-                    $is_submenu = strpos($slug, '|') !== false;
-                    $parent_slug = $is_submenu ? explode('|', $slug)[0] : '';
-                    $item_slug = $is_submenu ? explode('|', $slug)[1] : $slug;
-                    
-                    echo '<li data-menu-slug="'.esc_attr($item_slug).'" data-item-type="'.($is_submenu ? 'sub' : 'top').'"';
-                    echo $is_submenu ? ' data-parent-slug="'.esc_attr($parent_slug).'"' : '';
-                    echo $is_submenu ? ' class="submenu-item"' : '';
-                    echo '>';
-                    echo '<span class="dashicons dashicons-menu"></span> ';
-                    echo esc_html(preg_replace('/<span.*?<\/span>/', '', $item['title']));
-                    echo '<input type="hidden" name="wpca_settings[menu_order][]" value="'.esc_attr($slug).'">';
-                    echo '</li>';
+                    if (empty($item['parent'])) {
+                        $hierarchical_items[$slug] = $item;
+                    } else {
+                        if (!isset($hierarchical_items[$item['parent']]['children'])) {
+                            $hierarchical_items[$item['parent']]['children'] = [];
+                        }
+                        $hierarchical_items[$item['parent']]['children'][$slug] = $item;
+                    }
                 }
+                
+                $render_menu_items($hierarchical_items);
                 ?>
             </ul>
         </div>
@@ -791,11 +821,11 @@ class WPCA_Settings {
             
             <form action="options.php" method="post">
                 <?php
-                settings_fields( 'wpcaSettingsGroup' );
+                settings_fields( 'wpca_settings' );
                 
                 // General tab content
                 echo '<div id="tab-general" class="wpca-tab-content active">';
-                do_settings_sections( 'wpcaSettingsGroup' );
+                do_settings_sections( 'wpca_settings' );
                 echo '</div>';
                 
                 // Menu Customization tab content
