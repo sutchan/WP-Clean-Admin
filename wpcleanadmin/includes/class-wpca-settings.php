@@ -38,8 +38,37 @@ class WPCA_Settings {
         // Enqueue jQuery UI for sortable functionality
         wp_enqueue_script('jquery-ui-sortable');
         
-        // Add custom styles for the sortable menu
+        // Add custom styles for the settings page
         wp_add_inline_style('admin-bar', '
+            /* Tab navigation */
+            .wpca-tabs {
+                display: flex;
+                border-bottom: 1px solid #ccc;
+                margin: 1em 0 2em;
+            }
+            .wpca-tab {
+                padding: 8px 16px;
+                margin-right: 5px;
+                background: #f1f1f1;
+                border: 1px solid #ccc;
+                border-bottom: none;
+                cursor: pointer;
+                border-radius: 4px 4px 0 0;
+            }
+            .wpca-tab.active {
+                background: #fff;
+                border-bottom: 1px solid #fff;
+                margin-bottom: -1px;
+            }
+            .wpca-tab-content {
+                display: none;
+                padding: 20px 0;
+            }
+            .wpca-tab-content.active {
+                display: block;
+            }
+            
+            /* Sortable menu styles */
             .wpca-menu-sortable {
                 list-style: none;
                 padding: 0;
@@ -70,6 +99,17 @@ class WPCA_Settings {
                 background: #f1f1f1;
                 border: 1px dashed #ccc;
             }
+        ');
+        
+        // Add tab switching JavaScript
+        wp_add_inline_script('jquery', '
+            jQuery(document).ready(function($) {
+                $(".wpca-tab").click(function() {
+                    $(".wpca-tab, .wpca-tab-content").removeClass("active");
+                    $(this).addClass("active");
+                    $("#" + $(this).data("tab")).addClass("active");
+                });
+            });
         ');
     }
 
@@ -142,152 +182,143 @@ class WPCA_Settings {
             'wpca_settings_general_section'
         );
 
-        // New section: Visual Style Customization
+        // Visual Style section
         add_settings_section(
             'wpca_settings_visual_style_section',
-            __( 'Visual Style Customization', 'wp-clean-admin' ),
+            __( 'Visual Style', 'wp-clean-admin' ),
             array( $this, 'visual_style_section_callback' ),
-            'wpcaSettingsGroup'
+            'wpca_settings_visual_style'
         );
 
-        // Setting field: Theme Style
+        // Visual Style fields
         add_settings_field(
             'wpca_theme_style',
-            __( 'Admin Theme Style', 'wp-clean-admin' ),
+            __( 'Theme Style', 'wp-clean-admin' ),
             array( $this, 'theme_style_render' ),
-            'wpcaSettingsGroup',
+            'wpca_settings_visual_style',
             'wpca_settings_visual_style_section'
         );
 
-        // Setting field: Primary Color
         add_settings_field(
             'wpca_primary_color',
             __( 'Primary Color', 'wp-clean-admin' ),
             array( $this, 'primary_color_render' ),
-            'wpcaSettingsGroup',
+            'wpca_settings_visual_style',
             'wpca_settings_visual_style_section'
         );
 
-        // Setting field: Background Color
         add_settings_field(
             'wpca_background_color',
             __( 'Background Color', 'wp-clean-admin' ),
             array( $this, 'background_color_render' ),
-            'wpcaSettingsGroup',
+            'wpca_settings_visual_style',
             'wpca_settings_visual_style_section'
         );
 
-        // Setting field: Text Color
         add_settings_field(
             'wpca_text_color',
             __( 'Text Color', 'wp-clean-admin' ),
             array( $this, 'text_color_render' ),
-            'wpcaSettingsGroup',
+            'wpca_settings_visual_style',
             'wpca_settings_visual_style_section'
         );
 
-        // Setting field: Shadow Style
         add_settings_field(
             'wpca_shadow_style',
             __( 'Shadow Style', 'wp-clean-admin' ),
             array( $this, 'shadow_style_render' ),
-            'wpcaSettingsGroup',
+            'wpca_settings_visual_style',
             'wpca_settings_visual_style_section'
         );
 
-        // New section: Layout & Typography
+        // Layout & Typography section
         add_settings_section(
-            'wpca_settings_layout_typography_section',
+            'wpca_settings_layout_section',
             __( 'Layout & Typography', 'wp-clean-admin' ),
             array( $this, 'layout_typography_section_callback' ),
-            'wpcaSettingsGroup'
+            'wpca_settings_layout'
         );
 
-        // Setting field: Layout Density
+        // Layout & Typography fields
         add_settings_field(
             'wpca_layout_density',
             __( 'Layout Density', 'wp-clean-admin' ),
             array( $this, 'layout_density_render' ),
-            'wpcaSettingsGroup',
-            'wpca_settings_layout_typography_section'
+            'wpca_settings_layout',
+            'wpca_settings_layout_section'
         );
 
-        // Setting field: Border Radius Style
         add_settings_field(
             'wpca_border_radius_style',
-            __( 'Border Radius Style', 'wp-clean-admin' ),
+            __( 'Border Radius', 'wp-clean-admin' ),
             array( $this, 'border_radius_style_render' ),
-            'wpcaSettingsGroup',
-            'wpca_settings_layout_typography_section'
+            'wpca_settings_layout',
+            'wpca_settings_layout_section'
         );
 
-        // Setting field: Font Stack
         add_settings_field(
             'wpca_font_stack',
             __( 'Font Stack', 'wp-clean-admin' ),
             array( $this, 'font_stack_render' ),
-            'wpcaSettingsGroup',
-            'wpca_settings_layout_typography_section'
+            'wpca_settings_layout',
+            'wpca_settings_layout_section'
         );
 
-        // Setting field: Base Font Size
         add_settings_field(
             'wpca_font_size_base',
-            __( 'Base Font Size', 'wp-clean-admin' ),
+            __( 'Font Size', 'wp-clean-admin' ),
             array( $this, 'font_size_base_render' ),
-            'wpcaSettingsGroup',
-            'wpca_settings_layout_typography_section'
+            'wpca_settings_layout',
+            'wpca_settings_layout_section'
         );
 
-        // Setting field: Icon Style
         add_settings_field(
             'wpca_icon_style',
             __( 'Icon Style', 'wp-clean-admin' ),
             array( $this, 'icon_style_render' ),
-            'wpcaSettingsGroup',
-            'wpca_settings_layout_typography_section'
+            'wpca_settings_layout',
+            'wpca_settings_layout_section'
         );
 
-        // New section: Menu Customization
+        // Menu Customization section
         add_settings_section(
             'wpca_settings_menu_section',
             __( 'Menu Customization', 'wp-clean-admin' ),
             array( $this, 'menu_section_callback' ),
-            'wpcaSettingsGroup'
+            'wpca_settings_menu'
         );
 
-        // New setting field: Hide Admin Menu Items
+        // Menu Customization fields
         add_settings_field(
             'wpca_hide_admin_menu_items',
             __( 'Hide Admin Menu Items', 'wp-clean-admin' ),
             array( $this, 'hide_admin_menu_items_render' ),
-            'wpcaSettingsGroup',
+            'wpca_settings_menu',
             'wpca_settings_menu_section'
         );
 
-        // New setting field: Menu Order
         add_settings_field(
             'wpca_menu_order',
             __( 'Menu Order', 'wp-clean-admin' ),
             array( $this, 'menu_order_render' ),
-            'wpcaSettingsGroup',
+            'wpca_settings_menu',
             'wpca_settings_menu_section'
         );
 
-        // New section: Admin Bar Customization
+        // Admin Bar Customization section
         add_settings_section(
             'wpca_settings_admin_bar_section',
             __( 'Admin Bar Customization', 'wp-clean-admin' ),
             array( $this, 'admin_bar_section_callback' ),
-            'wpcaSettingsGroup'
+            'wpca_settings_admin_bar'
         );
 
-        // New setting field: Hide Admin Bar Items
+        // Admin Bar Customization field
         add_settings_field(
             'wpca_hide_admin_bar_items',
             __( 'Hide Admin Bar Items', 'wp-clean-admin' ),
             array( $this, 'hide_admin_bar_items_render' ),
-            'wpcaSettingsGroup',
+            'wpca_settings_admin_bar',
             'wpca_settings_admin_bar_section'
         );
     }
@@ -770,10 +801,44 @@ class WPCA_Settings {
         ?>
         <div class="wrap">
             <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
+            
+            <div class="wpca-tabs">
+                <div class="wpca-tab active" data-tab="tab-general"><?php _e('General', 'wp-clean-admin'); ?></div>
+                <div class="wpca-tab" data-tab="tab-visual-style"><?php _e('Visual Style', 'wp-clean-admin'); ?></div>
+                <div class="wpca-tab" data-tab="tab-layout"><?php _e('Layout & Typography', 'wp-clean-admin'); ?></div>
+                <div class="wpca-tab" data-tab="tab-menu"><?php _e('Menu Customization', 'wp-clean-admin'); ?></div>
+                <div class="wpca-tab" data-tab="tab-admin-bar"><?php _e('Admin Bar Customization', 'wp-clean-admin'); ?></div>
+            </div>
+            
             <form action="options.php" method="post">
                 <?php
                 settings_fields( 'wpcaSettingsGroup' );
+                
+                // General tab content
+                echo '<div id="tab-general" class="wpca-tab-content active">';
                 do_settings_sections( 'wpcaSettingsGroup' );
+                echo '</div>';
+                
+                // Menu Customization tab content
+                echo '<div id="tab-menu" class="wpca-tab-content">';
+                do_settings_sections('wpca_settings_menu');
+                echo '</div>';
+                
+                // Admin Bar Customization tab content
+                echo '<div id="tab-admin-bar" class="wpca-tab-content">';
+                do_settings_sections('wpca_settings_admin_bar');
+                echo '</div>';
+                
+                // Visual Style tab content
+                echo '<div id="tab-visual-style" class="wpca-tab-content">';
+                do_settings_sections('wpca_settings_visual_style');
+                echo '</div>';
+                
+                // Layout & Typography tab content
+                echo '<div id="tab-layout" class="wpca-tab-content">';
+                do_settings_sections('wpca_settings_layout');
+                echo '</div>';
+                
                 submit_button();
                 ?>
             </form>
