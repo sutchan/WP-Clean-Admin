@@ -89,11 +89,11 @@ jQuery(document).ready(function($) {
     // Handle toggle switch changes for all menu items
     $(document).on('change', '.wpca-slide-toggle input', function() {
         var $li = $(this).closest('li');
-        $li.toggleClass('menu-hidden', this.checked);
+        $li.toggleClass('menu-hidden', !this.checked);
         
         // Toggle child submenus as well
         $li.find('> ul li').each(function() {
-            $(this).toggleClass('menu-hidden', this.checked);
+            $(this).toggleClass('menu-hidden', !this.checked);
         });
         
         updateMenuOrder();

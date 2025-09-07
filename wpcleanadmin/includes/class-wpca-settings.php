@@ -221,13 +221,7 @@ class WPCA_Settings {
         );
 
         // Menu Customization fields
-        add_settings_field(
-            'wpca_hide_admin_menu_items',
-            __( 'Hide Admin Menu Items', 'wp-clean-admin' ),
-            array( $this, 'hide_admin_menu_items_render' ),
-            'wpca_settings_menu',
-            'wpca_settings_menu_section'
-        );
+        // Hide Admin Menu Items functionality has been moved to menu_order_render()
 
         add_settings_field(
             'wpca_menu_order',
@@ -280,7 +274,7 @@ class WPCA_Settings {
      * Menu section callback.
      */
     public function menu_section_callback() {
-        echo __( 'Select which admin menu items to hide.', 'wp-clean-admin' );
+        // Description removed as hide functionality is now integrated with menu ordering
     }
 
     /**
@@ -464,58 +458,7 @@ class WPCA_Settings {
         <?php
     }
 
-    /**
-     * Render Hide Admin Menu Items field.
-     */
-    public function hide_admin_menu_items_render() {
-        $options = $this->options; // Use loaded options
-        $menu_items_to_hide = $options['hide_admin_menu_items'] ?? array();
-        ?>
-        <fieldset>
-            <label>
-                <input type="checkbox" name="wpca_settings[hide_admin_menu_items][]" value="dashboard" <?php checked( in_array( 'dashboard', $menu_items_to_hide ) ); ?>>
-                <?php _e( 'Dashboard', 'wp-clean-admin' ); ?>
-            </label><br>
-            <label>
-                <input type="checkbox" name="wpca_settings[hide_admin_menu_items][]" value="posts" <?php checked( in_array( 'posts', $menu_items_to_hide ) ); ?>>
-                <?php _e( 'Posts', 'wp-clean-admin' ); ?>
-            </label><br>
-            <label>
-                <input type="checkbox" name="wpca_settings[hide_admin_menu_items][]" value="media" <?php checked( in_array( 'media', $menu_items_to_hide ) ); ?>>
-                <?php _e( 'Media', 'wp-clean-admin' ); ?>
-            </label><br>
-            <label>
-                <input type="checkbox" name="wpca_settings[hide_admin_menu_items][]" value="pages" <?php checked( in_array( 'pages', $menu_items_to_hide ) ); ?>>
-                <?php _e( 'Pages', 'wp-clean-admin' ); ?>
-            </label><br>
-            <label>
-                <input type="checkbox" name="wpca_settings[hide_admin_menu_items][]" value="comments" <?php checked( in_array( 'comments', $menu_items_to_hide ) ); ?>>
-                <?php _e( 'Comments', 'wp-clean-admin' ); ?>
-            </label><br>
-            <label>
-                <input type="checkbox" name="wpca_settings[hide_admin_menu_items][]" value="themes.php" <?php checked( in_array( 'themes.php', $menu_items_to_hide ) ); ?>>
-                <?php _e( 'Appearance', 'wp-clean-admin' ); ?>
-            </label><br>
-            <label>
-                <input type="checkbox" name="wpca_settings[hide_admin_menu_items][]" value="plugins.php" <?php checked( in_array( 'plugins.php', $menu_items_to_hide ) ); ?>>
-                <?php _e( 'Plugins', 'wp-clean-admin' ); ?>
-            </label><br>
-            <label>
-                <input type="checkbox" name="wpca_settings[hide_admin_menu_items][]" value="users.php" <?php checked( in_array( 'users.php', $menu_items_to_hide ) ); ?>>
-                <?php _e( 'Users', 'wp-clean-admin' ); ?>
-            </label><br>
-            <label>
-                <input type="checkbox" name="wpca_settings[hide_admin_menu_items][]" value="tools.php" <?php checked( in_array( 'tools.php', $menu_items_to_hide ) ); ?>>
-                <?php _e( 'Tools', 'wp-clean-admin' ); ?>
-            </label><br>
-            <label>
-                <input type="checkbox" name="wpca_settings[hide_admin_menu_items][]" value="options-general.php" <?php checked( in_array( 'options-general.php', $menu_items_to_hide ) ); ?>>
-                <?php _e( 'Settings', 'wp-clean-admin' ); ?>
-            </label><br>
-            <!-- Add more menu items as needed. Use the slug of the top-level menu item. -->
-        </fieldset>
-        <?php
-    }
+    // Hide Admin Menu Items functionality has been moved to menu_order_render()
 
     /**
      * Render Hide Admin Bar Items field.
@@ -593,14 +536,24 @@ class WPCA_Settings {
                 $render_menu_items = function($items, $level = 0) use (&$render_menu_items) {
                     foreach ($items as $slug => $item) {
                         $is_submenu = $level > 0;
+                        $indent_px = $level * 20; // 每级缩进20px
                         $indent = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $level);
                         
                         echo '<li data-menu-slug="'.esc_attr($slug).'" data-item-type="'.($is_submenu ? 'sub' : 'top').'"';
                         echo $is_submenu ? ' data-parent-slug="'.esc_attr($item['parent']).'"' : '';
                         echo $is_submenu ? ' class="submenu-item level-'.$level.'"' : '';
+                        echo ' style="padding-left: '.$indent_px.'px; display: flex; justify-content: space-between; align-items: center;"';
                         echo '>';
+                        echo '<span style="display: flex; align-items: center;">';
                         echo '<span class="dashicons dashicons-menu"></span> ';
                         echo $indent . esc_html(preg_replace('/<span.*?<\/span>/', '', $item['title']));
+                        echo '</span>';
+                        echo '<div class="wpca-slide-toggle">';
+                        echo '<input type="checkbox" name="wpca_settings[menu_hidden_items][]" value="'.esc_attr($slug).'" ';
+                        echo isset($options['menu_hidden_items']) && in_array($slug, $options['menu_hidden_items']) ? 'checked' : '';
+                        echo '>';
+                        echo '<span class="slider"></span>';
+                        echo '</div>';
                         echo '<input type="hidden" name="wpca_settings[menu_order][]" value="'.esc_attr($slug).'">';
                         echo '</li>';
                         
