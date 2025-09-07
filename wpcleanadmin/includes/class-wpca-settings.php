@@ -668,12 +668,12 @@ class WPCA_Settings {
             <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
             
             <div class="wpca-tabs">
-                <div class="wpca-tab active" data-tab="tab-general"><?php _e('常规设置', 'wp-clean-admin'); ?></div>
-                <div class="wpca-tab" data-tab="tab-visual-style"><?php _e('视觉风格', 'wp-clean-admin'); ?></div>
-                <div class="wpca-tab" data-tab="tab-layout"><?php _e('布局与排版', 'wp-clean-admin'); ?></div>
-                <div class="wpca-tab" data-tab="tab-menu"><?php _e('菜单管理', 'wp-clean-admin'); ?></div>
-                <div class="wpca-tab" data-tab="tab-admin-bar"><?php _e('工具栏设置', 'wp-clean-admin'); ?></div>
-                <div class="wpca-tab" data-tab="tab-about"><?php _e('关于插件', 'wp-clean-admin'); ?></div>
+                <div class="wpca-tab active" data-tab="tab-general"><?php _e('General Settings', 'wp-clean-admin'); ?></div>
+                <div class="wpca-tab" data-tab="tab-visual-style"><?php _e('Visual Style', 'wp-clean-admin'); ?></div>
+                <div class="wpca-tab" data-tab="tab-layout"><?php _e('Layout & Typography', 'wp-clean-admin'); ?></div>
+                <div class="wpca-tab" data-tab="tab-menu"><?php _e('Menu Customization', 'wp-clean-admin'); ?></div>
+                <div class="wpca-tab" data-tab="tab-admin-bar"><?php _e('Admin Bar Customization', 'wp-clean-admin'); ?></div>
+                <div class="wpca-tab" data-tab="tab-about"><?php _e('About', 'wp-clean-admin'); ?></div>
             </div>
             
             <form action="options.php" method="post">

@@ -270,9 +270,29 @@ body.wpca-theme-dark {
 /* Sortable menu styles */
 .wpca-menu-order-wrapper {
     padding: 15px;
+    background: #fff;
+    border: 1px solid var(--wpca-border-color);
     border-radius: var(--wpca-border-radius-small);
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    margin-bottom: 20px;
+    margin-bottom: 0;
+}
+
+.wpca-icon-toggle-container {
+    margin-top: 0;
+    padding: 15px;
+    background: #f5f5f5;
+    border: 1px solid var(--wpca-border-color);
+    border-top: none;
+    border-radius: 0 0 var(--wpca-border-radius-small) var(--wpca-border-radius-small);
+}
+
+.wpca-menu-order {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 0;
+    max-width: 600px;
+    border: none;
+    background: transparent;
 }
 
 .wpca-menu-sortable {

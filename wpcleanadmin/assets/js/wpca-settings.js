@@ -25,25 +25,55 @@ jQuery(document).ready(function($) {
         $("#" + tabId).addClass("active");
     });
 
-    // Tab navigation preserved but form submission handling removed
-
     // ======================================================
     // Menu sorting functionality
     // ======================================================
-    
-    // Make all menu items sortable with hierarchy support
-    // (Unified sortable initialization is below)
 
-
-
-    // Reset menu order to default (modified to use localStorage)
+    // Reset menu order to default with enhanced functionality
     $('#wpca-reset-menu-order').click(function() {
-        if (confirm(wpca_vars.reset_confirm)) {
-            // Clear saved order from localStorage
+        if (confirm('Are you sure you want to reset all menu settings to default?')) {
+            // Save current active tab
+            var currentTab = $('.wpca-tab.active').data('tab');
+            
+            // Clear all related localStorage items
             localStorage.removeItem('wpca_menu_order');
             localStorage.removeItem('wpca_hidden_items');
-            // Reload the page to show default order
-            location.reload();
+            
+            // Clear any submenu orders - collect keys first to avoid index shifting
+            var keysToRemove = [];
+            for (var i = 0; i < localStorage.length; i++) {
+                var key = localStorage.key(i);
+                if (key && key.startsWith('wpca_submenu_order_')) {
+                    keysToRemove.push(key);
+                }
+            }
+            
+            // Now remove the collected keys
+            keysToRemove.forEach(function(key) {
+                localStorage.removeItem(key);
+            });
+            
+            // Show all menu items in the admin menu
+            $('#adminmenu li').show();
+            $('#adminmenu .wp-submenu').show();
+            
+            // Reset all toggle switches to checked (visible)
+            $('.wpca-slide-toggle input').prop('checked', true);
+            
+            // Remove menu-hidden class from all items
+            $('#wpca-menu-order li').removeClass('menu-hidden');
+            
+            console.log('All menu settings reset to default');
+            
+            // Reinitialize menu system to reflect changes
+            initMenuSystem();
+            
+            // Restore current tab
+            if (currentTab) {
+                $(".wpca-tab, .wpca-tab-content").removeClass("active");
+                $(`.wpca-tab[data-tab="${currentTab}"]`).addClass("active");
+                $(`#${currentTab}`).addClass("active");
+            }
         }
     });
 
@@ -128,8 +158,7 @@ jQuery(document).ready(function($) {
         });
     }
     
-    // Initialize on load
-    refreshToggleSwitches();
+
     
     // Full hierarchical menu initialization with submenu support
     function initializeMenuHierarchy() {
@@ -160,7 +189,7 @@ jQuery(document).ready(function($) {
                 $item.append(`
                     <label class="wpca-slide-toggle" style="position:absolute; right:10px;">
                         <input type="checkbox" name="wpca_settings[menu_hidden][${slug}]" 
-                            ${isHidden ? 'checked' : ''}>
+                            ${!isHidden ? 'checked' : ''}>
                         <span class="slider">
                             <span class="slide-handle"></span>
                         </span>
@@ -340,29 +369,45 @@ jQuery(document).ready(function($) {
         }
     }
     
-    // Update menu order while preserving hidden state
-    function updateMenuOrder() {
-        var menuOrder = [];
-        var currentHidden = JSON.parse(localStorage.getItem('wpca_hidden_items') || '[]');
-        
-        $('#wpca-menu-order li').each(function() {
-            var $item = $(this);
-            var slug = $item.data('menu-slug');
-            var level = $item.data('level') || 0;
-            $item.css('padding-left', (level * 20) + 'px');
-            menuOrder.push(slug);
-        });
-        
-        localStorage.setItem('wpca_menu_order', JSON.stringify(menuOrder));
-        console.log('Menu order updated:', menuOrder, 'Hidden items:', currentHidden);
+    // ======================================================
+    // Menu Icon Visibility Control
+    // ======================================================
+    
+    // Add icon toggle control at the end of menu management section
+    $('#wpca-menu-order').after(`
+        <div class="wpca-icon-toggle-container" style="margin-top: 20px; padding: 10px; background: #f5f5f5;">
+            <label class="wpca-slide-toggle">
+                <input type="checkbox" id="wpca-toggle-menu-icons" name="wpca_settings[show_menu_icons]">
+                <span class="slider">
+                    <span class="slide-handle"></span>
+                </span>
+                <span style="margin-left: 10px;">显示菜单图标</span>
+            </label>
+        </div>
+    `);
+
+    // Initialize icon toggle state
+    var showIcons = localStorage.getItem('wpca_show_menu_icons') !== 'false';
+    $('#wpca-toggle-menu-icons').prop('checked', showIcons);
+    toggleMenuIcons(showIcons);
+
+    // Handle icon toggle changes
+    $('#wpca-toggle-menu-icons').change(function() {
+        var isChecked = $(this).prop('checked');
+        localStorage.setItem('wpca_show_menu_icons', isChecked);
+        toggleMenuIcons(isChecked);
+    });
+
+    // Function to toggle menu icons visibility
+    function toggleMenuIcons(show) {
+        if (show) {
+            $('#adminmenu .wp-menu-image').show();
+        } else {
+            $('#adminmenu .wp-menu-image').hide();
+        }
     }
 
     // ======================================================
-    // General admin functionality (from wp-clean-admin.js)
+    // End of WP Clean Admin JS
     // ======================================================
-    
-    // Future JavaScript interactions will go here.
-    // For example, toggling elements, handling live previews in settings, etc.
-
-    // console.log('WP Clean Admin JS Loaded');
 });
