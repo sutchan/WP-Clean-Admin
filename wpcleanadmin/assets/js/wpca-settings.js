@@ -71,7 +71,7 @@ jQuery(document).ready(function($) {
     // Enhanced menu functionality
     // ======================================================
     
-    // Handle toggle switch changes with persistent state
+    // Handle toggle switch changes with persistent state and apply to WP admin menu
     $(document).off('change', '.wpca-slide-toggle input').on('change', '.wpca-slide-toggle input', function(e) {
         e.stopPropagation();
         var $switch = $(this);
@@ -94,7 +94,14 @@ jQuery(document).ready(function($) {
         }
         localStorage.setItem('wpca_hidden_items', JSON.stringify(hiddenItems));
         
-        console.log('Switch state saved:', isChecked, 'for:', slug, 'Hidden items:', hiddenItems);
+        // Apply to actual WP admin menu
+        var $wpMenu = $('#adminmenu a[href*="' + slug + '"]').closest('li');
+        if ($wpMenu.length) {
+            $wpMenu.toggle(!isChecked);
+            $wpMenu.find('.wp-submenu').toggle(!isChecked);
+        }
+        
+        console.log('Switch state saved and applied:', isChecked, 'for:', slug);
     });
 
     // Ensure switches work after drag-and-drop
@@ -105,7 +112,7 @@ jQuery(document).ready(function($) {
         });
     });
 
-    // Initialize switches with saved state
+    // Initialize switches with saved state and apply to WP admin menu
     function refreshToggleSwitches() {
         var hiddenItems = JSON.parse(localStorage.getItem('wpca_hidden_items') || '[]');
         
@@ -118,7 +125,14 @@ jQuery(document).ready(function($) {
             $switch.prop('checked', shouldBeChecked);
             $li.toggleClass('menu-hidden', !shouldBeChecked);
             
-            console.log('Switch initialized:', shouldBeChecked, 'for:', slug);
+            // Apply to actual WP admin menu
+            var $wpMenu = $('#adminmenu a[href*="' + slug + '"]').closest('li');
+            if ($wpMenu.length) {
+                $wpMenu.toggle(shouldBeChecked);
+                $wpMenu.find('.wp-submenu').toggle(shouldBeChecked);
+            }
+            
+            console.log('Switch initialized and applied:', shouldBeChecked, 'for:', slug);
         });
     }
     
