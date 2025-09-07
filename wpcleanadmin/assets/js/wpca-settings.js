@@ -25,76 +25,45 @@ jQuery(document).ready(function($) {
         $("#" + tabId).addClass("active");
     });
 
-    // Preserve active tab after form submission
-    $('form').on('submit', function() {
-        var activeTab = $('.wpca-tab.active').data('tab');
-        localStorage.setItem('wpca_active_tab', activeTab);
-    });
+    // Tab navigation preserved but form submission handling removed
 
     // ======================================================
     // Menu sorting functionality
     // ======================================================
     
     // Make all menu items sortable with hierarchy support
-    $('#wpca-menu-order').sortable({
-        items: 'li',
-        handle: '.dashicons-menu',
-        tolerance: 'pointer',
-        update: function(event, ui) {
-            updateMenuOrder();
-        }
-    });
+    // (Unified sortable initialization is below)
 
-    // Update menu order and hidden status
-    function updateMenuOrder() {
-        var menuOrder = [];
-        var hiddenItems = [];
-        
-        $('#wpca-menu-order li').each(function() {
-            var $item = $(this);
-            var slug = $item.data('menu-slug');
-            menuOrder.push(slug);
-            
-            if ($item.hasClass('menu-hidden')) {
-                hiddenItems.push(slug);
-            }
-        });
-        
-        $('#wpca_menu_order').val(JSON.stringify(menuOrder));
-        $('#wpca_hidden_items').val(JSON.stringify(hiddenItems));
-    }
 
-    // Reset menu order to default
+
+    // Reset menu order to default (modified to use localStorage)
     $('#wpca-reset-menu-order').click(function() {
         if (confirm(wpca_vars.reset_confirm)) {
-            // Clear saved order
-            $('input[name="wpca_settings[menu_order][]"]').val('');
-            $('input[name="wpca_settings[submenu_order][]"]').val('');
+            // Clear saved order from localStorage
+            localStorage.removeItem('wpca_menu_order');
+            localStorage.removeItem('wpca_hidden_items');
             // Reload the page to show default order
             location.reload();
         }
     });
 
-    // Top level menu sorting
-    $('#wpca-menu-order').sortable({
+    // Unified menu sorting for all levels
+    $('#wpca-menu-order, .wpca-submenu-sortable').sortable({
         update: function(event, ui) {
+            var $container = $(this);
+            var isSubmenu = $container.hasClass('wpca-submenu-sortable');
             var menuOrder = [];
-            $('#wpca-menu-order li').each(function() {
+            
+            $container.find('> li').each(function() {
                 menuOrder.push($(this).data('menu-slug'));
             });
-            $('#wpca_menu_order').val(JSON.stringify(menuOrder));
-        }
-    });
-    
-    // Submenu sorting
-    $('.wpca-submenu-sortable').sortable({
-        update: function(event, ui) {
-            var parentSlug = $(this).data('parent-slug');
-            var submenuOrder = [];
-            $(this).find('li').each(function() {
-                submenuOrder.push($(this).data('menu-slug'));
-            });
-            $('input[name="wpca_settings[submenu_order]['+parentSlug+'][]"]').val(JSON.stringify(submenuOrder));
+            
+            if (isSubmenu) {
+                var parentSlug = $container.data('parent-slug');
+                localStorage.setItem('wpca_submenu_order_'+parentSlug, JSON.stringify(menuOrder));
+            } else {
+                localStorage.setItem('wpca_menu_order', JSON.stringify(menuOrder));
+            }
         }
     });
 
@@ -102,50 +71,80 @@ jQuery(document).ready(function($) {
     // Enhanced menu functionality
     // ======================================================
     
-    // Handle toggle switch changes for all menu items
-    $(document).on('change', '.wpca-slide-toggle input', function(e) {
+    // Handle toggle switch changes for all menu items with proper delegation
+    $(document).off('change', '.wpca-slide-toggle input').on('change', '.wpca-slide-toggle input', function(e) {
         e.stopPropagation(); // Prevent event bubbling
-        var $li = $(this).closest('li');
-        var isChecked = this.checked;
+        var $switch = $(this);
+        var $li = $switch.closest('li');
+        var isChecked = $switch.prop('checked');
         
         // Toggle menu-hidden class based on checkbox state
-        $li.toggleClass('menu-hidden', !isChecked); // Fix: invert the logic
+        $li.toggleClass('menu-hidden', !isChecked);
         
         // Toggle child submenus as well
         $li.find('> ul li').each(function() {
-            $(this).toggleClass('menu-hidden', !isChecked); // Fix: invert the logic
+            $(this).toggleClass('menu-hidden', !isChecked);
         });
+        
+        // Ensure switch state matches the class
+        $switch.prop('checked', isChecked);
         
         // Update menu order and hidden status
         updateMenuOrder();
+        
+        // Debug log
+        console.log('Switch toggled:', $switch.prop('checked'), 'for item:', $li.data('menu-slug'));
     });
 
-    // Initialize all toggle switches
-    $('.wpca-slide-toggle input').each(function() {
-        var $li = $(this).closest('li');
-        $(this).prop('checked', !$li.hasClass('menu-hidden'));
+    // Ensure switches work after drag-and-drop
+    $('#wpca-menu-order, .wpca-submenu-sortable').on('sortstop', function() {
+        $('.wpca-slide-toggle input').each(function() {
+            var $li = $(this).closest('li');
+            $(this).prop('checked', !$li.hasClass('menu-hidden'));
+        });
     });
+
+    // Initialize and refresh all toggle switches with state verification
+    function refreshToggleSwitches() {
+        $('.wpca-slide-toggle input').each(function() {
+            var $switch = $(this);
+            var $li = $switch.closest('li');
+            var shouldBeChecked = !$li.hasClass('menu-hidden');
+            
+            // Only update if state differs
+            if ($switch.prop('checked') !== shouldBeChecked) {
+                $switch.prop('checked', shouldBeChecked);
+                console.log('Switch state updated:', shouldBeChecked, 'for item:', $li.data('menu-slug'));
+            }
+        });
+    }
     
-    // Full hierarchical menu initialization
+    // Initialize on load
+    refreshToggleSwitches();
+    
+    // Full hierarchical menu initialization with submenu support
     function initializeMenuHierarchy() {
         // First show all menu containers
         $('#wpca-menu-order, .wpca-submenu-sortable').css('display', 'block');
         
-        // Process all menu items
-        $('#wpca-menu-order').find('li').each(function() {
-            var $item = $(this);
+        // Process all menu items recursively
+        function processMenuItem($item, level = 0) {
             var slug = $item.data('menu-slug');
             var isHidden = $item.hasClass('menu-hidden');
-            var level = $item.data('level') || 0;
             var isSubmenu = $item.hasClass('submenu-item');
             var hasChildren = $item.find('> ul').length > 0;
             
-            // Set item styling
+            // Set item styling and visibility
             $item.css({
                 'padding-left': (level * 25) + 'px',
                 'display': 'block',
                 'position': 'relative'
-            });
+            }).show();
+            
+            // Mark submenu items explicitly
+            if (level > 0) {
+                $item.addClass('submenu-item level-' + level);
+            }
             
             // Add toggle switch if missing
             if (!$item.find('.wpca-slide-toggle').length) {
@@ -160,35 +159,59 @@ jQuery(document).ready(function($) {
                 `);
             }
             
-            // Ensure child UL is visible for parent items
+            // Process child items if exists
             if (hasChildren) {
                 $item.find('> ul').css({
                     'display': 'block',
                     'margin-left': '15px'
+                }).show();
+                
+                $item.find('> ul > li').each(function() {
+                    processMenuItem($(this), level + 1);
                 });
+                
+                // Add expand/collapse icon for parent items
+                if (!$item.find('.wpca-menu-expand').length) {
+                    $item.append(`
+                        <span class="dashicons dashicons-arrow-down wpca-menu-expand" 
+                              style="position:absolute; right:30px; cursor:pointer;"></span>
+                    `);
+                }
             }
-            
-            // Add expand/collapse icon for parent items
-            if (hasChildren && !$item.find('.wpca-menu-expand').length) {
-                $item.append(`
-                    <span class="dashicons dashicons-arrow-down wpca-menu-expand" 
-                          style="position:absolute; right:10px; cursor:pointer;"></span>
-                `);
-            }
+        }
+        
+        // Start processing from top level
+        $('#wpca-menu-order > li').each(function() {
+            processMenuItem($(this));
         });
         
         // Toggle child menu visibility
-        $(document).on('click', '.wpca-menu-expand', function() {
+        $(document).off('click', '.wpca-menu-expand').on('click', '.wpca-menu-expand', function() {
             $(this).toggleClass('dashicons-arrow-down dashicons-arrow-up')
                    .siblings('ul').toggle();
         });
+        
+
     }
     
-    // Initialize menu on load and after sorting
-    initializeMenuHierarchy();
-    $('#wpca-menu-order').on('sortupdate', initializeMenuHierarchy);
+    // Initialize menu with enhanced event handling
+    function initMenuSystem() {
+        initializeMenuHierarchy();
+        refreshToggleSwitches();
+        
+        // Add click handler for slider track
+        $(document).off('click', '.wpca-slide-toggle .slider').on('click', '.wpca-slide-toggle .slider', function(e) {
+            e.preventDefault();
+            var $switch = $(this).siblings('input');
+            $switch.trigger('click');
+        });
+    }
+    
+    // Initialize on load and after sorting
+    initMenuSystem();
+    $('#wpca-menu-order').on('sortupdate', initMenuSystem);
 
-    // Update menu order and hidden status
+    // Update menu order and hidden status (without form submission)
     function updateMenuOrder() {
         var menuOrder = [];
         var hiddenItems = [];
@@ -205,8 +228,9 @@ jQuery(document).ready(function($) {
             }
         });
         
-        $('#wpca_menu_order').val(JSON.stringify(menuOrder));
-        $('#wpca_hidden_items').val(JSON.stringify(hiddenItems));
+        // Store in localStorage instead of form fields
+        localStorage.setItem('wpca_menu_order', JSON.stringify(menuOrder));
+        localStorage.setItem('wpca_hidden_items', JSON.stringify(hiddenItems));
     }
 
     // ======================================================

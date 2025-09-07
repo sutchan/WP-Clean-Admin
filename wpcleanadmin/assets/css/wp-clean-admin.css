@@ -269,7 +269,6 @@ body.wpca-theme-dark {
 
 /* Sortable menu styles */
 .wpca-menu-order-wrapper {
-    background: #fff;
     padding: 15px;
     border-radius: var(--wpca-border-radius-small);
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
