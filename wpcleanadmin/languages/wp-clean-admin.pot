@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WPCleanAdmin\n"
-"POT-Creation-Date: 2025-09-06 23:00+0800\n"
+"POT-Creation-Date: 2025-09-07 20:00+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -14,65 +14,60 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;_x\n"
 "X-Poedit-SearchPath-0: .\n"
 
-# Main plugin strings
+# Core settings
 msgid "WP Clean Admin Settings"
 msgstr ""
 
-msgid "WP Clean Admin"
+msgid "Clean Admin"
 msgstr ""
 
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
+msgid "General Settings"
+msgstr ""
+
 msgid "Configure the appearance and behavior of your admin dashboard."
-msgstr ""
-
-msgid "Visual Style Customization"
-msgstr ""
-
-msgid "Customize the overall visual theme and colors."
-msgstr ""
-
-msgid "Layout & Typography"
-msgstr ""
-
-msgid "Adjust layout density, element rounding, and font styles."
 msgstr ""
 
 msgid "Menu Customization"
 msgstr ""
 
-msgid "Select which admin menu items to hide."
+msgid "Drag and drop to reorder menu items"
 msgstr ""
 
-msgid "Admin Bar Customization"
+msgid "Reset to Default"
 msgstr ""
 
-msgid "Select which admin bar items to hide."
+msgid "Are you sure you want to reset all menu settings to default?"
 msgstr ""
 
-msgid "Hide Dashboard Widgets"
+msgid "Show menu icons"
 msgstr ""
 
-msgid "Right Now"
+# Visual style translations
+msgid "Visual Style"
 msgstr ""
 
-msgid "Activity"
+msgid "Customize the overall visual theme and colors."
 msgstr ""
 
-msgid "Quick Draft"
+msgid "Theme Style"
 msgstr ""
 
-msgid "WordPress Events and News"
+msgid "Default (Flat & Clean)"
 msgstr ""
 
-msgid "Site Health Status
+msgid "Light Blue Gray"
 msgstr ""
 
-msgid "At a Glance"
+msgid "Mint Green"
 msgstr ""
 
-msgid "Admin Theme Style"
+msgid "Dark Mode"
+msgstr ""
+
+msgid "Custom Colors"
 msgstr ""
 
 msgid "Choose a predefined theme or select \"Custom Colors\" to define your own."
@@ -99,16 +94,47 @@ msgstr ""
 msgid "Shadow Style"
 msgstr ""
 
+msgid "None"
+msgstr ""
+
+msgid "Subtle (Default)"
+msgstr ""
+
 msgid "Choose the shadow style for elements like post boxes and buttons."
+msgstr ""
+
+# Layout translations
+msgid "Layout & Typography"
+msgstr ""
+
+msgid "Adjust layout density, element rounding, and font styles."
 msgstr ""
 
 msgid "Layout Density"
 msgstr ""
 
+msgid "Compact"
+msgstr ""
+
+msgid "Standard (Default)"
+msgstr ""
+
+msgid "Spacious"
+msgstr ""
+
 msgid "Adjust the spacing and padding of elements in the admin interface."
 msgstr ""
 
-msgid "Border Radius Style"
+msgid "Border Radius"
+msgstr ""
+
+msgid "None (Sharp Corners)"
+msgstr ""
+
+msgid "Small (4px, Default)"
+msgstr ""
+
+msgid "Large (8px, Rounded)"
 msgstr ""
 
 msgid "Choose the border-radius style for various elements."
@@ -117,10 +143,22 @@ msgstr ""
 msgid "Font Stack"
 msgstr ""
 
+msgid "System Default"
+msgstr ""
+
 msgid "Select the font stack to be used in the admin area."
 msgstr ""
 
-msgid "Base Font Size"
+msgid "Font Size"
+msgstr ""
+
+msgid "Small"
+msgstr ""
+
+msgid "Medium (Default)"
+msgstr ""
+
+msgid "Large"
 msgstr ""
 
 msgid "Adjust the base font size for the admin interface."
@@ -129,15 +167,60 @@ msgstr ""
 msgid "Icon Style"
 msgstr ""
 
+msgid "WordPress Dashicons"
+msgstr ""
+
 msgid "Choose the icon set for the admin interface."
 msgstr ""
 
-msgid "Hide Admin Menu Items"
+# About page translations
+msgid "About"
 msgstr ""
 
-msgid "Dashboard"
+msgid "A plugin to clean up and customize the WordPress admin interface."
 msgstr ""
 
+msgid "Features"
+msgstr ""
+
+msgid "Customize admin menu appearance and order"
+msgstr ""
+
+msgid "Hide unnecessary dashboard widgets"
+msgstr ""
+
+msgid "Customize admin bar items"
+msgstr ""
+
+msgid "Visual style customization"
+msgstr ""
+
+msgid "Support"
+msgstr ""
+
+msgid "For support or feature requests, please visit our website."
+msgstr ""
+
+# Dashboard widgets
+msgid "Right Now"
+msgstr ""
+
+msgid "Activity"
+msgstr ""
+
+msgid "Quick Draft"
+msgstr ""
+
+msgid "WordPress Events and News"
+msgstr ""
+
+msgid "Site Health Status"
+msgstr ""
+
+msgid "At a Glance"
+msgstr ""
+
+# Menu items
 msgid "Posts"
 msgstr ""
 
@@ -165,15 +248,7 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-msgid "Menu Order"
-msgstr ""
-
-msgid "Drag and drop to reorder menu items"
-msgstr ""
-
-msgid "Hide Admin Bar Items"
-msgstr ""
-
+# Admin bar items
 msgid "WordPress Logo"
 msgstr ""
 
@@ -189,56 +264,15 @@ msgstr ""
 msgid "My Account"
 msgstr ""
 
-msgid "None"
+# Settings sections
+msgid "Hide Dashboard Widgets"
 msgstr ""
 
-msgid "Subtle (Default)"
+msgid "Hide Admin Menu Items"
 msgstr ""
 
-msgid "Compact"
+msgid "Hide Admin Bar Items"
 msgstr ""
 
-msgid "Standard (Default)"
-msgstr ""
-
-msgid "Spacious"
-msgstr ""
-
-msgid "None (Sharp Corners)"
-msgstr ""
-
-msgid "Small (4px, Default)"
-msgstr ""
-
-msgid "Large (8px, Rounded)"
-msgstr ""
-
-msgid "System Default"
-msgstr ""
-
-msgid "Small"
-msgstr ""
-
-msgid "Medium (Default)"
-msgstr ""
-
-msgid "Large"
-msgstr ""
-
-msgid "WordPress Dashicons"
-msgstr ""
-
-msgid "Default (Flat & Clean)"
-msgstr ""
-
-msgid "Light Blue Gray"
-msgstr ""
-
-msgid "Mint Green"
-msgstr ""
-
-msgid "Dark Mode"
-msgstr ""
-
-msgid "Custom Colors"
+msgid "Menu Order"
 msgstr ""

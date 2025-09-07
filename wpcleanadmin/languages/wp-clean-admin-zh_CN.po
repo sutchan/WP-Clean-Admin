@@ -44,8 +44,6 @@ msgstr "重置为默认"
 msgid "Are you sure you want to reset all menu settings to default?"
 msgstr "您确定要将所有菜单设置重置为默认值吗？"
 
-msgid "Show menu icons"
-msgstr "显示菜单图标"
 
 # Visual style translations
 msgid "Visual Style"
@@ -108,6 +106,9 @@ msgstr "为文章框和按钮等元素选择阴影风格。"
 # Layout translations
 msgid "Layout & Typography"
 msgstr "布局与排版"
+
+msgid "Show menu icons"
+msgstr "显示菜单图标"
 
 msgid "Adjust layout density, element rounding, and font styles."
 msgstr "调整布局密度、元素圆角和字体样式。"

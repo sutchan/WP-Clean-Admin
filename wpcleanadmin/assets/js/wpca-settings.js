@@ -244,6 +244,44 @@ jQuery(document).ready(function($) {
             $switch.trigger('click');
         });
     }
+
+    // ======================================================
+    // Layout & Typography Settings
+    // ======================================================
+    
+    // Add icon toggle control to layout section
+    $('#wpca-layout-typography').append(`
+        <div class="wpca-icon-toggle-container" style="margin-top: 20px; padding: 10px; background: #f5f5f5;">
+            <label class="wpca-slide-toggle">
+                <input type="checkbox" id="wpca-toggle-menu-icons" name="wpca_settings[show_menu_icons]">
+                <span class="slider">
+                    <span class="slide-handle"></span>
+                </span>
+                <span style="margin-left: 10px;">显示菜单图标</span>
+            </label>
+        </div>
+    `);
+
+    // Initialize icon toggle state
+    var showIcons = localStorage.getItem('wpca_show_menu_icons') !== 'false';
+    $('#wpca-toggle-menu-icons').prop('checked', showIcons);
+    toggleMenuIcons(showIcons);
+
+    // Handle icon toggle changes
+    $('#wpca-toggle-menu-icons').change(function() {
+        var isChecked = $(this).prop('checked');
+        localStorage.setItem('wpca_show_menu_icons', isChecked);
+        toggleMenuIcons(isChecked);
+    });
+
+    // Function to toggle menu icons visibility
+    function toggleMenuIcons(show) {
+        if (show) {
+            $('#adminmenu .wp-menu-image').show();
+        } else {
+            $('#adminmenu .wp-menu-image').hide();
+        }
+    }
     
     // Initialize on load and after sorting
     initMenuSystem();
@@ -369,44 +407,6 @@ jQuery(document).ready(function($) {
         }
     }
     
-    // ======================================================
-    // Menu Icon Visibility Control
-    // ======================================================
-    
-    // Add icon toggle control at the end of menu management section
-    $('#wpca-menu-order').after(`
-        <div class="wpca-icon-toggle-container" style="margin-top: 20px; padding: 10px; background: #f5f5f5;">
-            <label class="wpca-slide-toggle">
-                <input type="checkbox" id="wpca-toggle-menu-icons" name="wpca_settings[show_menu_icons]">
-                <span class="slider">
-                    <span class="slide-handle"></span>
-                </span>
-                <span style="margin-left: 10px;">显示菜单图标</span>
-            </label>
-        </div>
-    `);
-
-    // Initialize icon toggle state
-    var showIcons = localStorage.getItem('wpca_show_menu_icons') !== 'false';
-    $('#wpca-toggle-menu-icons').prop('checked', showIcons);
-    toggleMenuIcons(showIcons);
-
-    // Handle icon toggle changes
-    $('#wpca-toggle-menu-icons').change(function() {
-        var isChecked = $(this).prop('checked');
-        localStorage.setItem('wpca_show_menu_icons', isChecked);
-        toggleMenuIcons(isChecked);
-    });
-
-    // Function to toggle menu icons visibility
-    function toggleMenuIcons(show) {
-        if (show) {
-            $('#adminmenu .wp-menu-image').show();
-        } else {
-            $('#adminmenu .wp-menu-image').hide();
-        }
-    }
-
     // ======================================================
     // End of WP Clean Admin JS
     // ======================================================
