@@ -71,29 +71,30 @@ jQuery(document).ready(function($) {
     // Enhanced menu functionality
     // ======================================================
     
-    // Handle toggle switch changes for all menu items with proper delegation
+    // Handle toggle switch changes with persistent state
     $(document).off('change', '.wpca-slide-toggle input').on('change', '.wpca-slide-toggle input', function(e) {
-        e.stopPropagation(); // Prevent event bubbling
+        e.stopPropagation();
         var $switch = $(this);
         var $li = $switch.closest('li');
+        var slug = $li.data('menu-slug');
         var isChecked = $switch.prop('checked');
         
-        // Toggle menu-hidden class based on checkbox state
+        // Update visual state immediately
         $li.toggleClass('menu-hidden', !isChecked);
+        $li.find('> ul li').toggleClass('menu-hidden', !isChecked);
         
-        // Toggle child submenus as well
-        $li.find('> ul li').each(function() {
-            $(this).toggleClass('menu-hidden', !isChecked);
-        });
+        // Save state to localStorage
+        var hiddenItems = JSON.parse(localStorage.getItem('wpca_hidden_items') || '[]');
+        if (isChecked) {
+            hiddenItems = hiddenItems.filter(item => item !== slug);
+        } else {
+            if (!hiddenItems.includes(slug)) {
+                hiddenItems.push(slug);
+            }
+        }
+        localStorage.setItem('wpca_hidden_items', JSON.stringify(hiddenItems));
         
-        // Ensure switch state matches the class
-        $switch.prop('checked', isChecked);
-        
-        // Update menu order and hidden status
-        updateMenuOrder();
-        
-        // Debug log
-        console.log('Switch toggled:', $switch.prop('checked'), 'for item:', $li.data('menu-slug'));
+        console.log('Switch state saved:', isChecked, 'for:', slug, 'Hidden items:', hiddenItems);
     });
 
     // Ensure switches work after drag-and-drop
@@ -104,18 +105,20 @@ jQuery(document).ready(function($) {
         });
     });
 
-    // Initialize and refresh all toggle switches with state verification
+    // Initialize switches with saved state
     function refreshToggleSwitches() {
+        var hiddenItems = JSON.parse(localStorage.getItem('wpca_hidden_items') || '[]');
+        
         $('.wpca-slide-toggle input').each(function() {
             var $switch = $(this);
             var $li = $switch.closest('li');
-            var shouldBeChecked = !$li.hasClass('menu-hidden');
+            var slug = $li.data('menu-slug');
+            var shouldBeChecked = !hiddenItems.includes(slug);
             
-            // Only update if state differs
-            if ($switch.prop('checked') !== shouldBeChecked) {
-                $switch.prop('checked', shouldBeChecked);
-                console.log('Switch state updated:', shouldBeChecked, 'for item:', $li.data('menu-slug'));
-            }
+            $switch.prop('checked', shouldBeChecked);
+            $li.toggleClass('menu-hidden', !shouldBeChecked);
+            
+            console.log('Switch initialized:', shouldBeChecked, 'for:', slug);
         });
     }
     
@@ -211,10 +214,10 @@ jQuery(document).ready(function($) {
     initMenuSystem();
     $('#wpca-menu-order').on('sortupdate', initMenuSystem);
 
-    // Update menu order and hidden status (without form submission)
+    // Update menu order while preserving hidden state
     function updateMenuOrder() {
         var menuOrder = [];
-        var hiddenItems = [];
+        var currentHidden = JSON.parse(localStorage.getItem('wpca_hidden_items') || '[]');
         
         $('#wpca-menu-order li').each(function() {
             var $item = $(this);
@@ -222,15 +225,10 @@ jQuery(document).ready(function($) {
             var level = $item.data('level') || 0;
             $item.css('padding-left', (level * 20) + 'px');
             menuOrder.push(slug);
-            
-            if ($item.hasClass('menu-hidden')) {
-                hiddenItems.push(slug);
-            }
         });
         
-        // Store in localStorage instead of form fields
         localStorage.setItem('wpca_menu_order', JSON.stringify(menuOrder));
-        localStorage.setItem('wpca_hidden_items', JSON.stringify(hiddenItems));
+        console.log('Menu order updated:', menuOrder, 'Hidden items:', currentHidden);
     }
 
     // ======================================================
