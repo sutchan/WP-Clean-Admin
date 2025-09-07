@@ -270,9 +270,8 @@ body.wpca-theme-dark {
 /* Sortable menu styles */
 .wpca-menu-order-wrapper {
     padding: 15px;
-    border: 1px solid var(--wpca-border-color);
+    border: 0px solid var(--wpca-border-color);
     border-radius: var(--wpca-border-radius-small);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     margin-bottom: 0;
 }
 

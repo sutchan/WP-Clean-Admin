@@ -274,8 +274,23 @@ msgstr "隐藏仪表盘小工具"
 msgid "Hide Admin Menu Items"
 msgstr "隐藏后台菜单项"
 
+msgid "Admin Bar Customization"
+msgstr "工具栏自定义"
+
+msgid "Customize which items appear in the admin bar."
+msgstr "自定义工具栏中显示的项。"
+
+msgid "Show/Hide Items"
+msgstr "显示/隐藏项"
+
+msgid "Reorder Items"
+msgstr "重新排序项"
+
 msgid "Hide Admin Bar Items"
 msgstr "隐藏工具栏项"
+
+msgid "Select which admin bar items to hide."
+msgstr "选择要隐藏的工具栏项"
 
 msgid "Menu Order"
 msgstr "菜单顺序"

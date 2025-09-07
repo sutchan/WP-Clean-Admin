@@ -272,8 +272,23 @@ msgstr "Hide Dashboard Widgets"
 msgid "Hide Admin Menu Items"
 msgstr "Hide Admin Menu Items"
 
+msgid "Admin Bar Customization"
+msgstr "Admin Bar Customization"
+
+msgid "Customize which items appear in the admin bar."
+msgstr "Customize which items appear in the admin bar."
+
+msgid "Show/Hide Items"
+msgstr "Show/Hide Items"
+
+msgid "Reorder Items"
+msgstr "Reorder Items"
+
 msgid "Hide Admin Bar Items"
 msgstr "Hide Admin Bar Items"
+
+msgid "Select which admin bar items to hide."
+msgstr "Select which admin bar items to hide."
 
 msgid "Menu Order"
 msgstr "Menu Order"
