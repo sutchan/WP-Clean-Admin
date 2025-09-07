@@ -103,16 +103,17 @@ jQuery(document).ready(function($) {
     // ======================================================
     
     // Handle toggle switch changes for all menu items
-    $(document).on('change', '.wpca-slide-toggle input', function() {
+    $(document).on('change', '.wpca-slide-toggle input', function(e) {
+        e.stopPropagation(); // Prevent event bubbling
         var $li = $(this).closest('li');
         var isChecked = this.checked;
         
         // Toggle menu-hidden class based on checkbox state
-        $li.toggleClass('menu-hidden', isChecked);
+        $li.toggleClass('menu-hidden', !isChecked); // Fix: invert the logic
         
         // Toggle child submenus as well
         $li.find('> ul li').each(function() {
-            $(this).toggleClass('menu-hidden', isChecked);
+            $(this).toggleClass('menu-hidden', !isChecked); // Fix: invert the logic
         });
         
         // Update menu order and hidden status
