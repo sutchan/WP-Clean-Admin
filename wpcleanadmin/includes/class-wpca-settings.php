@@ -105,6 +105,14 @@ class WPCA_Settings {
             'wpca_settings'
         );
 
+        // About section
+        add_settings_section(
+            'wpca_settings_about_section', 
+            __( 'About', 'wp-clean-admin' ),
+            array( $this, 'about_section_callback' ),
+            'wpca_settings_about'
+        );
+
         // Example setting field: Hide Dashboard Widgets
         add_settings_field(
             'wpca_hide_dashboard_widgets',
@@ -282,6 +290,29 @@ class WPCA_Settings {
      */
     public function admin_bar_section_callback() {
         echo __( 'Select which admin bar items to hide.', 'wp-clean-admin' );
+    }
+
+    /**
+     * About section callback.
+     */
+    public function about_section_callback() {
+        ?>
+        <div class="wpca-about-section">
+            <h3><?php _e('WP Clean Admin', 'wp-clean-admin'); ?> v<?php echo WPCA_VERSION; ?></h3>
+            <p><?php _e('A plugin to clean up and customize the WordPress admin interface.', 'wp-clean-admin'); ?></p>
+            
+            <h4><?php _e('Features', 'wp-clean-admin'); ?></h4>
+            <ul>
+                <li><?php _e('Customize admin menu appearance and order', 'wp-clean-admin'); ?></li>
+                <li><?php _e('Hide unnecessary dashboard widgets', 'wp-clean-admin'); ?></li>
+                <li><?php _e('Customize admin bar items', 'wp-clean-admin'); ?></li>
+                <li><?php _e('Visual style customization', 'wp-clean-admin'); ?></li>
+            </ul>
+
+            <h4><?php _e('Support', 'wp-clean-admin'); ?></h4>
+            <p><?php _e('For support or feature requests, please visit our website.', 'wp-clean-admin'); ?></p>
+        </div>
+        <?php
     }
 
     /**
@@ -642,6 +673,7 @@ class WPCA_Settings {
                 <div class="wpca-tab" data-tab="tab-layout"><?php _e('布局与排版', 'wp-clean-admin'); ?></div>
                 <div class="wpca-tab" data-tab="tab-menu"><?php _e('菜单管理', 'wp-clean-admin'); ?></div>
                 <div class="wpca-tab" data-tab="tab-admin-bar"><?php _e('工具栏设置', 'wp-clean-admin'); ?></div>
+                <div class="wpca-tab" data-tab="tab-about"><?php _e('关于插件', 'wp-clean-admin'); ?></div>
             </div>
             
             <form action="options.php" method="post">
@@ -671,6 +703,11 @@ class WPCA_Settings {
                 // Layout & Typography tab content
                 echo '<div id="tab-layout" class="wpca-tab-content">';
                 do_settings_sections('wpca_settings_layout');
+                echo '</div>';
+
+                // About tab content
+                echo '<div id="tab-about" class="wpca-tab-content">';
+                do_settings_sections('wpca_settings_about');
                 echo '</div>';
                 
                 submit_button();
