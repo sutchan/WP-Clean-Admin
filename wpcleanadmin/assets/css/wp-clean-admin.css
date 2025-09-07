@@ -349,11 +349,13 @@ body.wpca-theme-dark {
 
 /* Slide Toggle Switch Styles */
 .wpca-slide-toggle {
-    position: relative;
+    position: absolute;
     display: inline-block;
     width: 52px;
     height: 26px;
-    margin-left: 15px;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .wpca-slide-toggle input {
