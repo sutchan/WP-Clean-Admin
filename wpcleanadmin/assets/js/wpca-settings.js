@@ -220,36 +220,118 @@ jQuery(document).ready(function($) {
     initMenuSystem();
     $('#wpca-menu-order').on('sortupdate', initMenuSystem);
 
-    // Helper function to apply menu visibility with improved selectors
+    // Helper function to apply menu visibility with comprehensive selectors
     function applyMenuVisibility(slug, isVisible) {
         // Try multiple selector strategies
         var $wpMenu;
+        var found = false;
         
-        // Strategy 1: Direct match by slug in URL
-        $wpMenu = $('#adminmenu a[href$="=' + slug + '"]').closest('li');
+        // Map common menu slugs to their actual menu IDs/classes
+        var menuMap = {
+            'posts': 'menu-posts',
+            'post': 'menu-posts',
+            'pages': 'menu-pages',
+            'page': 'menu-pages',
+            'media': 'menu-media',
+            'upload': 'menu-media',
+            'site-kit': 'toplevel_page_googlesitekit-dashboard',
+            'googlesitekit': 'toplevel_page_googlesitekit-dashboard'
+        };
         
-        // Strategy 2: Partial match in URL
-        if (!$wpMenu.length) {
-            $wpMenu = $('#adminmenu a[href*="' + slug + '"]').closest('li');
+        // Check if we have a mapping for this slug
+        var mappedSlug = menuMap[slug] || slug;
+        
+        // Strategy 1: Match by menu ID (most reliable)
+        $wpMenu = $('#' + mappedSlug);
+        if ($wpMenu.length) {
+            found = true;
+            console.log('Found by ID:', mappedSlug);
         }
         
-        // Strategy 3: Match by menu ID
-        if (!$wpMenu.length) {
-            $wpMenu = $('#' + slug);
+        // Strategy 2: Match by menu class
+        if (!found) {
+            $wpMenu = $('#adminmenu li.' + mappedSlug);
+            if ($wpMenu.length) {
+                found = true;
+                console.log('Found by class:', mappedSlug);
+            }
         }
         
-        // Strategy 4: Match by class
-        if (!$wpMenu.length) {
-            $wpMenu = $('#adminmenu li.' + slug);
+        // Strategy 3: Direct match by slug in URL
+        if (!found) {
+            $wpMenu = $('#adminmenu a[href$="=' + slug + '"]').closest('li.menu-top');
+            if ($wpMenu.length) {
+                found = true;
+                console.log('Found by URL exact match:', slug);
+            }
+        }
+        
+        // Strategy 4: Partial match in URL
+        if (!found) {
+            $wpMenu = $('#adminmenu a[href*="' + slug + '"]').closest('li.menu-top');
+            if ($wpMenu.length) {
+                found = true;
+                console.log('Found by URL partial match:', slug);
+            }
+        }
+        
+        // Strategy 5: Text content match
+        if (!found) {
+            $('#adminmenu li.menu-top').each(function() {
+                var menuText = $(this).text().toLowerCase();
+                if (menuText.indexOf(slug.toLowerCase()) !== -1) {
+                    $wpMenu = $(this);
+                    found = true;
+                    console.log('Found by text content:', slug);
+                    return false; // Break the loop
+                }
+            });
+        }
+        
+        // Special handling for common menu items
+        if (!found) {
+            // Posts
+            if (slug === 'posts' || slug === 'post') {
+                $wpMenu = $('#menu-posts');
+                found = true;
+            }
+            // Pages
+            else if (slug === 'pages' || slug === 'page') {
+                $wpMenu = $('#menu-pages');
+                found = true;
+            }
+            // Media
+            else if (slug === 'media' || slug === 'upload') {
+                $wpMenu = $('#menu-media');
+                found = true;
+            }
+            // Site Kit
+            else if (slug.indexOf('site-kit') !== -1 || slug.indexOf('googlesitekit') !== -1) {
+                $wpMenu = $('li[id*="googlesitekit"]');
+                found = true;
+            }
+            
+            if (found) {
+                console.log('Found by special case handling:', slug);
+            }
         }
         
         // Apply visibility if found
-        if ($wpMenu.length) {
+        if (found && $wpMenu.length) {
             $wpMenu.toggle(isVisible);
             $wpMenu.find('.wp-submenu').toggle(isVisible);
             console.log('Menu visibility applied:', isVisible, 'for:', slug, 'Found:', $wpMenu.length);
         } else {
             console.log('Menu item not found for slug:', slug);
+            
+            // Last resort: try to find by text content in any menu item
+            $('#adminmenu li').each(function() {
+                var menuText = $(this).text().toLowerCase();
+                if (menuText.indexOf(slug.toLowerCase()) !== -1) {
+                    $(this).toggle(isVisible);
+                    console.log('Last resort visibility applied to:', $(this).text());
+                }
+            });
         }
         
         // Special handling for dashboard
