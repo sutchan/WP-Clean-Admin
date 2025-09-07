@@ -584,17 +584,47 @@ class WPCA_Settings {
         }
         ?>
         <div class="wpca-menu-order-wrapper">
-            <h3><?php _e('Top Level Menu Items', 'wp-clean-admin'); ?></h3>
-            <p class="description"><?php _e('Drag and drop to reorder top level menu items', 'wp-clean-admin'); ?></p>
+            <p class="description"><?php _e('Drag and drop to reorder menu items', 'wp-clean-admin'); ?></p>
             <ul id="wpca-menu-order" class="wpca-menu-sortable">
                 <?php 
                 // Display saved order first
                 foreach ($menu_order as $item_slug) {
                     if (isset($top_level_items[$item_slug])) {
-                        echo '<li data-menu-slug="'.esc_attr($item_slug).'">';
+                        echo '<li data-menu-slug="'.esc_attr($item_slug).'" data-item-type="top">';
                         echo '<span class="dashicons dashicons-menu"></span> ';
                         echo esc_html($top_level_items[$item_slug]['title']);
                         echo '<input type="hidden" name="wpca_settings[menu_order][]" value="'.esc_attr($item_slug).'">';
+                        
+                        // Display submenu items if exists
+                        if (isset($submenu_items[$item_slug])) {
+                            $parent_order = $submenu_order[$item_slug] ?? [];
+                            echo '<ul class="wpca-submenu-group">';
+                            
+                            // Display saved order first
+                            foreach ($parent_order as $sub_slug) {
+                                if (isset($submenu_items[$item_slug][$item_slug.'|'.$sub_slug])) {
+                                    $sub_item = $submenu_items[$item_slug][$item_slug.'|'.$sub_slug];
+                                    echo '<li data-menu-slug="'.esc_attr($sub_slug).'" data-item-type="sub">';
+                                    echo '<span class="dashicons dashicons-menu"></span> ';
+                                    echo esc_html($sub_item['title']);
+                                    echo '<input type="hidden" name="wpca_settings[submenu_order]['.esc_attr($item_slug).'][]" value="'.esc_attr($sub_slug).'">';
+                                    echo '</li>';
+                                }
+                            }
+                            
+                            // Display remaining submenu items not in saved order
+                            foreach ($submenu_items[$item_slug] as $sub_slug => $sub_item) {
+                                $full_slug = explode('|', $sub_slug)[1];
+                                if (empty($parent_order) || !in_array($full_slug, $parent_order)) {
+                                    echo '<li data-menu-slug="'.esc_attr($full_slug).'" data-item-type="sub">';
+                                    echo '<span class="dashicons dashicons-menu"></span> ';
+                                    echo esc_html($sub_item['title']);
+                                    echo '<input type="hidden" name="wpca_settings[submenu_order]['.esc_attr($item_slug).'][]" value="'.esc_attr($full_slug).'">';
+                                    echo '</li>';
+                                }
+                            }
+                            echo '</ul>';
+                        }
                         echo '</li>';
                     }
                 }
@@ -602,53 +632,73 @@ class WPCA_Settings {
                 // Display remaining top-level items not in saved order
                 foreach ($top_level_items as $item_slug => $item) {
                     if (!in_array($item_slug, $menu_order)) {
-                        echo '<li data-menu-slug="'.esc_attr($item_slug).'">';
+                        echo '<li data-menu-slug="'.esc_attr($item_slug).'" data-item-type="top">';
                         echo '<span class="dashicons dashicons-menu"></span> ';
                         echo esc_html($item['title']);
                         echo '<input type="hidden" name="wpca_settings[menu_order][]" value="'.esc_attr($item_slug).'">';
+                        
+                        // Display submenu items if exists
+                        if (isset($submenu_items[$item_slug])) {
+                            $parent_order = $submenu_order[$item_slug] ?? [];
+                            echo '<ul class="wpca-submenu-group">';
+                            foreach ($submenu_items[$item_slug] as $sub_slug => $sub_item) {
+                                $full_slug = explode('|', $sub_slug)[1];
+                                echo '<li data-menu-slug="'.esc_attr($full_slug).'" data-item-type="sub">';
+                                echo '<span class="dashicons dashicons-menu"></span> ';
+                                echo esc_html($sub_item['title']);
+                                echo '<input type="hidden" name="wpca_settings[submenu_order]['.esc_attr($item_slug).'][]" value="'.esc_attr($full_slug).'">';
+                                echo '</li>';
+                            }
+                            echo '</ul>';
+                        }
                         echo '</li>';
                     }
                 }
                 ?>
             </ul>
-            
-            <h3><?php _e('Submenu Items', 'wp-clean-admin'); ?></h3>
-            <p class="description"><?php _e('Drag and drop to reorder submenu items', 'wp-clean-admin'); ?></p>
-            <?php foreach ($submenu_items as $parent_slug => $sub_items): ?>
-                <?php if (isset($top_level_items[$parent_slug])): ?>
-                    <h4><?php echo esc_html($top_level_items[$parent_slug]['title']); ?></h4>
-                    <ul class="wpca-submenu-sortable" data-parent-slug="<?php echo esc_attr($parent_slug); ?>">
-                        <?php 
-                        $parent_order = $submenu_order[$parent_slug] ?? [];
-                        
-                        // Display saved order first
-                        foreach ($parent_order as $sub_slug) {
-                            if (isset($sub_items[$sub_slug])) {
-                                $full_slug = explode('|', $sub_slug)[1];
-                                echo '<li data-menu-slug="'.esc_attr($full_slug).'">';
-                                echo '<span class="dashicons dashicons-menu"></span> ';
-                                echo esc_html($sub_items[$sub_slug]['title']);
-                                echo '<input type="hidden" name="wpca_settings[submenu_order]['.esc_attr($parent_slug).'][]" value="'.esc_attr($full_slug).'">';
-                                echo '</li>';
-                            }
-                        }
-                        
-                        // Display remaining submenu items not in saved order
-                        foreach ($sub_items as $sub_slug => $sub_item) {
-                            $full_slug = explode('|', $sub_slug)[1];
-                            if (empty($parent_order) || !in_array($full_slug, $parent_order)) {
-                                echo '<li data-menu-slug="'.esc_attr($full_slug).'">';
-                                echo '<span class="dashicons dashicons-menu"></span> ';
-                                echo esc_html($sub_item['title']);
-                                echo '<input type="hidden" name="wpca_settings[submenu_order]['.esc_attr($parent_slug).'][]" value="'.esc_attr($full_slug).'">';
-                                echo '</li>';
-                            }
-                        }
-                        ?>
-                    </ul>
-                <?php endif; ?>
-            <?php endforeach; ?>
         </div>
+        
+        <script>
+        jQuery(document).ready(function($) {
+            // Make both top-level and submenu items sortable
+            $('#wpca-menu-order').sortable({
+                items: '> li',
+                handle: '.dashicons-menu',
+                update: function(event, ui) {
+                    // Update top level menu order
+                    var menuOrder = [];
+                    $('#wpca-menu-order > li').each(function() {
+                        menuOrder.push($(this).data('menu-slug'));
+                    });
+                    $('#wpca_menu_order').val(JSON.stringify(menuOrder));
+                    
+                    // Update submenu orders
+                    $('.wpca-submenu-group').each(function() {
+                        var parentSlug = $(this).parent().data('menu-slug');
+                        var submenuOrder = [];
+                        $(this).find('li').each(function() {
+                            submenuOrder.push($(this).data('menu-slug'));
+                        });
+                        $('input[name="wpca_settings[submenu_order]['+parentSlug+'][]"]').val(JSON.stringify(submenuOrder));
+                    });
+                }
+            });
+            
+            // Make submenu groups sortable
+            $('.wpca-submenu-group').sortable({
+                connectWith: '.wpca-submenu-group',
+                handle: '.dashicons-menu',
+                update: function(event, ui) {
+                    var parentSlug = $(this).parent().data('menu-slug');
+                    var submenuOrder = [];
+                    $(this).find('li').each(function() {
+                        submenuOrder.push($(this).data('menu-slug'));
+                    });
+                    $('input[name="wpca_settings[submenu_order]['+parentSlug+'][]"]').val(JSON.stringify(submenuOrder));
+                }
+            });
+        });
+        </script>
         
         <script>
         jQuery(document).ready(function($) {
