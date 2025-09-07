@@ -620,7 +620,12 @@ class WPCA_Settings {
         }
         ?>
         <div class="wpca-menu-order-wrapper">
-            <p class="description"><?php _e('Drag and drop to reorder menu items', 'wp-clean-admin'); ?></p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <p class="description"><?php _e('Drag and drop to reorder menu items', 'wp-clean-admin'); ?></p>
+                <button type="button" id="wpca-reset-menu-order" class="button button-secondary">
+                    <?php _e('Reset to Default', 'wp-clean-admin'); ?>
+                </button>
+            </div>
             <ul id="wpca-menu-order" class="wpca-menu-sortable">
                 <?php 
                 // Combine all menu items (top level and submenus) into a single flat list
@@ -668,7 +673,7 @@ class WPCA_Settings {
                     echo $is_submenu ? ' class="submenu-item"' : '';
                     echo '>';
                     echo '<span class="dashicons dashicons-menu"></span> ';
-                    echo esc_html($item['title']);
+                    echo esc_html(preg_replace('/<span.*?<\/span>/', '', $item['title']));
                     echo '<input type="hidden" name="wpca_settings[menu_order][]" value="'.esc_attr($slug).'">';
                     echo '</li>';
                 }
@@ -689,6 +694,17 @@ class WPCA_Settings {
                         menuOrder.push($(this).data('menu-slug'));
                     });
                     $('#wpca_menu_order').val(JSON.stringify(menuOrder));
+                }
+            });
+
+            // Reset menu order to default
+            $('#wpca-reset-menu-order').click(function() {
+                if (confirm('<?php _e('Are you sure you want to reset the menu order to default?', 'wp-clean-admin'); ?>')) {
+                    // Clear saved order
+                    $('input[name="wpca_settings[menu_order][]"]').val('');
+                    $('input[name="wpca_settings[submenu_order][]"]').val('');
+                    // Reload the page to show default order
+                    location.reload();
                 }
             });
         });
