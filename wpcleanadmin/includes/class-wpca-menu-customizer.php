@@ -45,17 +45,42 @@ class WPCA_Menu_Customizer {
     }
     
     /**
-     * Reorder admin menu items
+     * Reorder admin menu items (both top-level and submenus)
      */
     public function reorder_admin_menu($menu_order) {
-        global $menu;
+        global $menu, $submenu;
         
         // Get settings from wpca_settings option
         $options = get_option('wpca_settings', []);
         $custom_order = isset($options['menu_order']) ? $options['menu_order'] : [];
+        $submenu_order = isset($options['submenu_order']) ? $options['submenu_order'] : [];
         
-        if (empty($custom_order) || empty($menu)) {
+        if ((empty($custom_order) && empty($submenu_order)) || empty($menu)) {
             return $menu_order;
+        }
+        
+        // Process submenu ordering
+        if (!empty($submenu) && !empty($submenu_order)) {
+            foreach ($submenu_order as $parent_slug => $ordered_slugs) {
+                if (isset($submenu[$parent_slug])) {
+                    $original_submenu = $submenu[$parent_slug];
+                    $new_submenu = [];
+                    
+                    // Reorder based on saved order
+                    foreach ($ordered_slugs as $sub_slug) {
+                        foreach ($original_submenu as $index => $sub_item) {
+                            if ($sub_item[2] === $sub_slug) {
+                                $new_submenu[] = $sub_item;
+                                unset($original_submenu[$index]);
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // Add any remaining items
+                    $submenu[$parent_slug] = array_merge($new_submenu, $original_submenu);
+                }
+            }
         }
         
         // Debug - log information for troubleshooting
@@ -117,7 +142,50 @@ class WPCA_Menu_Customizer {
             return $menu_map[$menu_item];
         }
         
-        return null;
+        // For third-party plugins, use the menu item as-is
+        return $menu_item;
+    }
+    
+    /**
+     * Get all admin menu items (both top-level and submenus)
+     */
+    public function get_all_menu_items() {
+        global $menu, $submenu;
+        $menu_items = [];
+        
+        // Get top-level menus
+        if (!empty($menu)) {
+            foreach ($menu as $item) {
+                if (isset($item[2])) {
+                    $slug = $this->get_menu_slug_from_item($item[2]);
+                    if ($slug) {
+                        $menu_items[$slug] = [
+                            'title' => isset($item[0]) ? $item[0] : $slug,
+                            'type' => 'top',
+                            'parent' => ''
+                        ];
+                    }
+                }
+            }
+        }
+        
+        // Get submenus
+        if (!empty($submenu)) {
+            foreach ($submenu as $parent_slug => $sub_items) {
+                foreach ($sub_items as $sub_item) {
+                    if (isset($sub_item[2])) {
+                        $full_slug = $parent_slug . '|' . $sub_item[2];
+                        $menu_items[$full_slug] = [
+                            'title' => isset($sub_item[0]) ? $sub_item[0] : $sub_item[2],
+                            'type' => 'sub',
+                            'parent' => $parent_slug
+                        ];
+                    }
+                }
+            }
+        }
+        
+        return $menu_items;
     }
     
     /**
