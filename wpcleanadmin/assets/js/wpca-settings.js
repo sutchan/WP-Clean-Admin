@@ -35,7 +35,7 @@ jQuery(document).ready(function($) {
 
     // Reset menu order to default
     $('#wpca-reset-menu-order').click(function() {
-        if (confirm('Are you sure you want to reset the menu order to default?')) {
+        if (confirm(wpca_vars.reset_confirm)) {
             // Clear saved order
             $('input[name="wpca_settings[menu_order][]"]').val('');
             $('input[name="wpca_settings[submenu_order][]"]').val('');
