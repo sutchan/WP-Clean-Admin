@@ -63,16 +63,19 @@ function wpca_run_plugin() {
         new WPCA_User_Roles();
         new WPCA_Menu_Customizer();
         
-        // Add admin menu
-        add_action('admin_menu', 'wpca_add_admin_menu');
+        // Admin menu removed as per requirements
+        // add_action('admin_menu', 'wpca_add_admin_menu');
     }
 
     // Core functions are hooked directly in wpca-core-functions.php
     
     /**
-     * Add admin menu item
+     * Add admin menu item (Disabled)
+     * This function is kept for reference but no longer used
      */
     function wpca_add_admin_menu() {
+        // Menu entry removed as per requirements
+        /*
         add_menu_page(
             __('WP Clean Admin Settings', 'wp-clean-admin'),
             __('Clean Admin', 'wp-clean-admin'),
@@ -82,6 +85,7 @@ function wpca_run_plugin() {
             'dashicons-admin-appearance',
             80
         );
+        */
     }
     
     /**

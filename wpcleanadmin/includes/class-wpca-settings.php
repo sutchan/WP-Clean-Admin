@@ -23,7 +23,54 @@ class WPCA_Settings {
     public function __construct() {
         add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
         add_action( 'admin_init', array( $this, 'settings_init' ) );
+        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
         $this->options = self::get_options(); // Load options with defaults
+    }
+    
+    /**
+     * Enqueue admin scripts and styles
+     */
+    public function enqueue_admin_scripts($hook) {
+        if (strpos($hook, 'wp_clean_admin') === false) {
+            return;
+        }
+        
+        // Enqueue jQuery UI for sortable functionality
+        wp_enqueue_script('jquery-ui-sortable');
+        
+        // Add custom styles for the sortable menu
+        wp_add_inline_style('admin-bar', '
+            .wpca-menu-sortable {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                max-width: 500px;
+            }
+            .wpca-menu-sortable li {
+                padding: 10px 15px;
+                margin-bottom: 5px;
+                background: #fff;
+                border: 1px solid #ddd;
+                cursor: move;
+                display: flex;
+                align-items: center;
+            }
+            .wpca-menu-sortable li:hover {
+                background: #f9f9f9;
+            }
+            .wpca-menu-sortable .dashicons-menu {
+                margin-right: 10px;
+                color: #999;
+            }
+            .ui-sortable-helper {
+                box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            }
+            .ui-sortable-placeholder {
+                visibility: visible !important;
+                background: #f1f1f1;
+                border: 1px dashed #ccc;
+            }
+        ');
     }
 
     /**
@@ -531,7 +578,7 @@ class WPCA_Settings {
         ?>
         <div class="wpca-menu-order-wrapper">
             <p class="description"><?php _e('Drag and drop to reorder menu items', 'wp-clean-admin'); ?></p>
-            <ul id="wpca-menu-order" class="wpca-sortable-list">
+            <ul id="wpca-menu-order" class="wpca-menu-sortable">
                 <?php 
                 // Display saved order first
                 foreach ($menu_order as $item_slug) {
