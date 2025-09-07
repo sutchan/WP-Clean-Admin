@@ -546,7 +546,13 @@ class WPCA_Settings {
                         echo '>';
                         echo '<span style="display: flex; align-items: center;">';
                         echo '<span class="dashicons dashicons-menu"></span> ';
-                        echo $indent . esc_html(preg_replace('/<span.*?<\/span>/', '', $item['title']));
+                        // Remove all span tags and their contents
+                        $clean_title = preg_replace('/<span[^>]*>.*?<\/span>/is', '', $item['title']);
+                        // Remove any remaining HTML tags
+                        $clean_title = wp_strip_all_tags($clean_title);
+                        // Trim whitespace
+                        $clean_title = trim($clean_title);
+                        echo $indent . esc_html($clean_title);
                         echo '</span>';
                         echo '<div class="wpca-slide-toggle">';
                         echo '<input type="checkbox" name="wpca_settings[menu_hidden_items][]" value="'.esc_attr($slug).'" ';

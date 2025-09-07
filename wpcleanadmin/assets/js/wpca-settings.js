@@ -9,10 +9,26 @@ jQuery(document).ready(function($) {
     // ======================================================
     // Settings page tab navigation
     // ======================================================
+    // Store active tab in localStorage
+    var activeTab = localStorage.getItem('wpca_active_tab');
+    if (activeTab) {
+        $(".wpca-tab, .wpca-tab-content").removeClass("active");
+        $(`.wpca-tab[data-tab="${activeTab}"]`).addClass("active");
+        $(`#${activeTab}`).addClass("active");
+    }
+
     $(".wpca-tab").click(function() {
+        var tabId = $(this).data("tab");
+        localStorage.setItem('wpca_active_tab', tabId);
         $(".wpca-tab, .wpca-tab-content").removeClass("active");
         $(this).addClass("active");
-        $("#" + $(this).data("tab")).addClass("active");
+        $("#" + tabId).addClass("active");
+    });
+
+    // Preserve active tab after form submission
+    $('form').on('submit', function() {
+        var activeTab = $('.wpca-tab.active').data('tab');
+        localStorage.setItem('wpca_active_tab', activeTab);
     });
 
     // ======================================================
@@ -89,14 +105,24 @@ jQuery(document).ready(function($) {
     // Handle toggle switch changes for all menu items
     $(document).on('change', '.wpca-slide-toggle input', function() {
         var $li = $(this).closest('li');
-        $li.toggleClass('menu-hidden', !this.checked);
+        var isChecked = this.checked;
+        
+        // Toggle menu-hidden class based on checkbox state
+        $li.toggleClass('menu-hidden', isChecked);
         
         // Toggle child submenus as well
         $li.find('> ul li').each(function() {
-            $(this).toggleClass('menu-hidden', !this.checked);
+            $(this).toggleClass('menu-hidden', isChecked);
         });
         
+        // Update menu order and hidden status
         updateMenuOrder();
+    });
+
+    // Initialize all toggle switches
+    $('.wpca-slide-toggle input').each(function() {
+        var $li = $(this).closest('li');
+        $(this).prop('checked', !$li.hasClass('menu-hidden'));
     });
     
     // Full hierarchical menu initialization
