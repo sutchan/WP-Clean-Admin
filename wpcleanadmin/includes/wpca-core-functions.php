@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function wpca_enqueue_admin_assets() {
     wp_enqueue_style( 'wpca-admin-style', WPCA_PLUGIN_URL . 'assets/css/wp-clean-admin.css', array(), WPCA_VERSION );
-    wp_enqueue_script( 'wpca-admin-script', WPCA_PLUGIN_URL . 'assets/js/wp-clean-admin.js', array( 'jquery' ), WPCA_VERSION, true );
+    wp_enqueue_script( 'wpca-admin-script', WPCA_PLUGIN_URL . 'assets/js/wpca-settings.js', array( 'jquery', 'jquery-ui-sortable' ), WPCA_VERSION, true );
 
     // Enqueue WordPress color picker script and style
     wp_enqueue_style( 'wp-color-picker' );
