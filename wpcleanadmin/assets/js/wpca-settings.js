@@ -94,12 +94,8 @@ jQuery(document).ready(function($) {
         }
         localStorage.setItem('wpca_hidden_items', JSON.stringify(hiddenItems));
         
-        // Apply to actual WP admin menu
-        var $wpMenu = $('#adminmenu a[href*="' + slug + '"]').closest('li');
-        if ($wpMenu.length) {
-            $wpMenu.toggle(!isChecked);
-            $wpMenu.find('.wp-submenu').toggle(!isChecked);
-        }
+        // Apply to actual WP admin menu with improved selector
+        applyMenuVisibility(slug, isChecked);
         
         console.log('Switch state saved and applied:', isChecked, 'for:', slug);
     });
@@ -125,12 +121,8 @@ jQuery(document).ready(function($) {
             $switch.prop('checked', shouldBeChecked);
             $li.toggleClass('menu-hidden', !shouldBeChecked);
             
-            // Apply to actual WP admin menu
-            var $wpMenu = $('#adminmenu a[href*="' + slug + '"]').closest('li');
-            if ($wpMenu.length) {
-                $wpMenu.toggle(shouldBeChecked);
-                $wpMenu.find('.wp-submenu').toggle(shouldBeChecked);
-            }
+            // Apply to actual WP admin menu with improved selector
+            applyMenuVisibility(slug, shouldBeChecked);
             
             console.log('Switch initialized and applied:', shouldBeChecked, 'for:', slug);
         });
@@ -228,6 +220,44 @@ jQuery(document).ready(function($) {
     initMenuSystem();
     $('#wpca-menu-order').on('sortupdate', initMenuSystem);
 
+    // Helper function to apply menu visibility with improved selectors
+    function applyMenuVisibility(slug, isVisible) {
+        // Try multiple selector strategies
+        var $wpMenu;
+        
+        // Strategy 1: Direct match by slug in URL
+        $wpMenu = $('#adminmenu a[href$="=' + slug + '"]').closest('li');
+        
+        // Strategy 2: Partial match in URL
+        if (!$wpMenu.length) {
+            $wpMenu = $('#adminmenu a[href*="' + slug + '"]').closest('li');
+        }
+        
+        // Strategy 3: Match by menu ID
+        if (!$wpMenu.length) {
+            $wpMenu = $('#' + slug);
+        }
+        
+        // Strategy 4: Match by class
+        if (!$wpMenu.length) {
+            $wpMenu = $('#adminmenu li.' + slug);
+        }
+        
+        // Apply visibility if found
+        if ($wpMenu.length) {
+            $wpMenu.toggle(isVisible);
+            $wpMenu.find('.wp-submenu').toggle(isVisible);
+            console.log('Menu visibility applied:', isVisible, 'for:', slug, 'Found:', $wpMenu.length);
+        } else {
+            console.log('Menu item not found for slug:', slug);
+        }
+        
+        // Special handling for dashboard
+        if (slug === 'dashboard' || slug === 'index.php') {
+            $('#adminmenu li.menu-top:first').toggle(isVisible);
+        }
+    }
+    
     // Update menu order while preserving hidden state
     function updateMenuOrder() {
         var menuOrder = [];
