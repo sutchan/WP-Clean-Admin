@@ -144,6 +144,26 @@ function wpca_activate() {
 register_activation_hook( __FILE__, 'wpca_activate' );
 
 /**
+ * Deactivation hook
+ * Clean up plugin data when uninstalled
+ */
+function wpca_uninstall() {
+    // Delete plugin options
+    delete_option('wpca_settings');
+    
+    // Remove any transients
+    $transients = [
+        'wpca_menu_cache',
+        'wpca_theme_cache'
+    ];
+    
+    foreach ($transients as $transient) {
+        delete_transient($transient);
+    }
+}
+register_uninstall_hook(__FILE__, 'wpca_uninstall');
+
+/**
  * Add settings link to plugin actions
  */
 add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'wpca_add_settings_link');
