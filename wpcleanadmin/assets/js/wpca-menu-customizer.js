@@ -86,4 +86,54 @@ jQuery(document).ready(function($) {
             }
         });
     });
+
+    // Robust reset button handler with namespace and debounce
+    $(document).off('click.wpcaReset').on('click.wpcaReset', '#wpca-reset-menu-order', function(e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        
+        var $button = $(this);
+        if ($button.hasClass('processing')) return;
+        
+        // Disable button during request
+        $button.addClass('processing').prop('disabled', true);
+        
+        // Localized messages
+        var messages = {
+            confirm: wpcaMenuData.locale === 'zh_CN' ? 
+                '确定要重置所有菜单自定义设置吗？' : 
+                'Are you sure you want to reset all menu customizations?',
+            success: wpcaMenuData.locale === 'zh_CN' ? 
+                '菜单顺序已重置' : 'Menu order has been reset',
+            error: wpcaMenuData.locale === 'zh_CN' ? 
+                '重置菜单顺序时出错' : 'Error resetting menu order'
+        };
+        
+        if (confirm(messages.confirm)) {
+            $.ajax({
+                url: wpcaMenuData.ajaxUrl,
+                type: 'POST',
+                data: {
+                    action: 'wpca_reset_menu_order',
+                    nonce: wpcaMenuData.nonce
+                },
+                complete: function() {
+                    $button.removeClass('processing').prop('disabled', false);
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert(messages.success);
+                        location.reload();
+                    } else {
+                        alert(messages.error);
+                    }
+                },
+                error: function() {
+                    alert(messages.error);
+                }
+            });
+        } else {
+            $button.removeClass('processing').prop('disabled', false);
+        }
+    });
 });
