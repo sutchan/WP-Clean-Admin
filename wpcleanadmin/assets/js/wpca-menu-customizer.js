@@ -1,4 +1,18 @@
 jQuery(document).ready(function($) {
+    // Initialize submenu states from saved data
+    if (wpcaMenuData.submenuStates) {
+        $.each(wpcaMenuData.submenuStates, function(menuSlug, expanded) {
+            var $menuItem = $('.menu-item[data-menu-slug=\"' + menuSlug + '\"]');
+            if ($menuItem.length) {
+                $menuItem.find('.submenu-items').toggleClass('expanded', expanded);
+                $menuItem.find('.toggle-submenu').toggleClass(
+                    'dashicons-arrow-down dashicons-arrow-right', 
+                    expanded
+                );
+            }
+        });
+    }
+
     // Initialize nested sortable for menu items
     $('.wpca-menu-sortable').sortable({
         handle: '.menu-item-handle',
@@ -43,17 +57,63 @@ jQuery(document).ready(function($) {
         });
     });
 
-    // Toggle submenu visibility
+    // Toggle submenu visibility and save state
     $(document).on('click', '.toggle-submenu', function(e) {
         e.preventDefault();
-        $(this).closest('.menu-item').find('.submenu-items').toggleClass('expanded');
-        $(this).toggleClass('dashicons-arrow-down dashicons-arrow-right');
+        e.stopPropagation();
+        var $button = $(this);
+        var $menuItem = $button.closest('.menu-item');
+        var menuSlug = $menuItem.data('menu-slug');
+        var $submenuItems = $menuItem.find('.submenu-items');
+        
+        if ($submenuItems.length === 0) {
+            console.error('Submenu items container not found for menu:', menuSlug);
+            return;
+        }
+
+        // Toggle UI state with animation
+        $submenuItems.stop(true, true).slideToggle(200, function() {
+            var isExpanded = $(this).is(':visible');
+            $button.toggleClass('dashicons-arrow-down dashicons-arrow-right', isExpanded);
+            
+            // Save submenu visibility state
+            $.post(wpcaMenuData.ajaxUrl, {
+                action: 'wpca_toggle_submenu',
+                menu_slug: menuSlug,
+                expanded: isExpanded,
+                nonce: wpcaMenuData.nonce
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error('Failed to save submenu state:', textStatus, errorThrown);
+            });
+        });
     });
+
+    // Initialize submenu states
+    function initSubmenuStates() {
+        $('.menu-item').each(function() {
+            var $menuItem = $(this);
+            var menuSlug = $menuItem.data('menu-slug');
+            var $submenuItems = $menuItem.find('.submenu-items');
+            var $toggleButton = $menuItem.find('.toggle-submenu');
+            
+            if (wpcaMenuData.submenuStates && wpcaMenuData.submenuStates[menuSlug] !== undefined) {
+                var isExpanded = wpcaMenuData.submenuStates[menuSlug];
+                $submenuItems.toggle(isExpanded);
+                $toggleButton.toggleClass('dashicons-arrow-down dashicons-arrow-right', isExpanded);
+            } else {
+                // Default to expanded if no state saved
+                $submenuItems.show();
+                $toggleButton.addClass('dashicons-arrow-down');
+            }
+        });
+    }
+
+    // Initialize on DOM ready
+    initSubmenuStates();
 
     // Save menu order to hidden fields
     function saveMenuOrder() {
         var menuOrder = {};
-        var submenuOrder = {};
         
         $('.wpca-menu-sortable > li').each(function() {
             var slug = $(this).data('menu-slug');

@@ -69,47 +69,6 @@ function wpca_run_plugin() {
 
     // Core functions are hooked directly in wpca-core-functions.php
     
-    /**
-     * Add admin menu item (Disabled)
-     * This function is kept for reference but no longer used
-     */
-    function wpca_add_admin_menu() {
-        // Menu entry removed as per requirements
-        /*
-        add_menu_page(
-            __('WP Clean Admin Settings', 'wp-clean-admin'),
-            __('Clean Admin', 'wp-clean-admin'),
-            'manage_options',
-            'wp-clean-admin',
-            'wpca_render_settings_page',
-            'dashicons-admin-appearance',
-            80
-        );
-        */
-    }
-    
-    /**
-     * Render settings page
-     */
-    function wpca_render_settings_page() {
-        if (!current_user_can('manage_options')) {
-            wp_die(__('You do not have sufficient permissions to access this page.'));
-        }
-        
-        ?>
-        <div class="wrap">
-            <h1><?php esc_html_e('WP Clean Admin Settings', 'wp-clean-admin'); ?></h1>
-            <form method="post" action="options.php">
-                <?php
-                settings_fields('wpca_settings_group');
-                do_settings_sections('wp-clean-admin');
-                submit_button();
-                ?>
-            </form>
-        </div>
-        <?php
-    }
-    
     // Add responsive design support
     add_action('admin_head', function() {
         echo '<meta name="viewport" content="width=device-width, initial-scale=1">';

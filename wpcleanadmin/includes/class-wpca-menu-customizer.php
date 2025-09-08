@@ -19,6 +19,7 @@ class WPCA_Menu_Customizer {
         // Add AJAX handlers
         add_action('wp_ajax_wpca_toggle_menu_item', [$this, 'ajax_toggle_menu_item']);
         add_action('wp_ajax_wpca_get_menu_state', [$this, 'ajax_get_menu_state']);
+        add_action('wp_ajax_wpca_toggle_submenu', [$this, 'ajax_toggle_submenu']);
     }
     
     /**
@@ -234,10 +235,15 @@ class WPCA_Menu_Customizer {
         
         // Pass menu data to JavaScript
         $menu_items = $this->get_all_menu_items();
+        $options = get_option('wpca_settings', []);
+        $submenu_states = isset($options['submenu_states']) ? $options['submenu_states'] : [];
+        
         wp_localize_script('wpca-menu-customizer', 'wpcaMenuData', array(
             'menuItems' => $menu_items,
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('wpca_menu_order_nonce')
+            'nonce' => wp_create_nonce('wpca_menu_order_nonce'),
+            'locale' => get_locale(),
+            'submenuStates' => $submenu_states
         ));
     }
     
@@ -334,6 +340,40 @@ class WPCA_Menu_Customizer {
         
         wp_send_json_success([
             'hidden_items' => $hidden_items
+        ]);
+    }
+    
+    /**
+     * AJAX handler to toggle submenu visibility
+     */
+    public function ajax_toggle_submenu() {
+        check_ajax_referer('wpca_menu_order_nonce', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => 'Unauthorized']);
+        }
+        
+        $menu_slug = isset($_POST['menu_slug']) ? sanitize_text_field($_POST['menu_slug']) : '';
+        $expanded = isset($_POST['expanded']) ? (bool)$_POST['expanded'] : false;
+        
+        if (empty($menu_slug)) {
+            wp_send_json_error(['message' => 'Invalid menu slug']);
+        }
+        
+        // Get current settings
+        $options = get_option('wpca_settings', []);
+        $submenu_states = isset($options['submenu_states']) ? $options['submenu_states'] : [];
+        
+        // Update submenu state
+        $submenu_states[$menu_slug] = $expanded;
+        
+        // Save updated settings
+        $options['submenu_states'] = $submenu_states;
+        update_option('wpca_settings', $options);
+        
+        wp_send_json_success([
+            'menu_slug' => $menu_slug,
+            'expanded' => $expanded
         ]);
     }
     
