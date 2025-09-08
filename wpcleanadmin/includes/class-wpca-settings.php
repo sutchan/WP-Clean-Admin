@@ -24,7 +24,38 @@ class WPCA_Settings {
         add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
         add_action( 'admin_init', array( $this, 'settings_init' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+        add_action( 'wp_ajax_wpca_update_menu_visibility', array( $this, 'ajax_update_menu_visibility' ) );
         $this->options = self::get_options(); // Load options with defaults
+    }
+
+    /**
+     * Handle AJAX request to update menu visibility
+     */
+    public function ajax_update_menu_visibility() {
+        check_ajax_referer('wpca_ajax_nonce', 'security');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('Unauthorized');
+        }
+
+        $menu_slug = sanitize_text_field($_POST['menu_slug']);
+        $is_hidden = (bool)$_POST['is_hidden'];
+
+        $options = get_option('wpca_settings');
+        $hidden_items = isset($options['menu_hidden_items']) ? $options['menu_hidden_items'] : array();
+
+        if ($is_hidden) {
+            if (!in_array($menu_slug, $hidden_items)) {
+                $hidden_items[] = $menu_slug;
+            }
+        } else {
+            $hidden_items = array_diff($hidden_items, array($menu_slug));
+        }
+
+        $options['menu_hidden_items'] = array_values($hidden_items);
+        update_option('wpca_settings', $options);
+
+        wp_send_json_success();
     }
     
     /**
@@ -38,11 +69,19 @@ class WPCA_Settings {
         // Enqueue jQuery UI for sortable functionality
         wp_enqueue_script('jquery-ui-sortable');
         
-        // Enqueue CSS file for the settings page
+        // Enqueue CSS files for the settings page
         wp_enqueue_style( 'wpca-admin-style', WPCA_PLUGIN_URL . 'assets/css/wp-clean-admin.css', array(), WPCA_VERSION );
+        wp_enqueue_style( 'wpca-menu-toggle-style', WPCA_PLUGIN_URL . 'assets/css/menu-toggle.css', array(), WPCA_VERSION );
         
         // Enqueue custom script for the settings page
         wp_enqueue_script( 'wpca-settings-script', WPCA_PLUGIN_URL . 'assets/js/wpca-settings.js', array( 'jquery', 'jquery-ui-sortable' ), WPCA_VERSION, true );
+        
+        // Localize script with AJAX URL, nonce and translations
+        wp_localize_script( 'wpca-settings-script', 'wpca_ajax', array(
+            'ajaxurl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('wpca_ajax_nonce'),
+            'hiddenText' => __('Hidden', 'wp-clean-admin')
+        ));
     }
 
     /**
@@ -122,7 +161,7 @@ class WPCA_Settings {
             'wpca_settings_general_section'
         );
 
-        // Visual Style section
+        // Visual Style section (now includes Layout & Typography)
         add_settings_section(
             'wpca_settings_visual_style_section',
             __( 'Visual Style', 'wp-clean-admin' ),
@@ -171,53 +210,45 @@ class WPCA_Settings {
             'wpca_settings_visual_style_section'
         );
 
-        // Layout & Typography section
-        add_settings_section(
-            'wpca_settings_layout_section',
-            __( 'Layout & Typography', 'wp-clean-admin' ),
-            array( $this, 'layout_typography_section_callback' ),
-            'wpca_settings_layout'
-        );
-
-        // Layout & Typography fields
+        // Layout & Typography fields (now under Visual Style)
         add_settings_field(
             'wpca_layout_density',
             __( 'Layout Density', 'wp-clean-admin' ),
             array( $this, 'layout_density_render' ),
-            'wpca_settings_layout',
-            'wpca_settings_layout_section'
+            'wpca_settings_visual_style',
+            'wpca_settings_visual_style_section'
         );
 
         add_settings_field(
             'wpca_border_radius_style',
             __( 'Border Radius', 'wp-clean-admin' ),
             array( $this, 'border_radius_style_render' ),
-            'wpca_settings_layout',
-            'wpca_settings_layout_section'
+            'wpca_settings_visual_style',
+            'wpca_settings_visual_style_section'
         );
 
         add_settings_field(
             'wpca_font_stack',
             __( 'Font Stack', 'wp-clean-admin' ),
             array( $this, 'font_stack_render' ),
-            'wpca_settings_layout',
-            'wpca_settings_layout_section'
+            'wpca_settings_visual_style',
+            'wpca_settings_visual_style_section'
         );
 
         add_settings_field(
             'wpca_font_size_base',
             __( 'Font Size', 'wp-clean-admin' ),
             array( $this, 'font_size_base_render' ),
-            'wpca_settings_layout',
-            'wpca_settings_layout_section'
+            'wpca_settings_visual_style',
+            'wpca_settings_visual_style_section'
         );
 
         add_settings_field(
             'wpca_icon_style',
             __( 'Icon Style', 'wp-clean-admin' ),
             array( $this, 'icon_style_render' ),
-            'wpca_settings_layout',
-            'wpca_settings_layout_section'
+            'wpca_settings_visual_style',
+            'wpca_settings_visual_style_section'
         );
 
         // Menu Customization section
@@ -239,21 +270,13 @@ class WPCA_Settings {
             'wpca_settings_menu_section'
         );
 
-        // Admin Bar Customization section
-        add_settings_section(
-            'wpca_settings_admin_bar_section',
-            __( 'Admin Bar Customization', 'wp-clean-admin' ),
-            array( $this, 'admin_bar_section_callback' ),
-            'wpca_settings_admin_bar'
-        );
-
-        // Admin Bar Customization field
+        // Admin Bar Customization field - moved to General Settings
         add_settings_field(
             'wpca_hide_admin_bar_items',
             __( 'Hide Admin Bar Items', 'wp-clean-admin' ),
             array( $this, 'hide_admin_bar_items_render' ),
-            'wpca_settings_admin_bar',
-            'wpca_settings_admin_bar_section'
+            'wpca_settings',
+            'wpca_settings_general_section'
         );
     }
 
@@ -285,12 +308,7 @@ class WPCA_Settings {
         // Description removed as hide functionality is now integrated with menu ordering
     }
 
-    /**
-     * Admin Bar section callback.
-     */
-    public function admin_bar_section_callback() {
-        echo __( 'Select which admin bar items to hide.', 'wp-clean-admin' );
-    }
+
 
     /**
      * About section callback.
@@ -573,27 +591,30 @@ class WPCA_Settings {
                             
                             echo '<li class="menu-item" data-menu-slug="'.esc_attr($slug).'" data-item-type="'.($is_submenu ? 'sub' : 'top').'"';
                             echo $is_submenu ? ' data-parent-slug="'.esc_attr($item['parent']).'"' : '';
-                            echo '>';
+                            echo ' style="position: relative;">';
                             
-                            // Menu item handle
-                            echo '<div class="menu-item-handle">';
+                            // Menu item handle with flex layout
+                            echo '<div class="menu-item-handle" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">';
+                            echo '<div style="display: flex; align-items: center;">';
                             echo '<span class="dashicons '.($is_submenu ? 'dashicons-arrow-right' : 'dashicons-menu').'"></span>';
                             echo '<span class="menu-item-title">'.esc_html(wp_strip_all_tags($item['title'])).'</span>';
                             
                             // Toggle submenu button
                             if (isset($item['children']) && !empty($item['children'])) {
-                                echo '<button class="toggle-submenu dashicons dashicons-arrow-down"></button>';
+                                echo '<button class="toggle-submenu dashicons dashicons-arrow-down" style="margin-left: 5px;"></button>';
                             }
                             echo '</div>';
                             
-                            // Horizontal toggle switch
-                            echo '<div class="wpca-horizontal-toggle">';
-                            echo '<input type="checkbox" name="wpca_settings[menu_hidden_items][]" value="'.esc_attr($slug).'" ';
+                            // Horizontal toggle switch (now inside menu-item-handle)
+                            echo '<div class="wpca-horizontal-toggle" style="margin-left: auto;">';
+                            echo '<input type="checkbox" id="toggle-'.esc_attr($slug).'" name="wpca_settings[menu_hidden_items][]" value="'.esc_attr($slug).'" ';
                             echo isset($options['menu_hidden_items']) && in_array($slug, $options['menu_hidden_items']) ? 'checked' : '';
-                            echo '>';
+                            echo ' style="display:none;">';
                             echo '<label for="toggle-'.esc_attr($slug).'" class="toggle-slider">';
                             echo '<span class="toggle-handle"></span>';
                             echo '</label>';
+                            echo '</div>';
+                            
                             echo '</div>';
                             
                             // Hidden input for order
@@ -646,6 +667,64 @@ class WPCA_Settings {
                            .closest('.menu-item').find('.submenu-items').toggleClass('expanded');
                 });
                 
+                // Toggle menu item visibility with slider and send AJAX request
+                $(document).on('click', '.toggle-slider', function(e) {
+                    var checkbox = $(this).siblings('input[type="checkbox"]');
+                    var isHidden = !checkbox.prop('checked'); // Get new state
+                    checkbox.prop('checked', isHidden);
+                    $(this).toggleClass('active', !isHidden);
+                    
+                    // Update menu item UI
+                    var menuItem = $(this).closest('.menu-item');
+                    menuItem.toggleClass('menu-item-hidden', isHidden);
+                    
+                    // Update hidden indicator
+                    if (isHidden) {
+                        menuItem.find('.hidden-indicator').remove();
+                        menuItem.find('.menu-item-title').after(
+                            '<span class="hidden-indicator">(' + wpca_ajax.hiddenText + ')</span>'
+                        );
+                    } else {
+                        menuItem.find('.hidden-indicator').remove();
+                    }
+                    
+                    // Send AJAX request to update menu state immediately
+                    $.ajax({
+                        url: ajaxurl,
+                        type: 'POST',
+                        data: {
+                            action: 'wpca_update_menu_visibility',
+                            menu_slug: menuItem.data('menu-slug'),
+                            is_hidden: isHidden,
+                            security: wpca_ajax.nonce
+                        },
+                        success: function(response) {
+                            if (!response.success) {
+                                // Revert if failed
+                                checkbox.prop('checked', !isHidden);
+                                $(this).toggleClass('active', isHidden);
+                                menuItem.toggleClass('menu-item-hidden', !isHidden);
+                                alert('Failed to update menu visibility');
+                            }
+                        }
+                    });
+                });
+                
+                // Initialize toggle states - ensure consistency between UI and actual state
+                $('.wpca-horizontal-toggle input[type="checkbox"]').each(function() {
+                    var isChecked = $(this).prop('checked');
+                    // Update toggle slider UI
+                    $(this).siblings('.toggle-slider').toggleClass('active', !isChecked);
+                    // Update menu item visibility class
+                    $(this).closest('.menu-item').toggleClass('menu-item-hidden', isChecked);
+                    // If menu item is hidden, add visual indicator
+                    if (isChecked) {
+                        $(this).closest('.menu-item').find('.menu-item-title').after(
+                            '<span class="hidden-indicator">(' + wpca_ajax.hiddenText + ')</span>'
+                        );
+                    }
+                });
+                
                 // Save menu order function
                 function saveMenuOrder() {
                     var menuOrder = [];
@@ -671,6 +750,20 @@ class WPCA_Settings {
                 
                 // Initialize with current order
                 saveMenuOrder();
+                
+                // Reset button functionality
+                $('#wpca-reset-menu-order').on('click', function() {
+                    if (confirm('确定要重置菜单顺序和可见性设置吗？')) {
+                        // Reset checkboxes
+                        $('.wpca-horizontal-toggle input[type="checkbox"]').prop('checked', false);
+                        $('.toggle-slider').removeClass('active');
+                        $('.menu-item').removeClass('menu-item-hidden');
+                        
+                        // TODO: Reset menu order (would require server-side handling)
+                        // For now, just reload the page
+                        location.reload();
+                    }
+                });
             });
             </script>
         </div>
@@ -726,9 +819,7 @@ class WPCA_Settings {
             <div class="wpca-tabs">
                 <div class="wpca-tab active" data-tab="tab-general"><?php _e('General Settings', 'wp-clean-admin'); ?></div>
                 <div class="wpca-tab" data-tab="tab-visual-style"><?php _e('Visual Style', 'wp-clean-admin'); ?></div>
-                <div class="wpca-tab" data-tab="tab-layout"><?php _e('Layout & Typography', 'wp-clean-admin'); ?></div>
                 <div class="wpca-tab" data-tab="tab-menu"><?php _e('Menu Customization', 'wp-clean-admin'); ?></div>
-                <div class="wpca-tab" data-tab="tab-admin-bar"><?php _e('Admin Bar Customization', 'wp-clean-admin'); ?></div>
                 <div class="wpca-tab" data-tab="tab-about"><?php _e('About', 'wp-clean-admin'); ?></div>
             </div>
             
@@ -746,10 +837,7 @@ class WPCA_Settings {
                 do_settings_sections('wpca_settings_menu');
                 echo '</div>';
                 
-                // Admin Bar Customization tab content
-                echo '<div id="tab-admin-bar" class="wpca-tab-content">';
-                do_settings_sections('wpca_settings_admin_bar');
-                echo '</div>';
+
                 
                 // Visual Style tab content
                 echo '<div id="tab-visual-style" class="wpca-tab-content">';

@@ -15,6 +15,10 @@ class WPCA_Menu_Customizer {
     public function __construct() {
         add_action('admin_menu', [$this, 'init_menu_customization']);
         add_action('admin_init', [$this, 'register_menu_settings']);
+        
+        // Add AJAX handlers
+        add_action('wp_ajax_wpca_toggle_menu_item', [$this, 'ajax_toggle_menu_item']);
+        add_action('wp_ajax_wpca_get_menu_state', [$this, 'ajax_get_menu_state']);
     }
     
     /**
@@ -216,16 +220,76 @@ class WPCA_Menu_Customizer {
      * Hide menu items via CSS
      */
     public function hide_menu_items() {
-        $menu_settings = get_option($this->menu_settings_key, []);
-        if (empty($menu_settings['hidden_items'])) {
+        // Get settings from wpca_settings option
+        $options = get_option('wpca_settings', []);
+        if (empty($options['menu_hidden_items'])) {
             return;
         }
         
         echo '<style>';
-        foreach ($menu_settings['hidden_items'] as $menu_slug) {
+        foreach ($options['menu_hidden_items'] as $menu_slug) {
             echo "#toplevel_page_{$menu_slug}, #menu-{$menu_slug} { display: none !important; }";
         }
         echo '</style>';
+    }
+    
+    /**
+     * AJAX handler to toggle menu item visibility
+     */
+    public function ajax_toggle_menu_item() {
+        check_ajax_referer('wpca_menu_order_nonce', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => 'Unauthorized']);
+        }
+        
+        $menu_slug = isset($_POST['menu_slug']) ? sanitize_text_field($_POST['menu_slug']) : '';
+        $hidden = isset($_POST['hidden']) ? (bool)$_POST['hidden'] : false;
+        
+        if (empty($menu_slug)) {
+            wp_send_json_error(['message' => 'Invalid menu slug']);
+        }
+        
+        // Get current settings
+        $options = get_option('wpca_settings', []);
+        $hidden_items = isset($options['menu_hidden_items']) ? $options['menu_hidden_items'] : [];
+        
+        // Update hidden items array
+        if ($hidden) {
+            if (!in_array($menu_slug, $hidden_items)) {
+                $hidden_items[] = $menu_slug;
+            }
+        } else {
+            $hidden_items = array_diff($hidden_items, [$menu_slug]);
+        }
+        
+        // Save updated settings
+        $options['menu_hidden_items'] = array_values($hidden_items);
+        update_option('wpca_settings', $options);
+        
+        wp_send_json_success([
+            'menu_slug' => $menu_slug,
+            'hidden' => $hidden,
+            'hidden_items' => $hidden_items
+        ]);
+    }
+    
+    /**
+     * AJAX handler to get current menu state
+     */
+    public function ajax_get_menu_state() {
+        check_ajax_referer('wpca_menu_order_nonce', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => 'Unauthorized']);
+        }
+        
+        $options = get_option('wpca_settings', []);
+        $hidden_items = isset($options['menu_hidden_items']) ? $options['menu_hidden_items'] : [];
+        
+        wp_send_json_success([
+            'hidden_items' => $hidden_items
+        ]);
     }
     
     /**

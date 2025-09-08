@@ -305,7 +305,7 @@ body.wpca-theme-dark {
 }
 
 .wpca-menu-sortable li {
-    padding: 10px 15px;
+    padding: 0px 15px;
     margin: 0;
     background: #fff;
     cursor: move;
@@ -321,24 +321,29 @@ body.wpca-theme-dark {
 
 .menu-item-handle {
     display: flex;
-    align-items: flex-start; /* 改为顶部对齐 */
+    align-items: center;
+    justify-content: space-between;
     width: 100%;
     padding: 10px 15px;
-    position: relative;
     min-height: 44px;
     box-sizing: border-box;
     border: none;
-    background: none;   
-    box-shadow: none;
+    background: none !important;
+    box-shadow: none !important;
+
+}
+
+.menu-item-title {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
 }
 
 .wpca-horizontal-toggle {
-    position: static; /* 改为静态定位 */
-    margin-left: auto; /* 右对齐 */
     display: flex;
     align-items: center;
+    margin-left: 15px;
     height: 24px;
-    padding-top: 2px; /* 微调垂直位置 */
 }
 
 .wpca-menu-sortable li .dashicons-menu {
