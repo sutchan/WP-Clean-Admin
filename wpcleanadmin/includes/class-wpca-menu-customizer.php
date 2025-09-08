@@ -20,6 +20,7 @@ class WPCA_Menu_Customizer {
         add_action('wp_ajax_wpca_toggle_menu_item', [$this, 'ajax_toggle_menu_item']);
         add_action('wp_ajax_wpca_get_menu_state', [$this, 'ajax_get_menu_state']);
         add_action('wp_ajax_wpca_toggle_submenu', [$this, 'ajax_toggle_submenu']);
+        add_action('wp_ajax_wpca_save_menu_order', [$this, 'ajax_save_menu_order']);
     }
     
     /**
@@ -312,6 +313,10 @@ class WPCA_Menu_Customizer {
         
         update_option('wpca_settings', $options);
         
+        // Force refresh of admin menu
+        global $menu, $submenu;
+        $menu = $submenu = array();
+        
         // Return localized status text
         $status_text = '';
         if ($hidden) {
@@ -324,7 +329,8 @@ class WPCA_Menu_Customizer {
             'menu_slug' => $menu_slug,
             'hidden' => $hidden,
             'hidden_items' => $hidden_items,
-            'status_text' => $status_text
+            'status_text' => $status_text,
+            'refreshed' => true
         ]);
     }
     
@@ -377,6 +383,40 @@ class WPCA_Menu_Customizer {
         wp_send_json_success([
             'menu_slug' => $menu_slug,
             'expanded' => $expanded
+        ]);
+    }
+
+    /**
+     * AJAX handler to save menu order
+     */
+    public function ajax_save_menu_order() {
+        check_ajax_referer('wpca_menu_order_nonce', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => 'Unauthorized']);
+        }
+        
+        $menu_order = isset($_POST['menu_order']) ? json_decode(stripslashes($_POST['menu_order']), true) : [];
+        $submenu_order = isset($_POST['submenu_order']) ? json_decode(stripslashes($_POST['submenu_order']), true) : [];
+        
+        if (empty($menu_order)) {
+            wp_send_json_error(['message' => 'Invalid menu order data']);
+        }
+        
+        // Get current settings
+        $options = get_option('wpca_settings', []);
+        
+        // Update menu order settings
+        $options['menu_order'] = $menu_order;
+        $options['submenu_order'] = $submenu_order;
+        
+        // Save updated settings
+        update_option('wpca_settings', $options);
+        
+        wp_send_json_success([
+            'message' => 'Menu order saved successfully',
+            'menu_order' => $menu_order,
+            'submenu_order' => $submenu_order
         ]);
     }
     

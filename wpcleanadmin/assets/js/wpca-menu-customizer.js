@@ -51,8 +51,11 @@ jQuery(document).ready(function($) {
                 $button.toggleClass('dashicons-hidden dashicons-visibility');
                 $item.find('.menu-item-title').toggleClass('hidden-item');
                 
-                // Update status text with localized version
-                $item.find('.menu-status').text(response.data.status_text || '');
+                // Update status text based on locale
+                var statusText = response.data.hidden ? 
+                    (wpcaMenuData.locale === 'zh_CN' ? '(已隐藏)' : '(Hidden)') : 
+                    '';
+                $item.find('.menu-status').text(statusText);
             }
         });
     });
