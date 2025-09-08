@@ -313,9 +313,12 @@ class WPCA_Menu_Customizer {
         update_option('wpca_settings', $options);
         
         // Return localized status text
-        $status_text = $hidden ? 
-            (function_exists('get_locale') && get_locale() === 'zh_CN' ? '(已隐藏)' : '(Hidden)') : 
-            '';
+        $status_text = '';
+        if ($hidden) {
+            $status_text = function_exists('get_locale') && get_locale() === 'zh_CN' ? 
+                '(已隐藏)' : 
+                '(Hidden)';
+        }
             
         wp_send_json_success([
             'menu_slug' => $menu_slug,
