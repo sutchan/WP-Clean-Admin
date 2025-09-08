@@ -20,6 +20,29 @@ jQuery(document).ready(function($) {
         }
     });
 
+    // Toggle menu item visibility
+    $(document).on('click', '.toggle-menu-visibility', function(e) {
+        e.preventDefault();
+        var $button = $(this);
+        var $item = $button.closest('li');
+        var menuSlug = $item.data('menu-slug');
+        
+        $.post(wpcaMenuData.ajaxUrl, {
+            action: 'wpca_toggle_menu_item',
+            menu_slug: menuSlug,
+            hidden: !$button.hasClass('dashicons-hidden'),
+            nonce: wpcaMenuData.nonce
+        }, function(response) {
+            if (response.success) {
+                $button.toggleClass('dashicons-hidden dashicons-visibility');
+                $item.find('.menu-item-title').toggleClass('hidden-item');
+                
+                // Update status text with localized version
+                $item.find('.menu-status').text(response.data.status_text || '');
+            }
+        });
+    });
+
     // Toggle submenu visibility
     $(document).on('click', '.toggle-submenu', function(e) {
         e.preventDefault();
