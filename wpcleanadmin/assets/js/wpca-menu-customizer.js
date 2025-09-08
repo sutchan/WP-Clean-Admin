@@ -88,24 +88,24 @@ jQuery(document).ready(function($) {
         });
     });
 
-    // Initialize submenu states
+    // Initialize submenu states - force all submenus to be hidden by default
     function initSubmenuStates() {
-        $('.menu-item').each(function() {
-            var $menuItem = $(this);
-            var menuSlug = $menuItem.data('menu-slug');
-            var $submenuItems = $menuItem.find('.submenu-items');
-            var $toggleButton = $menuItem.find('.toggle-submenu');
-            
-            if (wpcaMenuData.submenuStates && wpcaMenuData.submenuStates[menuSlug] !== undefined) {
-                var isExpanded = wpcaMenuData.submenuStates[menuSlug];
-                $submenuItems.toggle(isExpanded);
-                $toggleButton.toggleClass('dashicons-arrow-down dashicons-arrow-right', isExpanded);
-            } else {
-                // Default to expanded if no state saved
-                $submenuItems.show();
-                $toggleButton.addClass('dashicons-arrow-down');
-            }
-        });
+        // First hide ALL submenus and set arrows to right
+        $('.submenu-items').hide();
+        $('.toggle-submenu').removeClass('dashicons-arrow-down').addClass('dashicons-arrow-right');
+        
+        // Then apply saved expanded states if they exist
+        if (wpcaMenuData.submenuStates) {
+            $.each(wpcaMenuData.submenuStates, function(menuSlug, isExpanded) {
+                var $menuItem = $('.menu-item[data-menu-slug="' + menuSlug + '"]');
+                if ($menuItem.length) {
+                    $menuItem.find('.submenu-items').toggle(isExpanded);
+                    $menuItem.find('.toggle-submenu')
+                        .toggleClass('dashicons-arrow-down', isExpanded)
+                        .toggleClass('dashicons-arrow-right', !isExpanded);
+                }
+            });
+        }
     }
 
     // Initialize on DOM ready
