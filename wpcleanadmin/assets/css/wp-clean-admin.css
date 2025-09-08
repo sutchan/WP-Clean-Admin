@@ -321,22 +321,30 @@ body.wpca-theme-dark {
 
 .menu-item-handle {
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* 改为顶部对齐 */
     width: 100%;
-    gap: 10px;
-    padding: 5px 0;
+    padding: 10px 15px;
     position: relative;
-    border: 0px !important;
+    min-height: 44px;
+    box-sizing: border-box;
+    border: none;
+    background: none;   
+    box-shadow: none;
 }
 
 .wpca-horizontal-toggle {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
+    position: static; /* 改为静态定位 */
+    margin-left: auto; /* 右对齐 */
     display: flex;
     align-items: center;
-    min-width: 50px;
+    height: 24px;
+    padding-top: 2px; /* 微调垂直位置 */
+}
+
+.wpca-menu-sortable li .dashicons-menu {
+    margin-right: 10px;
+    position: relative;
+    top: 1px;
 }
 
 .wpca-menu-sortable li:hover {

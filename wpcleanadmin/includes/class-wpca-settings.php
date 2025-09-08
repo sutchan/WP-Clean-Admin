@@ -321,34 +321,60 @@ class WPCA_Settings {
     public function hide_dashboard_widgets_render() {
         $options = $this->options; // Use loaded options
         $widgets_to_hide = $options['hide_dashboard_widgets'] ?? array();
+        
+        // Default core widgets
+        $core_widgets = array(
+            'dashboard_right_now' => __('Right Now', 'wp-clean-admin'),
+            'dashboard_activity' => __('Activity', 'wp-clean-admin'),
+            'dashboard_quick_press' => __('Quick Draft', 'wp-clean-admin'),
+            'dashboard_primary' => __('WordPress Events and News', 'wp-clean-admin'),
+            'dashboard_site_health' => __('Site Health Status', 'wp-clean-admin'),
+            'dashboard_at_glance' => __('At a Glance', 'wp-clean-admin')
+        );
+        
+        // Get third-party widgets
+        global $wp_meta_boxes;
+        $third_party_widgets = array();
+        
+        if (isset($wp_meta_boxes['dashboard'])) {
+            foreach ($wp_meta_boxes['dashboard'] as $context => $priority) {
+                foreach ($priority as $widgets) {
+                    foreach ($widgets as $widget_id => $widget) {
+                        // Skip core widgets we already have
+                        if (!isset($core_widgets[$widget_id])) {
+                            $third_party_widgets[$widget_id] = isset($widget['title']) ? $widget['title'] : $widget_id;
+                        }
+                    }
+                }
+            }
+        }
         ?>
         <fieldset>
-            <label>
-                <input type="checkbox" name="wpca_settings[hide_dashboard_widgets][]" value="dashboard_right_now" <?php checked( in_array( 'dashboard_right_now', $widgets_to_hide ) ); ?>>
-                <?php _e( 'Right Now', 'wp-clean-admin' ); ?>
-            </label><br>
-            <label>
-                <input type="checkbox" name="wpca_settings[hide_dashboard_widgets][]" value="dashboard_activity" <?php checked( in_array( 'dashboard_activity', $widgets_to_hide ) ); ?>>
-                <?php _e( 'Activity', 'wp-clean-admin' ); ?>
-            </label><br>
-            <label>
-                <input type="checkbox" name="wpca_settings[hide_dashboard_widgets][]" value="dashboard_quick_press" <?php checked( in_array( 'dashboard_quick_press', $widgets_to_hide ) ); ?>>
-                <?php _e( 'Quick Draft', 'wp-clean-admin' ); ?>
-            </label><br>
-            <label>
-                <input type="checkbox" name="wpca_settings[hide_dashboard_widgets][]" value="dashboard_primary" <?php checked( in_array( 'dashboard_primary', $widgets_to_hide ) ); ?>>
-                <?php _e( 'WordPress Events and News', 'wp-clean-admin' ); ?>
-            </label><br>
-            <label>
-                <input type="checkbox" name="wpca_settings[hide_dashboard_widgets][]" value="dashboard_site_health" <?php checked( in_array( 'dashboard_site_health', $widgets_to_hide ) ); ?>>
-                <?php _e( 'Site Health Status', 'wp-clean-admin' ); ?>
-            </label><br>
-            <label>
-                <input type="checkbox" name="wpca_settings[hide_dashboard_widgets][]" value="dashboard_at_glance" <?php checked( in_array( 'dashboard_at_glance', $widgets_to_hide ) ); ?>>
-                <?php _e( 'At a Glance', 'wp-clean-admin' ); ?>
-            </label><br>
-            <!-- Add more widgets as needed -->
+            <h4><?php _e('Core Widgets', 'wp-clean-admin'); ?></h4>
+            <?php foreach ($core_widgets as $widget_id => $title): ?>
+                <label>
+                    <input type="checkbox" name="wpca_settings[hide_dashboard_widgets][]" 
+                           value="<?php echo esc_attr($widget_id); ?>" 
+                           <?php checked(in_array($widget_id, $widgets_to_hide)); ?>>
+                    <?php echo esc_html($title); ?>
+                </label><br>
+            <?php endforeach; ?>
+            
+            <?php if (!empty($third_party_widgets)): ?>
+                <h4 style="margin-top:15px;"><?php _e('Third-party Widgets', 'wp-clean-admin'); ?></h4>
+                <?php foreach ($third_party_widgets as $widget_id => $title): ?>
+                    <label>
+                        <input type="checkbox" name="wpca_settings[hide_dashboard_widgets][]" 
+                               value="<?php echo esc_attr($widget_id); ?>" 
+                               <?php checked(in_array($widget_id, $widgets_to_hide)); ?>>
+                        <?php echo esc_html($title); ?>
+                    </label><br>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </fieldset>
+        <p class="description">
+            <?php _e('Check the widgets you want to hide from the dashboard.', 'wp-clean-admin'); ?>
+        </p>
         <?php
     }
 
