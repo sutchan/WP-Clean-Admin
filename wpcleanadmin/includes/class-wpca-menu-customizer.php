@@ -162,7 +162,8 @@ class WPCA_Menu_Customizer {
                         $menu_items[$slug] = [
                             'title' => isset($item[0]) ? $item[0] : $slug,
                             'type' => 'top',
-                            'parent' => ''
+                            'parent' => '',
+                            'icon' => isset($item[6]) ? $item[6] : 'dashicons-admin-generic'
                         ];
                     }
                 }
@@ -178,7 +179,8 @@ class WPCA_Menu_Customizer {
                         $menu_items[$full_slug] = [
                             'title' => isset($sub_item[0]) ? $sub_item[0] : $sub_item[2],
                             'type' => 'sub',
-                            'parent' => $parent_slug
+                            'parent' => $parent_slug,
+                            'icon' => 'dashicons-arrow-right'
                         ];
                     }
                 }
@@ -198,29 +200,16 @@ class WPCA_Menu_Customizer {
         }
         
         wp_enqueue_script('jquery-ui-sortable');
+        wp_enqueue_script('wpca-menu-customizer', WPCA_PLUGIN_URL . 'assets/js/wpca-menu-customizer.js', 
+                         array('jquery', 'jquery-ui-sortable'), WPCA_VERSION, true);
         
-        // Add inline script for saving menu order
-        add_action('admin_footer', function() {
-            ?>
-            <script type="text/javascript">
-            jQuery(document).ready(function($) {
-                if ($('.wpca-menu-sortable').length) {
-                    $('.wpca-menu-sortable').sortable({
-                        update: function(event, ui) {
-                            var menuOrder = [];
-                            $('.wpca-menu-sortable li').each(function() {
-                                menuOrder.push($(this).data('menu-slug'));
-                            });
-                            
-                            // Update hidden field with new order
-                            $('#wpca_menu_order').val(JSON.stringify(menuOrder));
-                        }
-                    });
-                }
-            });
-            </script>
-            <?php
-        });
+        // Pass menu data to JavaScript
+        $menu_items = $this->get_all_menu_items();
+        wp_localize_script('wpca-menu-customizer', 'wpcaMenuData', array(
+            'menuItems' => $menu_items,
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('wpca_menu_order_nonce')
+        ));
     }
     
     /**

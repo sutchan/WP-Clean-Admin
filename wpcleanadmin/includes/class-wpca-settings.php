@@ -495,7 +495,7 @@ class WPCA_Settings {
      * Render Hide Admin Bar Items field.
      */
     /**
-     * Render Menu Order field
+     * Render Menu Order field with nested submenu support
      */
     public function menu_order_render() {
         $options = $this->options;
@@ -519,6 +519,15 @@ class WPCA_Settings {
                 $submenu_items[$item['parent']][$slug] = $item;
             }
         }
+
+        // Prepare hierarchical structure
+        $hierarchical_items = [];
+        foreach ($top_level_items as $slug => $item) {
+            $hierarchical_items[$slug] = $item;
+            if (isset($submenu_items[$slug])) {
+                $hierarchical_items[$slug]['children'] = $submenu_items[$slug];
+            }
+        }
         ?>
         <div class="wpca-menu-order-wrapper">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
@@ -527,96 +536,117 @@ class WPCA_Settings {
                     <?php _e('Reset to Default', 'wp-clean-admin'); ?>
                 </button>
             </div>
-            <ul id="wpca-menu-order" class="wpca-menu-sortable">
-                <?php 
-                // Combine all menu items (top level and submenus) into a single flat list
-                $all_items = [];
-                
-                // First add top level items in saved order
-                foreach ($menu_order as $item_slug) {
-                    if (isset($top_level_items[$item_slug])) {
-                        $all_items[$item_slug] = $top_level_items[$item_slug];
-                        
-                        // Add submenu items in saved order
-                        if (isset($submenu_items[$item_slug])) {
-                            $parent_order = $submenu_order[$item_slug] ?? [];
-                            foreach ($parent_order as $sub_slug) {
-                                if (isset($submenu_items[$item_slug][$item_slug.'|'.$sub_slug])) {
-                                    $all_items[$item_slug.'|'.$sub_slug] = $submenu_items[$item_slug][$item_slug.'|'.$sub_slug];
-                                }
+            <div class="wpca-menu-container">
+                <ul id="wpca-menu-order" class="wpca-menu-sortable">
+                    <?php 
+                    // Render hierarchical menu structure
+                    $render_menu_items = function($items, $parent_slug = '') use (&$render_menu_items, $options) {
+                        foreach ($items as $slug => $item) {
+                            $is_submenu = !empty($item['parent']);
+                            $level = $is_submenu ? 1 : 0;
+                            
+                            echo '<li class="menu-item" data-menu-slug="'.esc_attr($slug).'" data-item-type="'.($is_submenu ? 'sub' : 'top').'"';
+                            echo $is_submenu ? ' data-parent-slug="'.esc_attr($item['parent']).'"' : '';
+                            echo '>';
+                            
+                            // Menu item handle
+                            echo '<div class="menu-item-handle">';
+                            echo '<span class="dashicons '.($is_submenu ? 'dashicons-arrow-right' : 'dashicons-menu').'"></span>';
+                            echo '<span class="menu-item-title">'.esc_html(wp_strip_all_tags($item['title'])).'</span>';
+                            
+                            // Toggle submenu button
+                            if (isset($item['children']) && !empty($item['children'])) {
+                                echo '<button class="toggle-submenu dashicons dashicons-arrow-down"></button>';
                             }
-                        }
-                    }
-                }
-                
-                // Then add remaining top level items not in saved order
-                foreach ($top_level_items as $item_slug => $item) {
-                    if (!in_array($item_slug, $menu_order)) {
-                        $all_items[$item_slug] = $item;
-                        
-                        // Add submenu items not in saved order
-                        if (isset($submenu_items[$item_slug])) {
-                            foreach ($submenu_items[$item_slug] as $sub_slug => $sub_item) {
-                                $all_items[$sub_slug] = $sub_item;
+                            echo '</div>';
+                            
+                            // Horizontal toggle switch
+                            echo '<div class="wpca-horizontal-toggle">';
+                            echo '<input type="checkbox" name="wpca_settings[menu_hidden_items][]" value="'.esc_attr($slug).'" ';
+                            echo isset($options['menu_hidden_items']) && in_array($slug, $options['menu_hidden_items']) ? 'checked' : '';
+                            echo '>';
+                            echo '<label for="toggle-'.esc_attr($slug).'" class="toggle-slider">';
+                            echo '<span class="toggle-handle"></span>';
+                            echo '</label>';
+                            echo '</div>';
+                            
+                            // Hidden input for order
+                            echo '<input type="hidden" name="wpca_settings[menu_order][]" value="'.esc_attr($slug).'">';
+                            
+                            // Submenu items
+                            if (isset($item['children']) && !empty($item['children'])) {
+                                echo '<ul class="submenu-items wpca-submenu-sortable">';
+                                $render_menu_items($item['children'], $slug);
+                                echo '</ul>';
                             }
+                            
+                            echo '</li>';
                         }
+                    };
+                    
+                    $render_menu_items($hierarchical_items);
+                    ?>
+                </ul>
+            </div>
+            
+            <input type="hidden" id="wpca_menu_order" name="wpca_settings[menu_order]" value="">
+            <input type="hidden" id="wpca_submenu_order" name="wpca_settings[submenu_order]" value="">
+            
+            <script type="text/javascript">
+            jQuery(document).ready(function($) {
+                // Initialize sortable for main menu
+                $('.wpca-menu-sortable').sortable({
+                    handle: '.menu-item-handle',
+                    placeholder: 'menu-item-placeholder',
+                    update: function() {
+                        saveMenuOrder();
                     }
+                });
+                
+                // Initialize sortable for submenus
+                $('.wpca-submenu-sortable').sortable({
+                    handle: '.menu-item-handle',
+                    connectWith: '.wpca-submenu-sortable',
+                    placeholder: 'submenu-item-placeholder',
+                    update: function() {
+                        saveMenuOrder();
+                    }
+                });
+                
+                // Toggle submenu visibility
+                $(document).on('click', '.toggle-submenu', function(e) {
+                    e.preventDefault();
+                    $(this).toggleClass('dashicons-arrow-down dashicons-arrow-right')
+                           .closest('.menu-item').find('.submenu-items').toggleClass('expanded');
+                });
+                
+                // Save menu order function
+                function saveMenuOrder() {
+                    var menuOrder = [];
+                    var submenuOrder = {};
+                    
+                    $('.wpca-menu-sortable > .menu-item').each(function() {
+                        var slug = $(this).data('menu-slug');
+                        menuOrder.push(slug);
+                        
+                        // Get submenu order if exists
+                        var submenuItems = $(this).find('.submenu-items > .menu-item');
+                        if (submenuItems.length > 0) {
+                            submenuOrder[slug] = [];
+                            submenuItems.each(function() {
+                                submenuOrder[slug].push($(this).data('menu-slug'));
+                            });
+                        }
+                    });
+                    
+                    $('#wpca_menu_order').val(JSON.stringify(menuOrder));
+                    $('#wpca_submenu_order').val(JSON.stringify(submenuOrder));
                 }
                 
-                // Render items with hierarchy
-                $render_menu_items = function($items, $level = 0) use (&$render_menu_items) {
-                    foreach ($items as $slug => $item) {
-                        $is_submenu = $level > 0;
-                        $indent_px = $level * 20; // 每级缩进20px
-                        $indent = str_repeat('&nbsp;&nbsp;&nbsp;&nbsp;', $level);
-                        
-                        echo '<li data-menu-slug="'.esc_attr($slug).'" data-item-type="'.($is_submenu ? 'sub' : 'top').'"';
-                        echo $is_submenu ? ' data-parent-slug="'.esc_attr($item['parent']).'"' : '';
-                        echo $is_submenu ? ' class="submenu-item level-'.$level.'"' : '';
-                        echo ' style="padding-left: '.$indent_px.'px; display: flex; justify-content: space-between; align-items: center;"';
-                        echo '>';
-                        echo '<span style="display: flex; align-items: center;">';
-                        echo '<span class="dashicons dashicons-menu"></span> ';
-                        // Remove all span tags and their contents
-                        $clean_title = preg_replace('/<span[^>]*>.*?<\/span>/is', '', $item['title']);
-                        // Remove any remaining HTML tags
-                        $clean_title = wp_strip_all_tags($clean_title);
-                        // Trim whitespace
-                        $clean_title = trim($clean_title);
-                        echo $indent . esc_html($clean_title);
-                        echo '</span>';
-                        echo '<div class="wpca-slide-toggle">';
-                        echo '<input type="checkbox" name="wpca_settings[menu_hidden_items][]" value="'.esc_attr($slug).'" ';
-                        echo isset($options['menu_hidden_items']) && in_array($slug, $options['menu_hidden_items']) ? 'checked' : '';
-                        echo '>';
-                        echo '<span class="slider"></span>';
-                        echo '</div>';
-                        echo '<input type="hidden" name="wpca_settings[menu_order][]" value="'.esc_attr($slug).'">';
-                        echo '</li>';
-                        
-                        // Render children if exists
-                        if (!empty($item['children'])) {
-                            $render_menu_items($item['children'], $level + 1);
-                        }
-                    }
-                };
-                
-                // Build hierarchical menu structure
-                $hierarchical_items = [];
-                foreach ($all_items as $slug => $item) {
-                    if (empty($item['parent'])) {
-                        $hierarchical_items[$slug] = $item;
-                    } else {
-                        if (!isset($hierarchical_items[$item['parent']]['children'])) {
-                            $hierarchical_items[$item['parent']]['children'] = [];
-                        }
-                        $hierarchical_items[$item['parent']]['children'][$slug] = $item;
-                    }
-                }
-                
-                $render_menu_items($hierarchical_items);
-                ?>
-            </ul>
+                // Initialize with current order
+                saveMenuOrder();
+            });
+            </script>
         </div>
         
 

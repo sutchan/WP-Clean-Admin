@@ -287,8 +287,8 @@ body.wpca-theme-dark {
 .wpca-menu-order {
     list-style: none;
     padding: 0;
-    margin: 10px 0 0;
-    max-width: 600px;
+    margin: 15px 0 0;
+    max-width: 800px;
     border: none;
     background: transparent;
 }
@@ -296,22 +296,108 @@ body.wpca-theme-dark {
 .wpca-menu-sortable {
     list-style: none;
     padding: 0;
-    margin: 10px 0 0;
-    max-width: 600px;
+    margin: 0;
+    max-width: 800px;
     border: 1px solid var(--wpca-border-color);
     border-radius: var(--wpca-border-radius-small);
     background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 .wpca-menu-sortable li {
-    padding: 12px 15px;
+    padding: 10px 15px;
     margin: 0;
     background: #fff;
-    border-bottom: 1px solid var(--wpca-border-color);
     cursor: move;
     display: flex;
     align-items: center;
     transition: all 0.2s ease;
+    border-bottom: 1px solid var(--wpca-border-color);
+}
+
+.wpca-menu-sortable li:last-child {
+    border-bottom: none;
+}
+
+.menu-item-handle {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+    padding: 5px 0;
+    position: relative;
+    border: 0px !important;
+}
+
+.wpca-horizontal-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    min-width: 50px;
+}
+
+.wpca-menu-sortable li:hover {
+    background: rgba(var(--wpca-primary-color-rgb), 0.05);
+}
+
+.wpca-menu-sortable li.ui-sortable-helper {
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transform: scale(1.01);
+    z-index: 100;
+}
+
+.wpca-menu-sortable li.ui-sortable-placeholder {
+    background: rgba(var(--wpca-primary-color-rgb), 0.1);
+    border: 0px dashed var(--wpca-primary-color);
+}
+
+.wpca-menu-sortable .dashicons-menu {
+    color: var(--wpca-primary-color);
+    cursor: grab;
+}
+
+.wpca-menu-sortable .dashicons-menu:active {
+    cursor: grabbing;
+}
+
+.toggle-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: relative;
+    display: block;
+    width: 40px;
+    height: 24px;
+    background: #ddd;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.toggle-handle {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.toggle-input:checked + .toggle-slider {
+    background: var(--wpca-primary-color);
+}
+
+.toggle-input:checked + .toggle-slider .toggle-handle {
+    transform: translateX(26px);
 }
 
 .wpca-menu-sortable li:last-child {
@@ -351,7 +437,7 @@ body.wpca-theme-dark {
 .wpca-menu-sortable li.ui-sortable-placeholder {
     visibility: visible !important;
     background: rgba(74, 144, 226, 0.1);
-    border: 1px dashed var(--wpca-primary-color);
+    border: 0px dashed var(--wpca-primary-color);
 }
 
 .wpca-menu-sortable .dashicons-menu {
@@ -362,59 +448,4 @@ body.wpca-theme-dark {
 
 .wpca-menu-sortable .dashicons-menu:active {
     cursor: grabbing;
-}
-
-/* Slide Toggle Switch Styles */
-.wpca-slide-toggle {
-    position: absolute;
-    display: inline-block;
-    width: 52px;
-    height: 26px;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.wpca-slide-toggle input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.wpca-slide-toggle .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #e0e0e0;
-    transition: .4s;
-    border-radius: 34px;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.wpca-slide-toggle .slider:before {
-    position: absolute;
-    content: "";
-    height: 22px;
-    width: 22px;
-    left: 2px;
-    bottom: 2px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-.wpca-slide-toggle input:checked + .slider {
-    background-color: var(--wpca-primary-color);
-}
-
-.wpca-slide-toggle input:checked + .slider:before {
-    transform: translateX(26px);
-}
-
-.wpca-slide-toggle input:focus + .slider {
-    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.3);
 }
