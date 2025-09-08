@@ -73,6 +73,13 @@ class WPCA_Menu_Customizer {
                     // Reorder based on saved order
                     foreach ($ordered_slugs as $sub_slug) {
                         foreach ($original_submenu as $index => $sub_item) {
+                            // Skip hidden menu items
+                            if (isset($options['menu_hidden_items']) && 
+                                in_array($parent_slug.'|'.$sub_slug, $options['menu_hidden_items'])) {
+                                unset($original_submenu[$index]);
+                                continue;
+                            }
+                            
                             if ($sub_item[2] === $sub_slug) {
                                 $new_submenu[] = $sub_item;
                                 unset($original_submenu[$index]);
@@ -81,8 +88,16 @@ class WPCA_Menu_Customizer {
                         }
                     }
                     
-                    // Add any remaining items
-                    $submenu[$parent_slug] = array_merge($new_submenu, $original_submenu);
+                    // Add any remaining items (excluding hidden ones)
+                    foreach ($original_submenu as $index => $sub_item) {
+                        if (isset($options['menu_hidden_items']) && 
+                            in_array($parent_slug.'|'.$sub_item[2], $options['menu_hidden_items'])) {
+                            continue;
+                        }
+                        $new_submenu[] = $sub_item;
+                    }
+                    
+                    $submenu[$parent_slug] = $new_submenu;
                 }
             }
         }
@@ -108,13 +123,23 @@ class WPCA_Menu_Customizer {
         // Create new order based on saved settings
         $new_order = [];
         foreach ($custom_order as $menu_slug) {
+            // Skip hidden menu items
+            if (isset($options['menu_hidden_items']) && in_array($menu_slug, $options['menu_hidden_items'])) {
+                continue;
+            }
+            
             if (isset($slug_to_order_map[$menu_slug])) {
                 $new_order[] = $slug_to_order_map[$menu_slug];
             }
         }
         
-        // Add any menu items that weren't in the saved order
+        // Add any menu items that weren't in the saved order (excluding hidden ones)
         foreach ($menu_order as $item) {
+            $menu_slug = $this->get_menu_slug_from_item($item);
+            if (isset($options['menu_hidden_items']) && in_array($menu_slug, $options['menu_hidden_items'])) {
+                continue;
+            }
+            
             if (!in_array($item, $new_order)) {
                 $new_order[] = $item;
             }
@@ -265,12 +290,32 @@ class WPCA_Menu_Customizer {
         
         // Save updated settings
         $options['menu_hidden_items'] = array_values($hidden_items);
+        
+        // Ensure menu order is updated when items are hidden/shown
+        if (isset($options['menu_order'])) {
+            if ($hidden) {
+                // Remove from menu order if hidden
+                $options['menu_order'] = array_diff($options['menu_order'], [$menu_slug]);
+            } else {
+                // Add back to menu order if shown (at the end)
+                if (!in_array($menu_slug, $options['menu_order'])) {
+                    $options['menu_order'][] = $menu_slug;
+                }
+            }
+        }
+        
         update_option('wpca_settings', $options);
         
+        // Return localized status text
+        $status_text = $hidden ? 
+            (function_exists('get_locale') && get_locale() === 'zh_CN' ? '(已隐藏)' : '(Hidden)') : 
+            '';
+            
         wp_send_json_success([
             'menu_slug' => $menu_slug,
             'hidden' => $hidden,
-            'hidden_items' => $hidden_items
+            'hidden_items' => $hidden_items,
+            'status_text' => $status_text
         ]);
     }
     
