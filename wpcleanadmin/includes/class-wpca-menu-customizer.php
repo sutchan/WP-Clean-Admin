@@ -10,11 +10,8 @@ if (!defined('ABSPATH')) {
 }
 
 class WPCA_Menu_Customizer {
-    private $menu_settings_key = 'wpca_menu_settings';
-    
     public function __construct() {
         add_action('admin_menu', [$this, 'init_menu_customization']);
-        add_action('admin_init', [$this, 'register_menu_settings']);
     }
     
     /**
@@ -28,19 +25,16 @@ class WPCA_Menu_Customizer {
         // Get saved menu settings from wpca_settings option
         $options = get_option('wpca_settings', []);
         
-        // Apply menu customizations
+        // 菜单排序功能
         if (!empty($options['menu_order'])) {
-            add_filter('custom_menu_order', '__return_true'); // Enable custom menu order
+            add_filter('custom_menu_order', '__return_true');
             add_filter('menu_order', [$this, 'reorder_admin_menu']);
         }
         
-        // For backward compatibility, also check the old settings format
-        $menu_settings = get_option($this->menu_settings_key, []);
-        if (!empty($menu_settings['hidden_items'])) {
-            add_action('admin_head', [$this, 'hide_menu_items']);
-        }
+        // 初始化菜单项显示控制功能
+        add_action('admin_head', [$this, 'hide_menu_items']);
         
-        // Add JavaScript for drag and drop functionality
+        // 加载脚本
         add_action('admin_enqueue_scripts', [$this, 'enqueue_menu_scripts']);
     }
     
@@ -52,6 +46,10 @@ class WPCA_Menu_Customizer {
         
         // Get settings from wpca_settings option
         $options = get_option('wpca_settings', []);
+        
+        // 总开关不再影响菜单排序功能
+        // 菜单排序将始终保持激活状态
+        
         $custom_order = isset($options['menu_order']) ? $options['menu_order'] : [];
         $submenu_order = isset($options['submenu_order']) ? $options['submenu_order'] : [];
         
@@ -230,31 +228,22 @@ class WPCA_Menu_Customizer {
      * Hide menu items via CSS
      */
     public function hide_menu_items() {
-        $menu_settings = get_option($this->menu_settings_key, []);
-        if (empty($menu_settings['hidden_items'])) {
+        // 获取设置
+        $options = get_option('wpca_settings', []);
+        
+        // 检查是否有需要隐藏的菜单项
+        if (empty($options['menu_toggles'])) {
             return;
         }
         
         echo '<style>';
-        foreach ($menu_settings['hidden_items'] as $menu_slug) {
-            echo "#toplevel_page_{$menu_slug}, #menu-{$menu_slug} { display: none !important; }";
+        foreach ($options['menu_toggles'] as $menu_slug => $is_visible) {
+            // wpca-toggle-slider 开关直接控制菜单项显示/隐藏
+            if (!$is_visible) {
+                echo "#toplevel_page_{$menu_slug}, #menu-{$menu_slug} { display: none !important; }";
+            }
         }
         echo '</style>';
-    }
-    
-    /**
-     * Register menu settings
-     */
-    public function register_menu_settings() {
-        register_setting(
-            'wpca_menu_group',
-            $this->menu_settings_key,
-            [
-                'type' => 'array',
-                'sanitize_callback' => [$this, 'sanitize_menu_settings'],
-                'default' => []
-            ]
-        );
     }
     
     /**
@@ -267,8 +256,8 @@ class WPCA_Menu_Customizer {
             $output['order'] = array_map('sanitize_text_field', $input['order']);
         }
         
-        if (!empty($input['hidden_items'])) {
-            $output['hidden_items'] = array_map('sanitize_text_field', $input['hidden_items']);
+        if (!empty($input['menu_toggles'])) {
+            $output['menu_toggles'] = array_map('boolval', $input['menu_toggles']);
         }
         
         return $output;

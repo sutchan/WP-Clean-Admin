@@ -95,13 +95,14 @@ class WPCA_Settings {
     public static function get_default_settings() {
         return array(
             'current_tab' => 'tab-general',
-            'menu_toggle' => 1,
+            'menu_toggle' => 1, // Default to enabled
             'menu_visibility' => array(), // Stores visibility state for each menu item
             'hide_dashboard_widgets' => array(),
             'theme_style'            => 'default',
             'hide_admin_menu_items'  => array(),
             'hide_admin_bar_items'   => array(),
-            'menu_order'            => array(),    // New: Menu order settings
+            'menu_order'            => array(),    // Menu order settings
+            'submenu_order'         => array(),    // Submenu order settings
             'layout_density'         => 'standard', // standard, compact, spacious
             'border_radius_style'    => 'small',    // none, small, large
             'shadow_style'           => 'subtle',   // none, subtle
@@ -131,7 +132,13 @@ class WPCA_Settings {
      * Initialize settings.
      */
     public function settings_init() {
-        register_setting( 'wpca_settings', 'wpca_settings' );
+        register_setting( 
+            'wpca_settings', 
+            'wpca_settings',
+            array(
+                'sanitize_callback' => array($this, 'sanitize_settings')
+            )
+        );
 
         // Main section
         add_settings_section(
@@ -882,6 +889,55 @@ class WPCA_Settings {
             <!-- Add more admin bar items as needed. Use the node ID. -->
         </fieldset>
         <?php
+    }
+
+    /**
+     * Sanitize plugin settings before saving
+     */
+    public function sanitize_settings($input) {
+        $output = array();
+        
+        // Sanitize menu toggle state
+        $output['menu_toggle'] = isset($input['menu_toggle']) ? (int)$input['menu_toggle'] : 0;
+        
+        // Sanitize menu visibility states
+        $output['menu_visibility'] = isset($input['menu_visibility']) ? 
+            array_map('intval', $input['menu_visibility']) : 
+            array();
+        
+        // Sanitize menu order
+        $output['menu_order'] = isset($input['menu_order']) ? 
+            array_map('sanitize_text_field', $input['menu_order']) : 
+            array();
+            
+        // Sanitize submenu order
+        $output['submenu_order'] = isset($input['submenu_order']) ? 
+            array_map('sanitize_text_field', $input['submenu_order']) : 
+            array();
+        
+        // Sanitize other settings
+        $output['current_tab'] = isset($input['current_tab']) ? sanitize_text_field($input['current_tab']) : 'tab-general';
+        $output['hide_dashboard_widgets'] = isset($input['hide_dashboard_widgets']) ? 
+            array_map('sanitize_text_field', $input['hide_dashboard_widgets']) : 
+            array();
+        $output['theme_style'] = isset($input['theme_style']) ? sanitize_text_field($input['theme_style']) : 'default';
+        $output['hide_admin_menu_items'] = isset($input['hide_admin_menu_items']) ? 
+            array_map('sanitize_text_field', $input['hide_admin_menu_items']) : 
+            array();
+        $output['hide_admin_bar_items'] = isset($input['hide_admin_bar_items']) ? 
+            array_map('sanitize_text_field', $input['hide_admin_bar_items']) : 
+            array();
+        $output['layout_density'] = isset($input['layout_density']) ? sanitize_text_field($input['layout_density']) : 'standard';
+        $output['border_radius_style'] = isset($input['border_radius_style']) ? sanitize_text_field($input['border_radius_style']) : 'small';
+        $output['shadow_style'] = isset($input['shadow_style']) ? sanitize_text_field($input['shadow_style']) : 'subtle';
+        $output['primary_color'] = isset($input['primary_color']) ? sanitize_text_field($input['primary_color']) : '#4A90E2';
+        $output['background_color'] = isset($input['background_color']) ? sanitize_text_field($input['background_color']) : '#F8F9FA';
+        $output['text_color'] = isset($input['text_color']) ? sanitize_text_field($input['text_color']) : '#2D3748';
+        $output['font_stack'] = isset($input['font_stack']) ? sanitize_text_field($input['font_stack']) : 'system';
+        $output['font_size_base'] = isset($input['font_size_base']) ? sanitize_text_field($input['font_size_base']) : 'medium';
+        $output['icon_style'] = isset($input['icon_style']) ? sanitize_text_field($input['icon_style']) : 'dashicons';
+        
+        return $output;
     }
 
     /**
