@@ -332,3 +332,29 @@ msgstr "If you find this plugin useful, please consider leaving a review on Word
 
 msgid "Rate on WordPress.org"
 msgstr "Rate on WordPress.org"
+
+# Menu Customizer strings
+msgid "WP Clean Admin - Custom Menu Order:"
+msgstr "WP Clean Admin - Custom Menu Order:"
+
+msgid "WP Clean Admin - Original Menu Order:"
+msgstr "WP Clean Admin - Original Menu Order:"
+
+msgid "WP Clean Admin - Global Menu:"
+msgstr "WP Clean Admin - Global Menu:"
+
+msgid "WP Clean Admin - Slug to Order Map:"
+msgstr "WP Clean Admin - Slug to Order Map:"
+
+msgid "WP Clean Admin - New Menu Order:"
+msgstr "WP Clean Admin - New Menu Order:"
+
+msgid "Menu items reordered"
+msgstr "Menu items reordered"
+
+# Menu Toggle Wrapper strings
+msgid "Enable Menu Customization"
+msgstr "Enable Menu Customization"
+
+msgid "Toggle to show/hide and reorder admin menu items"
+msgstr "Toggle to show/hide and reorder admin menu items"

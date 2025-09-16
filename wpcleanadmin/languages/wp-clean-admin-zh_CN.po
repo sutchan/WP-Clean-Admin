@@ -332,3 +332,29 @@ msgstr "如果您觉得这个插件有用，请在WordPress.org上留下评价�
 
 msgid "Rate on WordPress.org"
 msgstr "在WordPress.org上评分"
+
+# 菜单自定义器字符串
+msgid "WP Clean Admin - Custom Menu Order:"
+msgstr "WP Clean Admin - 自定义菜单顺序："
+
+msgid "WP Clean Admin - Original Menu Order:"
+msgstr "WP Clean Admin - 原始菜单顺序："
+
+msgid "WP Clean Admin - Global Menu:"
+msgstr "WP Clean Admin - 全局菜单："
+
+msgid "WP Clean Admin - Slug to Order Map:"
+msgstr "WP Clean Admin - Slug到顺序映射："
+
+msgid "WP Clean Admin - New Menu Order:"
+msgstr "WP Clean Admin - 新菜单顺序："
+
+msgid "Menu items reordered"
+msgstr "菜单项已重新排序"
+
+# 菜单切换包装器字符串
+msgid "Enable Menu Customization"
+msgstr "启用菜单自定义"
+
+msgid "Toggle to show/hide and reorder admin menu items"
+msgstr "切换以显示/隐藏和重新排序管理菜单项"

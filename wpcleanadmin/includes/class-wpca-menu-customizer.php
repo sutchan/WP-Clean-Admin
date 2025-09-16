@@ -84,9 +84,9 @@ class WPCA_Menu_Customizer {
         }
         
         // Debug - log information for troubleshooting
-        error_log('WP Clean Admin - Custom Menu Order: ' . print_r($custom_order, true));
-        error_log('WP Clean Admin - Original Menu Order: ' . print_r($menu_order, true));
-        error_log('WP Clean Admin - Global Menu: ' . print_r($menu, true));
+        error_log(__('WP Clean Admin - Custom Menu Order:', 'wp-clean-admin') . ' ' . print_r($custom_order, true));
+        error_log(__('WP Clean Admin - Original Menu Order:', 'wp-clean-admin') . ' ' . print_r($menu_order, true));
+        error_log(__('WP Clean Admin - Global Menu:', 'wp-clean-admin') . ' ' . print_r($menu, true));
         
         // Create a mapping between menu slugs and their actual menu_order values
         $slug_to_order_map = [];
@@ -99,7 +99,7 @@ class WPCA_Menu_Customizer {
             }
         }
         
-        error_log('WP Clean Admin - Slug to Order Map: ' . print_r($slug_to_order_map, true));
+        error_log(__('WP Clean Admin - Slug to Order Map:', 'wp-clean-admin') . ' ' . print_r($slug_to_order_map, true));
         
         // Create new order based on saved settings
         $new_order = [];
@@ -116,7 +116,7 @@ class WPCA_Menu_Customizer {
             }
         }
         
-        error_log('WP Clean Admin - New Menu Order: ' . print_r($new_order, true));
+        error_log(__('WP Clean Admin - New Menu Order:', 'wp-clean-admin') . ' ' . print_r($new_order, true));
         return $new_order;
     }
     
@@ -211,6 +211,9 @@ class WPCA_Menu_Customizer {
                             $('.wpca-menu-sortable li').each(function() {
                                 menuOrder.push($(this).data('menu-slug'));
                             });
+                            
+                            // 添加翻译字符串，但不影响功能
+                            // <?php _e('Menu items reordered', 'wp-clean-admin'); ?>
                             
                             // Update hidden field with new order
                             $('#wpca_menu_order').val(JSON.stringify(menuOrder));

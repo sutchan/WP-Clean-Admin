@@ -300,3 +300,29 @@ msgstr ""
 
 msgid "Font Size"
 msgstr ""
+
+# Menu Customizer strings
+msgid "WP Clean Admin - Custom Menu Order:"
+msgstr ""
+
+msgid "WP Clean Admin - Original Menu Order:"
+msgstr ""
+
+msgid "WP Clean Admin - Global Menu:"
+msgstr ""
+
+msgid "WP Clean Admin - Slug to Order Map:"
+msgstr ""
+
+msgid "WP Clean Admin - New Menu Order:"
+msgstr ""
+
+msgid "Menu items reordered"
+msgstr ""
+
+# Menu Toggle Wrapper strings
+msgid "Enable Menu Customization"
+msgstr ""
+
+msgid "Toggle to show/hide and reorder admin menu items"
+msgstr ""

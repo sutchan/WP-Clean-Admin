@@ -649,7 +649,14 @@ class WPCA_Settings {
                         echo $is_submenu ? ' class="submenu-item level-'.$level.'"' : '';
                         echo '>';
                         echo '<span class="dashicons dashicons-menu"></span> ';
-                        echo $indent . esc_html(preg_replace('/\s*[\d]+\s*/', '', strip_tags($item['title'])));
+                        // Clean up menu title - remove numbers and additional info
+                        $clean_title = preg_replace([
+                            '/\s*[\d]+\s*/',  // Remove numbers
+                            '/条评论待审/',    // Remove Chinese status
+                            '/待审$/',         // Remove trailing status
+                            '/条$/'            // Remove counter
+                        ], '', strip_tags($item['title']));
+                        echo $indent . esc_html(trim($clean_title));
                         echo '<label class="wpca-menu-toggle-switch">';
                         echo '<input type="checkbox" name="wpca_settings[menu_visibility]['.esc_attr($slug).']" value="1" ' 
                             . checked( !isset($options['menu_visibility'][$slug]) || $options['menu_visibility'][$slug], true, false ) . '>';
