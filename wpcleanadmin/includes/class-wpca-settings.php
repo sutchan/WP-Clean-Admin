@@ -62,6 +62,8 @@ class WPCA_Settings {
     public static function get_default_settings() {
         return array(
             'current_tab' => 'tab-general',
+            'menu_toggle' => 1,
+            'menu_visibility' => array(), // Stores visibility state for each menu item
             'hide_dashboard_widgets' => array(),
             'theme_style'            => 'default',
             'hide_admin_menu_items'  => array(),
@@ -216,14 +218,6 @@ class WPCA_Settings {
         );
 
         // Menu Customization fields
-        add_settings_field(
-            'wpca_hide_admin_menu_items',
-            __( 'Hide Admin Menu Items', 'wp-clean-admin' ),
-            array( $this, 'hide_admin_menu_items_render' ),
-            'wpca_settings_menu',
-            'wpca_settings_menu_section'
-        );
-
         add_settings_field(
             'wpca_menu_order',
             __( 'Menu Order', 'wp-clean-admin' ),
@@ -523,6 +517,33 @@ class WPCA_Settings {
         $menu_order = $options['menu_order'] ?? array();
         $submenu_order = $options['submenu_order'] ?? array();
         
+        // Ensure menu_toggle is always set
+        if (!isset($options['menu_toggle'])) {
+            $options['menu_toggle'] = 1;
+        }
+        
+        echo '<div class="wpca-menu-toggle-wrapper">';
+        echo '<label>';
+        echo '<input type="checkbox" id="wpca-menu-toggle" name="wpca_settings[menu_toggle]" value="1" ' . checked( $options['menu_toggle'], 1, false ) . '>';
+        echo __('Enable Menu Customization', 'wp-clean-admin');
+        echo '</label>';
+        echo '<p class="description">' . __('Toggle to show/hide and reorder admin menu items', 'wp-clean-admin') . '</p>';
+        echo '</div>';
+        
+        // Add script to handle toggle functionality
+        echo '<script>
+        jQuery(document).ready(function($) {
+            $("#wpca-menu-toggle").on("change", function() {
+                $(".wpca-menu-sortable").toggle(this.checked);
+                $(".wpca-menu-order-header").toggle(this.checked);
+            }).trigger("change");
+        });
+        </script>';
+        
+        echo '<ul id="wpca-menu-order" class="wpca-menu-sortable" style="' . (isset($options['menu_toggle']) && !$options['menu_toggle'] ? 'display:none;' : '') . '">';
+        
+        echo '<div class="wpca-menu-order-wrapper" style="' . (isset($options['menu_toggle']) && !$options['menu_toggle'] ? 'display:none;' : '') . '">';
+        
         // Get all menu items including top-level and submenus
         $menu_customizer = new WPCA_Menu_Customizer();
         $all_menu_items = $menu_customizer->get_all_menu_items();
@@ -595,7 +616,12 @@ class WPCA_Settings {
                         echo $is_submenu ? ' class="submenu-item level-'.$level.'"' : '';
                         echo '>';
                         echo '<span class="dashicons dashicons-menu"></span> ';
-                        echo $indent . esc_html(preg_replace('/<span.*?<\/span>/', '', $item['title']));
+                        echo $indent . esc_html(preg_replace('/\s*[\d]+\s*/', '', strip_tags($item['title'])));
+                        echo '<label class="wpca-menu-toggle-switch">';
+                        echo '<input type="checkbox" name="wpca_settings[menu_visibility]['.esc_attr($slug).']" value="1" ' 
+                            . checked( !isset($options['menu_visibility'][$slug]) || $options['menu_visibility'][$slug], true, false ) . '>';
+                        echo '<span class="wpca-toggle-slider"></span>';
+                        echo '</label>';
                         echo '<input type="hidden" name="wpca_settings[menu_order][]" value="'.esc_attr($slug).'">';
                         echo '</li>';
                         
@@ -721,8 +747,17 @@ class WPCA_Settings {
                 <div class="wpca-tab" data-tab="tab-about"><?php _e('About', 'wp-clean-admin'); ?></div>
             </div>
             
-            <form action="options.php" method="post">
+            <form action="options.php" method="post" id="wpca-settings-form">
                 <input type="hidden" id="wpca-current-tab" name="wpca_settings[current_tab]" value="<?php echo esc_attr($this->options['current_tab'] ?? 'tab-general'); ?>">
+                <script>
+                jQuery(document).ready(function($) {
+                    // Update current tab before form submission
+                    $('#wpca-settings-form').on('submit', function() {
+                        var activeTab = $('.wpca-tab.active').data('tab');
+                        $('#wpca-current-tab').val(activeTab);
+                    });
+                });
+                </script>
                 <?php
                 settings_fields( 'wpca_settings' );
                 
