@@ -24,7 +24,34 @@ class WPCA_Settings {
         add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
         add_action( 'admin_init', array( $this, 'settings_init' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+        add_action( 'wp_ajax_wpca_save_tab_preference', array( $this, 'ajax_save_tab_preference' ) );
         $this->options = self::get_options(); // Load options with defaults
+    }
+    
+    /**
+     * AJAX handler to save tab preference
+     */
+    public function ajax_save_tab_preference() {
+        // Check nonce for security
+        check_ajax_referer('wpca_settings-options');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error('权限不足');
+            return;
+        }
+        
+        $tab = isset($_POST['tab']) ? sanitize_text_field($_POST['tab']) : 'tab-general';
+        
+        // Get current options
+        $options = self::get_options();
+        
+        // Update tab preference
+        $options['current_tab'] = $tab;
+        
+        // Save updated options
+        update_option('wpca_settings', $options);
+        
+        wp_send_json_success();
     }
     
     /**
@@ -43,6 +70,12 @@ class WPCA_Settings {
         
         // Enqueue custom script for the settings page
         wp_enqueue_script( 'wpca-settings-script', WPCA_PLUGIN_URL . 'assets/js/wpca-settings.js', array( 'jquery', 'jquery-ui-sortable' ), WPCA_VERSION, true );
+        
+        // Localize script with ajaxurl
+        wp_localize_script( 'wpca-settings-script', 'wpca_settings', array(
+            'ajaxurl' => admin_url( 'admin-ajax.php' ),
+            'current_tab' => $this->options['current_tab'] ?? 'tab-general'
+        ));
     }
 
     /**

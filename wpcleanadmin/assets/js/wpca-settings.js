@@ -5,14 +5,50 @@
 
 jQuery(document).ready(function($) {
     'use strict';
+    
+    // Global variables
+    var ajaxurl = typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php';
+    var debounceTimer;
 
     // ======================================================
     // Settings page tab navigation
     // ======================================================
+    
+    // Set active tab based on hidden input value
+    var currentTab = $('#wpca-current-tab').val() || 'tab-general';
+    $(".wpca-tab, .wpca-tab-content").removeClass("active");
+    $('.wpca-tab[data-tab="' + currentTab + '"]').addClass("active");
+    $("#" + currentTab).addClass("active");
+    
+    // Handle tab clicks
     $(".wpca-tab").click(function() {
+        var tabId = $(this).data("tab");
         $(".wpca-tab, .wpca-tab-content").removeClass("active");
         $(this).addClass("active");
-        $("#" + $(this).data("tab")).addClass("active");
+        $("#" + tabId).addClass("active");
+        
+        // Update hidden input with current tab
+        $('#wpca-current-tab').val(tabId);
+        
+        // Save tab preference immediately
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+            // Only submit if not already submitting from another action
+            if (!$('#wpca-settings-form').data('submitting')) {
+                $('#wpca-settings-form').data('submitting', true);
+                
+                // Use AJAX to save just the tab preference
+                var data = {
+                    'action': 'wpca_save_tab_preference',
+                    'tab': tabId,
+                    'security': $('input[name="_wpnonce"]').val()
+                };
+                
+                $.post(ajaxurl, data, function(response) {
+                    $('#wpca-settings-form').data('submitting', false);
+                });
+            }
+        }, 300);
     });
 
     // ======================================================
@@ -73,6 +109,25 @@ jQuery(document).ready(function($) {
     
     // Future JavaScript interactions will go here.
     // For example, toggling elements, handling live previews in settings, etc.
+
+    // ======================================================
+    // Toggle switch auto-save functionality
+    // ======================================================
+    
+    // Initialize form submission state
+    $('#wpca-settings-form').data('submitting', false);
+    
+    // Handle all toggle switches
+    $('.wpca-toggle-switch input[type="checkbox"], #wpca-menu-toggle').on('change', function() {
+        // Debounce to prevent rapid firing
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function() {
+            if (!$('#wpca-settings-form').data('submitting')) {
+                $('#wpca-settings-form').data('submitting', true);
+                $('#wpca-settings-form').submit();
+            }
+        }, 300);
+    });
 
     // console.log('WP Clean Admin JS Loaded');
 });
