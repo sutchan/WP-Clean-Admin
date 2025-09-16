@@ -272,7 +272,7 @@ body.wpca-theme-dark {
     margin-bottom: 20px;
     padding: 15px;
     background: #f9f9f9;
-    border: 1px solid #ddd;
+    border: 0px solid #ddd;
     border-radius: 4px;
 }
 
@@ -304,78 +304,3 @@ body.wpca-theme-dark {
     justify-content: space-between;
 }
 
-/* Toggle switch styles */
-.wpca-menu-toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 24px;
-    margin-left: 10px;
-}
-
-.wpca-menu-toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.wpca-toggle-slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 24px;
-}
-
-.wpca-toggle-slider:before {
-    position: absolute;
-    content: "";
-    height: 16px;
-    width: 16px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-}
-
-.wpca-menu-toggle-switch input:checked + .wpca-toggle-slider {
-    background-color: #4A90E2;
-}
-
-.wpca-menu-toggle-switch input:checked + .wpca-toggle-slider:before {
-    transform: translateX(26px);
-}
-.wpca-menu-sortable li.submenu-item {
-    padding-left: 30px;
-    border-left: 3px solid #ddd;
-    position: relative;
-}
-.wpca-menu-sortable li.level-1 {
-    padding-left: 45px;
-}
-.wpca-menu-sortable li.level-2 {
-    padding-left: 60px;
-}
-.wpca-menu-sortable li.level-3 {
-    padding-left: 75px;
-}
-.wpca-menu-sortable li:hover {
-    background: #f9f9f9;
-}
-.wpca-menu-sortable .dashicons-menu {
-    margin-right: 10px;
-    color: #999;
-}
-.ui-sortable-helper {
-    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-}
-.ui-sortable-placeholder {
-    visibility: visible !important;
-    background: #f1f1f1;
-    border: 1px dashed #ccc;
-}

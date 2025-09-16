@@ -566,12 +566,97 @@ class WPCA_Settings {
         // Add script to handle toggle functionality
         echo '<script>
         jQuery(document).ready(function($) {
+            // Toggle menu customization visibility with enhanced logic
             $("#wpca-menu-toggle").on("change", function() {
-                $(".wpca-menu-sortable").toggle(this.checked);
-                $(".wpca-menu-order-header").toggle(this.checked);
+                var isEnabled = this.checked;
+                $(".wpca-menu-sortable").toggle(isEnabled);
+                $(".wpca-menu-order-header").toggle(isEnabled);
+                
+                // Show/hide all menu items based on main toggle
+                $(".wpca-menu-toggle-switch input[type=checkbox]").each(function() {
+                    $(this).prop("checked", isEnabled).trigger("change");
+                    $(this).closest(".wpca-menu-toggle-switch")
+                        .toggleClass("checked", isEnabled);
+                });
             }).trigger("change");
+            
+            // Handle individual menu item toggle clicks
+            $(document).on("click", ".wpca-menu-toggle-switch", function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var checkbox = $(this).find("input[type=checkbox]");
+                var newState = !checkbox.prop("checked");
+                checkbox.prop("checked", newState).trigger("change");
+                $(this).toggleClass("checked", newState);
+                
+                // Update main toggle state if needed
+                var allChecked = $(".wpca-menu-toggle-switch input[type=checkbox]").length === 
+                                $(".wpca-menu-toggle-switch input[type=checkbox]:checked").length;
+                $("#wpca-menu-toggle").prop("checked", allChecked);
+            });
+            
+            // Initialize toggle states
+            $(".wpca-menu-toggle-switch").each(function() {
+                var checkbox = $(this).find("input[type=checkbox]");
+                $(this).toggleClass("checked", checkbox.prop("checked"));
+            });
+            
+            // Apply visibility based on saved settings
+            $(".wpca-menu-toggle-switch input[type=checkbox]").on("change", function() {
+                var slug = $(this).closest("li").data("menu-slug");
+                var isVisible = this.checked;
+                // Here you would add code to actually show/hide the menu items
+                // in the WordPress admin based on the slug and isVisible state
+                console.log("Menu item " + slug + " visibility: " + isVisible);
+            });
         });
         </script>';
+        
+        // Add dynamic CSS for toggle switch
+        echo '<style>
+        .wpca-menu-toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+            margin-left: 10px;
+            vertical-align: middle;
+            cursor: pointer;
+        }
+        .wpca-menu-toggle-switch .wpca-toggle-slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            border-radius: 20px;
+            transition: .4s;
+        }
+        .wpca-menu-toggle-switch.checked .wpca-toggle-slider {
+            background-color: #2271b1;
+        }
+        .wpca-menu-toggle-switch .wpca-toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            border-radius: 50%;
+            transition: .4s;
+        }
+        .wpca-menu-toggle-switch.checked .wpca-toggle-slider:before {
+            transform: translateX(20px);
+        }
+        .wpca-menu-toggle-switch input[type="checkbox"] {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+        </style>';
         
         echo '<ul id="wpca-menu-order" class="wpca-menu-sortable" style="' . (isset($options['menu_toggle']) && !$options['menu_toggle'] ? 'display:none;' : '') . '">';
         
@@ -601,6 +686,33 @@ class WPCA_Settings {
                 <button type="button" id="wpca-reset-menu-order" class="button button-secondary">
                     <?php _e('Reset to Default', 'wp-clean-admin'); ?>
                 </button>
+                <script>
+                jQuery(document).ready(function($) {
+                    $("#wpca-reset-menu-order").on("click", function() {
+                        if (confirm("<?php _e('Are you sure you want to reset all menu items to default order and visibility?', 'wp-clean-admin'); ?>")) {
+                            // Reset visibility to default (all enabled)
+                            $(".wpca-menu-toggle-switch input[type=checkbox]").prop("checked", true)
+                                .trigger("change")
+                                .closest(".wpca-menu-toggle-switch")
+                                .addClass("checked");
+                            
+                            // Reset menu order to default WordPress order
+                            var $sortable = $(".wpca-menu-sortable");
+                            $sortable.find("li").sort(function(a, b) {
+                                return $(a).data("menu-slug").localeCompare($(b).data("menu-slug"));
+                            }).appendTo($sortable);
+                            
+                            // Update the hidden fields with new order
+                            $sortable.find("input[name='wpca_settings[menu_order][]']").each(function(index) {
+                                $(this).val($(this).closest("li").data("menu-slug"));
+                            });
+                            
+                            // Also reset the main toggle
+                            $("#wpca-menu-toggle").prop("checked", true).trigger("change");
+                        }
+                    });
+                });
+                </script>
             </div>
             <ul id="wpca-menu-order" class="wpca-menu-sortable">
                 <?php 
