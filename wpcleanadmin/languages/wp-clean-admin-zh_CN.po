@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Clean Admin\n"
-"POT-Creation-Date: 2025-09-07 20:00+0800\n"
-"PO-Revision-Date: 2025-09-07 20:00+0800\n"
-"Last-Translator: CodeBuddy <>\n"
+"Project-Id-Version: WPCleanAdmin\n"
+"POT-Creation-Date: 2025-09-06 23:00+0800\n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
@@ -11,202 +11,52 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 3.4.2\n"
-"X-Poedit-Basepath: ..\n"
-"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-Basepath: \n"
+"X-Poedit-KeywordsList: __;_e;_x\n"
 "X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: *.js\n"
 
-# Core settings
+# 主插件字符串
 msgid "WP Clean Admin Settings"
 msgstr "WP Clean Admin 设置"
 
-msgid "Clean Admin"
-msgstr "简洁后台"
+msgid "WP Clean Admin"
+msgstr "WP Clean Admin"
 
 msgid "You do not have sufficient permissions to access this page."
 msgstr "您没有足够的权限访问此页面。"
 
-msgid "General Settings"
-msgstr "常规设置"
-
 msgid "Configure the appearance and behavior of your admin dashboard."
-msgstr "配置后台界面的外观和行为。"
+msgstr "配置您的管理仪表板的外观和行为。"
 
-msgid "Menu Customization"
-msgstr "菜单自定义"
-
-msgid "Drag and drop to reorder menu items"
-msgstr "拖放以重新排序菜单项"
-
-msgid "Reset to Default"
-msgstr "重置为默认"
-
-msgid "Are you sure you want to reset all menu settings to default?"
-msgstr "您确定要将所有菜单设置重置为默认值吗？"
-
-
-# Visual style translations
-msgid "Visual Style"
-msgstr "视觉风格"
+msgid "Visual Style Customization"
+msgstr "视觉样式定制"
 
 msgid "Customize the overall visual theme and colors."
 msgstr "自定义整体视觉主题和颜色。"
 
-msgid "Theme Style"
-msgstr "主题风格"
-
-msgid "Default (Flat & Clean)"
-msgstr "默认(扁平简洁)"
-
-msgid "Light Blue Gray"
-msgstr "浅蓝灰色"
-
-msgid "Mint Green"
-msgstr "薄荷绿"
-
-msgid "Dark Mode"
-msgstr "暗色模式"
-
-msgid "Custom Colors"
-msgstr "自定义颜色"
-
-msgid "Choose a predefined theme or select \"Custom Colors\" to define your own."
-msgstr "选择预定义主题或选择\"自定义颜色\"来定义您自己的主题。"
-
-msgid "Primary Color"
-msgstr "主色调"
-
-msgid "Choose the primary accent color for links, buttons, and active states."
-msgstr "选择链接、按钮和活动状态的主色调。"
-
-msgid "Background Color"
-msgstr "背景色"
-
-msgid "Choose the main background color of the admin area."
-msgstr "选择后台区域的主要背景色。"
-
-msgid "Text Color"
-msgstr "文字颜色"
-
-msgid "Choose the default text color."
-msgstr "选择默认文字颜色。"
-
-msgid "Shadow Style"
-msgstr "阴影风格"
-
-msgid "None"
-msgstr "无"
-
-msgid "Subtle (Default)"
-msgstr "微妙(默认)"
-
-msgid "Choose the shadow style for elements like post boxes and buttons."
-msgstr "为文章框和按钮等元素选择阴影风格。"
-
-# Layout translations
 msgid "Layout & Typography"
 msgstr "布局与排版"
-
-msgid "Show menu icons"
-msgstr "显示菜单图标"
 
 msgid "Adjust layout density, element rounding, and font styles."
 msgstr "调整布局密度、元素圆角和字体样式。"
 
-msgid "Layout Density"
-msgstr "布局密度"
+msgid "Menu Customization"
+msgstr "菜单定制"
 
-msgid "Compact"
-msgstr "紧凑"
+msgid "Select which admin menu items to hide."
+msgstr "选择要隐藏的管理菜单项。"
 
-msgid "Standard (Default)"
-msgstr "标准(默认)"
+msgid "Admin Bar Customization"
+msgstr "管理工具栏定制"
 
-msgid "Spacious"
-msgstr "宽松"
+msgid "Select which admin bar items to hide."
+msgstr "选择要隐藏的管理工具栏项。"
 
-msgid "Adjust the spacing and padding of elements in the admin interface."
-msgstr "调整后台界面中元素的间距和内边距。"
+msgid "Hide Dashboard Widgets"
+msgstr "隐藏仪表板小工具"
 
-msgid "Border Radius"
-msgstr "边框圆角"
-
-msgid "None (Sharp Corners)"
-msgstr "无(直角)"
-
-msgid "Small (4px, Default)"
-msgstr "小(4px,默认)"
-
-msgid "Large (8px, Rounded)"
-msgstr "大(8px,圆角)"
-
-msgid "Choose the border-radius style for various elements."
-msgstr "为各种元素选择边框圆角样式。"
-
-msgid "Font Stack"
-msgstr "字体堆栈"
-
-msgid "System Default"
-msgstr "系统默认"
-
-msgid "Select the font stack to be used in the admin area."
-msgstr "选择在后台区域使用的字体堆栈。"
-
-msgid "Font Size"
-msgstr "字体大小"
-
-msgid "Small"
-msgstr "小"
-
-msgid "Medium (Default)"
-msgstr "中(默认)"
-
-msgid "Large"
-msgstr "大"
-
-msgid "Adjust the base font size for the admin interface."
-msgstr "调整后台界面的基础字体大小。"
-
-msgid "Icon Style"
-msgstr "图标风格"
-
-msgid "WordPress Dashicons"
-msgstr "WordPress Dashicons"
-
-msgid "Choose the icon set for the admin interface."
-msgstr "为后台界面选择图标集。"
-
-# About page translations
-msgid "About"
-msgstr "关于"
-
-msgid "A plugin to clean up and customize the WordPress admin interface."
-msgstr "一个用于清理和自定义WordPress后台界面的插件。"
-
-msgid "Features"
-msgstr "功能"
-
-msgid "Customize admin menu appearance and order"
-msgstr "自定义后台菜单外观和顺序"
-
-msgid "Hide unnecessary dashboard widgets"
-msgstr "隐藏不必要的仪表盘小工具"
-
-msgid "Customize admin bar items"
-msgstr "自定义工具栏项"
-
-msgid "Visual style customization"
-msgstr "视觉风格自定义"
-
-msgid "Support"
-msgstr "支持"
-
-msgid "For support or feature requests, please visit our website."
-msgstr "如需支持或功能请求，请访问我们的网站。"
-
-# Dashboard widgets
 msgid "Right Now"
-msgstr "当前概况"
+msgstr "概览"
 
 msgid "Activity"
 msgstr "活动"
@@ -221,9 +71,74 @@ msgid "Site Health Status"
 msgstr "站点健康状态"
 
 msgid "At a Glance"
-msgstr "概览"
+msgstr "一览"
 
-# Menu items
+msgid "Admin Theme Style"
+msgstr "管理主题样式"
+
+msgid "Choose a predefined theme or select \"Custom Colors\" to define your own."
+msgstr "选择预定义主题或选择\"自定义颜色\"来定义您自己的样式。"
+
+msgid "Primary Color"
+msgstr "主色调"
+
+msgid "Choose the primary accent color for links, buttons, and active states."
+msgstr "选择链接、按钮和活动状态的主色调。"
+
+msgid "Background Color"
+msgstr "背景色"
+
+msgid "Choose the main background color of the admin area."
+msgstr "选择管理区域的主背景色。"
+
+msgid "Text Color"
+msgstr "文本颜色"
+
+msgid "Choose the default text color."
+msgstr "选择默认文本颜色。"
+
+msgid "Shadow Style"
+msgstr "阴影样式"
+
+msgid "Choose the shadow style for elements like post boxes and buttons."
+msgstr "选择文章框和按钮等元素的阴影样式。"
+
+msgid "Layout Density"
+msgstr "布局密度"
+
+msgid "Adjust the spacing and padding of elements in the admin interface."
+msgstr "调整管理界面中元素的间距和内边距。"
+
+msgid "Border Radius Style"
+msgstr "边框圆角样式"
+
+msgid "Choose the border-radius style for various elements."
+msgstr "为各种元素选择边框圆角样式。"
+
+msgid "Font Stack"
+msgstr "字体堆栈"
+
+msgid "Select the font stack to be used in the admin area."
+msgstr "选择在管理区域使用的字体堆栈。"
+
+msgid "Base Font Size"
+msgstr "基础字体大小"
+
+msgid "Adjust the base font size for the admin interface."
+msgstr "调整管理界面的基础字体大小。"
+
+msgid "Icon Style"
+msgstr "图标样式"
+
+msgid "Choose the icon set for the admin interface."
+msgstr "为管理界面选择图标集。"
+
+msgid "Hide Admin Menu Items"
+msgstr "隐藏管理菜单项"
+
+msgid "Dashboard"
+msgstr "仪表板"
+
 msgid "Posts"
 msgstr "文章"
 
@@ -251,7 +166,15 @@ msgstr "工具"
 msgid "Settings"
 msgstr "设置"
 
-# Admin bar items
+msgid "Menu Order"
+msgstr "菜单顺序"
+
+msgid "Drag and drop to reorder menu items"
+msgstr "拖放以重新排序菜单项"
+
+msgid "Hide Admin Bar Items"
+msgstr "隐藏管理工具栏项"
+
 msgid "WordPress Logo"
 msgstr "WordPress标志"
 
@@ -267,30 +190,145 @@ msgstr "新建内容"
 msgid "My Account"
 msgstr "我的账户"
 
-# Settings sections
-msgid "Hide Dashboard Widgets"
-msgstr "隐藏仪表盘小工具"
+msgid "None"
+msgstr "无"
 
-msgid "Hide Admin Menu Items"
-msgstr "隐藏后台菜单项"
+msgid "Subtle (Default)"
+msgstr "微妙(默认)"
 
-msgid "Admin Bar Customization"
-msgstr "工具栏自定义"
+msgid "Compact"
+msgstr "紧凑"
 
-msgid "Customize which items appear in the admin bar."
-msgstr "自定义工具栏中显示的项。"
+msgid "Standard (Default)"
+msgstr "标准(默认)"
 
-msgid "Show/Hide Items"
-msgstr "显示/隐藏项"
+msgid "Spacious"
+msgstr "宽松"
 
-msgid "Reorder Items"
-msgstr "重新排序项"
+msgid "None (Sharp Corners)"
+msgstr "无(直角)"
 
-msgid "Hide Admin Bar Items"
-msgstr "隐藏工具栏项"
+msgid "Small (4px, Default)"
+msgstr "小(4px,默认)"
 
-msgid "Select which admin bar items to hide."
-msgstr "选择要隐藏的工具栏项"
+msgid "Large (8px, Rounded)"
+msgstr "大(8px,圆角)"
 
-msgid "Menu Order"
-msgstr "菜单顺序"
+msgid "System Default"
+msgstr "系统默认"
+
+msgid "Small"
+msgstr "小"
+
+msgid "Medium (Default)"
+msgstr "中(默认)"
+
+msgid "Large"
+msgstr "大"
+
+msgid "WordPress Dashicons"
+msgstr "WordPress Dashicons"
+
+msgid "Default (Flat & Clean)"
+msgstr "默认(扁平简洁)"
+
+msgid "Light Blue Gray"
+msgstr "浅蓝灰色"
+
+msgid "Mint Green"
+msgstr "薄荷绿"
+
+msgid "Dark Mode"
+msgstr "暗色模式"
+
+msgid "Custom Colors"
+msgstr "自定义颜色"
+
+msgid "Clean Admin"
+msgstr "简洁管理"
+
+msgid "General Settings"
+msgstr "常规设置"
+
+msgid "Reset to Default"
+msgstr "重置为默认"
+
+msgid "Version %s"
+msgstr "版本 %s"
+
+msgid "Plugin Description"
+msgstr "插件描述"
+
+msgid "Key Features"
+msgstr "主要功能"
+
+msgid "Hide unnecessary dashboard widgets"
+msgstr "隐藏不必要的仪表板小工具"
+
+msgid "Customize admin menu by hiding or reordering items"
+msgstr "通过隐藏或重新排序项目来自定义管理菜单"
+
+msgid "Hide admin bar items for a cleaner top bar"
+msgstr "隐藏管理工具栏项目以获得更简洁的顶部栏"
+
+msgid "Choose from multiple visual themes or create your own"
+msgstr "从多个视觉主题中选择或创建您自己的主题"
+
+msgid "Adjust layout density and typography settings"
+msgstr "调整布局密度和排版设置"
+
+msgid "Customize colors, shadows, and border styles"
+msgstr "自定义颜色、阴影和边框样式"
+
+# 新增翻译
+msgid "General"
+msgstr "常规"
+
+msgid "Visual Style"
+msgstr "视觉样式"
+
+msgid "About"
+msgstr "关于"
+
+msgid "Theme Style"
+msgstr "主题样式"
+
+msgid "Select Color"
+msgstr "选择颜色"
+
+msgid "Border Radius"
+msgstr "边框圆角"
+
+msgid "Font Size"
+msgstr "字体大小"
+
+# 新增关于部分的翻译
+msgid "Customize the overall visual theme, colors, layout and typography."
+msgstr "自定义整体视觉主题、颜色、布局和排版。"
+
+msgid "Information about WP Clean Admin plugin."
+msgstr "关于WP Clean Admin插件的信息。"
+
+msgid "WP Clean Admin is a powerful WordPress plugin designed to streamline and customize your WordPress admin experience. It provides a cleaner, more efficient interface by allowing you to hide unnecessary elements, customize the visual appearance, and reorganize the admin menu to better suit your workflow."
+msgstr "WP Clean Admin是一个强大的WordPress插件，旨在简化和自定义您的WordPress管理体验。它通过允许您隐藏不必要的元素、自定义视觉外观和重新组织管理菜单来提供更简洁、更高效的界面，以更好地适应您的工作流程。"
+
+msgid "Created by WordPress Admin UI Specialists"
+msgstr "由WordPress管理界面专家创建"
+
+msgid "Visit Plugin Website"
+msgstr "访问插件网站"
+
+msgid "Documentation"
+msgstr "文档"
+
+msgid "Support"
+msgstr "支持"
+
+msgid "Rate & Review"
+msgstr "评分与评价"
+
+msgid "If you find this plugin useful, please consider leaving a review on WordPress.org. Your feedback helps improve the plugin and reach more users."
+msgstr "如果您觉得这个插件有用，请在WordPress.org上留下评价。您的反馈有助于改进插件并触达更多用户。"
+
+msgid "Rate on WordPress.org"
+msgstr "在WordPress.org上评分"

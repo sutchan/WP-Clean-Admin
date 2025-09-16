@@ -15,12 +15,6 @@ class WPCA_Menu_Customizer {
     public function __construct() {
         add_action('admin_menu', [$this, 'init_menu_customization']);
         add_action('admin_init', [$this, 'register_menu_settings']);
-        
-        // Add AJAX handlers
-        add_action('wp_ajax_wpca_toggle_menu_item', [$this, 'ajax_toggle_menu_item']);
-        add_action('wp_ajax_wpca_get_menu_state', [$this, 'ajax_get_menu_state']);
-        add_action('wp_ajax_wpca_toggle_submenu', [$this, 'ajax_toggle_submenu']);
-        add_action('wp_ajax_wpca_save_menu_order', [$this, 'ajax_save_menu_order']);
     }
     
     /**
@@ -75,13 +69,6 @@ class WPCA_Menu_Customizer {
                     // Reorder based on saved order
                     foreach ($ordered_slugs as $sub_slug) {
                         foreach ($original_submenu as $index => $sub_item) {
-                            // Skip hidden menu items
-                            if (isset($options['menu_hidden_items']) && 
-                                in_array($parent_slug.'|'.$sub_slug, $options['menu_hidden_items'])) {
-                                unset($original_submenu[$index]);
-                                continue;
-                            }
-                            
                             if ($sub_item[2] === $sub_slug) {
                                 $new_submenu[] = $sub_item;
                                 unset($original_submenu[$index]);
@@ -90,16 +77,8 @@ class WPCA_Menu_Customizer {
                         }
                     }
                     
-                    // Add any remaining items (excluding hidden ones)
-                    foreach ($original_submenu as $index => $sub_item) {
-                        if (isset($options['menu_hidden_items']) && 
-                            in_array($parent_slug.'|'.$sub_item[2], $options['menu_hidden_items'])) {
-                            continue;
-                        }
-                        $new_submenu[] = $sub_item;
-                    }
-                    
-                    $submenu[$parent_slug] = $new_submenu;
+                    // Add any remaining items
+                    $submenu[$parent_slug] = array_merge($new_submenu, $original_submenu);
                 }
             }
         }
@@ -125,23 +104,13 @@ class WPCA_Menu_Customizer {
         // Create new order based on saved settings
         $new_order = [];
         foreach ($custom_order as $menu_slug) {
-            // Skip hidden menu items
-            if (isset($options['menu_hidden_items']) && in_array($menu_slug, $options['menu_hidden_items'])) {
-                continue;
-            }
-            
             if (isset($slug_to_order_map[$menu_slug])) {
                 $new_order[] = $slug_to_order_map[$menu_slug];
             }
         }
         
-        // Add any menu items that weren't in the saved order (excluding hidden ones)
+        // Add any menu items that weren't in the saved order
         foreach ($menu_order as $item) {
-            $menu_slug = $this->get_menu_slug_from_item($item);
-            if (isset($options['menu_hidden_items']) && in_array($menu_slug, $options['menu_hidden_items'])) {
-                continue;
-            }
-            
             if (!in_array($item, $new_order)) {
                 $new_order[] = $item;
             }
@@ -193,8 +162,7 @@ class WPCA_Menu_Customizer {
                         $menu_items[$slug] = [
                             'title' => isset($item[0]) ? $item[0] : $slug,
                             'type' => 'top',
-                            'parent' => '',
-                            'icon' => isset($item[6]) ? $item[6] : 'dashicons-admin-generic'
+                            'parent' => ''
                         ];
                     }
                 }
@@ -210,8 +178,7 @@ class WPCA_Menu_Customizer {
                         $menu_items[$full_slug] = [
                             'title' => isset($sub_item[0]) ? $sub_item[0] : $sub_item[2],
                             'type' => 'sub',
-                            'parent' => $parent_slug,
-                            'icon' => 'dashicons-arrow-right'
+                            'parent' => $parent_slug
                         ];
                     }
                 }
@@ -231,193 +198,45 @@ class WPCA_Menu_Customizer {
         }
         
         wp_enqueue_script('jquery-ui-sortable');
-        wp_enqueue_script('wpca-menu-customizer', WPCA_PLUGIN_URL . 'assets/js/wpca-menu-customizer.js', 
-                         array('jquery', 'jquery-ui-sortable'), WPCA_VERSION, true);
         
-        // Pass menu data to JavaScript
-        $menu_items = $this->get_all_menu_items();
-        $options = get_option('wpca_settings', []);
-        $submenu_states = isset($options['submenu_states']) ? $options['submenu_states'] : [];
-        
-        wp_localize_script('wpca-menu-customizer', 'wpcaMenuData', array(
-            'menuItems' => $menu_items,
-            'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('wpca_menu_order_nonce'),
-            'locale' => get_locale(),
-            'submenuStates' => $submenu_states
-        ));
+        // Add inline script for saving menu order
+        add_action('admin_footer', function() {
+            ?>
+            <script type="text/javascript">
+            jQuery(document).ready(function($) {
+                if ($('.wpca-menu-sortable').length) {
+                    $('.wpca-menu-sortable').sortable({
+                        update: function(event, ui) {
+                            var menuOrder = [];
+                            $('.wpca-menu-sortable li').each(function() {
+                                menuOrder.push($(this).data('menu-slug'));
+                            });
+                            
+                            // Update hidden field with new order
+                            $('#wpca_menu_order').val(JSON.stringify(menuOrder));
+                        }
+                    });
+                }
+            });
+            </script>
+            <?php
+        });
     }
     
     /**
      * Hide menu items via CSS
      */
     public function hide_menu_items() {
-        // Get settings from wpca_settings option
-        $options = get_option('wpca_settings', []);
-        if (empty($options['menu_hidden_items'])) {
+        $menu_settings = get_option($this->menu_settings_key, []);
+        if (empty($menu_settings['hidden_items'])) {
             return;
         }
         
         echo '<style>';
-        foreach ($options['menu_hidden_items'] as $menu_slug) {
+        foreach ($menu_settings['hidden_items'] as $menu_slug) {
             echo "#toplevel_page_{$menu_slug}, #menu-{$menu_slug} { display: none !important; }";
         }
         echo '</style>';
-    }
-    
-    /**
-     * AJAX handler to toggle menu item visibility
-     */
-    public function ajax_toggle_menu_item() {
-        check_ajax_referer('wpca_menu_order_nonce', 'nonce');
-        
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Unauthorized']);
-        }
-        
-        $menu_slug = isset($_POST['menu_slug']) ? sanitize_text_field($_POST['menu_slug']) : '';
-        $hidden = isset($_POST['hidden']) ? (bool)$_POST['hidden'] : false;
-        
-        if (empty($menu_slug)) {
-            wp_send_json_error(['message' => 'Invalid menu slug']);
-        }
-        
-        // Get current settings
-        $options = get_option('wpca_settings', []);
-        $hidden_items = isset($options['menu_hidden_items']) ? $options['menu_hidden_items'] : [];
-        
-        // Update hidden items array
-        if ($hidden) {
-            if (!in_array($menu_slug, $hidden_items)) {
-                $hidden_items[] = $menu_slug;
-            }
-        } else {
-            $hidden_items = array_diff($hidden_items, [$menu_slug]);
-        }
-        
-        // Save updated settings
-        $options['menu_hidden_items'] = array_values($hidden_items);
-        
-        // Ensure menu order is updated when items are hidden/shown
-        if (isset($options['menu_order'])) {
-            if ($hidden) {
-                // Remove from menu order if hidden
-                $options['menu_order'] = array_diff($options['menu_order'], [$menu_slug]);
-            } else {
-                // Add back to menu order if shown (at the end)
-                if (!in_array($menu_slug, $options['menu_order'])) {
-                    $options['menu_order'][] = $menu_slug;
-                }
-            }
-        }
-        
-        update_option('wpca_settings', $options);
-        
-        // Force refresh of admin menu
-        global $menu, $submenu;
-        $menu = $submenu = array();
-        
-        // Return localized status text
-        $status_text = '';
-        if ($hidden) {
-            $status_text = function_exists('get_locale') && get_locale() === 'zh_CN' ? 
-                '(已隐藏)' : 
-                '(Hidden)';
-        }
-            
-        wp_send_json_success([
-            'menu_slug' => $menu_slug,
-            'hidden' => $hidden,
-            'hidden_items' => $hidden_items,
-            'status_text' => $status_text,
-            'refreshed' => true
-        ]);
-    }
-    
-    /**
-     * AJAX handler to get current menu state
-     */
-    public function ajax_get_menu_state() {
-        check_ajax_referer('wpca_menu_order_nonce', 'nonce');
-        
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Unauthorized']);
-        }
-        
-        $options = get_option('wpca_settings', []);
-        $hidden_items = isset($options['menu_hidden_items']) ? $options['menu_hidden_items'] : [];
-        
-        wp_send_json_success([
-            'hidden_items' => $hidden_items
-        ]);
-    }
-    
-    /**
-     * AJAX handler to toggle submenu visibility
-     */
-    public function ajax_toggle_submenu() {
-        check_ajax_referer('wpca_menu_order_nonce', 'nonce');
-        
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Unauthorized']);
-        }
-        
-        $menu_slug = isset($_POST['menu_slug']) ? sanitize_text_field($_POST['menu_slug']) : '';
-        $expanded = isset($_POST['expanded']) ? (bool)$_POST['expanded'] : false;
-        
-        if (empty($menu_slug)) {
-            wp_send_json_error(['message' => 'Invalid menu slug']);
-        }
-        
-        // Get current settings
-        $options = get_option('wpca_settings', []);
-        $submenu_states = isset($options['submenu_states']) ? $options['submenu_states'] : [];
-        
-        // Update submenu state
-        $submenu_states[$menu_slug] = $expanded;
-        
-        // Save updated settings
-        $options['submenu_states'] = $submenu_states;
-        update_option('wpca_settings', $options);
-        
-        wp_send_json_success([
-            'menu_slug' => $menu_slug,
-            'expanded' => $expanded
-        ]);
-    }
-
-    /**
-     * AJAX handler to save menu order
-     */
-    public function ajax_save_menu_order() {
-        check_ajax_referer('wpca_menu_order_nonce', 'nonce');
-        
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => 'Unauthorized']);
-        }
-        
-        $menu_order = isset($_POST['menu_order']) ? json_decode(stripslashes($_POST['menu_order']), true) : [];
-        $submenu_order = isset($_POST['submenu_order']) ? json_decode(stripslashes($_POST['submenu_order']), true) : [];
-        
-        if (empty($menu_order)) {
-            wp_send_json_error(['message' => 'Invalid menu order data']);
-        }
-        
-        // Get current settings
-        $options = get_option('wpca_settings', []);
-        
-        // Update menu order settings
-        $options['menu_order'] = $menu_order;
-        $options['submenu_order'] = $submenu_order;
-        
-        // Save updated settings
-        update_option('wpca_settings', $options);
-        
-        wp_send_json_success([
-            'message' => 'Menu order saved successfully',
-            'menu_order' => $menu_order,
-            'submenu_order' => $submenu_order
-        ]);
     }
     
     /**
