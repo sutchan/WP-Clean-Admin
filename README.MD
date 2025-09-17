@@ -1,5 +1,7 @@
 === WP Clean Admin 简体中文 ===
 
+项目主页: [https://github.com/sutchan/WP-Clean-Admin](https://github.com/sutchan/WP-Clean-Admin)
+
 [View in English](README-en_US.md)
 
 贡献者: SutChan
@@ -20,7 +22,7 @@
 
 == 描述 ==
 
-**WP Clean Admin** 帮助您整理和个性化WordPress管理后台。它提供了一系列选项来隐藏不必要的元素并应用干净、现代的视觉风格，使您的仪表盘更高效、更易于使用。
+**WP Clean Admin** ([GitHub](https://github.com/sutchan/WP-Clean-Admin)) 帮助您整理和个性化WordPress管理后台。它提供了一系列选项来隐藏不必要的元素并应用干净、现代的视觉风格，使您的仪表盘更高效、更易于使用。
 
 **主要功能:**
 

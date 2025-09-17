@@ -558,9 +558,7 @@ class WPCA_Settings {
         $submenu_order = $options['submenu_order'] ?? array();
         
         // Ensure menu_toggle is always set
-        if (!isset($options['menu_toggle'])) {
-            $options['menu_toggle'] = 1;
-        }
+        $options['menu_toggle'] = isset($options['menu_toggle']) ? (int)$options['menu_toggle'] : 1;
         
         echo '<div class="wpca-menu-toggle-wrapper">';
         echo '<label>';
@@ -570,51 +568,43 @@ class WPCA_Settings {
         echo '<p class="description">' . __('Toggle to show/hide and reorder admin menu items', 'wp-clean-admin') . '</p>';
         echo '</div>';
         
-        // Add script to handle toggle functionality
+        // Enhanced toggle functionality with state sync
         echo '<script>
         jQuery(document).ready(function($) {
-            // Toggle menu customization visibility with enhanced logic
+            // Initialize menu items with saved visibility states
+            $(".wpca-menu-toggle-switch input[type=checkbox]").each(function() {
+                var slug = $(this).closest("li").data("menu-slug");
+                var isVisible = $(this).is(":checked");
+                $(this).closest(".wpca-menu-toggle-switch").toggleClass("checked", isVisible);
+            });
+
+            // Update menu visibility based on main toggle
+            function updateMenuVisibility(isEnabled) {
+                $(".wpca-menu-sortable, .wpca-menu-order-header").toggle(isEnabled);
+                if (!isEnabled) {
+                    $(".wpca-menu-toggle-switch input[type=checkbox]")
+                        .prop("checked", false)
+                        .trigger("change")
+                        .closest(".wpca-menu-toggle-switch")
+                        .removeClass("checked");
+                }
+            }
+            
             $("#wpca-menu-toggle").on("change", function() {
-                var isEnabled = this.checked;
-                $(".wpca-menu-sortable").toggle(isEnabled);
-                $(".wpca-menu-order-header").toggle(isEnabled);
-                
-                // Show/hide all menu items based on main toggle
-                $(".wpca-menu-toggle-switch input[type=checkbox]").each(function() {
-                    $(this).prop("checked", isEnabled).trigger("change");
-                    $(this).closest(".wpca-menu-toggle-switch")
-                        .toggleClass("checked", isEnabled);
-                });
+                updateMenuVisibility(this.checked);
             }).trigger("change");
             
             // Handle individual menu item toggle clicks
             $(document).on("click", ".wpca-menu-toggle-switch", function(e) {
                 e.preventDefault();
-                e.stopPropagation();
                 var checkbox = $(this).find("input[type=checkbox]");
                 var newState = !checkbox.prop("checked");
                 checkbox.prop("checked", newState).trigger("change");
                 $(this).toggleClass("checked", newState);
                 
                 // Update main toggle state if needed
-                var allChecked = $(".wpca-menu-toggle-switch input[type=checkbox]").length === 
-                                $(".wpca-menu-toggle-switch input[type=checkbox]:checked").length;
-                $("#wpca-menu-toggle").prop("checked", allChecked);
-            });
-            
-            // Initialize toggle states
-            $(".wpca-menu-toggle-switch").each(function() {
-                var checkbox = $(this).find("input[type=checkbox]");
-                $(this).toggleClass("checked", checkbox.prop("checked"));
-            });
-            
-            // Apply visibility based on saved settings
-            $(".wpca-menu-toggle-switch input[type=checkbox]").on("change", function() {
-                var slug = $(this).closest("li").data("menu-slug");
-                var isVisible = this.checked;
-                // Here you would add code to actually show/hide the menu items
-                // in the WordPress admin based on the slug and isVisible state
-                console.log("Menu item " + slug + " visibility: " + isVisible);
+                var anyEnabled = $(".wpca-menu-toggle-switch input[type=checkbox]:checked").length > 0;
+                $("#wpca-menu-toggle").prop("checked", anyEnabled);
             });
         });
         </script>';
@@ -777,8 +767,8 @@ class WPCA_Settings {
                         ], '', strip_tags($item['title']));
                         echo $indent . esc_html(trim($clean_title));
                         echo '<label class="wpca-menu-toggle-switch">';
-                        echo '<input type="checkbox" name="wpca_settings[menu_visibility]['.esc_attr($slug).']" value="1" ' 
-                            . checked( !isset($options['menu_visibility'][$slug]) || $options['menu_visibility'][$slug], true, false ) . '>';
+                        echo '<input type="checkbox" name="wpca_settings[menu_toggles]['.esc_attr($slug).']" value="1" ' 
+                            . checked( isset($options['menu_toggles'][$slug]) ? $options['menu_toggles'][$slug] : 1, 1, false ) . '>';
                         echo '<span class="wpca-toggle-slider"></span>';
                         echo '</label>';
                         echo '<input type="hidden" name="wpca_settings[menu_order][]" value="'.esc_attr($slug).'">';
@@ -842,15 +832,15 @@ class WPCA_Settings {
             <div class="wpca-about-section">
                 <h3><?php _e('Author', 'wp-clean-admin'); ?></h3>
                 <p><?php _e('Created by WordPress Admin UI Specialists', 'wp-clean-admin'); ?></p>
-                <p><a href="https://wpcleanadmin.com" target="_blank"><?php _e('Visit Plugin Website', 'wp-clean-admin'); ?></a> | 
-                <a href="https://wpcleanadmin.com/documentation" target="_blank"><?php _e('Documentation', 'wp-clean-admin'); ?></a> | 
-                <a href="https://wpcleanadmin.com/support" target="_blank"><?php _e('Support', 'wp-clean-admin'); ?></a></p>
+                <p><a href="https://github.com/sutchan/WP-Clean-Admin" target="_blank"><?php _e('Visit Plugin Website', 'wp-clean-admin'); ?></a> | 
+                <a href="https://github.com/sutchan/WP-Clean-Admin" target="_blank"><?php _e('Documentation', 'wp-clean-admin'); ?></a> | 
+                <a href="https://github.com/sutchan/WP-Clean-Admin/issues" target="_blank"><?php _e('Support', 'wp-clean-admin'); ?></a></p>
             </div>
             
             <div class="wpca-about-section">
                 <h3><?php _e('Rate & Review', 'wp-clean-admin'); ?></h3>
                 <p><?php _e('If you find this plugin useful, please consider leaving a review on WordPress.org. Your feedback helps improve the plugin and reach more users.', 'wp-clean-admin'); ?></p>
-                <p><a href="https://wordpress.org/plugins/wp-clean-admin/reviews/" target="_blank" class="button button-primary"><?php _e('Rate on WordPress.org', 'wp-clean-admin'); ?></a></p>
+                <p><a href="https://github.com/sutchan/WP-Clean-Admin" target="_blank" class="button button-primary"><?php _e('Rate on WordPress.org', 'wp-clean-admin'); ?></a></p>
             </div>
         </div>
 
@@ -897,23 +887,28 @@ class WPCA_Settings {
     public function sanitize_settings($input) {
         $output = array();
         
-        // Sanitize menu toggle state
+        // Validate and sanitize menu settings
         $output['menu_toggle'] = isset($input['menu_toggle']) ? (int)$input['menu_toggle'] : 0;
         
-        // Sanitize menu visibility states
-        $output['menu_visibility'] = isset($input['menu_visibility']) ? 
-            array_map('intval', $input['menu_visibility']) : 
-            array();
+        // Validate menu toggle states
+        $output['menu_toggles'] = array();
+        if (isset($input['menu_toggles']) && is_array($input['menu_toggles'])) {
+            foreach ($input['menu_toggles'] as $slug => $value) {
+                $output['menu_toggles'][sanitize_text_field($slug)] = (int)$value;
+            }
+        }
         
-        // Sanitize menu order
-        $output['menu_order'] = isset($input['menu_order']) ? 
-            array_map('sanitize_text_field', $input['menu_order']) : 
-            array();
-            
-        // Sanitize submenu order
-        $output['submenu_order'] = isset($input['submenu_order']) ? 
-            array_map('sanitize_text_field', $input['submenu_order']) : 
-            array();
+        // Validate menu order
+        $output['menu_order'] = array();
+        if (isset($input['menu_order']) && is_array($input['menu_order'])) {
+            $output['menu_order'] = array_map('sanitize_text_field', $input['menu_order']);
+        }
+        
+        // Validate submenu order
+        $output['submenu_order'] = array();
+        if (isset($input['submenu_order']) && is_array($input['submenu_order'])) {
+            $output['submenu_order'] = array_map('sanitize_text_field', $input['submenu_order']);
+        }
         
         // Sanitize other settings
         $output['current_tab'] = isset($input['current_tab']) ? sanitize_text_field($input['current_tab']) : 'tab-general';

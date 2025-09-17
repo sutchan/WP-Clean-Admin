@@ -5,13 +5,22 @@
  * Provides functionality to customize WordPress admin menu
  */
 
-if (!defined('ABSPATH')) {
-    exit;
+// Exit if accessed directly
+defined('ABSPATH') || exit;
+
+// Load WordPress environment
+if (!defined('WPINC')) {
+    require_once(dirname(__FILE__) . '/../../../wp-load.php');
 }
+
+// Debug mode (disabled in production)
+define('WPCA_DEBUG', false);
 
 class WPCA_Menu_Customizer {
     public function __construct() {
         add_action('admin_menu', [$this, 'init_menu_customization']);
+        add_action('wp_ajax_wpca_toggle_menu', [$this, 'ajax_toggle_menu']);
+        add_action('wp_ajax_wpca_reset_menu', [$this, 'ajax_reset_menu']);
     }
     
     /**
@@ -42,79 +51,97 @@ class WPCA_Menu_Customizer {
      * Reorder admin menu items (both top-level and submenus)
      */
     public function reorder_admin_menu($menu_order) {
-        global $menu, $submenu;
-        
-        // Get settings from wpca_settings option
+        // Early return if no custom ordering needed
         $options = get_option('wpca_settings', []);
+        $custom_order = $options['menu_order'] ?? [];
+        $submenu_order = $options['submenu_order'] ?? [];
         
-        // 总开关不再影响菜单排序功能
-        // 菜单排序将始终保持激活状态
-        
-        $custom_order = isset($options['menu_order']) ? $options['menu_order'] : [];
-        $submenu_order = isset($options['submenu_order']) ? $options['submenu_order'] : [];
-        
-        if ((empty($custom_order) && empty($submenu_order)) || empty($menu)) {
+        if (empty($custom_order) && empty($submenu_order)) {
             return $menu_order;
         }
-        
-        // Process submenu ordering
+
+        global $menu, $submenu;
+        if (empty($menu)) {
+            return $menu_order;
+        }
+
+        // Process submenu ordering first
         if (!empty($submenu) && !empty($submenu_order)) {
-            foreach ($submenu_order as $parent_slug => $ordered_slugs) {
-                if (isset($submenu[$parent_slug])) {
-                    $original_submenu = $submenu[$parent_slug];
-                    $new_submenu = [];
-                    
-                    // Reorder based on saved order
-                    foreach ($ordered_slugs as $sub_slug) {
-                        foreach ($original_submenu as $index => $sub_item) {
-                            if ($sub_item[2] === $sub_slug) {
-                                $new_submenu[] = $sub_item;
-                                unset($original_submenu[$index]);
-                                break;
-                            }
-                        }
+            $this->reorder_submenus($submenu, $submenu_order);
+        }
+
+        // Optimized menu reordering
+        $slug_to_order_map = $this->build_slug_mapping($menu);
+        $new_order = $this->build_new_order($custom_order, $slug_to_order_map, $menu_order);
+        
+        return $new_order;
+    }
+
+    /**
+     * Reorder submenus based on saved order
+     */
+    private function reorder_submenus(&$submenu, $submenu_order) {
+        foreach ($submenu_order as $parent_slug => $ordered_slugs) {
+            if (empty($submenu[$parent_slug]) || empty($ordered_slugs)) {
+                continue;
+            }
+
+            $original = $submenu[$parent_slug];
+            $ordered = [];
+            $remaining = $original;
+
+            foreach ($ordered_slugs as $sub_slug) {
+                foreach ($remaining as $index => $item) {
+                    if ($item[2] === $sub_slug) {
+                        $ordered[] = $item;
+                        unset($remaining[$index]);
+                        break;
                     }
-                    
-                    // Add any remaining items
-                    $submenu[$parent_slug] = array_merge($new_submenu, $original_submenu);
                 }
             }
+
+            $submenu[$parent_slug] = array_merge($ordered, $remaining);
         }
-        
-        // Debug - log information for troubleshooting
-        error_log(__('WP Clean Admin - Custom Menu Order:', 'wp-clean-admin') . ' ' . print_r($custom_order, true));
-        error_log(__('WP Clean Admin - Original Menu Order:', 'wp-clean-admin') . ' ' . print_r($menu_order, true));
-        error_log(__('WP Clean Admin - Global Menu:', 'wp-clean-admin') . ' ' . print_r($menu, true));
-        
-        // Create a mapping between menu slugs and their actual menu_order values
-        $slug_to_order_map = [];
-        foreach ($menu as $position => $item) {
-            if (isset($item[2])) {
+    }
+
+    /**
+     * Build mapping between menu slugs and their IDs
+     */
+    private function build_slug_mapping($menu) {
+        $mapping = [];
+        foreach ($menu as $item) {
+            if (!empty($item[2])) {
                 $slug = $this->get_menu_slug_from_item($item[2]);
                 if ($slug) {
-                    $slug_to_order_map[$slug] = $item[2];
+                    $mapping[$slug] = $item[2];
                 }
             }
         }
-        
-        error_log(__('WP Clean Admin - Slug to Order Map:', 'wp-clean-admin') . ' ' . print_r($slug_to_order_map, true));
-        
-        // Create new order based on saved settings
+        return $mapping;
+    }
+
+    /**
+     * Build new menu order based on custom order and existing items
+     */
+    private function build_new_order($custom_order, $slug_mapping, $original_order) {
         $new_order = [];
-        foreach ($custom_order as $menu_slug) {
-            if (isset($slug_to_order_map[$menu_slug])) {
-                $new_order[] = $slug_to_order_map[$menu_slug];
+        $processed = [];
+
+        // Add items from custom order first
+        foreach ($custom_order as $slug) {
+            if (isset($slug_mapping[$slug])) {
+                $new_order[] = $slug_mapping[$slug];
+                $processed[$slug_mapping[$slug]] = true;
             }
         }
-        
-        // Add any menu items that weren't in the saved order
-        foreach ($menu_order as $item) {
-            if (!in_array($item, $new_order)) {
+
+        // Add remaining items preserving original order
+        foreach ($original_order as $item) {
+            if (!isset($processed[$item])) {
                 $new_order[] = $item;
             }
         }
-        
-        error_log(__('WP Clean Admin - New Menu Order:', 'wp-clean-admin') . ' ' . print_r($new_order, true));
+
         return $new_order;
     }
     
@@ -187,6 +214,98 @@ class WPCA_Menu_Customizer {
     }
     
     /**
+     * Handle AJAX menu toggle requests
+     */
+    public function ajax_toggle_menu() {
+        header('Content-Type: application/json');
+        
+        try {
+            // 请求参数处理
+
+            // 验证nonce (使用正确的字段名'nonce')
+            $nonce = isset($_REQUEST['nonce']) ? $_REQUEST['nonce'] : '';
+            if (!wp_verify_nonce($nonce, 'wpca_menu_toggle')) {
+                $error_msg = __('Security check failed. Please refresh the page and try again.', 'wp-clean-admin');
+                // Nonce验证失败
+                throw new Exception($error_msg);
+            }
+
+            // 验证用户权限
+            if (!current_user_can('manage_options')) {
+                throw new Exception(__('Unauthorized access', 'wp-clean-admin'));
+            }
+
+            // 验证必要参数
+            $slug = isset($_REQUEST['slug']) ? sanitize_text_field($_REQUEST['slug']) : '';
+            $state = isset($_REQUEST['state']) ? (int)$_REQUEST['state'] : null;
+            
+            if (empty($slug) || $state === null) {
+                throw new Exception(__('Missing required parameters', 'wp-clean-admin'));
+            }
+            
+            // 获取当前设置
+            $options = get_option('wpca_settings', []);
+            
+            // 确保menu_toggles数组存在
+            if (!isset($options['menu_toggles'])) {
+                $options['menu_toggles'] = [];
+            }
+            
+            // 更新状态
+            $options['menu_toggles'][$slug] = $state;
+            
+            // 保存设置
+            if (!update_option('wpca_settings', $options)) {
+                throw new Exception(__('Failed to save settings', 'wp-clean-admin'));
+            }
+            
+            // 状态更新完成
+            
+            wp_send_json_success([
+                'message' => __('Menu toggle updated', 'wp-clean-admin'),
+                'data' => [
+                    'slug' => $slug,
+                    'state' => $state
+                ]
+            ], 200);
+            
+        } catch (Exception $e) {
+            status_header(400);
+            wp_send_json_error([
+                'message' => $e->getMessage(),
+                'data' => [
+                    'slug' => $_REQUEST['slug'] ?? null,
+                    'state' => $_REQUEST['state'] ?? null
+                ]
+            ], 400);
+        }
+    }
+
+    /**
+     * Reset menu settings to default
+     */
+    public function ajax_reset_menu() {
+        check_ajax_referer('wpca_menu_toggle', 'nonce');
+        
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(__('Unauthorized access', 'wp-clean-admin'));
+        }
+        
+        $options = get_option('wpca_settings', []);
+        
+        // Reset menu-related settings only
+        unset($options['menu_order']);
+        unset($options['submenu_order']);
+        unset($options['menu_toggles']);
+        
+        update_option('wpca_settings', $options);
+        
+        wp_send_json_success([
+            'message' => __('Menu settings reset to default', 'wp-clean-admin')
+        ]);
+    }
+
+    /**
      * Enqueue scripts for menu customization
      */
     public function enqueue_menu_scripts($hook) {
@@ -196,54 +315,74 @@ class WPCA_Menu_Customizer {
         }
         
         wp_enqueue_script('jquery-ui-sortable');
+        wp_localize_script('wpca-admin-script', 'wpca_admin', [
+            'ajaxurl' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('wpca_menu_toggle'),
+            'reset_confirm' => __('Are you sure you want to reset all menu settings to default?', 'wp-clean-admin'),
+            'resetting_text' => __('Resetting...', 'wp-clean-admin'),
+            'reset_text' => __('Reset Defaults', 'wp-clean-admin'),
+            'reset_failed' => __('Reset failed. Please try again.', 'wp-clean-admin')
+        ]);
+    }
+    
+    /**
+     * Hide menu items via CSS with optimized selectors
+     */
+    public function hide_menu_items() {
+        $options = get_option('wpca_settings', []);
+        $hidden_items = array_keys(array_filter($options['menu_toggles'] ?? [], function($visible) {
+            return !$visible;
+        }));
+
+        if (empty($hidden_items)) {
+            return;
+        }
+
+        echo '<style id="wpca-menu-hide-css">';
+        // Base styles for all hidden menus
+        echo '.wpca-hidden-menu, 
+              .wpca-hidden-menu .wp-submenu, 
+              .wpca-hidden-menu .wp-submenu-wrap {
+                display: none !important;
+                height: 0 !important;
+                overflow: hidden !important;
+                transition: all 0.3s ease !important;
+              }';
         
-        // Add inline script for saving menu order
-        add_action('admin_footer', function() {
+        // Specific menu items
+        $selectors = array_map(function($slug) {
+            return "#toplevel_page_{$slug}, #menu-{$$slug}";
+        }, $hidden_items);
+        
+        echo implode(', ', $selectors) . ' { 
+            display: none !important; 
+            height: 0 !important;
+            overflow: hidden !important;
+        }';
+        echo '</style>';
+
+        // Add JS to handle dynamic menu items
+        add_action('admin_footer', function() use ($hidden_items) {
             ?>
-            <script type="text/javascript">
+            <script>
             jQuery(document).ready(function($) {
-                if ($('.wpca-menu-sortable').length) {
-                    $('.wpca-menu-sortable').sortable({
-                        update: function(event, ui) {
-                            var menuOrder = [];
-                            $('.wpca-menu-sortable li').each(function() {
-                                menuOrder.push($(this).data('menu-slug'));
-                            });
-                            
-                            // 添加翻译字符串，但不影响功能
-                            // <?php _e('Menu items reordered', 'wp-clean-admin'); ?>
-                            
-                            // Update hidden field with new order
-                            $('#wpca_menu_order').val(JSON.stringify(menuOrder));
-                        }
-                    });
-                }
+                // Apply hidden class to specified menu items
+                var hiddenItems = <?php echo json_encode($hidden_items); ?>;
+                hiddenItems.forEach(function(slug) {
+                    $('#toplevel_page_' + slug).addClass('wpca-hidden-menu');
+                    $('#menu-' + slug).addClass('wpca-hidden-menu');
+                });
+
+                // Handle dynamically added menu items
+                $(document).on('menu-added', function(e, menuId) {
+                    if (hiddenItems.includes(menuId.replace('toplevel_page_', ''))) {
+                        $('#' + menuId).addClass('wpca-hidden-menu');
+                    }
+                });
             });
             </script>
             <?php
         });
-    }
-    
-    /**
-     * Hide menu items via CSS
-     */
-    public function hide_menu_items() {
-        // 获取设置
-        $options = get_option('wpca_settings', []);
-        
-        // 检查是否有需要隐藏的菜单项
-        if (empty($options['menu_toggles'])) {
-            return;
-        }
-        
-        echo '<style>';
-        foreach ($options['menu_toggles'] as $menu_slug => $is_visible) {
-            // wpca-toggle-slider 开关直接控制菜单项显示/隐藏
-            if (!$is_visible) {
-                echo "#toplevel_page_{$menu_slug}, #menu-{$menu_slug} { display: none !important; }";
-            }
-        }
-        echo '</style>';
     }
     
     /**
