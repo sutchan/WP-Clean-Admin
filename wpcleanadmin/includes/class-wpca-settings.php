@@ -71,10 +71,20 @@ class WPCA_Settings {
         // Enqueue custom script for the settings page
         wp_enqueue_script( 'wpca-settings-script', WPCA_PLUGIN_URL . 'assets/js/wpca-settings.js', array( 'jquery', 'jquery-ui-sortable' ), WPCA_VERSION, true );
         
-        // Localize script with ajaxurl
+        // Localize script with ajaxurl and nonce
         wp_localize_script( 'wpca-settings-script', 'wpca_settings', array(
             'ajaxurl' => admin_url( 'admin-ajax.php' ),
             'current_tab' => $this->options['current_tab'] ?? 'tab-general'
+        ));
+        
+        // 添加菜单自定义所需的数据
+        wp_localize_script( 'wpca-settings-script', 'wpca_admin', array(
+            'ajaxurl' => admin_url( 'admin-ajax.php' ),
+            'nonce' => wp_create_nonce('wpca_menu_toggle'),
+            'reset_confirm' => __('Are you sure you want to reset all menu settings to default?', 'wp-clean-admin'),
+            'resetting_text' => __('Resetting...', 'wp-clean-admin'),
+            'reset_text' => __('Reset Defaults', 'wp-clean-admin'),
+            'reset_failed' => __('Reset failed. Please try again.', 'wp-clean-admin')
         ));
     }
 
@@ -678,34 +688,56 @@ class WPCA_Settings {
         }
         ?>
         <div class="wpca-menu-order-wrapper">
-            <div class="wpca-menu-order-header">
-                <p class="description"><?php _e('Drag and drop to reorder menu items', 'wp-clean-admin'); ?></p>
-                <button type="button" id="wpca-reset-menu-order" class="button button-secondary">
-                    <?php _e('Reset to Default', 'wp-clean-admin'); ?>
+            <div class="wpca-menu-order-header" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 4px; border-left: 4px solid #2271b1;">
+                <h3 style="margin-top: 0; color: #2271b1;">
+                    <span class="dashicons dashicons-menu" style="vertical-align: middle;"></span>
+                    <?php _e('Menu Order Customization', 'wp-clean-admin'); ?>
+                </h3>
+                <p class="description" style="margin-bottom: 15px;">
+                    <?php _e('Drag and drop menu items to reorder them. Use the toggle switches to show/hide items.', 'wp-clean-admin'); ?>
+                </p>
+                <button type="button" id="wpca-reset-menu-order" class="button button-secondary" style="margin-top: 10px;">
+                    <span class="dashicons dashicons-image-rotate" style="vertical-align: middle; margin-right: 5px;"></span>
+                    <?php _e('Reset to Default Order', 'wp-clean-admin'); ?>
                 </button>
                 <script>
                 jQuery(document).ready(function($) {
                     $("#wpca-reset-menu-order").on("click", function() {
                         if (confirm("<?php _e('Are you sure you want to reset all menu items to default order and visibility?', 'wp-clean-admin'); ?>")) {
-                            // Reset visibility to default (all enabled)
-                            $(".wpca-menu-toggle-switch input[type=checkbox]").prop("checked", true)
-                                .trigger("change")
-                                .closest(".wpca-menu-toggle-switch")
-                                .addClass("checked");
+                            var $button = $(this);
+                            var originalText = $button.html();
                             
-                            // Reset menu order to default WordPress order
-                            var $sortable = $(".wpca-menu-sortable");
-                            $sortable.find("li").sort(function(a, b) {
-                                return $(a).data("menu-slug").localeCompare($(b).data("menu-slug"));
-                            }).appendTo($sortable);
+                            // Show loading state
+                            $button.html('<span class="dashicons dashicons-update spin" style="vertical-align: middle; margin-right: 5px;"></span> <?php _e('Resetting...', 'wp-clean-admin'); ?>');
                             
-                            // Update the hidden fields with new order
-                            $sortable.find("input[name='wpca_settings[menu_order][]']").each(function(index) {
-                                $(this).val($(this).closest("li").data("menu-slug"));
-                            });
-                            
-                            // Also reset the main toggle
-                            $("#wpca-menu-toggle").prop("checked", true).trigger("change");
+                            // Reset operations
+                            setTimeout(function() {
+                                // Reset visibility to default (all enabled)
+                                $(".wpca-menu-toggle-switch input[type=checkbox]").prop("checked", true)
+                                    .trigger("change")
+                                    .closest(".wpca-menu-toggle-switch")
+                                    .addClass("checked");
+                                
+                                // Reset menu order to default WordPress order
+                                var $sortable = $(".wpca-menu-sortable");
+                                $sortable.find("li").sort(function(a, b) {
+                                    return $(a).data("menu-slug").localeCompare($(b).data("menu-slug"));
+                                }).appendTo($sortable);
+                                
+                                // Update the hidden fields with new order
+                                $sortable.find("input[name='wpca_settings[menu_order][]']").each(function(index) {
+                                    $(this).val($(this).closest("li").data("menu-slug"));
+                                });
+                                
+                                // Also reset the main toggle
+                                $("#wpca-menu-toggle").prop("checked", true).trigger("change");
+                                
+                                // Restore button text
+                                $button.html(originalText);
+                                
+                                // Show success notice
+                                showSuccessNotice('<?php _e('Menu order has been reset to default', 'wp-clean-admin'); ?>', $('.wrap h1').first());
+                            }, 500);
                         }
                     });
                 });

@@ -220,14 +220,15 @@ class WPCA_Menu_Customizer {
         header('Content-Type: application/json');
         
         try {
-            // 请求参数处理
+            // 验证请求方法
+            if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                throw new Exception(__('Invalid request method', 'wp-clean-admin'));
+            }
 
-            // 验证nonce (使用正确的字段名'nonce')
-            $nonce = isset($_REQUEST['nonce']) ? $_REQUEST['nonce'] : '';
+            // 验证nonce
+            $nonce = isset($_POST['nonce']) ? $_POST['nonce'] : '';
             if (!wp_verify_nonce($nonce, 'wpca_menu_toggle')) {
-                $error_msg = __('Security check failed. Please refresh the page and try again.', 'wp-clean-admin');
-                // Nonce验证失败
-                throw new Exception($error_msg);
+                throw new Exception(__('Security check failed. Please refresh the page and try again.', 'wp-clean-admin'));
             }
 
             // 验证用户权限
@@ -236,23 +237,27 @@ class WPCA_Menu_Customizer {
             }
 
             // 验证必要参数
-            $slug = isset($_REQUEST['slug']) ? sanitize_text_field($_REQUEST['slug']) : '';
-            $state = isset($_REQUEST['state']) ? (int)$_REQUEST['state'] : null;
+            $slug = isset($_POST['slug']) ? sanitize_text_field($_POST['slug']) : '';
+            $state = isset($_POST['state']) ? (int)$_POST['state'] : null;
             
-            if (empty($slug) || $state === null) {
-                throw new Exception(__('Missing required parameters', 'wp-clean-admin'));
+            if (empty($slug)) {
+                throw new Exception(__('Missing menu slug', 'wp-clean-admin'));
             }
             
+            if ($state === null) {
+                throw new Exception(__('Missing state parameter', 'wp-clean-admin'));
+            }
+
             // 获取当前设置
             $options = get_option('wpca_settings', []);
             
-            // 确保menu_toggles数组存在
+            // 初始化menu_toggles数组
             if (!isset($options['menu_toggles'])) {
                 $options['menu_toggles'] = [];
             }
             
-            // 更新状态
-            $options['menu_toggles'][$slug] = $state;
+            // 更新状态并确保值为0或1
+            $options['menu_toggles'][$slug] = $state ? 1 : 0;
             
             // 保存设置
             if (!update_option('wpca_settings', $options)) {
@@ -293,10 +298,10 @@ class WPCA_Menu_Customizer {
         
         $options = get_option('wpca_settings', []);
         
-        // Reset menu-related settings only
-        unset($options['menu_order']);
-        unset($options['submenu_order']);
-        unset($options['menu_toggles']);
+        // Reset all menu-related settings
+        $options['menu_order'] = [];
+        $options['submenu_order'] = [];
+        $options['menu_toggles'] = [];
         
         update_option('wpca_settings', $options);
         
@@ -351,7 +356,7 @@ class WPCA_Menu_Customizer {
         
         // Specific menu items
         $selectors = array_map(function($slug) {
-            return "#toplevel_page_{$slug}, #menu-{$$slug}";
+            return "#toplevel_page_{$slug}, #menu-{$slug}";
         }, $hidden_items);
         
         echo implode(', ', $selectors) . ' { 
