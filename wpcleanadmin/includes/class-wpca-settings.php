@@ -834,6 +834,281 @@ class WPCA_Settings {
     }
 
     /**
+     * Render the Login Page tab content.
+     */
+    public function render_login_tab() {
+        $options = $this->options;
+        $login_style = isset($options['login_style']) ? $options['login_style'] : 'default';
+        $login_logo = isset($options['login_logo']) ? $options['login_logo'] : '';
+        $login_background = isset($options['login_background']) ? $options['login_background'] : '';
+        $login_custom_css = isset($options['login_custom_css']) ? $options['login_custom_css'] : '';
+        ?>
+        <div class="wpca-login-wrapper">
+            <div class="wpca-login-header">
+                <h2><?php _e('Login Page Customization', 'wp-clean-admin'); ?></h2>
+                <p class="description"><?php _e('Customize the WordPress login page appearance with predefined styles or your own custom settings.', 'wp-clean-admin'); ?></p>
+            </div>
+            
+            <div class="wpca-login-container">
+                <div class="wpca-login-column wpca-login-options">
+                    <div class="wpca-login-section">
+                        <h3><?php _e('Login Style', 'wp-clean-admin'); ?></h3>
+                        <p class="description"><?php _e('Choose from predefined login styles or create your own custom style.', 'wp-clean-admin'); ?></p>
+                        
+                        <div class="wpca-login-styles-grid">
+                            <!-- Default Style -->
+                            <div class="wpca-login-style-item <?php echo $login_style === 'default' ? 'active' : ''; ?>">
+                                <label>
+                                    <input type="radio" name="wpca_settings[login_style]" value="default" <?php checked($login_style, 'default'); ?>>
+                                    <div class="wpca-login-style-preview default-style">
+                                        <div class="preview-image"></div>
+                                        <div class="preview-title"><?php _e('Default', 'wp-clean-admin'); ?></div>
+                                    </div>
+                                </label>
+                            </div>
+                            
+                            <!-- Modern Style -->
+                            <div class="wpca-login-style-item <?php echo $login_style === 'modern' ? 'active' : ''; ?>">
+                                <label>
+                                    <input type="radio" name="wpca_settings[login_style]" value="modern" <?php checked($login_style, 'modern'); ?>>
+                                    <div class="wpca-login-style-preview modern-style">
+                                        <div class="preview-image"></div>
+                                        <div class="preview-title"><?php _e('Modern', 'wp-clean-admin'); ?></div>
+                                    </div>
+                                </label>
+                            </div>
+                            
+                            <!-- Minimal Style -->
+                            <div class="wpca-login-style-item <?php echo $login_style === 'minimal' ? 'active' : ''; ?>">
+                                <label>
+                                    <input type="radio" name="wpca_settings[login_style]" value="minimal" <?php checked($login_style, 'minimal'); ?>>
+                                    <div class="wpca-login-style-preview minimal-style">
+                                        <div class="preview-image"></div>
+                                        <div class="preview-title"><?php _e('Minimal', 'wp-clean-admin'); ?></div>
+                                    </div>
+                                </label>
+                            </div>
+                            
+                            <!-- Dark Style -->
+                            <div class="wpca-login-style-item <?php echo $login_style === 'dark' ? 'active' : ''; ?>">
+                                <label>
+                                    <input type="radio" name="wpca_settings[login_style]" value="dark" <?php checked($login_style, 'dark'); ?>>
+                                    <div class="wpca-login-style-preview dark-style">
+                                        <div class="preview-image"></div>
+                                        <div class="preview-title"><?php _e('Dark', 'wp-clean-admin'); ?></div>
+                                    </div>
+                                </label>
+                            </div>
+                            
+                            <!-- Gradient Style -->
+                            <div class="wpca-login-style-item <?php echo $login_style === 'gradient' ? 'active' : ''; ?>">
+                                <label>
+                                    <input type="radio" name="wpca_settings[login_style]" value="gradient" <?php checked($login_style, 'gradient'); ?>>
+                                    <div class="wpca-login-style-preview gradient-style">
+                                        <div class="preview-image"></div>
+                                        <div class="preview-title"><?php _e('Gradient', 'wp-clean-admin'); ?></div>
+                                    </div>
+                                </label>
+                            </div>
+                            
+                            <!-- Custom Style -->
+                            <div class="wpca-login-style-item <?php echo $login_style === 'custom' ? 'active' : ''; ?>">
+                                <label>
+                                    <input type="radio" name="wpca_settings[login_style]" value="custom" <?php checked($login_style, 'custom'); ?>>
+                                    <div class="wpca-login-style-preview custom-style">
+                                        <div class="preview-image"></div>
+                                        <div class="preview-title"><?php _e('Custom', 'wp-clean-admin'); ?></div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div id="wpca-custom-login-options" class="wpca-login-section" style="<?php echo $login_style === 'custom' ? '' : 'display: none;'; ?>">
+                        <h3><?php _e('Custom Login Options', 'wp-clean-admin'); ?></h3>
+                        
+                        <table class="form-table">
+                            <tr>
+                                <th scope="row"><?php _e('Custom Logo', 'wp-clean-admin'); ?></th>
+                                <td>
+                                    <div class="wpca-media-uploader">
+                                        <input type="text" name="wpca_settings[login_logo]" value="<?php echo esc_attr($login_logo); ?>" class="regular-text wpca-upload-field" id="wpca-login-logo">
+                                        <button type="button" class="button wpca-upload-button" data-target="wpca-login-logo"><?php _e('Choose Image', 'wp-clean-admin'); ?></button>
+                                        <button type="button" class="button wpca-remove-button" data-target="wpca-login-logo"><?php _e('Remove', 'wp-clean-admin'); ?></button>
+                                        <p class="description"><?php _e('Upload a custom logo for the login page. Recommended size: 320×80px.', 'wp-clean-admin'); ?></p>
+                                        <div class="wpca-preview-image" id="wpca-login-logo-preview" style="<?php echo !empty($login_logo) ? '' : 'display: none;'; ?>">
+                                            <img src="<?php echo esc_url($login_logo); ?>" alt="<?php _e('Login Logo Preview', 'wp-clean-admin'); ?>">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><?php _e('Background Image', 'wp-clean-admin'); ?></th>
+                                <td>
+                                    <div class="wpca-media-uploader">
+                                        <input type="text" name="wpca_settings[login_background]" value="<?php echo esc_attr($login_background); ?>" class="regular-text wpca-upload-field" id="wpca-login-background">
+                                        <button type="button" class="button wpca-upload-button" data-target="wpca-login-background"><?php _e('Choose Image', 'wp-clean-admin'); ?></button>
+                                        <button type="button" class="button wpca-remove-button" data-target="wpca-login-background"><?php _e('Remove', 'wp-clean-admin'); ?></button>
+                                        <p class="description"><?php _e('Upload a custom background image for the login page.', 'wp-clean-admin'); ?></p>
+                                        <div class="wpca-preview-image" id="wpca-login-background-preview" style="<?php echo !empty($login_background) ? '' : 'display: none;'; ?>">
+                                            <img src="<?php echo esc_url($login_background); ?>" alt="<?php _e('Background Preview', 'wp-clean-admin'); ?>">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><?php _e('Custom CSS', 'wp-clean-admin'); ?></th>
+                                <td>
+                                    <textarea name="wpca_settings[login_custom_css]" rows="10" cols="50" class="large-text code"><?php echo esc_textarea($login_custom_css); ?></textarea>
+                                    <p class="description"><?php _e('Add custom CSS to further customize the login page.', 'wp-clean-admin'); ?></p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="wpca-login-column wpca-login-preview">
+                    <div class="wpca-login-preview-section">
+                        <h3><?php _e('Live Preview', 'wp-clean-admin'); ?></h3>
+                        <p class="description"><?php _e('Preview how your login page will look with the current settings.', 'wp-clean-admin'); ?></p>
+                        <div class="wpca-login-preview-frame">
+                            <div class="wpca-login-preview-content">
+                                <div class="wpca-login-preview-logo"></div>
+                                <div class="wpca-login-preview-form">
+                                    <div class="wpca-login-preview-input"></div>
+                                    <div class="wpca-login-preview-input"></div>
+                                    <div class="wpca-login-preview-button"></div>
+                                    <div class="wpca-login-preview-links">
+                                        <div></div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Enqueue login styles CSS -->
+            <link rel="stylesheet" href="<?php echo esc_url(WPCA_PLUGIN_URL . 'assets/css/wpca-login-styles.css'); ?>" type="text/css" media="all" />
+            
+            <!-- Enqueue settings JS -->
+            <script src="<?php echo esc_url(WPCA_PLUGIN_URL . 'assets/js/wpca-admin-settings.js'); ?>"></script>
+        </div>
+        
+        <script>
+        jQuery(document).ready(function($) {
+            // Handle style selection
+            $('input[name="wpca_settings[login_style]"]').on('change', function() {
+                $('.wpca-login-style-item').removeClass('active');
+                $(this).closest('.wpca-login-style-item').addClass('active');
+                
+                // Show/hide custom options
+                if ($(this).val() === 'custom') {
+                    $('#wpca-custom-login-options').slideDown();
+                } else {
+                    $('#wpca-custom-login-options').slideUp();
+                }
+                
+                // Update preview
+                updateLoginPreview($(this).val());
+            });
+            
+            // Media uploader
+            $('.wpca-upload-button').on('click', function(e) {
+                e.preventDefault();
+                
+                var button = $(this);
+                var targetId = button.data('target');
+                var field = $('#' + targetId);
+                var preview = $('#' + targetId + '-preview');
+                
+                // Create the media frame
+                var frame = wp.media({
+                    title: '<?php _e('Select or Upload Media', 'wp-clean-admin'); ?>',
+                    button: {
+                        text: '<?php _e('Use this media', 'wp-clean-admin'); ?>'
+                    },
+                    multiple: false
+                });
+                
+                // When an image is selected in the media frame...
+                frame.on('select', function() {
+                    var attachment = frame.state().get('selection').first().toJSON();
+                    field.val(attachment.url);
+                    
+                    // Update preview
+                    preview.find('img').attr('src', attachment.url);
+                    preview.show();
+                    
+                    // Update custom style preview
+                    if (targetId === 'wpca-login-logo') {
+                        $('.custom-style .preview-image').css('background-image', 'url(' + attachment.url + ')');
+                    } else if (targetId === 'wpca-login-background') {
+                        $('.custom-style').css('background-image', 'url(' + attachment.url + ')');
+                    }
+                });
+                
+                // Open the modal
+                frame.open();
+            });
+            
+            // Remove media
+            $('.wpca-remove-button').on('click', function(e) {
+                e.preventDefault();
+                
+                var button = $(this);
+                var targetId = button.data('target');
+                var field = $('#' + targetId);
+                var preview = $('#' + targetId + '-preview');
+                
+                field.val('');
+                preview.hide();
+                
+                // Update custom style preview
+                if (targetId === 'wpca-login-logo') {
+                    $('.custom-style .preview-image').css('background-image', '');
+                } else if (targetId === 'wpca-login-background') {
+                    $('.custom-style').css('background-image', '');
+                }
+            });
+            
+            // Function to update login preview
+            function updateLoginPreview(style) {
+                var preview = $('#wpca-login-preview');
+                
+                // Remove all style classes
+                preview.removeClass('default-preview modern-preview minimal-preview dark-preview gradient-preview custom-preview');
+                
+                // Add selected style class
+                preview.addClass(style + '-preview');
+                
+                // Update custom preview if needed
+                if (style === 'custom') {
+                    var logoUrl = $('#wpca-login-logo').val();
+                    var bgUrl = $('#wpca-login-background').val();
+                    
+                    if (logoUrl) {
+                        preview.find('.wpca-login-preview-logo').css('background-image', 'url(' + logoUrl + ')');
+                    }
+                    
+                    if (bgUrl) {
+                        preview.css('background-image', 'url(' + bgUrl + ')');
+                    }
+                } else {
+                    preview.find('.wpca-login-preview-logo').css('background-image', '');
+                    preview.css('background-image', '');
+                }
+            }
+            
+            // Initialize preview
+            updateLoginPreview('<?php echo esc_js($login_style); ?>');
+        });
+        </script>
+        <?php
+    }
+
+    /**
      * Render the About tab content.
      */
     public function render_about_tab() {
@@ -964,6 +1239,12 @@ class WPCA_Settings {
         $output['font_size_base'] = isset($input['font_size_base']) ? sanitize_text_field($input['font_size_base']) : 'medium';
         $output['icon_style'] = isset($input['icon_style']) ? sanitize_text_field($input['icon_style']) : 'dashicons';
         
+        // Login page settings
+        $output['login_style'] = isset($input['login_style']) ? sanitize_text_field($input['login_style']) : 'default';
+        $output['login_logo'] = isset($input['login_logo']) ? esc_url_raw($input['login_logo']) : '';
+        $output['login_background'] = isset($input['login_background']) ? esc_url_raw($input['login_background']) : '';
+        $output['login_custom_css'] = isset($input['login_custom_css']) ? wp_strip_all_tags($input['login_custom_css']) : '';
+        
         return $output;
     }
 
@@ -979,6 +1260,7 @@ class WPCA_Settings {
                 <div class="wpca-tab active" data-tab="tab-general"><?php _e('General', 'wp-clean-admin'); ?></div>
                 <div class="wpca-tab" data-tab="tab-visual-style"><?php _e('Visual Style', 'wp-clean-admin'); ?></div>
                 <div class="wpca-tab" data-tab="tab-menu"><?php _e('Menu Customization', 'wp-clean-admin'); ?></div>
+                <div class="wpca-tab" data-tab="tab-login"><?php _e('Login Page', 'wp-clean-admin'); ?></div>
                 <div class="wpca-tab" data-tab="tab-about"><?php _e('About', 'wp-clean-admin'); ?></div>
             </div>
             
@@ -1015,6 +1297,11 @@ class WPCA_Settings {
                 echo '</div>';
                 
 
+                
+                // Login Page tab content
+                echo '<div id="tab-login" class="wpca-tab-content ' . ($active_tab === 'tab-login' ? 'active' : '') . '">';
+                $this->render_login_tab();
+                echo '</div>';
                 
                 // About tab content
                 echo '<div id="tab-about" class="wpca-tab-content ' . ($active_tab === 'tab-about' ? 'active' : '') . '">';

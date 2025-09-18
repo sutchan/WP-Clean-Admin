@@ -115,6 +115,43 @@ function wpca_run_plugin() {
         echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
     });
 
+    // Add login page styling
+    add_action('login_enqueue_scripts', function() {
+        // Get selected login style
+        $options = get_option('wpca_settings');
+        $login_style = isset($options['login_style']) ? $options['login_style'] : 'default';
+        
+        // Enqueue our login styles
+        wp_enqueue_style(
+            'wpca-login-styles',
+            WPCA_PLUGIN_URL . 'assets/css/wp-clean-admin.css',
+            array(),
+            WPCA_VERSION
+        );
+        
+        // Enqueue login script
+        wp_enqueue_script(
+            'wpca-login-script',
+            WPCA_PLUGIN_URL . 'assets/js/wpca-login.js',
+            array('jquery'),
+            WPCA_VERSION,
+            true
+        );
+        
+        // Localize script with login style data
+        wp_localize_script('wpca-login-script', 'wpcaLoginVars', [
+            'loginStyle' => $login_style,
+            'loginLogo' => isset($options['login_logo']) ? $options['login_logo'] : '',
+            'loginBackground' => isset($options['login_background']) ? $options['login_background'] : ''
+        ]);
+        
+        // Add login style class via inline CSS
+        wp_add_inline_style('wpca-login-styles', 
+            "body.login { background-color: inherit !important; }
+            body.login.wpca-login-$login_style { background-color: inherit !important; }"
+        );
+    });
+
     // Add theme presets
     add_filter('wpca_theme_presets', function($presets) {
         $presets['modern'] = [

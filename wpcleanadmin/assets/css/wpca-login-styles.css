@@ -1,0 +1,108 @@
+/* Login Page Styles */
+.wpca-login-container {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+}
+.wpca-login-column {
+    flex: 1;
+}
+.wpca-login-options {
+    max-width: 60%;
+}
+.wpca-login-preview {
+    position: sticky;
+    top: 40px;
+    align-self: flex-start;
+}
+.wpca-login-preview-frame {
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    max-width: 400px;
+    margin: 0 auto;
+}
+.wpca-login-preview-content {
+    padding: 20px;
+    background: #f8f9fa;
+}
+.wpca-login-preview-logo {
+    height: 84px;
+    margin: 0 auto 20px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.wpca-login-preview-form {
+    background: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.wpca-login-preview-input {
+    height: 42px;
+    margin-bottom: 16px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+}
+.wpca-login-preview-button {
+    height: 44px;
+    background: #2271b1;
+    border-radius: 6px;
+    margin-bottom: 16px;
+}
+.wpca-login-preview-links {
+    display: flex;
+    justify-content: space-between;
+}
+.wpca-login-preview-links div {
+    height: 15px;
+    width: 30%;
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+/* Preview styles for each login style */
+.wpca-login-preview.default-preview .wpca-login-preview-form {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.13);
+}
+.wpca-login-preview.modern-preview .wpca-login-preview-form {
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border: 1px solid #e0e0e0;
+}
+.wpca-login-preview.minimal-preview .wpca-login-preview-form {
+    box-shadow: none;
+    border: 1px solid #e0e0e0;
+}
+.wpca-login-preview.dark-preview {
+    background-color: #222;
+}
+.wpca-login-preview.dark-preview .wpca-login-preview-form {
+    background: #333;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.wpca-login-preview.gradient-preview {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+.wpca-login-preview.gradient-preview .wpca-login-preview-form {
+    background: rgba(255,255,255,0.9);
+    border-radius: 8px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .wpca-login-container {
+        flex-direction: column;
+    }
+    .wpca-login-options {
+        max-width: 100%;
+    }
+    .wpca-login-preview {
+        position: static;
+    }
+}

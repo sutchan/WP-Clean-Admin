@@ -1,59 +1,126 @@
-msgid ""
-msgstr ""
 "Project-Id-Version: WPCleanAdmin\n"
-"POT-Creation-Date: 2025-09-06 23:00+0800\n"
+"POT-Creation-Date: 2025-09-18 11:08+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.7\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-KeywordsList: __;_e;_x\n"
 "X-Poedit-SearchPath-0: .\n"
 
-# Main plugin strings
+msgid "You do not have sufficient permissions to access this page."
+msgstr "You do not have sufficient permissions to access this page."
+
+msgid "Invalid request method"
+msgstr "Invalid request method"
+
+msgid "Security check failed. Please refresh the page and try again."
+msgstr "Security check failed. Please refresh the page and try again."
+
+msgid "Unauthorized access"
+msgstr "Unauthorized access"
+
+msgid "Missing menu slug"
+msgstr "Missing menu slug"
+
+msgid "Missing state parameter"
+msgstr "Missing state parameter"
+
+msgid "Failed to save settings"
+msgstr "Failed to save settings"
+
+msgid "Menu toggle updated"
+msgstr "Menu toggle updated"
+
+msgid "Menu settings reset to default"
+msgstr "Menu settings reset to default"
+
+msgid "Are you sure you want to reset all menu settings to default?"
+msgstr "Are you sure you want to reset all menu settings to default?"
+
+msgid "Resetting..."
+msgstr "Resetting..."
+
+msgid "Reset Defaults"
+msgstr "Reset Defaults"
+
+msgid "Reset failed. Please try again."
+msgstr "Reset failed. Please try again."
+
 msgid "WP Clean Admin Settings"
 msgstr "WP Clean Admin Settings"
 
 msgid "WP Clean Admin"
 msgstr "WP Clean Admin"
 
-msgid "You do not have sufficient permissions to access this page."
-msgstr "You do not have sufficient permissions to access this page."
+msgid "General Settings"
+msgstr "General Settings"
 
-msgid "Configure the appearance and behavior of your admin dashboard."
-msgstr "Configure the appearance and behavior of your admin dashboard."
+msgid "Hide Dashboard Widgets"
+msgstr "Hide Dashboard Widgets"
 
-msgid "Visual Style Customization"
-msgstr "Visual Style Customization"
+msgid "Visual Style"
+msgstr "Visual Style"
 
-msgid "Customize the overall visual theme and colors."
-msgstr "Customize the overall visual theme and colors."
+msgid "Theme Style"
+msgstr "Theme Style"
 
-msgid "Layout & Typography"
-msgstr "Layout & Typography"
+msgid "Primary Color"
+msgstr "Primary Color"
 
-msgid "Adjust layout density, element rounding, and font styles."
-msgstr "Adjust layout density, element rounding, and font styles."
+msgid "Background Color"
+msgstr "Background Color"
+
+msgid "Text Color"
+msgstr "Text Color"
+
+msgid "Shadow Style"
+msgstr "Shadow Style"
+
+msgid "Layout Density"
+msgstr "Layout Density"
+
+msgid "Border Radius"
+msgstr "Border Radius"
+
+msgid "Font Stack"
+msgstr "Font Stack"
+
+msgid "Font Size"
+msgstr "Font Size"
+
+msgid "Icon Style"
+msgstr "Icon Style"
 
 msgid "Menu Customization"
 msgstr "Menu Customization"
 
+msgid "Menu Order"
+msgstr "Menu Order"
+
+msgid "Hide Admin Bar Items"
+msgstr "Hide Admin Bar Items"
+
+msgid "About WP Clean Admin"
+msgstr "About WP Clean Admin"
+
+msgid "Configure the appearance and behavior of your admin dashboard."
+msgstr "Configure the appearance and behavior of your admin dashboard."
+
+msgid "Customize the overall visual theme, colors, layout and typography."
+msgstr "Customize the overall visual theme, colors, layout and typography."
+
 msgid "Select which admin menu items to hide."
 msgstr "Select which admin menu items to hide."
-
-msgid "Admin Bar Customization"
-msgstr "Admin Bar Customization"
 
 msgid "Select which admin bar items to hide."
 msgstr "Select which admin bar items to hide."
 
-msgid "Hide Dashboard Widgets"
-msgstr "Hide Dashboard Widgets"
+msgid "Information about WP Clean Admin plugin."
+msgstr "Information about WP Clean Admin plugin."
 
 msgid "Right Now"
 msgstr "Right Now"
@@ -73,68 +140,95 @@ msgstr "Site Health Status"
 msgid "At a Glance"
 msgstr "At a Glance"
 
-msgid "Admin Theme Style"
-msgstr "Admin Theme Style"
+msgid "Default (Flat & Clean)"
+msgstr "Default (Flat & Clean)"
+
+msgid "Light Blue Gray"
+msgstr "Light Blue Gray"
+
+msgid "Mint Green"
+msgstr "Mint Green"
+
+msgid "Dark Mode"
+msgstr "Dark Mode"
+
+msgid "Custom Colors"
+msgstr "Custom Colors"
 
 msgid "Choose a predefined theme or select \"Custom Colors\" to define your own."
 msgstr "Choose a predefined theme or select \"Custom Colors\" to define your own."
 
-msgid "Primary Color"
-msgstr "Primary Color"
-
 msgid "Choose the primary accent color for links, buttons, and active states."
 msgstr "Choose the primary accent color for links, buttons, and active states."
-
-msgid "Background Color"
-msgstr "Background Color"
 
 msgid "Choose the main background color of the admin area."
 msgstr "Choose the main background color of the admin area."
 
-msgid "Text Color"
-msgstr "Text Color"
-
 msgid "Choose the default text color."
 msgstr "Choose the default text color."
 
-msgid "Shadow Style"
-msgstr "Shadow Style"
+msgid "None"
+msgstr "None"
+
+msgid "Subtle (Default)"
+msgstr "Subtle (Default)"
 
 msgid "Choose the shadow style for elements like post boxes and buttons."
 msgstr "Choose the shadow style for elements like post boxes and buttons."
 
-msgid "Layout Density"
-msgstr "Layout Density"
+msgid "Compact"
+msgstr "Compact"
+
+msgid "Standard (Default)"
+msgstr "Standard (Default)"
+
+msgid "Spacious"
+msgstr "Spacious"
 
 msgid "Adjust the spacing and padding of elements in the admin interface."
 msgstr "Adjust the spacing and padding of elements in the admin interface."
 
-msgid "Border Radius Style"
-msgstr "Border Radius Style"
+msgid "None (Sharp Corners)"
+msgstr "None (Sharp Corners)"
+
+msgid "Small (4px, Default)"
+msgstr "Small (4px, Default)"
+
+msgid "Large (8px, Rounded)"
+msgstr "Large (8px, Rounded)"
 
 msgid "Choose the border-radius style for various elements."
 msgstr "Choose the border-radius style for various elements."
 
-msgid "Font Stack"
-msgstr "Font Stack"
+msgid "System Default"
+msgstr "System Default"
+
+msgid "Google Fonts"
+msgstr "Google Fonts"
 
 msgid "Select the font stack to be used in the admin area."
 msgstr "Select the font stack to be used in the admin area."
 
-msgid "Base Font Size"
-msgstr "Base Font Size"
+msgid "Small"
+msgstr "Small"
+
+msgid "Medium (Default)"
+msgstr "Medium (Default)"
+
+msgid "Large"
+msgstr "Large"
 
 msgid "Adjust the base font size for the admin interface."
 msgstr "Adjust the base font size for the admin interface."
 
-msgid "Icon Style"
-msgstr "Icon Style"
+msgid "WordPress Dashicons"
+msgstr "WordPress Dashicons"
+
+msgid "Linear Icons"
+msgstr "Linear Icons"
 
 msgid "Choose the icon set for the admin interface."
 msgstr "Choose the icon set for the admin interface."
-
-msgid "Hide Admin Menu Items"
-msgstr "Hide Admin Menu Items"
 
 msgid "Dashboard"
 msgstr "Dashboard"
@@ -166,98 +260,110 @@ msgstr "Tools"
 msgid "Settings"
 msgstr "Settings"
 
-msgid "Menu Order"
-msgstr "Menu Order"
+msgid "Enable Menu Customization"
+msgstr "Enable Menu Customization"
 
-msgid "Drag and drop to reorder menu items"
-msgstr "Drag and drop to reorder menu items"
+msgid "Toggle to show/hide and reorder admin menu items"
+msgstr "Toggle to show/hide and reorder admin menu items"
 
-msgid "Hide Admin Bar Items"
-msgstr "Hide Admin Bar Items"
+msgid "Menu Order Customization"
+msgstr "Menu Order Customization"
 
-msgid "WordPress Logo"
-msgstr "WordPress Logo"
+msgid "Drag and drop menu items to reorder them. Use the toggle switches to show/hide items."
+msgstr "Drag and drop menu items to reorder them. Use the toggle switches to show/hide items."
 
-msgid "Site Name"
-msgstr "Site Name"
+msgid "Reset to Default Order"
+msgstr "Reset to Default Order"
 
-msgid "Updates"
-msgstr "Updates"
+msgid "Are you sure you want to reset all menu items to default order and visibility?"
+msgstr "Are you sure you want to reset all menu items to default order and visibility?"
 
-msgid "New Content"
-msgstr "New Content"
+msgid "Menu order has been reset to default"
+msgstr "Menu order has been reset to default"
 
-msgid "My Account"
-msgstr "My Account"
+msgid "Login Page Customization"
+msgstr "Login Page Customization"
 
-msgid "None"
-msgstr "None"
+msgid "Customize the WordPress login page appearance with predefined styles or your own custom settings."
+msgstr "Customize the WordPress login page appearance with predefined styles or your own custom settings."
 
-msgid "Subtle (Default)"
-msgstr "Subtle (Default)"
+msgid "Login Style"
+msgstr "Login Style"
 
-msgid "Compact"
-msgstr "Compact"
+msgid "Choose from predefined login styles or create your own custom style."
+msgstr "Choose from predefined login styles or create your own custom style."
 
-msgid "Standard (Default)"
-msgstr "Standard (Default)"
+msgid "Default"
+msgstr "Default"
 
-msgid "Spacious"
-msgstr "Spacious"
+msgid "Modern"
+msgstr "Modern"
 
-msgid "None (Sharp Corners)"
-msgstr "None (Sharp Corners)"
+msgid "Minimal"
+msgstr "Minimal"
 
-msgid "Small (4px, Default)"
-msgstr "Small (4px, Default)"
+msgid "Dark"
+msgstr "Dark"
 
-msgid "Large (8px, Rounded)"
-msgstr "Large (8px, Rounded)"
+msgid "Gradient"
+msgstr "Gradient"
 
-msgid "System Default"
-msgstr "System Default"
+msgid "Custom"
+msgstr "Custom"
 
-msgid "Small"
-msgstr "Small"
+msgid "Custom Login Options"
+msgstr "Custom Login Options"
 
-msgid "Medium (Default)"
-msgstr "Medium (Default)"
+msgid "Custom Logo"
+msgstr "Custom Logo"
 
-msgid "Large"
-msgstr "Large"
+msgid "Choose Image"
+msgstr "Choose Image"
 
-msgid "WordPress Dashicons"
-msgstr "WordPress Dashicons"
+msgid "Remove"
+msgstr "Remove"
 
-msgid "Default (Flat & Clean)"
-msgstr "Default (Flat & Clean)"
+msgid "Upload a custom logo for the login page. Recommended size: 320×80px."
+msgstr "Upload a custom logo for the login page. Recommended size: 320×80px."
 
-msgid "Light Blue Gray"
-msgstr "Light Blue Gray"
+msgid "Login Logo Preview"
+msgstr "Login Logo Preview"
 
-msgid "Mint Green"
-msgstr "Mint Green"
+msgid "Background Image"
+msgstr "Background Image"
 
-msgid "Dark Mode"
-msgstr "Dark Mode"
+msgid "Upload a custom background image for the login page."
+msgstr "Upload a custom background image for the login page."
 
-msgid "Custom Colors"
-msgstr "Custom Colors"
+msgid "Background Preview"
+msgstr "Background Preview"
 
-msgid "Clean Admin"
-msgstr "Clean Admin"
+msgid "Custom CSS"
+msgstr "Custom CSS"
 
-msgid "General Settings"
-msgstr "General Settings"
+msgid "Add custom CSS to further customize the login page."
+msgstr "Add custom CSS to further customize the login page."
 
-msgid "Reset to Default"
-msgstr "Reset to Default"
+msgid "Preview"
+msgstr "Preview"
+
+msgid "This is a preview of how your login page will look."
+msgstr "This is a preview of how your login page will look."
+
+msgid "Select or Upload Media"
+msgstr "Select or Upload Media"
+
+msgid "Use this media"
+msgstr "Use this media"
 
 msgid "Version %s"
 msgstr "Version %s"
 
 msgid "Plugin Description"
 msgstr "Plugin Description"
+
+msgid "WP Clean Admin is a powerful WordPress plugin designed to streamline and customize your WordPress admin experience. It provides a cleaner, more efficient interface by allowing you to hide unnecessary elements, customize the visual appearance, and reorganize the admin menu to better suit your workflow."
+msgstr "WP Clean Admin is a powerful WordPress plugin designed to streamline and customize your WordPress admin experience. It provides a cleaner, more efficient interface by allowing you to hide unnecessary elements, customize the visual appearance, and reorganize the admin menu to better suit your workflow."
 
 msgid "Key Features"
 msgstr "Key Features"
@@ -280,37 +386,8 @@ msgstr "Adjust layout density and typography settings"
 msgid "Customize colors, shadows, and border styles"
 msgstr "Customize colors, shadows, and border styles"
 
-# New translations
-msgid "General"
-msgstr "General"
-
-msgid "Visual Style"
-msgstr "Visual Style"
-
-msgid "About"
-msgstr "About"
-
-msgid "Theme Style"
-msgstr "Theme Style"
-
-msgid "Select Color"
-msgstr "Select Color"
-
-msgid "Border Radius"
-msgstr "Border Radius"
-
-msgid "Font Size"
-msgstr "Font Size"
-
-# New strings from about section
-msgid "Customize the overall visual theme, colors, layout and typography."
-msgstr "Customize the overall visual theme, colors, layout and typography."
-
-msgid "Information about WP Clean Admin plugin."
-msgstr "Information about WP Clean Admin plugin."
-
-msgid "WP Clean Admin is a powerful WordPress plugin designed to streamline and customize your WordPress admin experience. It provides a cleaner, more efficient interface by allowing you to hide unnecessary elements, customize the visual appearance, and reorganize the admin menu to better suit your workflow."
-msgstr "WP Clean Admin is a powerful WordPress plugin designed to streamline and customize your WordPress admin experience. It provides a cleaner, more efficient interface by allowing you to hide unnecessary elements, customize the visual appearance, and reorganize the admin menu to better suit your workflow."
+msgid "Author"
+msgstr "Author"
 
 msgid "Created by WordPress Admin UI Specialists"
 msgstr "Created by WordPress Admin UI Specialists"
@@ -333,28 +410,26 @@ msgstr "If you find this plugin useful, please consider leaving a review on Word
 msgid "Rate on WordPress.org"
 msgstr "Rate on WordPress.org"
 
-# Menu Customizer strings
-msgid "WP Clean Admin - Custom Menu Order:"
-msgstr "WP Clean Admin - Custom Menu Order:"
+msgid "WordPress Logo"
+msgstr "WordPress Logo"
 
-msgid "WP Clean Admin - Original Menu Order:"
-msgstr "WP Clean Admin - Original Menu Order:"
+msgid "Site Name"
+msgstr "Site Name"
+r
+msgid "Updates"
+msgstr "Updates"
 
-msgid "WP Clean Admin - Global Menu:"
-msgstr "WP Clean Admin - Global Menu:"
+msgid "New Content"
+msgstr "New Content"
 
-msgid "WP Clean Admin - Slug to Order Map:"
-msgstr "WP Clean Admin - Slug to Order Map:"
+msgid "My Account"
+msgstr "My Account"
 
-msgid "WP Clean Admin - New Menu Order:"
-msgstr "WP Clean Admin - New Menu Order:"
+msgid "General"
+msgstr "General"
 
-msgid "Menu items reordered"
-msgstr "Menu items reordered"
+msgid "Login Page"
+msgstr "Login Page"
 
-# Menu Toggle Wrapper strings
-msgid "Enable Menu Customization"
-msgstr "Enable Menu Customization"
-
-msgid "Toggle to show/hide and reorder admin menu items"
-msgstr "Toggle to show/hide and reorder admin menu items"
+msgid "About"
+msgstr "About"
