@@ -1,8 +1,7 @@
 /**
- * WP Clean Admin Settings JavaScript (Refactored)
+ * WP Clean Admin Settings JavaScript (Optimized)
  *
- * This version removes localStorage to prevent data conflicts, simplifies tab handling,
- * and relies on a single source of truth (the database via PHP-rendered state).
+ * 整合了所有管理界面功能，包括标签切换、菜单排序和登录页面预览
  */
 jQuery(document).ready(function($) {
     'use strict';
@@ -83,7 +82,6 @@ jQuery(document).ready(function($) {
     }
     initializeTabs();
 
-
     // ======================================================
     // Menu Sorting Functionality
     // ======================================================
@@ -116,7 +114,6 @@ jQuery(document).ready(function($) {
             $(`input[name="${inputName}"]`).val(JSON.stringify(submenuOrder));
         }
     });
-
 
     // ======================================================
     // Menu Toggle Switch Functionality (No localStorage)
@@ -235,5 +232,120 @@ jQuery(document).ready(function($) {
             console.warn(`WPCA: Could not find menu item with slug "${slug}" to update visibility`);
             return false;
         }
+    }
+
+    // ======================================================
+    // 登录页面预览功能 (从wpca-admin-settings.js合并)
+    // ======================================================
+
+    /**
+     * 更新登录页面预览
+     * @param {string} style - 登录页面样式
+     */
+    function updateLoginPreview(style) {
+        var preview = $('.wpca-login-preview-content');
+        preview.removeClass('default-preview modern-preview minimal-preview dark-preview gradient-preview custom-preview');
+        preview.addClass(style + '-preview');
+
+        switch(style) {
+            case 'default':
+                preview.find('.wpca-login-preview-logo').css('background-image', 'url(data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 84 84"><path fill="%232271b1" d="M42,0C18.8,0,0,18.8,0,42s18.8,42,42,42s42-18.8,42-42S65.2,0,42,0z M42,64c-12.2,0-22-9.8-22-22s9.8-22,22-22 s22,9.8,22,22S54.2,64,42,64z"/></svg>)');
+                preview.css('background-color', '#f1f1f1');
+                break;
+            case 'modern':
+                preview.find('.wpca-login-preview-logo').css('background-image', 'url(data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 84 84"><path fill="%234A90E2" d="M42,0C18.8,0,0,18.8,0,42s18.8,42,42,42s42-18.8,42-42S65.2,0,42,0z M42,64c-12.2,0-22-9.8-22-22s9.8-22,22-22 s22,9.8,22,22S54.2,64,42,64z"/></svg>)');
+                preview.css('background-color', '#f8f9fa');
+                break;
+            case 'minimal':
+                preview.find('.wpca-login-preview-logo').css('background-image', '');
+                preview.css('background-color', '#fff');
+                break;
+            case 'dark':
+                preview.find('.wpca-login-preview-logo').css('background-image', 'url(data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 84 84"><path fill="%23fff" d="M42,0C18.8,0,0,18.8,0,42s18.8,42,42,42s42-18.8,42-42S65.2,0,42,0z M42,64c-12.2,0-22-9.8-22-22s9.8-22,22-22 s22,9.8,22,22S54.2,64,42,64z"/></svg>)');
+                preview.css('background-color', '#222');
+                break;
+            case 'gradient':
+                preview.find('.wpca-login-preview-logo').css('background-image', 'url(data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 84 84"><path fill="%23fff" d="M42,0C18.8,0,0,18.8,0,42s18.8,42,42,42s42-18.8,42-42S65.2,0,42,0z M42,64c-12.2,0-22-9.8-22-22s9.8-22,22-22 s22,9.8,22,22S54.2,64,42,64z"/></svg>)');
+                preview.css('background', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)');
+                break;
+            case 'custom':
+                var logoUrl = $('input[name="wpca_settings[login_logo]"]').val();
+                var bgUrl = $('input[name="wpca_settings[login_background]"]').val();
+                
+                if (logoUrl) {
+                    preview.find('.wpca-login-preview-logo').css('background-image', 'url(' + logoUrl + ')');
+                } else {
+                    preview.find('.wpca-login-preview-logo').css('background-image', '');
+                }
+                
+                if (bgUrl) {
+                    preview.css('background-image', 'url(' + bgUrl + ')');
+                } else {
+                    preview.css('background-image', '');
+                }
+                break;
+        }
+    }
+
+    // 登录样式选择变更时更新预览
+    $('input[name="wpca_settings[login_style]"]').on('change', function() {
+        updateLoginPreview($(this).val());
+    });
+
+    // 媒体上传功能
+    $('.wpca-upload-button').on('click', function(e) {
+        e.preventDefault();
+        var button = $(this);
+        var targetId = button.data('target');
+        var field = $('#' + targetId);
+        var preview = $('#' + targetId + '-preview');
+
+        var frame = wp.media({
+            title: wpca_admin.media_title || '选择或上传媒体',
+            button: { text: wpca_admin.media_button || '使用此媒体' },
+            multiple: false
+        });
+
+        frame.on('select', function() {
+            var attachment = frame.state().get('selection').first().toJSON();
+            field.val(attachment.url);
+            preview.find('img').attr('src', attachment.url);
+            preview.show();
+            
+            // 如果是登录页面相关的上传，更新自定义样式预览
+            if (targetId === 'wpca-login-logo' || targetId === 'wpca-login-background') {
+                // 确保当前选择的是自定义样式
+                if ($('input[name="wpca_settings[login_style]"]:checked').val() === 'custom') {
+                    updateLoginPreview('custom');
+                }
+            }
+        });
+
+        frame.open();
+    });
+
+    // 移除媒体
+    $('.wpca-remove-button').on('click', function(e) {
+        e.preventDefault();
+        var button = $(this);
+        var targetId = button.data('target');
+        var field = $('#' + targetId);
+        var preview = $('#' + targetId + '-preview');
+        
+        field.val('');
+        preview.hide();
+        
+        // 如果是登录页面相关的移除，更新自定义样式预览
+        if (targetId === 'wpca-login-logo' || targetId === 'wpca-login-background') {
+            // 确保当前选择的是自定义样式
+            if ($('input[name="wpca_settings[login_style]"]:checked').val() === 'custom') {
+                updateLoginPreview('custom');
+            }
+        }
+    });
+
+    // 初始化登录预览（如果在登录页面选项卡）
+    if ($('#tab-login').length && $('input[name="wpca_settings[login_style]"]:checked').length) {
+        updateLoginPreview($('input[name="wpca_settings[login_style]"]:checked').val());
     }
 });

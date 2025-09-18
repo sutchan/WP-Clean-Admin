@@ -66,7 +66,7 @@ class WPCA_Settings {
         wp_enqueue_script('jquery-ui-sortable');
         
         // Enqueue CSS file for the settings page
-        wp_enqueue_style( 'wpca-admin-style', WPCA_PLUGIN_URL . 'assets/css/wp-clean-admin.css', array(), WPCA_VERSION );
+        wp_enqueue_style( 'wpca-admin-style', WPCA_PLUGIN_URL . 'assets/css/wpca-admin.css', array(), WPCA_VERSION );
         
         // Enqueue custom script for the settings page
         wp_enqueue_script( 'wpca-settings-script', WPCA_PLUGIN_URL . 'assets/js/wpca-settings.js', array( 'jquery', 'jquery-ui-sortable' ), WPCA_VERSION, true );
@@ -885,11 +885,6 @@ class WPCA_Settings {
         );
         ?>
         <div class="wpca-login-wrapper">
-            <div class="wpca-login-header">
-                <h2><?php _e('Login Page Customization', 'wp-clean-admin'); ?></h2>
-                <p class="description"><?php _e('Customize the WordPress login page appearance with predefined styles or your own custom settings.', 'wp-clean-admin'); ?></p>
-            </div>
-            
             <?php 
             // 显示登录页面元素控制部分
             do_settings_sections('wpca_settings_login');
@@ -1038,13 +1033,12 @@ class WPCA_Settings {
             <!-- Enqueue login styles CSS -->
             <link rel="stylesheet" href="<?php echo esc_url(WPCA_PLUGIN_URL . 'assets/css/wpca-login-styles.css'); ?>" type="text/css" media="all" />
             
-            <!-- Enqueue settings JS -->
-            <script src="<?php echo esc_url(WPCA_PLUGIN_URL . 'assets/js/wpca-admin-settings.js'); ?>"></script>
+            <!-- 登录页面功能已整合到主设置脚本中，无需额外加载 -->
         </div>
         
         <script>
         jQuery(document).ready(function($) {
-            // Handle style selection
+            // 显示/隐藏自定义选项
             $('input[name="wpca_settings[login_style]"]').on('change', function() {
                 $('.wpca-login-style-item').removeClass('active');
                 $(this).closest('.wpca-login-style-item').addClass('active');
@@ -1055,100 +1049,10 @@ class WPCA_Settings {
                 } else {
                     $('#wpca-custom-login-options').slideUp();
                 }
-                
-                // Update preview
-                updateLoginPreview($(this).val());
             });
             
-            // Media uploader
-            $('.wpca-upload-button').on('click', function(e) {
-                e.preventDefault();
-                
-                var button = $(this);
-                var targetId = button.data('target');
-                var field = $('#' + targetId);
-                var preview = $('#' + targetId + '-preview');
-                
-                // Create the media frame
-                var frame = wp.media({
-                    title: '<?php _e('Select or Upload Media', 'wp-clean-admin'); ?>',
-                    button: {
-                        text: '<?php _e('Use this media', 'wp-clean-admin'); ?>'
-                    },
-                    multiple: false
-                });
-                
-                // When an image is selected in the media frame...
-                frame.on('select', function() {
-                    var attachment = frame.state().get('selection').first().toJSON();
-                    field.val(attachment.url);
-                    
-                    // Update preview
-                    preview.find('img').attr('src', attachment.url);
-                    preview.show();
-                    
-                    // Update custom style preview
-                    if (targetId === 'wpca-login-logo') {
-                        $('.custom-style .preview-image').css('background-image', 'url(' + attachment.url + ')');
-                    } else if (targetId === 'wpca-login-background') {
-                        $('.custom-style').css('background-image', 'url(' + attachment.url + ')');
-                    }
-                });
-                
-                // Open the modal
-                frame.open();
-            });
-            
-            // Remove media
-            $('.wpca-remove-button').on('click', function(e) {
-                e.preventDefault();
-                
-                var button = $(this);
-                var targetId = button.data('target');
-                var field = $('#' + targetId);
-                var preview = $('#' + targetId + '-preview');
-                
-                field.val('');
-                preview.hide();
-                
-                // Update custom style preview
-                if (targetId === 'wpca-login-logo') {
-                    $('.custom-style .preview-image').css('background-image', '');
-                } else if (targetId === 'wpca-login-background') {
-                    $('.custom-style').css('background-image', '');
-                }
-            });
-            
-            // Function to update login preview
-            function updateLoginPreview(style) {
-                var preview = $('#wpca-login-preview');
-                
-                // Remove all style classes
-                preview.removeClass('default-preview modern-preview minimal-preview dark-preview gradient-preview custom-preview');
-                
-                // Add selected style class
-                preview.addClass(style + '-preview');
-                
-                // Update custom preview if needed
-                if (style === 'custom') {
-                    var logoUrl = $('#wpca-login-logo').val();
-                    var bgUrl = $('#wpca-login-background').val();
-                    
-                    if (logoUrl) {
-                        preview.find('.wpca-login-preview-logo').css('background-image', 'url(' + logoUrl + ')');
-                    }
-                    
-                    if (bgUrl) {
-                        preview.css('background-image', 'url(' + bgUrl + ')');
-                    }
-                } else {
-                    preview.find('.wpca-login-preview-logo').css('background-image', '');
-                    preview.css('background-image', '');
-                }
-            }
-            
-            // Initialize preview
-            updateLoginPreview('<?php echo esc_js($login_style); ?>');
+            // 初始化媒体上传器和预览功能已移至主JS文件
+            // 初始化登录预览已移至主JS文件
         });
         </script>
         <?php

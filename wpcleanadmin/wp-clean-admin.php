@@ -124,7 +124,7 @@ function wpca_run_plugin() {
         // Enqueue our login styles
         wp_enqueue_style(
             'wpca-login-styles',
-            WPCA_PLUGIN_URL . 'assets/css/wp-clean-admin.css',
+            WPCA_PLUGIN_URL . 'assets/css/wpca-admin.css',
             array(),
             WPCA_VERSION
         );

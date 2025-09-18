@@ -79,7 +79,7 @@ add_filter('admin_body_class', 'wpca_admin_body_class');
  */
 function wpca_apply_custom_styles() {
     // This style needs to be applied on all admin pages, so no page check here.
-    wp_enqueue_style('wpca-admin-style', WPCA_PLUGIN_URL . 'assets/css/wp-clean-admin.css', [], WPCA_VERSION);
+    wp_enqueue_style('wpca-admin-style', WPCA_PLUGIN_URL . 'assets/css/wpca-admin.css', [], WPCA_VERSION);
 
     $options = WPCA_Settings::get_options();
 
