@@ -433,3 +433,24 @@ msgstr "Login Page"
 
 msgid "About"
 msgstr "About"
+
+msgid "Login Page Elements"
+msgstr "Login Page Elements"
+
+msgid "Control which elements to show on the login page."
+msgstr "Control which elements to show on the login page."
+
+msgid "Show/Hide Elements"
+msgstr "Show/Hide Elements"
+
+msgid "Language Switcher"
+msgstr "Language Switcher"
+
+msgid "Back to Home Link"
+msgstr "Back to Home Link"
+
+msgid "Register Link"
+msgstr "Register Link"
+
+msgid "Remember Me Checkbox"
+msgstr "Remember Me Checkbox"

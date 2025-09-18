@@ -115,9 +115,9 @@ function wpca_run_plugin() {
         echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
     });
 
-    // Add login page styling
+    // Add login page styling and element controls
     add_action('login_enqueue_scripts', function() {
-        // Get selected login style
+        // Get settings
         $options = get_option('wpca_settings');
         $login_style = isset($options['login_style']) ? $options['login_style'] : 'default';
         
@@ -137,12 +137,21 @@ function wpca_run_plugin() {
             WPCA_VERSION,
             true
         );
+
+        // Add element control settings
+        $element_controls = [
+            'show_language_switcher' => isset($options['show_language_switcher']) ? $options['show_language_switcher'] : '1',
+            'show_back_to_site' => isset($options['show_back_to_site']) ? $options['show_back_to_site'] : '1',
+            'show_remember_me' => isset($options['show_remember_me']) ? $options['show_remember_me'] : '1',
+            'show_login_form' => isset($options['show_login_form']) ? $options['show_login_form'] : '1'
+        ];
         
-        // Localize script with login style data
+        // Localize script with login style and element control data
         wp_localize_script('wpca-login-script', 'wpcaLoginVars', [
             'loginStyle' => $login_style,
             'loginLogo' => isset($options['login_logo']) ? $options['login_logo'] : '',
-            'loginBackground' => isset($options['login_background']) ? $options['login_background'] : ''
+            'loginBackground' => isset($options['login_background']) ? $options['login_background'] : '',
+            'elementControls' => $element_controls
         ]);
         
         // Add login style class via inline CSS
@@ -165,6 +174,15 @@ function wpca_run_plugin() {
             'text_color' => '#f8f9fa'
         ];
         return $presets;
+    });
+
+    // Modify admin page titles if hide_wordpress_title is enabled
+    add_filter('admin_title', function($admin_title) {
+        $options = get_option('wpca_settings');
+        if (isset($options['hide_wordpress_title']) && $options['hide_wordpress_title']) {
+            return str_replace('WordPress', '', $admin_title);
+        }
+        return $admin_title;
     });
 }
 add_action( 'plugins_loaded', 'wpca_run_plugin' );

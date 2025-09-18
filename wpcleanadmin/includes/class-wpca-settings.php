@@ -122,6 +122,14 @@ class WPCA_Settings {
             'font_stack'             => 'system',   // system, google_fonts (future)
             'font_size_base'         => 'medium',   // small, medium, large
             'icon_style'             => 'dashicons',// dashicons, linear_icons (future)
+            // 登录页面元素控制
+            'login_elements' => array(
+                'language_switcher' => 1,
+                'home_link' => 1,
+                'register_link' => 1,
+                'remember_me' => 1
+            ),
+            'hide_wordpress_title' => 0 // 0=显示, 1=隐藏
         );
     }
 
@@ -163,6 +171,15 @@ class WPCA_Settings {
             'wpca_hide_dashboard_widgets',
             __( 'Hide Dashboard Widgets', 'wp-clean-admin' ),
             array( $this, 'hide_dashboard_widgets_render' ),
+            'wpca_settings',
+            'wpca_settings_general_section'
+        );
+
+        // Add Hide WordPress Title field
+        add_settings_field(
+            'wpca_hide_wordpress_title',
+            __( 'Hide WordPress Title', 'wp-clean-admin' ),
+            array( $this, 'hide_wordpress_title_render' ),
             'wpca_settings',
             'wpca_settings_general_section'
         );
@@ -313,6 +330,13 @@ class WPCA_Settings {
      */
     public function menu_section_callback() {
         echo __( 'Select which admin menu items to hide.', 'wp-clean-admin' );
+    }
+
+    /**
+     * Login Elements section callback.
+     */
+    public function login_elements_section_callback() {
+        echo __( 'Control which elements to show on the login page.', 'wp-clean-admin' );
     }
 
     /**
@@ -842,12 +866,34 @@ class WPCA_Settings {
         $login_logo = isset($options['login_logo']) ? $options['login_logo'] : '';
         $login_background = isset($options['login_background']) ? $options['login_background'] : '';
         $login_custom_css = isset($options['login_custom_css']) ? $options['login_custom_css'] : '';
+        
+        // Add Login Elements section
+        add_settings_section(
+            'wpca_settings_login_elements_section',
+            __( 'Login Page Elements', 'wp-clean-admin' ),
+            array( $this, 'login_elements_section_callback' ),
+            'wpca_settings_login'
+        );
+
+        // Add Login Elements fields
+        add_settings_field(
+            'wpca_login_elements',
+            __( 'Show/Hide Elements', 'wp-clean-admin' ),
+            array( $this, 'login_elements_render' ),
+            'wpca_settings_login',
+            'wpca_settings_login_elements_section'
+        );
         ?>
         <div class="wpca-login-wrapper">
             <div class="wpca-login-header">
                 <h2><?php _e('Login Page Customization', 'wp-clean-admin'); ?></h2>
                 <p class="description"><?php _e('Customize the WordPress login page appearance with predefined styles or your own custom settings.', 'wp-clean-admin'); ?></p>
             </div>
+            
+            <?php 
+            // 显示登录页面元素控制部分
+            do_settings_sections('wpca_settings_login');
+            ?>
             
             <div class="wpca-login-container">
                 <div class="wpca-login-column wpca-login-options">
@@ -1154,6 +1200,53 @@ class WPCA_Settings {
         <?php
     }
 
+    /**
+     * Render Login Elements field.
+     */
+    public function login_elements_render() {
+        $options = $this->options;
+        $login_elements = $options['login_elements'] ?? array(
+            'language_switcher' => 1,
+            'home_link' => 1,
+            'register_link' => 1,
+            'remember_me' => 1
+        );
+        ?>
+        <fieldset>
+            <label>
+                <input type="checkbox" name="wpca_settings[login_elements][language_switcher]" value="1" <?php checked( $login_elements['language_switcher'], 1 ); ?>>
+                <?php _e( 'Language Switcher', 'wp-clean-admin' ); ?>
+            </label><br>
+            <label>
+                <input type="checkbox" name="wpca_settings[login_elements][home_link]" value="1" <?php checked( $login_elements['home_link'], 1 ); ?>>
+                <?php _e( 'Back to Home Link', 'wp-clean-admin' ); ?>
+            </label><br>
+            <label>
+                <input type="checkbox" name="wpca_settings[login_elements][register_link]" value="1" <?php checked( $login_elements['register_link'], 1 ); ?>>
+                <?php _e( 'Register Link', 'wp-clean-admin' ); ?>
+            </label><br>
+            <label>
+                <input type="checkbox" name="wpca_settings[login_elements][remember_me]" value="1" <?php checked( $login_elements['remember_me'], 1 ); ?>>
+                <?php _e( 'Remember Me Checkbox', 'wp-clean-admin' ); ?>
+            </label>
+        </fieldset>
+        <?php
+    }
+
+    /**
+     * Render Hide WordPress Title field
+     */
+    public function hide_wordpress_title_render() {
+        $options = $this->options;
+        ?>
+        <label>
+            <input type="checkbox" name="wpca_settings[hide_wordpress_title]" value="1" <?php checked( $options['hide_wordpress_title'] ?? 0, 1 ); ?>>
+            <?php _e( 'Hide "WordPress" in page titles', 'wp-clean-admin' ); ?>
+        </label>
+        <p class="description"><?php _e( 'When enabled, removes "WordPress" from admin page titles.', 'wp-clean-admin' ); ?></p>
+        <?php
+    }
+
     public function hide_admin_bar_items_render() {
         $options = $this->options; // Use loaded options
         $admin_bar_items_to_hide = $options['hide_admin_bar_items'] ?? array();
@@ -1196,6 +1289,14 @@ class WPCA_Settings {
         
         // Validate and sanitize menu settings
         $output['menu_toggle'] = isset($input['menu_toggle']) ? (int)$input['menu_toggle'] : 0;
+
+        // Validate login elements
+        $output['login_elements'] = array(
+            'language_switcher' => isset($input['login_elements']['language_switcher']) ? 1 : 0,
+            'home_link' => isset($input['login_elements']['home_link']) ? 1 : 0,
+            'register_link' => isset($input['login_elements']['register_link']) ? 1 : 0,
+            'remember_me' => isset($input['login_elements']['remember_me']) ? 1 : 0
+        );
         
         // Validate menu toggle states
         $output['menu_toggles'] = array();
@@ -1217,6 +1318,9 @@ class WPCA_Settings {
             $output['submenu_order'] = array_map('sanitize_text_field', $input['submenu_order']);
         }
         
+        // Sanitize hide WordPress title setting
+        $output['hide_wordpress_title'] = isset($input['hide_wordpress_title']) ? 1 : 0;
+
         // Sanitize other settings
         $output['current_tab'] = isset($input['current_tab']) ? sanitize_text_field($input['current_tab']) : 'tab-general';
         $output['hide_dashboard_widgets'] = isset($input['hide_dashboard_widgets']) ? 

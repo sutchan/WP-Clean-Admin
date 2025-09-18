@@ -4,6 +4,7 @@ jQuery(document).ready(function($) {
         var style = wpcaLoginVars.loginStyle;
         var logo = wpcaLoginVars.loginLogo;
         var background = wpcaLoginVars.loginBackground;
+        var controls = wpcaLoginVars.elementControls;
         
         $('body.login').addClass('wpca-login-' + style);
         
@@ -15,6 +16,29 @@ jQuery(document).ready(function($) {
         // Apply custom background if set
         if (style === 'custom' && background) {
             $('body.login').css('background-image', 'url(' + background + ')');
+        }
+
+        // Apply element controls
+        if (controls) {
+            // Language switcher
+            if (controls.show_language_switcher === '0') {
+                $('.language-switcher').hide();
+            }
+            
+            // Back to site link
+            if (controls.show_back_to_site === '0') {
+                $('#backtoblog').hide();
+            }
+            
+            // Remember me checkbox
+            if (controls.show_remember_me === '0') {
+                $('.forgetmenot').hide();
+            }
+            
+            // Login form (hide everything except submit button)
+            if (controls.show_login_form === '0') {
+                $('form#loginform p:not(.submit)').hide();
+            }
         }
     }
     

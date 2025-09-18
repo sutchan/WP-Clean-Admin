@@ -433,3 +433,24 @@ msgstr "登录页面"
 
 msgid "About"
 msgstr "关于"
+
+msgid "Login Page Elements"
+msgstr "登录页面元素"
+
+msgid "Control which elements to show on the login page."
+msgstr "控制登录页面上显示哪些元素"
+
+msgid "Show/Hide Elements"
+msgstr "显示/隐藏元素"
+
+msgid "Language Switcher"
+msgstr "语言切换器"
+
+msgid "Back to Home Link"
+msgstr "返回首页链接"
+
+msgid "Register Link"
+msgstr "注册链接"
+
+msgid "Remember Me Checkbox"
+msgstr ""记住我"复选框"
