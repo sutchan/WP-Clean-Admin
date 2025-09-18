@@ -1,6 +1,7 @@
 === WP Clean Admin 简体中文 ===
 
 项目主页: [https://github.com/sutchan/WP-Clean-Admin](https://github.com/sutchan/WP-Clean-Admin)
+GitHub: [https://github.com/sutchan/WP-Clean-Admin](https://github.com/sutchan/WP-Clean-Admin)
 
 [View in English](README-en_US.md)
 

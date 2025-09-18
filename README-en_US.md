@@ -2,6 +2,8 @@
 
 [View in 简体中文](README.md)
 
+项目主页: [https://github.com/sutchan/WP-Clean-Admin](https://github.com/sutchan/WP-Clean-Admin)
+
 Contributors: SutChan
 
 Tags: admin, dashboard, clean, minimal, ui, simplify

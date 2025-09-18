@@ -235,6 +235,33 @@ jQuery(document).ready(function($) {
     }
 
     // ======================================================
+    // 菜单切换功能
+    // ======================================================
+
+    // 监听菜单切换开关
+    $('#wpca-menu-toggle').on('change', function() {
+        var isEnabled = $(this).is(':checked');
+        
+        // 平滑过渡效果
+        $('.wpca-menu-sortable, .wpca-menu-order-wrapper').stop(true, true).animate({
+            opacity: isEnabled ? 1 : 0
+        }, 300, function() {
+            $(this).toggle(isEnabled);
+        });
+        
+        // 保存状态到数据库
+        $.post(wpca_admin.ajaxurl, {
+            action: 'wpca_toggle_menu_customization',
+            enabled: isEnabled ? 1 : 0,
+            nonce: wpca_admin.nonce
+        }, function(response) {
+            if (!response.success) {
+                console.error('Failed to save menu toggle state:', response.data);
+            }
+        });
+    });
+
+    // ======================================================
     // 登录页面预览功能 (从wpca-admin-settings.js合并)
     // ======================================================
 

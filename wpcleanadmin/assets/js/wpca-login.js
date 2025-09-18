@@ -39,6 +39,11 @@ jQuery(document).ready(function($) {
             if (controls.show_login_form === '0') {
                 $('form#loginform p:not(.submit)').hide();
             }
+
+            // Backend login link
+            if (controls.show_backend_login === '0') {
+                $('#nav').hide();
+            }
         }
     }
     
