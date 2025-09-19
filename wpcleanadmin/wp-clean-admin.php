@@ -31,9 +31,6 @@ if ( ! defined( 'WPCA_RESPONSIVE_BREAKPOINT' ) ) {
     define( 'WPCA_RESPONSIVE_BREAKPOINT', '782px' ); // WordPress admin breakpoint
 }
 
-if ( ! defined( 'WPCA_EXPORT_KEY' ) ) {
-    define( 'WPCA_EXPORT_KEY', 'wpca_settings_export' );
-}
 
 /**
  * Load plugin textdomain.
@@ -46,7 +43,6 @@ add_action( 'plugins_loaded', 'wpca_load_textdomain' );
 // Include core files
 require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-settings.php';
 require_once WPCA_PLUGIN_DIR . 'includes/wpca-core-functions.php';
-require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-export-import.php'; // New export/import feature
 require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-user-roles.php'; // User role permissions
 require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-menu-customizer.php'; // Menu customization
 
@@ -59,7 +55,6 @@ function wpca_run_plugin() {
     
     // Only load advanced features for admin users
     if (current_user_can('manage_options')) {
-        new WPCA_Export_Import();
         new WPCA_User_Roles();
         new WPCA_Menu_Customizer();
         
@@ -129,29 +124,26 @@ function wpca_run_plugin() {
             WPCA_VERSION
         );
         
-        // Enqueue login script
+        // Enqueue login module
         wp_enqueue_script(
-            'wpca-login-script',
-            WPCA_PLUGIN_URL . 'assets/js/wpca-login.js',
-            array('jquery'),
+            'wpca-login',
+            WPCA_PLUGIN_URL . 'assets/js/login-page.js',
+            array('jquery', 'wpca-core'),
             WPCA_VERSION,
             true
         );
 
-        // Add element control settings
-        $element_controls = [
-            'show_language_switcher' => isset($options['show_language_switcher']) ? $options['show_language_switcher'] : '1',
-            'show_back_to_site' => isset($options['show_back_to_site']) ? $options['show_back_to_site'] : '1',
-            'show_remember_me' => isset($options['show_remember_me']) ? $options['show_remember_me'] : '1',
-            'show_login_form' => isset($options['show_login_form']) ? $options['show_login_form'] : '1'
-        ];
-        
-        // Localize script with login style and element control data
-        wp_localize_script('wpca-login-script', 'wpcaLoginVars', [
+        // Localize script with login style data
+        wp_localize_script('wpca-core', 'wpcaLoginVars', [
             'loginStyle' => $login_style,
             'loginLogo' => isset($options['login_logo']) ? $options['login_logo'] : '',
             'loginBackground' => isset($options['login_background']) ? $options['login_background'] : '',
-            'elementControls' => $element_controls
+            'elementControls' => [
+                'show_language_switcher' => isset($options['show_language_switcher']) ? $options['show_language_switcher'] : '1',
+                'show_back_to_site' => isset($options['show_back_to_site']) ? $options['show_back_to_site'] : '1',
+                'show_remember_me' => isset($options['show_remember_me']) ? $options['show_remember_me'] : '1',
+                'show_login_form' => isset($options['show_login_form']) ? $options['show_login_form'] : '1'
+            ]
         ]);
         
         // Add login style class via inline CSS

@@ -68,23 +68,38 @@ class WPCA_Settings {
         // Enqueue CSS file for the settings page
         wp_enqueue_style( 'wpca-admin-style', WPCA_PLUGIN_URL . 'assets/css/wpca-admin.css', array(), WPCA_VERSION );
         
-        // Enqueue custom script for the settings page
-        wp_enqueue_script( 'wpca-settings-script', WPCA_PLUGIN_URL . 'assets/js/wpca-settings.js', array( 'jquery', 'jquery-ui-sortable' ), WPCA_VERSION, true );
+        // Enqueue module scripts
+        wp_enqueue_script( 'wpca-core', WPCA_PLUGIN_URL . 'assets/js/core.js', array('jquery'), WPCA_VERSION, true );
+        wp_enqueue_script( 'wpca-tabs', WPCA_PLUGIN_URL . 'assets/js/tabs.js', array('jquery', 'wpca-core'), WPCA_VERSION, true );
+        wp_enqueue_script( 'wpca-menu-sorting', WPCA_PLUGIN_URL . 'assets/js/menu-sorting.js', array('jquery', 'jquery-ui-sortable', 'wpca-core'), WPCA_VERSION, true );
+        wp_enqueue_script( 'wpca-menu-toggle', WPCA_PLUGIN_URL . 'assets/js/menu-toggle.js', array('jquery', 'wpca-core'), WPCA_VERSION, true );
+        wp_enqueue_script( 'wpca-login-page', WPCA_PLUGIN_URL . 'assets/js/login-page.js', array('jquery', 'wpca-core'), WPCA_VERSION, true );
+        wp_enqueue_script( 'wpca-main', WPCA_PLUGIN_URL . 'assets/js/main.js', array(
+            'jquery', 
+            'jquery-ui-sortable',
+            'wpca-core',
+            'wpca-tabs',
+            'wpca-menu-sorting',
+            'wpca-menu-toggle',
+            'wpca-login-page'
+        ), WPCA_VERSION, true );
         
-        // Localize script with ajaxurl and nonce
-        wp_localize_script( 'wpca-settings-script', 'wpca_settings', array(
+        // Localize scripts
+        wp_localize_script( 'wpca-core', 'wpca_settings', array(
             'ajaxurl' => admin_url( 'admin-ajax.php' ),
             'current_tab' => $this->options['current_tab'] ?? 'tab-general'
         ));
         
-        // 添加菜单自定义所需的数据
-        wp_localize_script( 'wpca-settings-script', 'wpca_admin', array(
+        wp_localize_script( 'wpca-core', 'wpca_admin', array(
             'ajaxurl' => admin_url( 'admin-ajax.php' ),
             'nonce' => wp_create_nonce('wpca_menu_toggle'),
             'reset_confirm' => __('Are you sure you want to reset all menu settings to default?', 'wp-clean-admin'),
             'resetting_text' => __('Resetting...', 'wp-clean-admin'),
             'reset_text' => __('Reset Defaults', 'wp-clean-admin'),
-            'reset_failed' => __('Reset failed. Please try again.', 'wp-clean-admin')
+            'reset_failed' => __('Reset failed. Please try again.', 'wp-clean-admin'),
+            'media_title' => __('Select or Upload Media', 'wp-clean-admin'),
+            'media_button' => __('Use this media', 'wp-clean-admin'),
+            'debug' => defined('WP_DEBUG') && WP_DEBUG
         ));
     }
 
@@ -645,6 +660,116 @@ class WPCA_Settings {
         
         // Add dynamic CSS for toggle switch
         echo '<style>
+        /* 登录样式选择器 - 单列布局 */
+        .wpca-login-style-item {
+            display: block;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .wpca-login-style-preview {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .wpca-login-style-item.active .wpca-login-style-preview {
+            border-color: #2271b1;
+            background-color: #f0f6fc;
+        }
+
+        .wpca-login-style-preview .preview-image {
+            width: 60px;
+            height: 60px;
+            margin-right: 15px;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .wpca-login-style-preview .preview-title {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .wpca-login-style-preview .preview-badge {
+            margin-left: auto;
+            color: #2271b1;
+            display: none;
+        }
+
+        .wpca-login-style-item.active .preview-badge {
+            display: block;
+        }
+
+        /* 菜单切换开关样式 */
+        /* 登录样式选择器优化 */
+        .wpca-login-style-item {
+            display: inline-block;
+            margin: 0 10px 20px 0;
+            position: relative;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .wpca-login-style-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .wpca-login-style-item.active {
+            box-shadow: 0 0 0 2px #2271b1;
+        }
+
+        .wpca-login-style-preview {
+            position: relative;
+            width: 150px;
+            height: 120px;
+            cursor: pointer;
+        }
+
+        .wpca-login-style-preview .preview-image {
+            width: 100%;
+            height: 80px;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .wpca-login-style-preview .preview-title {
+            text-align: center;
+            padding: 8px;
+            background: #f8f9fa;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .wpca-login-style-preview .preview-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #2271b1;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .wpca-login-style-item.active .preview-badge {
+            opacity: 1;
+        }
+
+        /* 菜单切换开关样式 */
         .wpca-menu-toggle-switch {
             position: relative;
             display: inline-block;
@@ -904,6 +1029,9 @@ class WPCA_Settings {
                                     <div class="wpca-login-style-preview default-style">
                                         <div class="preview-image"></div>
                                         <div class="preview-title"><?php _e('Default', 'wp-clean-admin'); ?></div>
+                                        <div class="preview-badge">
+                                            <span class="dashicons dashicons-yes"></span>
+                                        </div>
                                     </div>
                                 </label>
                             </div>
@@ -1317,6 +1445,9 @@ class WPCA_Settings {
                 echo '</div>';
                 
                 submit_button();
+                
+                // 添加导入/导出部分的钩子
+                do_action('wpca_settings_after_form');
                 ?>
             </form>
         </div>

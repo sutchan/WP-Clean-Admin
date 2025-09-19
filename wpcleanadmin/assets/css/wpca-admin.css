@@ -409,7 +409,6 @@ body.wpca-theme-dark {
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 12px;
     padding: 0;
-    text-align: center;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     background: #fff;
@@ -445,7 +444,7 @@ body.wpca-theme-dark {
 }
 
 .wpca-login-style-preview {
-    height: 120px;
+    height: 40px;
     margin-bottom: 0;
     border-radius: 0;
     overflow: hidden;

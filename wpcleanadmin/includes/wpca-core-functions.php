@@ -22,7 +22,7 @@ function wpca_remove_dashboard_widgets() {
 
     $widget_map = [
         'dashboard_activity'    => ['dashboard', 'normal'],
-        'dashboard_at_a_glance' => ['dashboard', 'normal'], // Correct ID for "At a Glance"
+        'dashboard_at_glance'   => ['dashboard', 'normal'], // 修正 ID，与设置页面保持一致
         'dashboard_quick_press' => ['dashboard', 'side'],
         'dashboard_primary'     => ['dashboard', 'side'],
         'dashboard_site_health' => ['dashboard', 'normal'],
