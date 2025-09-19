@@ -43,6 +43,7 @@ add_action( 'plugins_loaded', 'wpca_load_textdomain' );
 // Include core files
 require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-settings.php';
 require_once WPCA_PLUGIN_DIR . 'includes/wpca-core-functions.php';
+require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-permissions.php'; // 权限管理系统
 require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-user-roles.php'; // User role permissions
 require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-menu-customizer.php'; // Menu customization
 
@@ -53,8 +54,11 @@ function wpca_run_plugin() {
     // Initialize core components
     $settings = new WPCA_Settings();
     
-    // Only load advanced features for admin users
-    if (current_user_can('manage_options')) {
+    // 初始化权限管理系统（对所有用户都可用）
+    $permissions = new WPCA_Permissions();
+    
+    // 根据用户权限加载高级功能
+    if (WPCA_Permissions::current_user_can('wpca_manage_all') || current_user_can('manage_options')) {
         new WPCA_User_Roles();
         new WPCA_Menu_Customizer();
         
@@ -64,50 +68,31 @@ function wpca_run_plugin() {
 
     // Core functions are hooked directly in wpca-core-functions.php
     
-    /**
-     * Add admin menu item (Disabled)
-     * This function is kept for reference but no longer used
-     */
-    function wpca_add_admin_menu() {
-        // Menu entry removed as per requirements
-        /*
-        add_menu_page(
-            __('WP Clean Admin Settings', 'wp-clean-admin'),
-            __('Clean Admin', 'wp-clean-admin'),
-            'manage_options',
-            'wp-clean-admin',
-            'wpca_render_settings_page',
-            'dashicons-admin-appearance',
-            80
-        );
-        */
-    }
-    
-    /**
-     * Render settings page
-     */
-    function wpca_render_settings_page() {
-        if (!current_user_can('manage_options')) {
-            wp_die(__('You do not have sufficient permissions to access this page.'));
-        }
-        
-        ?>
-        <div class="wrap">
-            <h1><?php esc_html_e('WP Clean Admin Settings', 'wp-clean-admin'); ?></h1>
-            <form method="post" action="options.php">
-                <?php
-                settings_fields('wpca_settings_group');
-                do_settings_sections('wp-clean-admin');
-                submit_button();
-                ?>
-            </form>
-        </div>
-        <?php
-    }
-    
+
+
     // Add responsive design support
     add_action('admin_head', function() {
         echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
+    });
+
+    // Add admin page assets
+    add_action('admin_enqueue_scripts', function() {
+        // Only load on our plugin pages
+        $screen = get_current_screen();
+        if (strpos($screen->id, 'wp_clean_admin') === false) return;
+        
+        // Enqueue color picker and its style
+        wp_enqueue_style('wp-color-picker');
+        wp_enqueue_script('wp-color-picker');
+        
+        // Enqueue our admin scripts
+        wp_enqueue_script(
+            'wpca-settings',
+            WPCA_PLUGIN_URL . 'assets/js/wpca-settings.js',
+            array('jquery', 'wp-color-picker'),
+            WPCA_VERSION,
+            true
+        );
     });
 
     // Add login page styling and element controls

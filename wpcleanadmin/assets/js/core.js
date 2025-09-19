@@ -11,38 +11,34 @@ WPCA.core = {
     wpca: {
         ajaxurl: typeof wpca_admin !== 'undefined' ? wpca_admin.ajaxurl : '',
         nonce: typeof wpca_admin !== 'undefined' ? wpca_admin.nonce : '',
-        debug: false
+        debug: typeof wpca_admin !== 'undefined' ? wpca_admin.debug : false
     },
 
     // 初始化检查
     initCheck: function() {
+        
         if (!this.wpca.ajaxurl || !this.wpca.nonce) {
-            console.error('WPCA Script Error: Required settings missing');
-            jQuery('<div class="notice notice-error"><p><strong>WP Clean Admin Error:</strong> Required JavaScript settings could not be loaded.</p></div>')
+            console.error('WPCA 脚本错误: 缺少必要设置');
+            jQuery('<div class="notice notice-error"><p><strong>WP Clean Admin 错误:</strong> 无法加载必要的 JavaScript 设置。</p></div>')
                 .prependTo('.wrap');
             return false;
         }
         return true;
     },
 
+
     /**
-     * 显示通知
-     * @param {string} message - 要显示的消息
-     * @param {string} type - 'success'或'error'
+     * 初始化核心功能
      */
-    showNotice: function(message, type = 'success') {
-        const $ = jQuery;
-        $('.wpca-notice').remove();
-        const noticeClass = `wpca-notice notice notice-${type} is-dismissible`;
-        const $notice = $(`<div class="${noticeClass}"><p>${message}</p></div>`);
-        $notice.insertAfter($('.wrap h1').first());
-
-        setTimeout(() => $notice.fadeOut(500, () => $notice.remove()), 
-            type === 'success' ? 3000 : 5000);
-
-        $notice.on('click', '.notice-dismiss', () => $notice.remove());
+    init: function() {
+        this.initCheck();
     }
 };
 
 // 为了向后兼容，保留一些全局变量
 window.wpca = WPCA.core.wpca;
+
+// 页面加载完成后初始化核心功能
+jQuery(document).ready(function() {
+    WPCA.core.init();
+});

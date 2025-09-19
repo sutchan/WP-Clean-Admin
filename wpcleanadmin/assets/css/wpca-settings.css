@@ -1,0 +1,196 @@
+/* 设置页面样式 */
+.wpca-settings-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.wpca-tabs {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.wpca-tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-bottom: none;
+    margin-right: 5px;
+    background: #f5f5f5;
+    border-radius: 3px 3px 0 0;
+}
+
+.wpca-tab.active {
+    background: #fff;
+    border-color: #ddd;
+    border-bottom-color: #fff;
+    margin-bottom: -1px;
+    font-weight: 600;
+}
+
+.wpca-tab-content {
+    display: none;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-top: none;
+}
+
+.wpca-tab-content.active {
+    display: block;
+}
+
+/* 菜单切换开关样式 */
+.wpca-menu-toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+    margin-left: 10px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+.wpca-menu-toggle-switch .wpca-toggle-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 20px;
+    transition: .4s;
+}
+
+.wpca-menu-toggle-switch.checked .wpca-toggle-slider {
+    background-color: #2271b1;
+}
+
+.wpca-menu-toggle-switch .wpca-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    border-radius: 50%;
+    transition: .4s;
+}
+
+.wpca-menu-toggle-switch.checked .wpca-toggle-slider:before {
+    transform: translateX(20px);
+}
+
+.wpca-menu-toggle-switch input[type="checkbox"] {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+/* 登录样式选择器 */
+.wpca-login-style-item {
+    display: inline-block;
+    margin: 0 10px 20px 0;
+    position: relative;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.wpca-login-style-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.wpca-login-style-item.active {
+    box-shadow: 0 0 0 2px #2271b1;
+}
+
+.wpca-login-style-preview {
+    position: relative;
+    width: 150px;
+    height: 120px;
+    cursor: pointer;
+}
+
+.wpca-login-style-preview .preview-image {
+    width: 100%;
+    height: 80px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.wpca-login-style-preview .preview-title {
+    text-align: center;
+    padding: 8px;
+    background: #f8f9fa;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.wpca-login-style-preview .preview-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #2271b1;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.wpca-login-style-item.active .preview-badge {
+    opacity: 1;
+}
+
+/* 颜色选择器样式 */
+.wpca-color-picker-wrap {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.wpca-color-picker-label {
+    margin-right: 10px;
+    min-width: 150px;
+}
+
+.wpca-color-picker {
+    width: 80px;
+    height: 30px;
+    padding: 3px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+/* 媒体上传按钮样式 */
+.wpca-media-upload-button {
+    display: inline-block;
+    padding: 6px 12px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.wpca-media-upload-button:hover {
+    background: #e5e5e5;
+}
+
+.wpca-media-preview {
+    max-width: 200px;
+    max-height: 150px;
+    margin-top: 10px;
+    display: block;
+}

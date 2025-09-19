@@ -29,29 +29,52 @@ class WPCA_Settings {
     }
     
     /**
-     * AJAX handler to save tab preference
+     * Validate AJAX request with nonce and permission checks
      */
-    public function ajax_save_tab_preference() {
-        // Check nonce for security
-        check_ajax_referer('wpca_settings-options');
-        
-        if (!current_user_can('manage_options')) {
-            wp_send_json_error('权限不足');
-            return;
+    private function validate_ajax_request() {
+        if (!check_ajax_referer('wpca_settings-options', '_wpnonce', false)) {
+            wp_send_json_error(__('Invalid security nonce', 'wp-clean-admin'), 403);
+            exit;
         }
         
-        $tab = isset($_POST['tab']) ? sanitize_text_field($_POST['tab']) : 'tab-general';
+        if (!WPCA_Permissions::current_user_can('wpca_manage_menus')) {
+            wp_send_json_error(__('Insufficient permissions', 'wp-clean-admin'), 403);
+            exit;
+        }
+    }
+
+    /**
+     * AJAX handler to save tab preference and menu state
+     */
+    public function ajax_save_tab_preference() {
+        $this->validate_ajax_request();
         
-        // Get current options
+        // Get and validate data
+        $tab = isset($_POST['tab']) ? sanitize_text_field($_POST['tab']) : 'tab-general';
         $options = self::get_options();
         
         // Update tab preference
         $options['current_tab'] = $tab;
         
-        // Save updated options
-        update_option('wpca_settings', $options);
+        // Update menu order if provided
+        if (isset($_POST['menu_order']) && is_array($_POST['menu_order'])) {
+            $options['menu_order'] = array_map('sanitize_text_field', $_POST['menu_order']);
+        }
         
-        wp_send_json_success();
+        // Update menu toggles if provided
+        if (isset($_POST['menu_toggles']) && is_array($_POST['menu_toggles'])) {
+            $options['menu_toggles'] = array();
+            foreach ($_POST['menu_toggles'] as $slug => $value) {
+                $options['menu_toggles'][sanitize_text_field($slug)] = (int)$value;
+            }
+        }
+        
+        // Save and respond
+        update_option('wpca_settings', $options);
+        wp_send_json_success(array(
+            'menu_order' => $options['menu_order'],
+            'menu_toggles' => $options['menu_toggles']
+        ));
     }
     
     /**
@@ -65,16 +88,18 @@ class WPCA_Settings {
         // Enqueue jQuery UI for sortable functionality
         wp_enqueue_script('jquery-ui-sortable');
         
-        // Enqueue CSS file for the settings page
+        // Enqueue CSS files for the settings page
         wp_enqueue_style( 'wpca-admin-style', WPCA_PLUGIN_URL . 'assets/css/wpca-admin.css', array(), WPCA_VERSION );
+        wp_enqueue_style( 'wpca-settings-style', WPCA_PLUGIN_URL . 'assets/css/wpca-settings.css', array(), WPCA_VERSION );
         
         // Enqueue module scripts
         wp_enqueue_script( 'wpca-core', WPCA_PLUGIN_URL . 'assets/js/core.js', array('jquery'), WPCA_VERSION, true );
+        wp_enqueue_script( 'wpca-permissions', WPCA_PLUGIN_URL . 'assets/js/permissions.js', array('jquery', 'wpca-core'), WPCA_VERSION, true );
         wp_enqueue_script( 'wpca-tabs', WPCA_PLUGIN_URL . 'assets/js/tabs.js', array('jquery', 'wpca-core'), WPCA_VERSION, true );
         wp_enqueue_script( 'wpca-menu-sorting', WPCA_PLUGIN_URL . 'assets/js/menu-sorting.js', array('jquery', 'jquery-ui-sortable', 'wpca-core'), WPCA_VERSION, true );
-        wp_enqueue_script( 'wpca-menu-toggle', WPCA_PLUGIN_URL . 'assets/js/menu-toggle.js', array('jquery', 'wpca-core'), WPCA_VERSION, true );
+        wp_enqueue_script( 'wpca-menu-toggle', WPCA_PLUGIN_URL . 'assets/js/menu-toggle.js', array('jquery', 'wpca-core', 'wpca-permissions'), WPCA_VERSION, true );
         wp_enqueue_script( 'wpca-login-page', WPCA_PLUGIN_URL . 'assets/js/login-page.js', array('jquery', 'wpca-core'), WPCA_VERSION, true );
-        wp_enqueue_script( 'wpca-main', WPCA_PLUGIN_URL . 'assets/js/main.js', array(
+        wp_enqueue_script( 'wpca-settings', WPCA_PLUGIN_URL . 'assets/js/wpca-settings.js', array(
             'jquery', 
             'jquery-ui-sortable',
             'wpca-core',
@@ -118,34 +143,46 @@ class WPCA_Settings {
      * @return array
      */
     public static function get_default_settings() {
-        return array(
+        return [
+            // General settings
             'current_tab' => 'tab-general',
-            'menu_toggle' => 1, // Default to enabled
-            'menu_visibility' => array(), // Stores visibility state for each menu item
-            'hide_dashboard_widgets' => array(),
-            'theme_style'            => 'default',
-            'hide_admin_menu_items'  => array(),
-            'hide_admin_bar_items'   => array(),
-            'menu_order'            => array(),    // Menu order settings
-            'submenu_order'         => array(),    // Submenu order settings
-            'layout_density'         => 'standard', // standard, compact, spacious
-            'border_radius_style'    => 'small',    // none, small, large
-            'shadow_style'           => 'subtle',   // none, subtle
-            'primary_color'          => '#4A90E2',  // New default: 清新蓝
-            'background_color'       => '#F8F9FA',  // New default
-            'text_color'             => '#2D3748',  // New default
-            'font_stack'             => 'system',   // system, google_fonts (future)
-            'font_size_base'         => 'medium',   // small, medium, large
-            'icon_style'             => 'dashicons',// dashicons, linear_icons (future)
-            // 登录页面元素控制
-            'login_elements' => array(
+            'hide_wordpress_title' => 0,
+            'hide_dashboard_widgets' => [],
+            
+            // Menu settings
+            'menu_toggle' => 1,
+            'menu_visibility' => [],
+            'hide_admin_menu_items' => [],
+            'menu_order' => [],
+            'submenu_order' => [],
+            
+            // Visual style
+            'theme_style' => 'default',
+            'layout_density' => 'standard',
+            'border_radius_style' => 'small',
+            'shadow_style' => 'subtle',
+            'primary_color' => '#4A90E2',
+            'background_color' => '#F8F9FA',
+            'text_color' => '#2D3748',
+            'font_stack' => 'system',
+            'font_size_base' => 'medium',
+            'icon_style' => 'dashicons',
+            
+            // Admin bar
+            'hide_admin_bar_items' => [],
+            
+            // Login page
+            'login_elements' => [
                 'language_switcher' => 1,
                 'home_link' => 1,
                 'register_link' => 1,
                 'remember_me' => 1
-            ),
-            'hide_wordpress_title' => 0 // 0=显示, 1=隐藏
-        );
+            ],
+            'login_style' => 'default',
+            'login_logo' => '',
+            'login_background' => '',
+            'login_custom_css' => ''
+        ];
     }
 
     /**
@@ -660,6 +697,43 @@ class WPCA_Settings {
         
         // Add dynamic CSS for toggle switch
         echo '<style>
+        /* Menu Ordering Styles */
+        .wpca-menu-sortable {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            min-height: 50px;
+        }
+        .wpca-menu-sortable li {
+            padding: 10px 15px;
+            margin: 5px 0;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            cursor: move;
+            position: relative;
+        }
+        .wpca-menu-sortable li:hover {
+            border-color: #999;
+        }
+        .wpca-menu-sortable li.submenu-item {
+            margin-left: 30px;
+            background: #f9f9f9;
+        }
+        .wpca-menu-sortable li .dashicons-menu {
+            margin-right: 10px;
+            color: #aaa;
+        }
+        .wpca-menu-toggle-switch {
+            float: right;
+        }
+        .wpca-menu-order-header {
+            margin-bottom: 20px;
+        }
+        .wpca-menu-order-wrapper {
+            margin-top: 20px;
+        }
+        /* 登录样式选择器优化 */
         /* 登录样式选择器 - 单列布局 */
         .wpca-login-style-item {
             display: block;
@@ -947,9 +1021,10 @@ class WPCA_Settings {
                             '/条$/'            // Remove counter
                         ], '', strip_tags($item['title']));
                         echo $indent . esc_html(trim($clean_title));
-                        echo '<label class="wpca-menu-toggle-switch">';
+                        echo '<label class="wpca-menu-toggle-switch" data-menu-slug="'.esc_attr($slug).'">';
                         echo '<input type="checkbox" name="wpca_settings[menu_toggles]['.esc_attr($slug).']" value="1" ' 
-                            . checked( isset($options['menu_toggles'][$slug]) ? $options['menu_toggles'][$slug] : 1, 1, false ) . '>';
+                            . checked( isset($options['menu_toggles'][$slug]) ? $options['menu_toggles'][$slug] : 1, 1, false ) 
+                            . ' data-menu-slug="'.esc_attr($slug).'">';
                         echo '<span class="wpca-toggle-slider"></span>';
                         echo '</label>';
                         echo '<input type="hidden" name="wpca_settings[menu_order][]" value="'.esc_attr($slug).'">';
