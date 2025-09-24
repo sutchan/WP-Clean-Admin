@@ -705,95 +705,58 @@ class WPCA_Menu_Customizer {
     }
     
     /**
-     * Load menu scripts
-     * 
-     * @param string $hook Current admin page hook
+     * Handle AJAX menu toggle
      */
+    public function handle_ajax_toggle_menu() {
+        try {
+            // Validate request
+            $this->validate_ajax_request('wpca_menu_toggle', 'manage_options');
+            
+            // Get and validate parameters
+            $slug = isset($_POST['slug']) ? sanitize_text_field($_POST['slug']) : '';
+            $state = isset($_POST['state']) ? intval($_POST['state']) : 0;
+            
+            if (empty($slug)) {
+                throw new Exception(__('Invalid menu slug', 'wp-clean-admin'), 400);
+            }
+            
+            // Get current options
+            $options = $this->get_plugin_options();
+            
+            // Ensure menu_toggles array exists
+            $this->ensure_menu_toggles_exist($options);
+            
+            // Update the toggle state
+            $options['menu_toggles'][$slug] = $state;
+            
+            // Save updated options
+            $updated = update_option('wpca_settings', $options);
+            
+            if (!$updated) {
+                throw new Exception(__('Failed to save menu settings', 'wp-clean-admin'), 500);
+            }
+            
+            // Clear cache
+            $this->clear_menu_cache();
+            
+            // Send success response
+            wp_send_json_success(array(
+                'message' => __('Menu settings updated successfully', 'wp-clean-admin'),
+                'data' => array(
+                    'slug' => $slug,
+                    'state' => $state
+                )
+            ));
+            
+        } catch (Exception $e) {
+            $this->log_error('ajax_toggle_menu_failed', $e);
+            wp_send_json_error(array(
+                'message' => $e->getMessage(),
+                'code' => $e->getCode() ?: 500
+            ), $e->getCode() ?: 500);
+        }
+    }
 
-    
-    /**
-     * Validate AJAX request permissions
-     * 
-     * @param string $nonce_action Nonce action name
-     * @param string $permission Permission name
-     * @throws Exception If validation fails
-     */
-    private function validate_ajax_request($nonce_action = 'wpca_menu_toggle', $permission = 'manage_options') {
-        if (!wp_doing_ajax()) {
-            throw new Exception(__('Invalid AJAX request', 'wp-clean-admin'), 400);
-        }
-        
-        if (!check_ajax_referer($nonce_action, 'nonce', false)) {
-            throw new Exception(__('Invalid security nonce', 'wp-clean-admin'), 403);
-        }
-        
-        if (!current_user_can($permission) && !current_user_can('wpca_manage_all')) {
-            throw new Exception(__('You do not have sufficient permissions', 'wp-clean-admin'), 403);
-        }
-    }
-    
-    /**
-     * Ensure menu toggles array exists in options
-     * 
-     * @param array &$options Options array reference
-     */
-    private function ensure_menu_toggles_exist(&$options) {
-        if (!is_array($options)) {
-            $options = array();
-        }
-        if (!isset($options['menu_toggles']) || !is_array($options['menu_toggles'])) {
-            $options['menu_toggles'] = array();
-        }
-    }
-    
-    /**
-     * Validate menu item exists
-     * 
-     * @param array $all_items All menu items
-     * @param string $standard_slug Standard slug
-     * @param string $original_slug Original slug
-     * @return string Valid slug to use
-     * @throws Exception If menu item doesn't exist
-     */
-    private function validate_menu_item_exists($all_items, $standard_slug, $original_slug) {
-        if (!isset($all_items[$standard_slug]) && !isset($all_items[$original_slug])) {
-            throw new Exception(
-                sprintf(__('Menu item "%s" does not exist', 'wp-clean-admin'), $original_slug),
-                400
-            );
-        }
-        
-        // Use standard slug format if it exists, otherwise use original
-        $save_slug = isset($all_items[$standard_slug]) ? $standard_slug : $original_slug;
-
-        // Final validation
-        if (!isset($all_items[$save_slug])) {
-            throw new Exception(
-                sprintf(__('Menu item "%s" does not exist', 'wp-clean-admin'), $save_slug),
-                400
-            );
-        }
-        
-        return $save_slug;
-    }
-    
-    /**
-     * Clean invalid menu toggles
-     * 
-     * @param array $menu_toggles Menu toggles
-     * @param array $all_items All menu items
-     * @return array Cleaned menu toggles
-     */
-    private function clean_invalid_menu_toggles($menu_toggles, $all_items) {
-        return array_filter(
-            $menu_toggles,
-            function ($key) use ($all_items) {
-                return isset($all_items[$key]);
-            },
-            ARRAY_FILTER_USE_KEY
-        );
-    }
-    
     /**
      * Handle AJAX reset menu
      */
