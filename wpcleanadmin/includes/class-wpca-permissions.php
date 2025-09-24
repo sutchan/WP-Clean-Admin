@@ -13,27 +13,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// 确保WordPress核心函数可用
-if (!function_exists('add_action')) {
-    return;
-}
 
-/**
- * WordPress函数声明，用于IDE代码提示
- * @codingStandardsIgnoreStart
- */
-if (!function_exists('add_action') && !function_exists('current_user_can')) {
-    function add_action() {}
-    function add_filter() {}
-    function current_user_can() {}
-    function get_role() {}
-    function check_ajax_referer() {}
-    function wp_send_json_error() {}
-    function wp_send_json_success() {}
-    function sanitize_text_field() {}
-    class WP_Roles {}
-}
-/** @codingStandardsIgnoreEnd */
 
 /**
  * 权限管理类
@@ -45,10 +25,14 @@ class WPCA_Permissions {
      *
      * @var array
      */
+    const CAP_VIEW_SETTINGS = 'wpca_view_settings';
+    const CAP_MANAGE_MENUS = 'wpca_manage_menus';
+    const CAP_MANAGE_ALL = 'wpca_manage_all';
+
     private $capabilities = array(
-        'wpca_view_settings'  => '查看设置',
-        'wpca_manage_menus'   => '管理菜单',
-        'wpca_manage_all'     => '完全控制'
+        self::CAP_VIEW_SETTINGS  => '查看设置',
+        self::CAP_MANAGE_MENUS   => '管理菜单',
+        self::CAP_MANAGE_ALL     => '完全控制'
     );
 
     /**
@@ -74,25 +58,39 @@ class WPCA_Permissions {
      * 注册插件权限
      */
     public function register_capabilities() {
-        $roles = array('administrator', 'editor', 'author');
+        // 定义每个角色的权限配置
+        $role_configs = array(
+            'administrator' => array(
+                'wpca_view_settings' => true,
+                'wpca_manage_menus' => true,
+                'wpca_manage_all' => true
+            ),
+            'editor' => array(
+                'wpca_view_settings' => true,
+                'wpca_manage_menus' => true,
+                'wpca_manage_all' => false
+            ),
+            'author' => array(
+                'wpca_view_settings' => true,
+                'wpca_manage_menus' => false,
+                'wpca_manage_all' => false
+            )
+        );
         
-        // 默认只给管理员完全权限
-        foreach ($roles as $role_name) {
+        // 为每个角色应用权限配置
+        foreach ($role_configs as $role_name => $caps) {
             $role = get_role($role_name);
             if (!$role) continue;
             
-            if ($role_name == 'administrator') {
-                $role->add_cap('wpca_view_settings', true);
-                $role->add_cap('wpca_manage_menus', true);
-                $role->add_cap('wpca_manage_all', true);
-            } else if ($role_name == 'editor') {
-                $role->add_cap('wpca_view_settings', true);
-                $role->add_cap('wpca_manage_menus', true);
-                $role->remove_cap('wpca_manage_all');
-            } else {
-                $role->add_cap('wpca_view_settings', true);
-                $role->remove_cap('wpca_manage_menus');
-                $role->remove_cap('wpca_manage_all');
+            foreach ($caps as $cap => $grant) {
+                if ($grant) {
+                    $role->add_cap($cap, true);
+                } else {
+                    // 安全地移除权限（防止PHP警告）
+                    if (method_exists($role, 'remove_cap')) {
+                        $role->remove_cap($cap);
+                    }
+                }
             }
         }
     }
@@ -129,22 +127,45 @@ class WPCA_Permissions {
      * @return bool 是否有权限
      */
     public static function current_user_can($capability) {
-        // 管理员始终拥有所有权限
-        if (current_user_can('administrator')) {
+        // 简化版本，避免递归调用和复杂的权限检查
+        
+        // 管理员始终有权限
+        if (function_exists('is_super_admin') && is_super_admin()) {
             return true;
         }
         
-        // 检查直接权限
-        if (current_user_can($capability)) {
+        // 获取当前用户
+        $user = null;
+        if (function_exists('wp_get_current_user')) {
+            $user = wp_get_current_user();
+        }
+        
+        // 如果用户未登录，返回 false
+        if (!$user || !$user->ID) {
+            return false;
+        }
+        
+        // 管理员权限检查
+        if (isset($user->allcaps['manage_options']) && $user->allcaps['manage_options']) {
             return true;
         }
         
-        // 检查更高级权限
-        $instance = new self();
-        $hierarchy = $instance->capability_hierarchy;
+        // 直接检查指定权限
+        if (isset($user->allcaps[$capability]) && $user->allcaps[$capability]) {
+            return true;
+        }
         
-        foreach ($hierarchy as $higher_cap => $lower_caps) {
-            if (in_array($capability, $lower_caps) && current_user_can($higher_cap)) {
+        // 简化的权限继承检查
+        $higher_caps = array(
+            'wpca_manage_all' => array('wpca_manage_menus', 'wpca_view_settings'),
+            'wpca_manage_menus' => array('wpca_view_settings')
+        );
+        
+        // 检查是否有更高级权限
+        foreach ($higher_caps as $higher_cap => $lower_caps) {
+            if (in_array($capability, $lower_caps) && 
+                isset($user->allcaps[$higher_cap]) && 
+                $user->allcaps[$higher_cap]) {
                 return true;
             }
         }
@@ -156,22 +177,52 @@ class WPCA_Permissions {
      * AJAX权限检查
      */
     public function ajax_check_permission() {
-        // 检查nonce
-        check_ajax_referer('wpca_settings-options', 'nonce');
+        // 检查是否为 AJAX 请求
+        if (!wp_doing_ajax()) {
+            wp_send_json_error(array(
+                'message' => __('非法请求', 'wp-clean-admin')
+            ), 400);
+        }
+        
+        // 检查nonce - 注意: 使用静默模式以自定义错误消息
+        if (!check_ajax_referer('wpca_settings-options', 'nonce', false)) {
+            wp_send_json_error(array(
+                'message' => __('安全验证失败', 'wp-clean-admin')
+            ), 403);
+        }
+        
+        // 基础安全检查 - 确保用户已登录
+        if (!is_user_logged_in()) {
+            wp_send_json_error(array(
+                'message' => __('用户未登录', 'wp-clean-admin')
+            ), 401);
+        }
         
         // 检查参数
-        if (!isset($_POST['capability'])) {
-            wp_send_json_error('缺少权限参数');
+        if (!isset($_POST['capability']) || empty($_POST['capability'])) {
+            wp_send_json_error(array(
+                'message' => __('缺少权限参数', 'wp-clean-admin')
+            ), 400);
         }
         
         $capability = sanitize_text_field($_POST['capability']);
+        
+        // 验证权限名称是否有效
+        $instance = new self();
+        $valid_caps = array_keys($instance->get_capabilities());
+        if (!in_array($capability, $valid_caps)) {
+            wp_send_json_error(array(
+                'message' => __('无效的权限名称', 'wp-clean-admin')
+            ), 400);
+        }
         
         // 检查权限
         $has_permission = self::current_user_can($capability);
         
         wp_send_json_success(array(
             'has_permission' => $has_permission,
-            'capability' => $capability
+            'capability' => $capability,
+            'timestamp' => time()
         ));
     }
 

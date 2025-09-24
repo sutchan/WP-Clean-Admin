@@ -1,5 +1,10 @@
-"Project-Id-Version: WPCleanAdmin\n"
-"POT-Creation-Date: 2025-09-18 11:08+0800\n"
+# Copyright (C) 2025 sutchan
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Clean Admin 1.1.0\n"
+"Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin/issues\n"
+"POT-Creation-Date: 2025-09-24 15:00+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -11,446 +16,663 @@
 "X-Poedit-KeywordsList: __;_e;_x\n"
 "X-Poedit-SearchPath-0: .\n"
 
-msgid "You do not have sufficient permissions to access this page."
+#: includes/class-wpca-ajax.php:44 includes/class-wpca-settings.php:45
+msgid "非法请求"
 msgstr ""
 
-msgid "Invalid request method"
+#: includes/class-wpca-ajax.php:51 includes/class-wpca-settings.php:52
+msgid "安全验证失败"
 msgstr ""
 
-msgid "Security check failed. Please refresh the page and try again."
+#: includes/class-wpca-ajax.php:59 includes/class-wpca-menu-customizer.php:711
+#: includes/class-wpca-settings.php:60
+msgid "权限不足"
 msgstr ""
 
-msgid "Unauthorized access"
+#: includes/class-wpca-ajax.php:78
+msgid "无效的设置数据"
 msgstr ""
 
-msgid "Missing menu slug"
+#: includes/class-wpca-ajax.php:88
+msgid "设置已保存"
 msgstr ""
 
-msgid "Missing state parameter"
+#: includes/class-wpca-ajax.php:93
+msgid "设置保存失败"
 msgstr ""
 
+#: includes/class-wpca-ajax.php:99
+msgid "保存设置时发生错误"
+msgstr ""
+
+#: includes/class-wpca-ajax.php:117
+msgid "设置已重置为默认值"
+msgstr ""
+
+#: includes/class-wpca-ajax.php:122
+msgid "重置设置失败"
+msgstr ""
+
+#: includes/class-wpca-ajax.php:128
+msgid "重置设置时发生错误"
+msgstr ""
+
+#: includes/class-wpca-ajax.php:148
+msgid "获取设置时发生错误"
+msgstr ""
+
+#: includes/class-wpca-menu-customizer.php:87
+msgid "Menu settings format is invalid, has been reset"
+msgstr ""
+
+#: includes/class-wpca-menu-customizer.php:703
+msgid "Invalid AJAX request"
+msgstr ""
+
+#: includes/class-wpca-menu-customizer.php:707
+msgid "Invalid security nonce"
+msgstr ""
+
+#: includes/class-wpca-menu-customizer.php:741
+msgid "Menu item \"%s\" does not exist"
+msgstr ""
+
+#: includes/class-wpca-menu-customizer.php:752
+msgid "Menu item \"%s\" does not exist"
+msgstr ""
+
+#: includes/class-wpca-menu-customizer.php:789
+msgid "Please select at least one valid setting type to reset"
+msgstr ""
+
+#: includes/class-wpca-menu-customizer.php:798
+#: includes/class-wpca-settings.php:110
 msgid "Failed to save settings"
 msgstr ""
 
-msgid "Menu toggle updated"
+#: includes/class-wpca-menu-customizer.php:804
+msgid "Menu settings reset successfully"
 msgstr ""
 
-msgid "Menu settings reset to default"
+#: includes/class-wpca-menu-customizer.php:872
+msgid "Failed to reset menu order"
 msgstr ""
 
-msgid "Are you sure you want to reset all menu settings to default?"
-msgstr ""
-
-msgid "Resetting..."
-msgstr ""
-
-msgid "Reset Defaults"
-msgstr ""
-
-msgid "Reset failed. Please try again."
-msgstr ""
-
-msgid "WP Clean Admin Settings"
-msgstr ""
-
-msgid "WP Clean Admin"
-msgstr ""
-
-msgid "General Settings"
-msgstr ""
-
-msgid "Hide Dashboard Widgets"
-msgstr ""
-
-msgid "Visual Style"
-msgstr ""
-
-msgid "Theme Style"
-msgstr ""
-
-msgid "Primary Color"
-msgstr ""
-
-msgid "Background Color"
-msgstr ""
-
-msgid "Text Color"
-msgstr ""
-
-msgid "Shadow Style"
-msgstr ""
-
-msgid "Layout Density"
-msgstr ""
-
-msgid "Border Radius"
-msgstr ""
-
-msgid "Font Stack"
-msgstr ""
-
-msgid "Font Size"
-msgstr ""
-
-msgid "Icon Style"
-msgstr ""
-
-msgid "Menu Customization"
-msgstr ""
-
-msgid "Menu Order"
-msgstr ""
-
-msgid "Hide Admin Bar Items"
-msgstr ""
-
-msgid "About WP Clean Admin"
-msgstr ""
-
-msgid "Configure the appearance and behavior of your admin dashboard."
-msgstr ""
-
-msgid "Customize the overall visual theme, colors, layout and typography."
-msgstr ""
-
-msgid "Select which admin menu items to hide."
-msgstr ""
-
-msgid "Select which admin bar items to hide."
-msgstr ""
-
-msgid "Information about WP Clean Admin plugin."
-msgstr ""
-
-msgid "Right Now"
-msgstr ""
-
-msgid "Activity"
-msgstr ""
-
-msgid "Quick Draft"
-msgstr ""
-
-msgid "WordPress Events and News"
-msgstr ""
-
-msgid "Site Health Status"
-msgstr ""
-
-msgid "At a Glance"
-msgstr ""
-
-msgid "Default (Flat & Clean)"
-msgstr ""
-
-msgid "Light Blue Gray"
-msgstr ""
-
-msgid "Mint Green"
-msgstr ""
-
-msgid "Dark Mode"
-msgstr ""
-
-msgid "Custom Colors"
-msgstr ""
-
-msgid "Choose a predefined theme or select \"Custom Colors\" to define your own."
-msgstr ""
-
-msgid "Choose the primary accent color for links, buttons, and active states."
-msgstr ""
-
-msgid "Choose the main background color of the admin area."
-msgstr ""
-
-msgid "Choose the default text color."
-msgstr ""
-
-msgid "None"
-msgstr ""
-
-msgid "Subtle (Default)"
-msgstr ""
-
-msgid "Choose the shadow style for elements like post boxes and buttons."
-msgstr ""
-
-msgid "Compact"
-msgstr ""
-
-msgid "Standard (Default)"
-msgstr ""
-
-msgid "Spacious"
-msgstr ""
-
-msgid "Adjust the spacing and padding of elements in the admin interface."
-msgstr ""
-
-msgid "None (Sharp Corners)"
-msgstr ""
-
-msgid "Small (4px, Default)"
-msgstr ""
-
-msgid "Large (8px, Rounded)"
-msgstr ""
-
-msgid "Choose the border-radius style for various elements."
-msgstr ""
-
-msgid "System Default"
-msgstr ""
-
-msgid "Google Fonts"
-msgstr ""
-
-msgid "Select the font stack to be used in the admin area."
-msgstr ""
-
-msgid "Small"
-msgstr ""
-
-msgid "Medium (Default)"
-msgstr ""
-
-msgid "Large"
-msgstr ""
-
-msgid "Adjust the base font size for the admin interface."
-msgstr ""
-
-msgid "WordPress Dashicons"
-msgstr ""
-
-msgid "Linear Icons"
-msgstr ""
-
-msgid "Choose the icon set for the admin interface."
-msgstr ""
-
-msgid "Dashboard"
-msgstr ""
-
-msgid "Posts"
-msgstr ""
-
-msgid "Media"
-msgstr ""
-
-msgid "Pages"
-msgstr ""
-
-msgid "Comments"
-msgstr ""
-
-msgid "Appearance"
-msgstr ""
-
-msgid "Plugins"
-msgstr ""
-
-msgid "Users"
-msgstr ""
-
-msgid "Tools"
-msgstr ""
-
-msgid "Settings"
-msgstr ""
-
-msgid "Enable Menu Customization"
-msgstr ""
-
-msgid "Toggle to show/hide and reorder admin menu items"
-msgstr ""
-
-msgid "Menu Order Customization"
-msgstr ""
-
-msgid "Drag and drop menu items to reorder them. Use the toggle switches to show/hide items."
-msgstr ""
-
-msgid "Reset to Default Order"
-msgstr ""
-
-msgid "Are you sure you want to reset all menu items to default order and visibility?"
-msgstr ""
-
+#: includes/class-wpca-menu-customizer.php:878
 msgid "Menu order has been reset to default"
 msgstr ""
 
-msgid "Login Page Customization"
+#: includes/class-wpca-menu-customizer.php:916
+#: includes/class-wpca-settings.php:151
+msgid "Are you sure you want to reset all menu settings to default?"
 msgstr ""
 
-msgid "Customize the WordPress login page appearance with predefined styles or your own custom settings."
+#: includes/class-wpca-menu-customizer.php:917
+#: includes/class-wpca-settings.php:158
+msgid "Settings updated successfully"
 msgstr ""
 
-msgid "Login Style"
+#: includes/class-wpca-menu-customizer.php:918
+#: includes/class-wpca-settings.php:154
+msgid "An error occurred"
 msgstr ""
 
-msgid "Choose from predefined login styles or create your own custom style."
+#: includes/class-wpca-settings.php:152
+msgid "Resetting..."
 msgstr ""
 
-msgid "Default"
+#: includes/class-wpca-settings.php:153
+msgid "Reset Defaults"
 msgstr ""
 
-msgid "Modern"
+#: includes/class-wpca-settings.php:154
+msgid "Reset failed. Please try again."
 msgstr ""
 
-msgid "Minimal"
-msgstr ""
-
-msgid "Dark"
-msgstr ""
-
-msgid "Gradient"
-msgstr ""
-
-msgid "Custom"
-msgstr ""
-
-msgid "Custom Login Options"
-msgstr ""
-
-msgid "Custom Logo"
-msgstr ""
-
-msgid "Choose Image"
-msgstr ""
-
-msgid "Remove"
-msgstr ""
-
-msgid "Upload a custom logo for the login page. Recommended size: 320×80px."
-msgstr ""
-
-msgid "Login Logo Preview"
-msgstr ""
-
-msgid "Background Image"
-msgstr ""
-
-msgid "Upload a custom background image for the login page."
-msgstr ""
-
-msgid "Background Preview"
-msgstr ""
-
-msgid "Custom CSS"
-msgstr ""
-
-msgid "Add custom CSS to further customize the login page."
-msgstr ""
-
-msgid "Preview"
-msgstr ""
-
-msgid "This is a preview of how your login page will look."
-msgstr ""
-
+#: includes/class-wpca-settings.php:155
 msgid "Select or Upload Media"
 msgstr ""
 
+#: includes/class-wpca-settings.php:156
 msgid "Use this media"
 msgstr ""
 
-msgid "Version %s"
+#: includes/class-wpca-settings.php:157
+msgid "WordPress media uploader not available."
 msgstr ""
 
-msgid "Plugin Description"
+#: includes/class-wpca-settings.php:158
+msgid "An error occurred while saving settings."
 msgstr ""
 
-msgid "WP Clean Admin is a powerful WordPress plugin designed to streamline and customize your WordPress admin experience. It provides a cleaner, more efficient interface by allowing you to hide unnecessary elements, customize the visual appearance, and reorganize the admin menu to better suit your workflow."
+#: includes/class-wpca-settings.php:159
+msgid "Saving..."
 msgstr ""
 
-msgid "Key Features"
+#: includes/class-wpca-settings.php:233
+msgid "WP Clean Admin Settings"
 msgstr ""
 
-msgid "Hide unnecessary dashboard widgets"
+#: includes/class-wpca-settings.php:234
+msgid "WP Clean Admin"
 msgstr ""
 
-msgid "Customize admin menu by hiding or reordering items"
+#: includes/class-wpca-settings.php:256
+msgid "General Settings"
 msgstr ""
 
-msgid "Hide admin bar items for a cleaner top bar"
+#: includes/class-wpca-settings.php:264
+msgid "Hide Dashboard Widgets"
 msgstr ""
 
-msgid "Choose from multiple visual themes or create your own"
+#: includes/class-wpca-settings.php:273
+msgid "Hide WordPress Title"
 msgstr ""
 
-msgid "Adjust layout density and typography settings"
+#: includes/class-wpca-settings.php:282
+msgid "Visual Style"
 msgstr ""
 
-msgid "Customize colors, shadows, and border styles"
+#: includes/class-wpca-settings.php:290
+msgid "Theme Style"
 msgstr ""
 
-msgid "Author"
+#: includes/class-wpca-settings.php:298
+msgid "Primary Color"
 msgstr ""
 
-msgid "Created by WordPress Admin UI Specialists"
+#: includes/class-wpca-settings.php:306
+msgid "Background Color"
 msgstr ""
 
-msgid "Visit Plugin Website"
+#: includes/class-wpca-settings.php:314
+msgid "Text Color"
 msgstr ""
 
-msgid "Documentation"
+#: includes/class-wpca-settings.php:322
+msgid "Shadow Style"
 msgstr ""
 
-msgid "Support"
+#: includes/class-wpca-settings.php:331
+msgid "Layout Density"
 msgstr ""
 
-msgid "Rate & Review"
+#: includes/class-wpca-settings.php:339
+msgid "Border Radius"
 msgstr ""
 
-msgid "If you find this plugin useful, please consider leaving a review on WordPress.org. Your feedback helps improve the plugin and reach more users."
+#: includes/class-wpca-settings.php:347
+msgid "Font Stack"
 msgstr ""
 
-msgid "Rate on WordPress.org"
+#: includes/class-wpca-settings.php:355
+msgid "Font Size"
 msgstr ""
 
-msgid "WordPress Logo"
+#: includes/class-wpca-settings.php:363
+msgid "Icon Style"
 msgstr ""
 
-msgid "Site Name"
+#: includes/class-wpca-settings.php:372
+msgid "Menu Customization"
 msgstr ""
 
-msgid "Updates"
+#: includes/class-wpca-settings.php:380
+msgid "Menu Order"
 msgstr ""
 
-msgid "New Content"
+#: includes/class-wpca-settings.php:389
+msgid "Hide Admin Bar Items"
 msgstr ""
 
-msgid "My Account"
-msgstr ""
-
-msgid "General"
-msgstr ""
-
-msgid "Login Page"
-msgstr ""
-
-msgid "About"
-msgstr ""
-
+#: includes/class-wpca-settings.php:398
 msgid "Login Page Elements"
 msgstr ""
 
-msgid "Control which elements to show on the login page."
-msgstr ""
-
+#: includes/class-wpca-settings.php:406
 msgid "Show/Hide Elements"
 msgstr ""
 
+#: includes/class-wpca-settings.php:415
+msgid "About WP Clean Admin"
+msgstr ""
+
+#: includes/class-wpca-settings.php:425
+msgid "Configure the appearance and behavior of your admin dashboard."
+msgstr ""
+
+#: includes/class-wpca-settings.php:432
+msgid "Customize the overall visual theme, colors, layout and typography."
+msgstr ""
+
+#: includes/class-wpca-settings.php:443
+msgid "Menu Order Customization"
+msgstr ""
+
+#: includes/class-wpca-settings.php:446
+msgid "Drag and drop menu items to reorder them. Use the toggle switches to show/hide items."
+msgstr ""
+
+#: includes/class-wpca-settings.php:450
+msgid "Reset to Default Order"
+msgstr ""
+
+#: includes/class-wpca-settings.php:454
+msgid "Select which admin menu items to hide and reorder them."
+msgstr ""
+
+#: includes/class-wpca-settings.php:471
+msgid "Enable Menu Customization"
+msgstr ""
+
+#: includes/class-wpca-settings.php:473
+msgid "Toggle to show/hide and reorder admin menu items"
+msgstr ""
+
+#: includes/class-wpca-settings.php:547
+msgid "WordPress"
+msgstr ""
+
+#: includes/class-wpca-settings.php:550
+msgid "Dashboard"
+msgstr ""
+
+#: includes/class-wpca-settings.php:551
+msgid "Posts"
+msgstr ""
+
+#: includes/class-wpca-settings.php:552
+msgid "Media"
+msgstr ""
+
+#: includes/class-wpca-settings.php:553
+msgid "Pages"
+msgstr ""
+
+#: includes/class-wpca-settings.php:554
+msgid "Comments"
+msgstr ""
+
+#: includes/class-wpca-settings.php:555
+msgid "Appearance"
+msgstr ""
+
+#: includes/class-wpca-settings.php:556
+msgid "Plugins"
+msgstr ""
+
+#: includes/class-wpca-settings.php:557
+msgid "Users"
+msgstr ""
+
+#: includes/class-wpca-settings.php:558
+msgid "Tools"
+msgstr ""
+
+#: includes/class-wpca-settings.php:559
+msgid "Settings"
+msgstr ""
+
+#: includes/class-wpca-settings.php:562
+msgid "Submenu"
+msgstr ""
+
+#: includes/class-wpca-settings.php:613
+msgid "Right Now"
+msgstr ""
+
+#: includes/class-wpca-settings.php:614
+msgid "Activity"
+msgstr ""
+
+#: includes/class-wpca-settings.php:615
+msgid "Quick Draft"
+msgstr ""
+
+#: includes/class-wpca-settings.php:616
+msgid "WordPress Events and News"
+msgstr ""
+
+#: includes/class-wpca-settings.php:617
+msgid "Site Health Status"
+msgstr ""
+
+#: includes/class-wpca-settings.php:618
+msgid "At a Glance"
+msgstr ""
+
+#: includes/class-wpca-settings.php:693
+msgid "Default (Flat & Clean)"
+msgstr ""
+
+#: includes/class-wpca-settings.php:694
+msgid "Light Blue Gray"
+msgstr ""
+
+#: includes/class-wpca-settings.php:695
+msgid "Mint Green"
+msgstr ""
+
+#: includes/class-wpca-settings.php:696
+msgid "Dark Mode"
+msgstr ""
+
+#: includes/class-wpca-settings.php:697
+msgid "Custom Colors"
+msgstr ""
+
+#: includes/class-wpca-settings.php:700
+msgid "Choose a predefined theme or select \"Custom Colors\" to define your own."
+msgstr ""
+
+#: includes/class-wpca-settings.php:706
+msgid "Choose the primary accent color for links, buttons, and active states."
+msgstr ""
+
+#: includes/class-wpca-settings.php:712
+msgid "Choose the main background color of the admin area."
+msgstr ""
+
+#: includes/class-wpca-settings.php:718
+msgid "Choose the default text color."
+msgstr ""
+
+#: includes/class-wpca-settings.php:726
+msgid "None"
+msgstr ""
+
+#: includes/class-wpca-settings.php:727
+msgid "Subtle (Default)"
+msgstr ""
+
+#: includes/class-wpca-settings.php:728
+msgid "Medium"
+msgstr ""
+
+#: includes/class-wpca-settings.php:729
+msgid "Strong"
+msgstr ""
+
+#: includes/class-wpca-settings.php:732
+msgid "Choose the shadow style for elements like post boxes and buttons."
+msgstr ""
+
+#: includes/class-wpca-settings.php:740
+msgid "Compact"
+msgstr ""
+
+#: includes/class-wpca-settings.php:741
+msgid "Standard (Default)"
+msgstr ""
+
+#: includes/class-wpca-settings.php:742
+msgid "Spacious"
+msgstr ""
+
+#: includes/class-wpca-settings.php:745
+msgid "Adjust the spacing and padding of elements in the admin interface."
+msgstr ""
+
+#: includes/class-wpca-settings.php:753
+msgid "None (Sharp Corners)"
+msgstr ""
+
+#: includes/class-wpca-settings.php:754
+msgid "Small (4px, Default)"
+msgstr ""
+
+#: includes/class-wpca-settings.php:755
+msgid "Large (8px, Rounded)"
+msgstr ""
+
+#: includes/class-wpca-settings.php:758
+msgid "Choose the border-radius style for various elements."
+msgstr ""
+
+#: includes/class-wpca-settings.php:766
+msgid "System Default"
+msgstr ""
+
+#: includes/class-wpca-settings.php:767
+msgid "Google Fonts"
+msgstr ""
+
+#: includes/class-wpca-settings.php:770
+msgid "Select the font stack to be used in the admin area."
+msgstr ""
+
+#: includes/class-wpca-settings.php:778
+msgid "Small"
+msgstr ""
+
+#: includes/class-wpca-settings.php:779
+msgid "Medium (Default)"
+msgstr ""
+
+#: includes/class-wpca-settings.php:780
+msgid "Large"
+msgstr ""
+
+#: includes/class-wpca-settings.php:783
+msgid "Adjust the base font size for the admin interface."
+msgstr ""
+
+#: includes/class-wpca-settings.php:791
+msgid "WordPress Dashicons"
+msgstr ""
+
+#: includes/class-wpca-settings.php:792
+msgid "Linear Icons"
+msgstr ""
+
+#: includes/class-wpca-settings.php:795
+msgid "Choose the icon set for the admin interface."
+msgstr ""
+
+#: includes/class-wpca-settings.php:818
 msgid "Language Switcher"
 msgstr ""
 
+#: includes/class-wpca-settings.php:823
 msgid "Back to Home Link"
 msgstr ""
 
+#: includes/class-wpca-settings.php:828
 msgid "Register Link"
 msgstr ""
 
+#: includes/class-wpca-settings.php:833
 msgid "Remember Me Checkbox"
+msgstr ""
+
+#: includes/class-wpca-settings.php:849
+msgid "Hide \"WordPress\" in page titles"
+msgstr ""
+
+#: includes/class-wpca-settings.php:851
+msgid "When enabled, removes \"WordPress\" from admin page titles."
+msgstr ""
+
+#: includes/class-wpca-settings.php:862
+msgid "WordPress Logo"
+msgstr ""
+
+#: includes/class-wpca-settings.php:866
+msgid "Site Name"
+msgstr ""
+
+#: includes/class-wpca-settings.php:870
+msgid "Updates"
+msgstr ""
+
+#: includes/class-wpca-settings.php:874
+msgid "Comments"
+msgstr ""
+
+#: includes/class-wpca-settings.php:878
+msgid "New Content"
+msgstr ""
+
+#: includes/class-wpca-settings.php:882
+msgid "My Account"
+msgstr ""
+
+#: includes/class-wpca-settings.php:912
+msgid "Default"
+msgstr ""
+
+#: includes/class-wpca-settings.php:916
+msgid "Modern"
+msgstr ""
+
+#: includes/class-wpca-settings.php:920
+msgid "Minimal"
+msgstr ""
+
+#: includes/class-wpca-settings.php:924
+msgid "Dark"
+msgstr ""
+
+#: includes/class-wpca-settings.php:928
+msgid "Gradient"
+msgstr ""
+
+#: includes/class-wpca-settings.php:932
+msgid "Custom"
+msgstr ""
+
+#: includes/class-wpca-settings.php:941
+msgid "Custom Login Options"
+msgstr ""
+
+#: includes/class-wpca-settings.php:945
+msgid "Choose from predefined login styles or create your own custom style."
+msgstr ""
+
+#: includes/class-wpca-settings.php:951
+msgid "Custom Logo"
+msgstr ""
+
+#: includes/class-wpca-settings.php:957
+msgid "Choose Image"
+msgstr ""
+
+#: includes/class-wpca-settings.php:958
+msgid "Remove"
+msgstr ""
+
+#: includes/class-wpca-settings.php:959
+msgid "Upload a custom logo for the login page. Recommended size: 320×80px."
+msgstr ""
+
+#: includes/class-wpca-settings.php:961
+msgid "Login Logo Preview"
+msgstr ""
+
+#: includes/class-wpca-settings.php:967
+msgid "Background Image"
+msgstr ""
+
+#: includes/class-wpca-settings.php:973
+msgid "Upload a custom background image for the login page."
+msgstr ""
+
+#: includes/class-wpca-settings.php:975
+msgid "Background Preview"
+msgstr ""
+
+#: includes/class-wpca-settings.php:981
+msgid "Custom CSS"
+msgstr ""
+
+#: includes/class-wpca-settings.php:983
+msgid "Add custom CSS to further customize the login page."
+msgstr ""
+
+#: includes/class-wpca-settings.php:991
+msgid "Live Preview"
+msgstr ""
+
+#: includes/class-wpca-settings.php:992
+msgid "Preview how your login page will look with the current settings."
+msgstr ""
+
+#: includes/class-wpca-settings.php:1000
+msgid "This is a preview of how your login page will look."
+msgstr ""
+
+#: includes/class-wpca-settings.php:1010
+msgid "Version %s"
+msgstr ""
+
+#: includes/class-wpca-settings.php:1014
+msgid "Plugin Description"
+msgstr ""
+
+#: includes/class-wpca-settings.php:1015
+msgid "WP Clean Admin is a powerful WordPress plugin designed to streamline and customize your WordPress admin experience. It provides a cleaner, more efficient interface by allowing you to hide unnecessary elements, customize the visual appearance, and reorganize the admin menu to better suit your workflow."
+msgstr ""
+
+#: includes/class-wpca-settings.php:1019
+msgid "Key Features"
+msgstr ""
+
+#: includes/class-wpca-settings.php:1021
+msgid "Hide unnecessary dashboard widgets"
+msgstr ""
+
+#: includes/class-wpca-settings.php:1022
+msgid "Customize admin menu by hiding or reordering items"
+msgstr ""
+
+#: includes/class-wpca-settings.php:1023
+msgid "Hide admin bar items for a cleaner top bar"
+msgstr ""
+
+#: includes/class-wpca-settings.php:1024
+msgid "Choose from multiple visual themes or create your own"
+msgstr ""
+
+#: includes/class-wpca-settings.php:1025
+msgid "Adjust layout density and typography settings"
+msgstr ""
+
+#: includes/class-wpca-settings.php:1026
+msgid "Customize colors, shadows, and border styles"
+msgstr ""
+
+#: includes/class-wpca-settings.php:1031
+msgid "Author"
+msgstr ""
+
+#: includes/class-wpca-settings.php:1032
+msgid "Created by WordPress Admin UI Specialists"
+msgstr ""
+
+#: includes/class-wpca-settings.php:1033
+msgid "Visit Plugin Website"
+msgstr ""
+
+#: includes/class-wpca-settings.php:1034
+msgid "Documentation"
+msgstr ""
+
+#: includes/class-wpca-settings.php:1035
+msgid "Support"
+msgstr ""
+
+#: includes/class-wpca-settings.php:1039
+msgid "Rate & Review"
+msgstr ""
+
+#: includes/class-wpca-settings.php:1040
+msgid "If you find this plugin useful, please consider leaving a review on WordPress.org. Your feedback helps improve the plugin and reach more users."
+msgstr ""
+
+#: includes/class-wpca-settings.php:1041
+msgid "Rate on WordPress.org"
+msgstr ""
+
+#: wp-clean-admin.php:128
+msgid "Settings"
 msgstr ""

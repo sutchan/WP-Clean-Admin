@@ -41,17 +41,53 @@
     display: block;
 }
 
+/* 菜单排序样式 */
+.wpca-menu-sortable {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    min-height: 50px;
+}
+.wpca-menu-sortable li {
+    padding: 10px 15px;
+    margin: 5px 0;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    cursor: move;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.wpca-menu-sortable li:hover {
+    border-color: #999;
+}
+.wpca-menu-sortable li.submenu-item {
+    margin-left: 30px;
+    background: #f9f9f9;
+}
+.wpca-menu-sortable li .dashicons-menu {
+    margin-right: 10px;
+    color: #aaa;
+}
+.wpca-menu-order-header {
+    margin-bottom: 20px;
+}
+.wpca-menu-order-wrapper {
+    margin-top: 20px;
+}
+
 /* 菜单切换开关样式 */
 .wpca-menu-toggle-switch {
     position: relative;
     display: inline-block;
     width: 40px;
     height: 20px;
-    margin-left: 10px;
+    margin-left: auto; /* Pushes toggle to the right */
     vertical-align: middle;
     cursor: pointer;
+    flex-shrink: 0; /* Prevent shrinking */
 }
-
 .wpca-menu-toggle-switch .wpca-toggle-slider {
     position: absolute;
     top: 0;
@@ -62,11 +98,9 @@
     border-radius: 20px;
     transition: .4s;
 }
-
 .wpca-menu-toggle-switch.checked .wpca-toggle-slider {
     background-color: #2271b1;
 }
-
 .wpca-menu-toggle-switch .wpca-toggle-slider:before {
     position: absolute;
     content: "";
@@ -78,11 +112,9 @@
     border-radius: 50%;
     transition: .4s;
 }
-
 .wpca-menu-toggle-switch.checked .wpca-toggle-slider:before {
     transform: translateX(20px);
 }
-
 .wpca-menu-toggle-switch input[type="checkbox"] {
     opacity: 0;
     width: 0;
@@ -90,7 +122,16 @@
     position: absolute;
 }
 
-/* 登录样式选择器 */
+/* 旋转动画用于重置按钮 */
+.dashicons-update.spin {
+    animation: wpca-spin 1s infinite linear;
+}
+@keyframes wpca-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 登录样式选择器优化 */
 .wpca-login-style-item {
     display: inline-block;
     margin: 0 10px 20px 0;
@@ -193,4 +234,4 @@
     max-height: 150px;
     margin-top: 10px;
     display: block;
-}
+}#wpca-submit-button { display: block !important; opacity: 1 !important; }

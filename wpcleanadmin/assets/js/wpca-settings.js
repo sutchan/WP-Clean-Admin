@@ -1,93 +1,176 @@
-/**
- * 设置页面功能脚本
- */
-(function($) {
-    'use strict';
+jQuery(document).ready(function($) {
+    // 触发选项卡初始化事件
+    $(document).trigger('wpca.init.tabs');
     
-    $(document).ready(function() {
-        // 初始化颜色选择器
+    // Initialize color pickers
+    if ($.fn.wpColorPicker) {
         $('.wpca-color-picker').wpColorPicker();
-        
-        // 标签切换
-        $('.wpca-tab').on('click', function() {
-            var tab = $(this).data('tab');
-            
-            // 更新活动标签
-            $('.wpca-tab').removeClass('active');
-            $(this).addClass('active');
-            
-            // 更新标签内容
-            $('.wpca-tab-content').removeClass('active');
-            $('#' + tab).addClass('active');
-            
-            // 更新隐藏字段
-            $('#wpca-current-tab').val(tab);
-            
-            // 保存用户偏好
-            saveTabPreference(tab);
-        });
-        
-        // 保存标签偏好
-        function saveTabPreference(tab) {
-            $.ajax({
-                url: wpca_settings.ajaxurl,
-                type: 'POST',
-                data: {
-                    action: 'wpca_save_tab_preference',
-                    tab: tab,
-                    _ajax_nonce: wpca_settings._wpnonce
-                }
+    }
+
+    // Media Uploader functionality
+    $(document).on('click', '.wpca-upload-button', function(e) {
+        e.preventDefault();
+        var button = $(this);
+        var targetField = $('#' + button.data('target'));
+        var previewDiv = $('#' + button.data('target') + '-preview');
+
+        if (typeof wp === 'undefined' || !wp.media) {
+            if (typeof WPCA !== 'undefined' && typeof WPCA.core !== 'undefined' && typeof WPCA.core.showNotice === 'function') {
+                WPCA.core.showNotice('error', wpca_admin.media_unavailable || 'WordPress media uploader not available.');
+            } else {
+                alert(wpca_admin.media_unavailable || 'WordPress media uploader not available.');
+            }
+            return;
+        }
+
+        var customUploader = wp.media({
+            title: wpca_admin.media_title,
+            library: {
+                type: 'image'
+            },
+            button: {
+                text: wpca_admin.media_button
+            },
+            multiple: false
+        }).on('select', function() {
+            var attachment = customUploader.state().get('selection').first().toJSON();
+            targetField.val(attachment.url);
+            previewDiv.html('<img src="' + attachment.url + '" alt="Preview" style="max-width:100%; height:auto;">').show();
+        }).open();
+    });
+
+    $(document).on('click', '.wpca-remove-button', function(e) {
+        e.preventDefault();
+        var button = $(this);
+        var targetField = $('#' + button.data('target'));
+        var previewDiv = $('#' + button.data('target') + '-preview');
+        targetField.val('');
+        previewDiv.hide().html('');
+    });
+
+    // Menu Ordering Sortable
+    $("#wpca-menu-order-list").sortable({
+        axis: "y",
+        handle: ".dashicons-menu",
+        items: "li",
+        placeholder: "ui-state-highlight",
+        forcePlaceholderSize: true,
+        update: function(event, ui) {
+            // Update hidden input fields for menu order
+            $(this).find('input[name="wpca_settings[menu_order][]"]').each(function(index) {
+                $(this).val($(this).closest("li").data("menu-slug"));
             });
         }
-        
-        // 登录样式选择
-        $('.wpca-login-style-preview').on('click', function() {
-            var $item = $(this).closest('.wpca-login-style-item');
-            var style = $item.data('style');
-            
-            $('.wpca-login-style-item').removeClass('active');
-            $item.addClass('active');
-            $('#wpca_login_style').val(style);
-        });
-        
-        // 媒体上传按钮
-        $('.wpca-media-upload-button').on('click', function(e) {
-            e.preventDefault();
-            var $button = $(this);
-            var $input = $button.siblings('input');
-            var $preview = $button.siblings('.wpca-media-preview');
-            
-            var frame = wp.media({
-                title: wpca_settings.media_title,
-                button: {
-                    text: wpca_settings.media_button
-                },
-                multiple: false
-            });
-            
-            frame.on('select', function() {
-                var attachment = frame.state().get('selection').first().toJSON();
-                $input.val(attachment.url);
-                
-                if (attachment.type === 'image') {
-                    $preview.attr('src', attachment.url).show();
-                } else {
-                    $preview.hide();
-                }
-            });
-            
-            frame.open();
-        });
-        
-        // 移除媒体按钮
-        $('.wpca-media-remove-button').on('click', function(e) {
-            e.preventDefault();
-            var $button = $(this);
-            var $input = $button.siblings('input');
-            var $preview = $button.siblings('.wpca-media-preview');
-            
-            $input.val('');
-            $preview.hide();
-        });
     });
-})(jQuery);
+
+    // Initialize menu items with saved visibility states
+    $(".wpca-menu-toggle-switch input[type=checkbox]").each(function() {
+        var isVisible = $(this).is(":checked");
+        $(this).closest(".wpca-menu-toggle-switch").toggleClass("checked", isVisible);
+    });
+
+    // Update menu visibility based on main toggle
+    function updateMenuVisibility(isEnabled) {
+        $(".wpca-menu-sortable, .wpca-menu-order-header").toggle(isEnabled);
+        if (!isEnabled) {
+            // If main toggle is disabled, uncheck all individual toggles
+            $(".wpca-menu-toggle-switch input[type=checkbox]")
+                .prop("checked", false)
+                .trigger("change")
+                .closest(".wpca-menu-toggle-switch")
+                .removeClass("checked");
+        }
+    }
+
+    // Handle main menu toggle
+    $("#wpca-menu-toggle").on("change", function() {
+        var isEnabled = $(this).is(":checked");
+        updateMenuVisibility(isEnabled);
+        $(this).closest(".wpca-toggle-switch").toggleClass("checked", isEnabled);
+    }).trigger("change"); // Initialize on load
+
+    // Handle individual menu item toggles
+    $(document).on("change", ".wpca-menu-toggle-switch input[type=checkbox]", function() {
+        var isChecked = $(this).is(":checked");
+        $(this).closest(".wpca-menu-toggle-switch").toggleClass("checked", isChecked);
+    });
+
+    // Reset Menu Order button functionality
+    $("#wpca-reset-menu-order").on("click", function() {
+        if (confirm(wpca_admin.reset_confirm)) {
+            var $button = $(this);
+            var originalText = $button.html();
+            
+            // Show loading state
+            $button.html('<span class="dashicons dashicons-update spin" style="vertical-align: middle; margin-right: 5px;"></span> ' + wpca_admin.resetting_text);
+            
+            // Simulate AJAX reset or perform client-side reset
+            setTimeout(function() {
+                // Reset visibility to default (all enabled)
+                $(".wpca-menu-toggle-switch input[type=checkbox]").prop("checked", true)
+                    .trigger("change")
+                    .closest(".wpca-menu-toggle-switch")
+                    .addClass("checked");
+                
+                // Reset menu order to default WordPress order (alphabetical by slug for simplicity)
+                var $sortable = $("#wpca-menu-order-list");
+                $sortable.find("li").sort(function(a, b) {
+                    return $(a).data("menu-slug").localeCompare($(b).data("menu-slug"));
+                }).appendTo($sortable);
+                
+                // Update the hidden fields with new order
+                $sortable.find("input[name='wpca_settings[menu_order][]']").each(function(index) {
+                    $(this).val($(this).closest("li").data("menu-slug"));
+                });
+                
+                // Also reset the main toggle
+                $("#wpca-menu-toggle").prop("checked", true).trigger("change");
+                
+                // Restore button text
+                $button.html(originalText);
+                
+                // Show success notice
+                if (typeof WPCA !== 'undefined' && typeof WPCA.core !== 'undefined' && typeof WPCA.core.showNotice === 'function') {
+                    WPCA.core.showNotice('success', wpca_admin.reset_text + ' ' + wpca_admin.reset_successful_text);
+                } else {
+                    alert(wpca_admin.reset_text + ' ' + wpca_admin.reset_successful_text);
+                }
+            }, 500);
+        }
+    });
+
+    // Login Page Style Selector
+    $('input[name="wpca_settings[login_style]"]').on('change', function() {
+        $('.wpca-login-style-item').removeClass('active');
+        $(this).closest('.wpca-login-style-item').addClass('active');
+        
+        // Show/hide custom options
+        if ($(this).val() === 'custom') {
+            $('#wpca-custom-login-options').slideDown();
+        } else {
+            $('#wpca-custom-login-options').slideUp();
+        }
+        // Trigger login preview update (assuming this function exists in wpca-login.js or wpca-core.js)
+        if (typeof WPCA !== 'undefined' && WPCA.loginPage && WPCA.loginPage.updatePreview) {
+            WPCA.loginPage.updatePreview();
+        }
+    });
+
+    // Initial check for custom login options visibility
+    if ($('input[name="wpca_settings[login_style]"]:checked').val() === 'custom') {
+        $('#wpca-custom-login-options').show();
+    } else {
+        $('#wpca-custom-login-options').hide();
+    }
+
+    // Trigger login preview update on relevant field changes
+    $('#wpca-login-logo, #wpca-login-background, textarea[name="wpca_settings[login_custom_css]"]').on('change keyup', function() {
+        if (typeof WPCA !== 'undefined' && WPCA.loginPage && WPCA.loginPage.updatePreview) {
+            WPCA.loginPage.updatePreview();
+        }
+    });
+    // Initial login preview update
+    if (typeof WPCA !== 'undefined' && WPCA.loginPage && WPCA.loginPage.updatePreview) {
+        WPCA.loginPage.updatePreview();
+    }
+});

@@ -2,7 +2,7 @@
     'use strict';
 
     window.WPCA = window.WPCA || {};
-    WPCA.login = {
+    WPCA.loginManager = {
         admin: {
             init: function() {
                 if (!this.shouldRun()) return;

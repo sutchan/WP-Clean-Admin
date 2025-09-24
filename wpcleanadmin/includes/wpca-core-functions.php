@@ -29,8 +29,9 @@ function wpca_remove_dashboard_widgets() {
     ];
 
     foreach ($widgets_to_hide as $widget_id) {
-        if (isset($widget_map[$widget_id])) {
-            remove_meta_box($widget_id, $widget_map[$widget_id][0], $widget_map[$widget_id][1]);
+        // 添加额外的安全检查
+        if (isset($widget_map[$widget_id]) && is_string($widget_id)) {
+            remove_meta_box(sanitize_key($widget_id), $widget_map[$widget_id][0], $widget_map[$widget_id][1]);
         }
     }
 }
@@ -98,10 +99,10 @@ function wpca_apply_custom_styles() {
         // Add other themes here if needed.
     }
 
-    // Sanitize colors before output.
-    $primary_color    = sanitize_hex_color($primary_color);
-    $background_color = sanitize_hex_color($background_color);
-    $text_color       = sanitize_hex_color($text_color);
+    // Sanitize colors before output with fallback values.
+    $primary_color    = sanitize_hex_color($primary_color) ?: '#0073aa';
+    $background_color = sanitize_hex_color($background_color) ?: '#ffffff';
+    $text_color       = sanitize_hex_color($text_color) ?: '#333333';
 
     // Using a HEREDOC for clean multiline CSS.
     $custom_css = <<<CSS
@@ -131,7 +132,9 @@ function wpca_remove_admin_bar_items($wp_admin_bar) {
     $items_to_hide = $options['hide_admin_bar_items'] ?? [];
 
     foreach ($items_to_hide as $node_id) {
-        $wp_admin_bar->remove_node(sanitize_key($node_id));
+        if (is_string($node_id)) {
+            $wp_admin_bar->remove_node(sanitize_key($node_id));
+        }
     }
 }
 add_action('admin_bar_menu', 'wpca_remove_admin_bar_items', 999);

@@ -397,6 +397,95 @@ body.wpca-theme-dark {
     background: #5a6fd1;
 }
 
+/* 新增 Glassmorphism 样式 */
+.wpca-login-glassmorphism {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    color: #fff;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.wpca-login-glassmorphism #login h1 a {
+    background-image: none, url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 84 84"><path fill="%23fff" d="M42,0C18.8,0,0,18.8,0,42s18.8,42,42,42s42-18.8,42-42S65.2,0,42,0z M42,64c-12.2,0-22-9.8-22-22s9.8-22,22-22 s22,9.8,22,22S54.2,64,42,64z"/></svg>');
+    background-size: 84px;
+    height: 84px;
+    width: 84px;
+}
+
+.wpca-login-glassmorphism #loginform {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+}
+
+.wpca-login-glassmorphism #loginform label {
+    color: #fff;
+}
+
+.wpca-login-glassmorphism .button-primary {
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: none;
+    text-shadow: none;
+    color: #fff;
+    transition: all 0.3s ease;
+}
+
+.wpca-login-glassmorphism .button-primary:hover {
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* 新增 Neumorphism 样式 */
+.wpca-login-neumorphism {
+    background-color: #e0e5ec;
+    color: #2d3748;
+}
+
+.wpca-login-neumorphism #login h1 a {
+    background-image: none, url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 84 84"><path fill="%232d3748" d="M42,0C18.8,0,0,18.8,0,42s18.8,42,42,42s42-18.8,42-42S65.2,0,42,0z M42,64c-12.2,0-22-9.8-22-22s9.8-22,22-22 s22,9.8,22,22S54.2,64,42,64z"/></svg>');
+    background-size: 84px;
+    height: 84px;
+    width: 84px;
+}
+
+.wpca-login-neumorphism #loginform {
+    background: #e0e5ec;
+    border-radius: 20px;
+    box-shadow: 8px 8px 16px #b8bec7, -8px -8px 16px #ffffff;
+    color: #2d3748;
+    border: none;
+}
+
+.wpca-login-neumorphism #loginform label {
+    color: #2d3748;
+}
+
+.wpca-login-neumorphism .button-primary {
+    background: #e0e5ec;
+    border: none;
+    box-shadow: 4px 4px 8px #b8bec7, -4px -4px 8px #ffffff;
+    text-shadow: none;
+    color: #2d3748;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.wpca-login-neumorphism .button-primary:hover {
+    box-shadow: 2px 2px 4px #b8bec7, -2px -2px 4px #ffffff;
+    transform: translateY(1px);
+}
+
 /* Login Style Cards Grid */
 .wpca-login-styles-grid {
     display: grid;
@@ -611,6 +700,29 @@ body.wpca-theme-dark {
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
+/* 登录样式预览区域的新增样式 */
+.wpca-login-preview.glassmorphism-preview {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.wpca-login-preview.glassmorphism-preview .wpca-login-preview-form {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.wpca-login-preview.neumorphism-preview {
+    background-color: #e0e5ec;
+}
+
+.wpca-login-preview.neumorphism-preview .wpca-login-preview-form {
+    background: #e0e5ec;
+    border-radius: 20px;
+    box-shadow: 8px 8px 16px #b8bec7, -8px -8px 16px #ffffff;
+}
+
 /* Form table toggle switch styles */
 .form-table .wpca-toggle-switch {
     position: relative;
@@ -705,4 +817,3 @@ body.wpca-theme-dark {
     align-items: center;
     justify-content: space-between;
 }
-
