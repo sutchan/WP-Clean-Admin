@@ -667,35 +667,83 @@ msgstr "WPCA 错误: 缺少配置对象 \"wpca_admin\"。"
 # ===========================================================
 # Login Page Strings
 # ===========================================================
+msgid "WPCA Login Management: Initializing..."
+msgstr "WPCA 登录管理：初始化中..."
+
+msgid "WPCA Login Management: Initialized successfully."
+msgstr "WPCA 登录管理：初始化成功。"
+
 msgid "No logo selected"
-msgstr "未选择徽标"
+msgstr "未选择Logo"
 
 msgid "No background selected"
 msgstr "未选择背景"
 
-msgid "Login Management - Frontend Module"
-msgstr "登录管理 - 前端模块"
-
-msgid "Frontend Login module is ready"
-msgstr "前端登录模块已准备就绪"
-
-msgid "Logo updated successfully"
-msgstr "徽标更新成功"
-
-msgid "Background updated successfully"
-msgstr "背景更新成功"
-
-msgid "Login style updated successfully"
-msgstr "登录样式更新成功"
-
-msgid "Custom CSS updated successfully"
-msgstr "自定义 CSS 更新成功"
-
 msgid "Show Login Form"
 msgstr "显示登录表单"
 
-msgid "Hide Login Form"
-msgstr "隐藏登录表单"
+msgid "Login Style"
+msgstr "登录样式"
+
+msgid "Select a login style for your WordPress site"
+msgstr "为您的WordPress网站选择登录样式"
+
+msgid "Default"
+msgstr "默认"
+
+msgid "Modern"
+msgstr "现代"
+
+msgid "Minimal"
+msgstr "极简"
+
+msgid "Dark"
+msgstr "深色"
+
+msgid "Gradient"
+msgstr "渐变"
+
+msgid "Custom"
+msgstr "自定义"
+
+msgid "Glassmorphism"
+msgstr "玻璃拟态"
+
+msgid "Neumorphism"
+msgstr "新拟态"
+
+msgid "Custom Login Options"
+msgstr "自定义登录选项"
+
+msgid "Login Logo"
+msgstr "登录Logo"
+
+msgid "Upload or select an image for the login logo"
+msgstr "上传或选择登录Logo图片"
+
+msgid "Login Background"
+msgstr "登录背景"
+
+msgid "Upload or select an image for the login background"
+msgstr "上传或选择登录背景图片"
+
+msgid "Custom CSS"
+msgstr "自定义CSS"
+
+msgid "Add custom CSS to further customize the login page"
+msgstr "添加自定义CSS以进一步自定义登录页面"
+
+msgid "Remove Logo"
+msgstr "移除Logo"
+
+msgid "Remove Background"
+msgstr "移除背景"
+
+msgid "Upload Logo"
+msgstr "上传Logo"
+
+msgid "Upload Background"
+msgstr "上传背景"
 
 # ===========================================================
 # Reset Messages

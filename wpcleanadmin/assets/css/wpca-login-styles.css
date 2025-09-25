@@ -6,18 +6,7 @@
     margin-top: 24px;
     padding: 0 15px;
 }
-.wpca-login-column {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
-    border: 1px solid rgba(0, 0, 0, 0.03);
-}
-.wpca-login-column:hover {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    transform: translateY(-2px);
-}
+
 .wpca-login-options {
     flex: 1;
     min-width: 400px;
@@ -150,10 +139,10 @@
         flex-direction: column;
         gap: 20px;
     }
-    .wpca-login-column {
+    .wpca-login-options,
+    .wpca-login-preview {
         width: 100%;
         margin-bottom: 0;
-        padding: 25px;
     }
     .wpca-login-options {
         max-width: 100%;
@@ -173,9 +162,9 @@
         padding: 0 10px;
         gap: 16px;
     }
-    .wpca-login-column {
+    .wpca-login-options,
+    .wpca-login-preview {
         padding: 20px;
-        border-radius: 10px;
     }
     .wpca-login-preview-frame {
         max-width: 100%;
@@ -197,7 +186,8 @@
         padding: 0 8px;
         gap: 12px;
     }
-    .wpca-login-column {
+    .wpca-login-options,
+    .wpca-login-preview {
         padding: 16px;
     }
     .wpca-login-preview-content {

@@ -99,23 +99,103 @@ msgstr ""
 msgid "Menu item \"%s\" does not exist"
 msgstr ""
 
-# AJAX Error Messages (from JS files)
-msgid "Request processing failed"
+msgid "WordPress media uploader not available"
 msgstr ""
 
-msgid "You do not have permission to perform this action"
+msgid "WordPress media uploader not available."
 msgstr ""
 
-msgid "Invalid request parameters"
+# ===========================================================
+# Success Messages
+# ===========================================================
+msgid "Settings saved"
 msgstr ""
 
-msgid "Please log in first"
+msgid "Settings saved successfully!"
 msgstr ""
 
-msgid "Internal server error"
+msgid "Menu settings updated successfully"
 msgstr ""
 
-msgid "Insufficient permissions"
+msgid "Settings reset to default"
+msgstr ""
+
+msgid "Settings reset successfully!"
+msgstr ""
+
+msgid "Menu settings reset successfully"
+msgstr ""
+
+msgid "Menu order has been reset to default"
+msgstr ""
+
+msgid "successful"
+msgstr ""
+
+# ===========================================================
+# Action Messages
+# ===========================================================
+msgid "Resetting..."
+msgstr ""
+
+msgid "Saving..."
+msgstr ""
+
+msgid "Select or Upload Media"
+msgstr ""
+
+msgid "Use this media"
+msgstr ""
+
+# ===========================================================
+# Confirmation Messages
+# ===========================================================
+msgid "Are you sure you want to reset all menu settings to default?"
+msgstr ""
+
+msgid "Are you sure you want to reset all menu settings?"
+msgstr ""
+
+msgid "Are you sure you want to reset all settings to default?"
+msgstr ""
+
+msgid "Please select at least one valid setting type to reset"
+msgstr ""
+
+# ===========================================================
+# Settings Page Strings
+# ===========================================================
+msgid "General"
+msgstr ""
+
+msgid "General Settings"
+msgstr ""
+
+msgid "Visual Style"
+msgstr ""
+
+msgid "Theme Style"
+msgstr ""
+
+msgid "Primary Color"
+msgstr ""
+
+msgid "Background Color"
+msgstr ""
+
+msgid "Text Color"
+msgstr ""
+
+msgid "Shadow Style"
+msgstr ""
+
+msgid "Layout Density"
+msgstr ""
+
+msgid "Border Radius"
+msgstr ""
+
+msgid "Font Stack"
 msgstr ""
 
 # ===========================================================
@@ -1087,7 +1167,7 @@ msgstr ""
 msgid "AJAX Error:"
 msgstr ""
 
-msgid "Status:" 
+msgid "Status: "
 msgstr ""
 
 msgid "WPCA [DEBUG]:"
@@ -1132,6 +1212,69 @@ msgstr ""
 msgid "Show Login Form"
 msgstr ""
 
+msgid "Login Style"
+msgstr ""
+
+msgid "Select a login style for your WordPress site"
+msgstr ""
+
+msgid "Default"
+msgstr ""
+
+msgid "Modern"
+msgstr ""
+
+msgid "Minimal"
+msgstr ""
+
+msgid "Dark"
+msgstr ""
+
+msgid "Gradient"
+msgstr ""
+
+msgid "Custom"
+msgstr ""
+
+msgid "Glassmorphism"
+msgstr ""
+
+msgid "Neumorphism"
+msgstr ""
+
+msgid "Custom Login Options"
+msgstr ""
+
+msgid "Login Logo"
+msgstr ""
+
+msgid "Upload or select an image for the login logo"
+msgstr ""
+
+msgid "Login Background"
+msgstr ""
+
+msgid "Upload or select an image for the login background"
+msgstr ""
+
+msgid "Custom CSS"
+msgstr ""
+
+msgid "Add custom CSS to further customize the login page"
+msgstr ""
+
+msgid "Remove Logo"
+msgstr ""
+
+msgid "Remove Background"
+msgstr ""
+
+msgid "Upload Logo"
+msgstr ""
+
+msgid "Upload Background"
+msgstr ""
+
 # ===========================================================
 # Reset Messages
 # ===========================================================
@@ -1147,8 +1290,117 @@ msgstr ""
 msgid "Reset Defaults"
 msgstr ""
 
+msgid "successful"
+msgstr ""
+
 # ===========================================================
-# Permissions UI
-# ===========================================================
+# AJAX Error Messages (from JS files)
+msgid "Request processing failed"
+msgstr ""
+
+msgid "You do not have permission to perform this action"
+msgstr ""
+
+msgid "Invalid request parameters"
+msgstr ""
+
+msgid "Please log in first"
+msgstr ""
+
+msgid "Internal server error"
+msgstr ""
+
 msgid "Insufficient permissions"
+msgstr ""
+
+# ===========================================================
+# Additional strings from code
+msgid "Hide Dashboard Widgets"
+msgstr ""
+
+msgid "Hide WordPress Title"
+msgstr ""
+
+msgid "Hide WordPress Footer"
+msgstr ""
+
+msgid "Hide Frontend Admin Bar"
+msgstr ""
+
+msgid "Hide Admin Bar Items"
+msgstr ""
+
+msgid "Font Size"
+msgstr ""
+
+msgid "Icon Style"
+msgstr ""
+
+msgid "Menu Order"
+msgstr ""
+
+msgid "Show/Hide Elements"
+msgstr ""
+
+msgid "Menu Customization"
+msgstr ""
+
+msgid "Login Page Elements"
+msgstr ""
+
+msgid "About WP Clean Admin"
+msgstr ""
+
+msgid "Configure the appearance and behavior of your admin dashboard."
+msgstr ""
+
+msgid "Customize the overall visual theme, colors, layout and typography."
+msgstr ""
+
+msgid "Menu Order Customization"
+msgstr ""
+
+msgid "Drag and drop menu items to reorder them. Use the toggle switches to show/hide items."
+msgstr ""
+
+msgid "Select which admin menu items to hide and reorder them."
+msgstr ""
+
+msgid "Enable Menu Customization"
+msgstr ""
+
+msgid "Toggle to show/hide and reorder admin menu items"
+msgstr ""
+
+msgid "Version %s"
+msgstr ""
+
+msgid "Customize which elements appear on the login page."
+msgstr ""
+
+msgid "WordPress News and Events"
+msgstr ""
+
+msgid "Quick Draft"
+msgstr ""
+
+msgid "At a Glance"
+msgstr ""
+
+msgid "Select dashboard widgets to hide"
+msgstr ""
+
+msgid "Reset to Default Order"
+msgstr ""
+
+msgid "Invalid tab specified"
+msgstr ""
+
+msgid "Settings reset successfully"
+msgstr ""
+
+msgid "Failed to reset settings"
+msgstr ""
+
+msgid "Are you sure you want to reset all login page settings to default?"
 msgstr ""

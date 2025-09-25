@@ -199,365 +199,830 @@ msgstr "Border Radius"
 msgid "Font Stack"
 msgstr "Font Stack"
 
-msgid "Font Size"
-msgstr "Font Size"
-
-msgid "Icon Style"
-msgstr "Icon Style"
-
-msgid "Menu Customization"
-msgstr "Menu Customization"
-
-msgid "Menu Order"
-msgstr "Menu Order"
-
-msgid "Hide Dashboard Widgets"
-msgstr "Hide Dashboard Widgets"
-
-msgid "Hide WordPress Title"
-msgstr "Hide WordPress Title"
-
-msgid "Hide Admin Bar Items"
-msgstr "Hide Admin Bar Items"
-
-msgid "Login Page"
-msgstr "Login Page"
-
-msgid "Login Page Elements"
-msgstr "Login Page Elements"
-
-msgid "Show/Hide Elements"
-msgstr "Show/Hide Elements"
-
-msgid "Login Style"
-msgstr "Login Style"
-
-msgid "About"
-msgstr "About"
-
-msgid "About WP Clean Admin"
-msgstr "About WP Clean Admin"
-
 # ===========================================================
-# Settings Descriptions
+# Dashboard Strings
 # ===========================================================
-msgid "Configure the appearance and behavior of your admin dashboard."
-msgstr "Configure the appearance and behavior of your admin dashboard."
-
-msgid "Customize the overall visual theme, colors, layout and typography."
-msgstr "Customize the overall visual theme, colors, layout and typography."
-
-msgid "Menu Order Customization"
-msgstr "Menu Order Customization"
-
-msgid "Drag and drop menu items to reorder them. Use the toggle switches to show/hide items."
-msgstr "Drag and drop menu items to reorder them. Use the toggle switches to show/hide items."
-
-msgid "Reset to Default Order"
-msgstr "Reset to Default Order"
-
-msgid "Select which admin menu items to hide and reorder them."
-msgstr "Select which admin menu items to hide and reorder them."
-
-msgid "Enable Menu Customization"
-msgstr "Enable Menu Customization"
-
-msgid "Toggle to show/hide and reorder admin menu items"
-msgstr "Toggle to show/hide and reorder admin menu items"
-
-msgid "Hide \"WordPress\" in page titles"
-msgstr "Hide \"WordPress\" in page titles"
-
-msgid "When enabled, removes \"WordPress\" from admin page titles."
-msgstr "When enabled, removes \"WordPress\" from admin page titles."
-
-msgid "Custom Login Options"
-msgstr "Custom Login Options"
-
-msgid "Choose from predefined login styles or create your own custom style."
-msgstr "Choose from predefined login styles or create your own custom style."
-
-msgid "Custom Logo"
-msgstr "Custom Logo"
-
-msgid "Upload a custom logo for the login page. Recommended size: 320×80px."
-msgstr "Upload a custom logo for the login page. Recommended size: 320×80px."
-
-msgid "Background Image"
-msgstr "Background Image"
-
-msgid "Upload a custom background image for the login page."
-msgstr "Upload a custom background image for the login page."
-
-msgid "Custom CSS"
-msgstr "Custom CSS"
-
-msgid "Add custom CSS to further customize the login page."
-msgstr "Add custom CSS to further customize the login page."
-
-msgid "Live Preview"
-msgstr "Live Preview"
-
-msgid "Preview how your login page will look with the current settings."
-msgstr "Preview how your login page will look with the current settings."
-
-msgid "This is a preview of how your login page will look."
-msgstr "This is a preview of how your login page will look."
-
-# ===========================================================
-# Theme & Style Options
-# ===========================================================
-msgid "Default"
-msgstr "Default"
-
-msgid "Default (Flat & Clean)"
-msgstr "Default (Flat & Clean)"
-
-msgid "Modern"
-msgstr "Modern"
-
-msgid "Minimal"
-msgstr "Minimal"
-
-msgid "Dark"
-msgstr "Dark"
-
-msgid "Dark Mode"
-msgstr "Dark Mode"
-
-msgid "Gradient"
-msgstr "Gradient"
-
-msgid "Custom"
-msgstr "Custom"
-
-msgid "Custom Colors"
-msgstr "Custom Colors"
-
-msgid "Light Blue Gray"
-msgstr "Light Blue Gray"
-
-msgid "Mint Green"
-msgstr "Mint Green"
-
-msgid "None"
-msgstr "None"
-
-msgid "Subtle (Default)"
-msgstr "Subtle (Default)"
-
-msgid "Medium"
-msgstr "Medium"
-
-msgid "Strong"
-msgstr "Strong"
-
-msgid "Choose the shadow style for elements like post boxes and buttons."
-msgstr "Choose the shadow style for elements like post boxes and buttons."
-
-msgid "Compact"
-msgstr "Compact"
-
-msgid "Standard (Default)"
-msgstr "Standard (Default)"
-
-msgid "Spacious"
-msgstr "Spacious"
-
-msgid "Adjust the spacing and padding of elements in the admin interface."
-msgstr "Adjust the spacing and padding of elements in the admin interface."
-
-msgid "None (Sharp Corners)"
-msgstr "None (Sharp Corners)"
-
-msgid "Small (4px, Default)"
-msgstr "Small (4px, Default)"
-
-msgid "Large (8px, Rounded)"
-msgstr "Large (8px, Rounded)"
-
-msgid "Choose the border-radius style for various elements."
-msgstr "Choose the border-radius style for various elements."
-
-msgid "System Default"
-msgstr "System Default"
-
-msgid "Google Fonts"
-msgstr "Google Fonts"
-
-msgid "Select the font stack to be used in the admin area."
-msgstr "Select the font stack to be used in the admin area."
-
-msgid "Small"
-msgstr "Small"
-
-msgid "Medium (Default)"
-msgstr "Medium (Default)"
-
-msgid "Large"
-msgstr "Large"
-
-msgid "Adjust the base font size for the admin interface."
-msgstr "Adjust the base font size for the admin interface."
-
-msgid "WordPress Dashicons"
-msgstr "WordPress Dashicons"
-
-msgid "Linear Icons"
-msgstr "Linear Icons"
-
-msgid "Choose the icon set for the admin interface."
-msgstr "Choose the icon set for the admin interface."
-
-msgid "Choose a predefined theme or select \"Custom Colors\" to define your own."
-msgstr "Choose a predefined theme or select \"Custom Colors\" to define your own."
-
-msgid "Choose the primary accent color for links, buttons, and active states."
-msgstr "Choose the primary accent color for links, buttons, and active states."
-
-msgid "Choose the main background color of the admin area."
-msgstr "Choose the main background color of the admin area."
-
-msgid "Choose the default text color."
-msgstr "Choose the default text color."
-
-# ===========================================================
-# WordPress Menu & Dashboard Items
-# ===========================================================
-msgid "WordPress"
-msgstr "WordPress"
+msgid "Welcome to WP Clean Admin Dashboard"
+msgstr "Welcome to WP Clean Admin Dashboard"
 
 msgid "Dashboard"
 msgstr "Dashboard"
 
-msgid "Posts"
-msgstr "Posts"
+msgid "Plugin Version: %s"
+msgstr "Plugin Version: %s"
 
-msgid "Media"
-msgstr "Media"
+msgid "Total number of registered modules: %d"
+msgstr "Total number of registered modules: %d"
 
-msgid "Pages"
-msgstr "Pages"
+msgid "Total number of available languages: %d"
+msgstr "Total number of available languages: %d"
 
-msgid "Comments"
-msgstr "Comments"
+msgid "Total number of menu items: %d"
+msgstr "Total number of menu items: %d"
 
-msgid "Appearance"
-msgstr "Appearance"
+msgid "Last Update: %s"
+msgstr "Last Update: %s"
 
-msgid "Plugins"
-msgstr "Plugins"
+msgid "View Documentation"
+msgstr "View Documentation"
 
-msgid "Users"
-msgstr "Users"
+msgid "Submit Feedback"
+msgstr "Submit Feedback"
 
-msgid "Tools"
-msgstr "Tools"
+msgid "Visit Plugin Page"
+msgstr "Visit Plugin Page"
 
-msgid "Submenu"
-msgstr "Submenu"
+msgid "System Information"
+msgstr "System Information"
 
-msgid "Right Now"
-msgstr "Right Now"
+msgid "WordPress Version: %s"
+msgstr "WordPress Version: %s"
 
-msgid "Activity"
-msgstr "Activity"
+msgid "PHP Version: %s"
+msgstr "PHP Version: %s"
 
-msgid "Quick Draft"
-msgstr "Quick Draft"
+msgid "MySQL Version: %s"
+msgstr "MySQL Version: %s"
 
-msgid "WordPress Events and News"
-msgstr "WordPress Events and News"
+msgid "Server Software: %s"
+msgstr "Server Software: %s"
 
-msgid "Site Health Status"
-msgstr "Site Health Status"
+msgid "Active Theme: %s"
+msgstr "Active Theme: %s"
 
-msgid "At a Glance"
-msgstr "At a Glance"
+msgid "Active Plugins: %d"
+msgstr "Active Plugins: %d"
 
-msgid "WordPress Logo"
-msgstr "WordPress Logo"
+msgid "Debug Mode: %s"
+msgstr "Debug Mode: %s"
 
-msgid "Site Name"
-msgstr "Site Name"
+msgid "Site URL: %s"
+msgstr "Site URL: %s"
 
-msgid "Updates"
-msgstr "Updates"
+msgid "Home URL: %s"
+msgstr "Home URL: %s"
 
-msgid "New Content"
-msgstr "New Content"
-
-msgid "My Account"
-msgstr "My Account"
+msgid "User Agent: %s"
+msgstr "User Agent: %s"
 
 # ===========================================================
-# Login Page Elements
+# Cleanup Strings
 # ===========================================================
-msgid "Language Switcher"
-msgstr "Language Switcher"
+msgid "Cleanup"
+msgstr "Cleanup"
 
-msgid "Back to Home Link"
-msgstr "Back to Home Link"
+msgid "Database Cleanup"
+msgstr "Database Cleanup"
 
-msgid "Register Link"
-msgstr "Register Link"
+msgid "Cleanup Options"
+msgstr "Cleanup Options"
 
-msgid "Remember Me Checkbox"
-msgstr "Remember Me Checkbox"
+msgid "Clean unused terms"
+msgstr "Clean unused terms"
 
-msgid "Choose Image"
-msgstr "Choose Image"
+msgid "Clean orphaned postmeta"
+msgstr "Clean orphaned postmeta"
 
-msgid "Remove"
-msgstr "Remove"
+msgid "Clean orphaned commentmeta"
+msgstr "Clean orphaned commentmeta"
 
-msgid "Login Logo Preview"
-msgstr "Login Logo Preview"
+msgid "Clean unused taxonomy term relationships"
+msgstr "Clean unused taxonomy term relationships"
 
-msgid "Background Preview"
-msgstr "Background Preview"
+msgid "Clean revisions"
+msgstr "Clean revisions"
+
+msgid "Clean auto-drafts"
+msgstr "Clean auto-drafts"
+
+msgid "Clean spam comments"
+msgstr "Clean spam comments"
+
+msgid "Clean trash comments"
+msgstr "Clean trash comments"
+
+msgid "Clean pingbacks"
+msgstr "Clean pingbacks"
+
+msgid "Clean trackbacks"
+msgstr "Clean trackbacks"
+
+msgid "Clean transient options"
+msgstr "Clean transient options"
+
+msgid "Clean expired transients"
+msgstr "Clean expired transients"
+
+msgid "Clean all transients"
+msgstr "Clean all transients"
+
+msgid "Optimize database tables"
+msgstr "Optimize database tables"
+
+msgid "Cleanup completed: %d items removed"
+msgstr "Cleanup completed: %d items removed"
+
+msgid "Cleanup started..."
+msgstr "Cleanup started..."
+
+msgid "Cleanup in progress..."
+msgstr "Cleanup in progress..."
+
+msgid "Cleanup failed: %s"
+msgstr "Cleanup failed: %s"
+
+msgid "No cleanup needed"
+msgstr "No cleanup needed"
+
+msgid "Run Cleanup"
+msgstr "Run Cleanup"
+
+msgid "Cleanup Summary"
+msgstr "Cleanup Summary"
+
+msgid "Start Cleanup"
+msgstr "Start Cleanup"
+
+msgid "Cleanup Results"
+msgstr "Cleanup Results"
+
+msgid "Items Removed: %d"
+msgstr "Items Removed: %d"
+
+msgid "Processed in: %s seconds"
+msgstr "Processed in: %s seconds"
+
+msgid "Database Size Before: %s"
+msgstr "Database Size Before: %s"
+
+msgid "Database Size After: %s"
+msgstr "Database Size After: %s"
+
+msgid "Space Saved: %s"
+msgstr "Space Saved: %s"
+
+msgid "View Details"
+msgstr "View Details"
+
+msgid "Hide Details"
+msgstr "Hide Details"
 
 # ===========================================================
-# About Page Strings
+# Menu Customizer Strings
 # ===========================================================
-msgid "Version %s"
-msgstr "Version %s"
+msgid "Menu Customizer"
+msgstr "Menu Customizer"
 
-msgid "Plugin Description"
-msgstr "Plugin Description"
+msgid "Admin Menu Management"
+msgstr "Admin Menu Management"
 
-msgid "WP Clean Admin is a powerful WordPress plugin designed to streamline and customize your WordPress admin experience. It provides a cleaner, more efficient interface by allowing you to hide unnecessary elements, customize the visual appearance, and reorganize the admin menu to better suit your workflow."
-msgstr "WP Clean Admin is a powerful WordPress plugin designed to streamline and customize your WordPress admin experience. It provides a cleaner, more efficient interface by allowing you to hide unnecessary elements, customize the visual appearance, and reorganize the admin menu to better suit your workflow."
+msgid "Admin Menu"
+msgstr "Admin Menu"
 
-msgid "Key Features"
-msgstr "Key Features"
+msgid "User Roles"
+msgstr "User Roles"
 
-msgid "Hide unnecessary dashboard widgets"
-msgstr "Hide unnecessary dashboard widgets"
+msgid "Select user role"
+msgstr "Select user role"
 
-msgid "Customize admin menu by hiding or reordering items"
-msgstr "Customize admin menu by hiding or reordering items"
+msgid "Show in menu"
+msgstr "Show in menu"
 
-msgid "Hide admin bar items for a cleaner top bar"
-msgstr "Hide admin bar items for a cleaner top bar"
+msgid "Hide in menu"
+msgstr "Hide in menu"
 
-msgid "Choose from multiple visual themes or create your own"
-msgstr "Choose from multiple visual themes or create your own"
+msgid "Enable menu item"
+msgstr "Enable menu item"
 
-msgid "Adjust layout density and typography settings"
-msgstr "Adjust layout density and typography settings"
+msgid "Disable menu item"
+msgstr "Disable menu item"
 
-msgid "Customize colors, shadows, and border styles"
-msgstr "Customize colors, shadows, and border styles"
+msgid "Move up"
+msgstr "Move up"
 
-msgid "Author"
-msgstr "Author"
+msgid "Move down"
+msgstr "Move down"
 
-msgid "Created by WordPress Admin UI Specialists"
-msgstr "Created by WordPress Admin UI Specialists"
+msgid "Menu item visibility"
+msgstr "Menu item visibility"
 
-msgid "Visit Plugin Website"
-msgstr "Visit Plugin Website"
+msgid "Visibility settings for admin menu items"
+msgstr "Visibility settings for admin menu items"
+
+msgid "All menu items"
+msgstr "All menu items"
+
+msgid "Hidden menu items"
+msgstr "Hidden menu items"
+
+msgid "Custom menu order"
+msgstr "Custom menu order"
+
+msgid "Reset menu order"
+msgstr "Reset menu order"
+
+msgid "Menu item settings updated successfully"
+msgstr "Menu item settings updated successfully"
+
+msgid "Menu order saved successfully"
+msgstr "Menu order saved successfully"
+
+msgid "Menu item visibility settings have been saved"
+msgstr "Menu item visibility settings have been saved"
+
+msgid "Menu items updated for role: %s"
+msgstr "Menu items updated for role: %s"
+
+msgid "Search menu items"
+msgstr "Search menu items"
+
+msgid "Menu item search"
+msgstr "Menu item search"
+
+msgid "No menu items found"
+msgstr "No menu items found"
+
+msgid "Toggle all menu items"
+msgstr "Toggle all menu items"
+
+msgid "Toggle submenu items"
+msgstr "Toggle submenu items"
+
+msgid "Settings applied to all roles"
+msgstr "Settings applied to all roles"
+
+msgid "Menu Structure"
+msgstr "Menu Structure"
+
+msgid "Drag and drop to reorder menu items"
+msgstr "Drag and drop to reorder menu items"
+
+msgid "Save Menu Order"
+msgstr "Save Menu Order"
+
+msgid "Reset to Default"
+msgstr "Reset to Default"
+
+msgid "Menu customization"
+msgstr "Menu customization"
+
+msgid "Customize the WordPress admin menu"
+msgstr "Customize the WordPress admin menu"
+
+# ===========================================================
+# Settings Page Strings
+# ===========================================================
+msgid "General Settings"
+msgstr "General Settings"
+
+msgid "Visual Style"
+msgstr "Visual Style"
+
+msgid "Permissions"
+msgstr "Permissions"
+
+msgid "Advanced"
+msgstr "Advanced"
+
+msgid "Save Changes"
+msgstr "Save Changes"
+
+msgid "Reset Settings"
+msgstr "Reset Settings"
+
+msgid "Settings saved successfully"
+msgstr "Settings saved successfully"
+
+msgid "Settings have been reset to default"
+msgstr "Settings have been reset to default"
+
+msgid "Enable debug mode"
+msgstr "Enable debug mode"
+
+msgid "Display debug information in the admin area"
+msgstr "Display debug information in the admin area"
+
+msgid "Enable translation debugging"
+msgstr "Enable translation debugging"
+
+msgid "Show translation keys in the admin interface"
+msgstr "Show translation keys in the admin interface"
+
+msgid "Load minified scripts"
+msgstr "Load minified scripts"
+
+msgid "Use compressed JavaScript and CSS files"
+msgstr "Use compressed JavaScript and CSS files"
+
+msgid "Enable admin bar customization"
+msgstr "Enable admin bar customization"
+
+msgid "Customize the WordPress admin bar"
+msgstr "Customize the WordPress admin bar"
+
+msgid "Enable login page customization"
+msgstr "Enable login page customization"
+
+msgid "Customize the WordPress login page"
+msgstr "Customize the WordPress login page"
+
+msgid "Show plugin admin notice"
+msgstr "Show plugin admin notice"
+
+msgid "Display a notice in the admin area about WP Clean Admin"
+msgstr "Display a notice in the admin area about WP Clean Admin"
+
+msgid "Display plugin version in footer"
+msgstr "Display plugin version in footer"
+
+msgid "Show the plugin version number in the admin footer"
+msgstr "Show the plugin version number in the admin footer"
+
+msgid "Enable performance optimization"
+msgstr "Enable performance optimization"
+
+msgid "Optimize plugin performance"
+msgstr "Optimize plugin performance"
+
+msgid "Plugin License"
+msgstr "Plugin License"
+
+msgid "License Key"
+msgstr "License Key"
+
+msgid "Activate License"
+msgstr "Activate License"
+
+msgid "Deactivate License"
+msgstr "Deactivate License"
+
+msgid "License Status: %s"
+msgstr "License Status: %s"
+
+msgid "License Expires: %s"
+msgstr "License Expires: %s"
+
+# ===========================================================
+# User Roles Strings
+# ===========================================================
+msgid "User Role Management"
+msgstr "User Role Management"
+
+msgid "Role Settings"
+msgstr "Role Settings"
+
+msgid "Select Role"
+msgstr "Select Role"
+
+msgid "Role Capabilities"
+msgstr "Role Capabilities"
+
+msgid "Manage capabilities for the selected role"
+msgstr "Manage capabilities for the selected role"
+
+msgid "View capabilities"
+msgstr "View capabilities"
+
+msgid "Edit capabilities"
+msgstr "Edit capabilities"
+
+msgid "Save Role Capabilities"
+msgstr "Save Role Capabilities"
+
+msgid "Role capabilities updated successfully"
+msgstr "Role capabilities updated successfully"
+
+msgid "Add New Role"
+msgstr "Add New Role"
+
+msgid "Role Name"
+msgstr "Role Name"
+
+msgid "Display Name"
+msgstr "Display Name"
+
+msgid "Base Role"
+msgstr "Base Role"
+
+msgid "Create Role"
+msgstr "Create Role"
+
+msgid "Role created successfully"
+msgstr "Role created successfully"
+
+msgid "Delete Role"
+msgstr "Delete Role"
+
+msgid "Role deleted successfully"
+msgstr "Role deleted successfully"
+
+msgid "Are you sure you want to delete this role?"
+msgstr "Are you sure you want to delete this role?"
+
+msgid "This action cannot be undone."
+msgstr "This action cannot be undone."
+
+msgid "Role name already exists"
+msgstr "Role name already exists"
+
+msgid "Please enter a valid role name"
+msgstr "Please enter a valid role name"
+
+msgid "Please select a base role"
+msgstr "Please select a base role"
+
+msgid "Role Management"
+msgstr "Role Management"
+
+# ===========================================================
+# JavaScript Strings
+# ===========================================================
+msgid "Loading..."
+msgstr "Loading..."
+
+msgid "Processing..."
+msgstr "Processing..."
+
+msgid "Saving..."
+msgstr "Saving..."
+
+msgid "Success!"
+msgstr "Success!"
+
+msgid "Error!"
+msgstr "Error!"
+
+msgid "Warning!"
+msgstr "Warning!"
+
+msgid "Info!"
+msgstr "Info!"
+
+msgid "Confirm"
+msgstr "Confirm"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "OK"
+msgstr "OK"
+
+msgid "Close"
+msgstr "Close"
+
+msgid "Yes"
+msgstr "Yes"
+
+msgid "No"
+msgstr "No"
+
+msgid "Submit"
+msgstr "Submit"
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Filter"
+msgstr "Filter"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Clear"
+msgstr "Clear"
+
+msgid "Select All"
+msgstr "Select All"
+
+msgid "Deselect All"
+msgstr "Deselect All"
+
+msgid "Toggle Selection"
+msgstr "Toggle Selection"
+
+msgid "Please wait..."
+msgstr "Please wait..."
+
+msgid "Please select an option"
+msgstr "Please select an option"
+
+msgid "Please enter a value"
+msgstr "Please enter a value"
+
+msgid "Invalid input"
+msgstr "Invalid input"
+
+msgid "Input too short"
+msgstr "Input too short"
+
+msgid "Input too long"
+msgstr "Input too long"
+
+msgid "Value out of range"
+msgstr "Value out of range"
+
+msgid "Loading data..."
+msgstr "Loading data..."
+
+msgid "Data loaded successfully"
+msgstr "Data loaded successfully"
+
+msgid "Failed to load data"
+msgstr "Failed to load data"
+
+msgid "Saving data..."
+msgstr "Saving data..."
+
+msgid "Data saved successfully"
+msgstr "Data saved successfully"
+
+msgid "Failed to save data"
+msgstr "Failed to save data"
+
+msgid "Deleting..."
+msgstr "Deleting..."
+
+msgid "Deletion successful"
+msgstr "Deletion successful"
+
+msgid "Deletion failed"
+msgstr "Deletion failed"
+
+msgid "Updating..."
+msgstr "Updating..."
+
+msgid "Update successful"
+msgstr "Update successful"
+
+msgid "Update failed"
+msgstr "Update failed"
+
+msgid "Are you sure?"
+msgstr "Are you sure?"
+
+msgid "This action cannot be undone."
+msgstr "This action cannot be undone."
+
+msgid "File too large"
+msgstr "File too large"
+
+msgid "Invalid file type"
+msgstr "Invalid file type"
+
+msgid "Upload failed"
+msgstr "Upload failed"
+
+msgid "Upload successful"
+msgstr "Upload successful"
+
+msgid "File uploaded successfully"
+msgstr "File uploaded successfully"
+
+msgid "Please upload a file"
+msgstr "Please upload a file"
+
+msgid "Processing request..."
+msgstr "Processing request..."
+
+msgid "Request processed successfully"
+msgstr "Request processed successfully"
+
+msgid "Request processing failed"
+msgstr "Request processing failed"
+
+msgid "Connection error"
+msgstr "Connection error"
+
+msgid "Timeout error"
+msgstr "Timeout error"
+
+msgid "Server error"
+msgstr "Server error"
+
+msgid "Network error"
+msgstr "Network error"
+
+msgid "No data available"
+msgstr "No data available"
+
+msgid "No results found"
+msgstr "No results found"
+
+msgid "Items per page:"
+msgstr "Items per page:"
+
+msgid "Page"
+msgstr "Page"
+
+msgid "of"
+msgstr "of"
+
+msgid "First"
+msgstr "First"
+
+msgid "Previous"
+msgstr "Previous"
+
+msgid "Next"
+msgstr "Next"
+
+msgid "Last"
+msgstr "Last"
+
+msgid "Sort by:"
+msgstr "Sort by:"
+
+msgid "Ascending"
+msgstr "Ascending"
+
+msgid "Descending"
+msgstr "Descending"
+
+msgid "More options"
+msgstr "More options"
+
+msgid "Less options"
+msgstr "Less options"
+
+msgid "Expand"
+msgstr "Expand"
+
+msgid "Collapse"
+msgstr "Collapse"
+
+msgid "Expand All"
+msgstr "Expand All"
+
+msgid "Collapse All"
+msgstr "Collapse All"
+
+msgid "Show Details"
+msgstr "Show Details"
+
+msgid "Hide Details"
+msgstr "Hide Details"
+
+msgid "View Log"
+msgstr "View Log"
+
+msgid "Export Data"
+msgstr "Export Data"
+
+msgid "Import Data"
+msgstr "Import Data"
+
+msgid "Print"
+msgstr "Print"
+
+msgid "Refresh"
+msgstr "Refresh"
+
+msgid "Reload"
+msgstr "Reload"
+
+msgid "Download"
+msgstr "Download"
+
+msgid "Upload"
+msgstr "Upload"
+
+msgid "Drag and drop files here"
+msgstr "Drag and drop files here"
+
+msgid "or"
+msgstr "or"
+
+msgid "Browse files"
+msgstr "Browse files"
+
+msgid "File name"
+msgstr "File name"
+
+msgid "File size"
+msgstr "File size"
+
+msgid "File type"
+msgstr "File type"
+
+msgid "Upload date"
+msgstr "Upload date"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "View"
+msgstr "View"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Copy"
+msgstr "Copy"
+
+msgid "Move"
+msgstr "Move"
+
+msgid "Rename"
+msgstr "Rename"
+
+msgid "Duplicate"
+msgstr "Duplicate"
+
+msgid "Restore"
+msgstr "Restore"
+
+msgid "Archive"
+msgstr "Archive"
+
+msgid "Activate"
+msgstr "Activate"
+
+msgid "Deactivate"
+msgstr "Deactivate"
+
+msgid "Enable"
+msgstr "Enable"
+
+msgid "Disable"
+msgstr "Disable"
+
+msgid "Open"
+msgstr "Open"
+
+msgid "Close"
+msgstr "Close"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Apply"
+msgstr "Apply"
+
+msgid "Confirm"
+msgstr "Confirm"
+
+msgid "Discard"
+msgstr "Discard"
+
+msgid "Submit"
+msgstr "Submit"
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Clear"
+msgstr "Clear"
+
+msgid "Search"
+msgstr "Search"
+
+msgid "Filter"
+msgstr "Filter"
+
+msgid "Sort"
+msgstr "Sort"
+
+msgid "Group"
+msgstr "Group"
+
+msgid "View"
+msgstr "View"
+
+msgid "List"
+msgstr "List"
+
+msgid "Grid"
+msgstr "Grid"
+
+msgid "Compact"
+msgstr "Compact"
+
+msgid "Detailed"
+msgstr "Detailed"
+
+msgid "Columns"
+msgstr "Columns"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgid "Preferences"
+msgstr "Preferences"
+
+msgid "Help"
+msgstr "Help"
+
+msgid "About"
+msgstr "About"
 
 msgid "Documentation"
 msgstr "Documentation"
@@ -565,41 +1030,83 @@ msgstr "Documentation"
 msgid "Support"
 msgstr "Support"
 
-msgid "Rate & Review"
-msgstr "Rate & Review"
+msgid "Feedback"
+msgstr "Feedback"
 
-msgid "If you find this plugin useful, please consider leaving a review on WordPress.org. Your feedback helps improve the plugin and reach more users."
-msgstr "If you find this plugin useful, please consider leaving a review on WordPress.org. Your feedback helps improve the plugin and reach more users."
-
-msgid "Rate on WordPress.org"
-msgstr "Rate on WordPress.org"
+msgid "Logout"
+msgstr "Logout"
 
 # ===========================================================
-# Error Messages (Extended)
+# Module Initialization Strings
 # ===========================================================
-msgid "Menu management configuration failed to load"
-msgstr "Menu management configuration failed to load"
+msgid "WPCA Module: %s initialized successfully"
+msgstr "WPCA Module: %s initialized successfully"
 
-msgid "Menu management requires jQuery UI Sortable, please ensure it is loaded"
-msgstr "Menu management requires jQuery UI Sortable, please ensure it is loaded"
+msgid "WPCA Module: %s failed to initialize"
+msgstr "WPCA Module: %s failed to initialize"
 
-msgid "Menu slug is missing, please refresh the page and try again"
-msgstr "Menu slug is missing, please refresh the page and try again"
+msgid "WPCA Module: %s already initialized"
+msgstr "WPCA Module: %s already initialized"
 
-msgid "An unknown error occurred"
-msgstr "An unknown error occurred"
+msgid "WPCA Module: %s not found"
+msgstr "WPCA Module: %s not found"
 
-msgid "Insufficient permissions or security verification failed. The page will refresh in 2 seconds."
-msgstr "Insufficient permissions or security verification failed. The page will refresh in 2 seconds."
+msgid "WPCA Core initialized successfully"
+msgstr "WPCA Core initialized successfully"
 
-msgid "Network connection error, please check your network and try again."
-msgstr "Network connection error, please check your network and try again."
+msgid "WPCA Core initialization failed"
+msgstr "WPCA Core initialization failed"
 
-msgid "Request failed, server returned error code: ${xhr.status}"
-msgstr "Request failed, server returned error code: ${xhr.status}"
+msgid "WPCA Admin menu initialized"
+msgstr "WPCA Admin menu initialized"
 
-msgid "Menu management initialization failed"
-msgstr "Menu management initialization failed"
+msgid "WPCA Admin menu initialization failed"
+msgstr "WPCA Admin menu initialization failed"
+
+msgid "WPCA Settings module initialized"
+msgstr "WPCA Settings module initialized"
+
+msgid "WPCA Settings module initialization failed"
+msgstr "WPCA Settings module initialization failed"
+
+msgid "WPCA Dashboard module initialized"
+msgstr "WPCA Dashboard module initialized"
+
+msgid "WPCA Dashboard module initialization failed"
+msgstr "WPCA Dashboard module initialization failed"
+
+msgid "WPCA Cleanup module initialized"
+msgstr "WPCA Cleanup module initialized"
+
+msgid "WPCA Cleanup module initialization failed"
+msgstr "WPCA Cleanup module initialization failed"
+
+msgid "WPCA Menu Customizer module initialized"
+msgstr "WPCA Menu Customizer module initialized"
+
+msgid "WPCA Menu Customizer module initialization failed"
+msgstr "WPCA Menu Customizer module initialization failed"
+
+msgid "WPCA User Roles module initialized"
+msgstr "WPCA User Roles module initialized"
+
+msgid "WPCA User Roles module initialization failed"
+msgstr "WPCA User Roles module initialization failed"
+
+msgid "WPCA Permissions module initialized"
+msgstr "WPCA Permissions module initialized"
+
+msgid "WPCA Permissions module initialization failed"
+msgstr "WPCA Permissions module initialization failed"
+
+msgid "WPCA AJAX handler initialized"
+msgstr "WPCA AJAX handler initialized"
+
+msgid "WPCA AJAX handler initialization failed"
+msgstr "WPCA AJAX handler initialization failed"
+
+msgid "Login management module initialized successfully"
+msgstr "Login management module initialized successfully"
 
 msgid "Login management module initialization failed: "
 msgstr "Login management module initialization failed: "
@@ -625,17 +1132,23 @@ msgstr "WPCA Permissions: AJAX error -"
 msgid "Core already initialized"
 msgstr "Core already initialized"
 
-msgid "Missing AJAX URL setting"
-msgstr "Missing AJAX URL setting"
-
-msgid "Unable to load necessary JavaScript settings. Please refresh the page and try again."
-msgstr "Unable to load necessary JavaScript settings. Please refresh the page and try again."
+msgid "WPCA Error: The configuration object \"wpca_admin\" is missing."
+msgstr "WPCA Error: The configuration object \"wpca_admin\" is missing."
 
 msgid "Core initialization failed"
 msgstr "Core initialization failed"
 
-msgid "Using fallback nonce value"
-msgstr "Using fallback nonce value"
+msgid "Missing AJAX URL setting"
+msgstr "Missing AJAX URL setting"
+
+msgid "Cannot load necessary JavaScript settings. Please refresh the page and try again."
+msgstr "Cannot load necessary JavaScript settings. Please refresh the page and try again."
+
+msgid "Using backup nonce value"
+msgstr "Using backup nonce value"
+
+msgid "WPCA Core not initialized"
+msgstr "WPCA Core not initialized"
 
 msgid "Request processing failed"
 msgstr "Request processing failed"
@@ -652,68 +1165,243 @@ msgstr "Please log in first"
 msgid "Internal server error"
 msgstr "Internal server error"
 
-msgid "Module already registered"
-msgstr "Module already registered"
+msgid "AJAX Error:"
+msgstr "AJAX Error:"
 
-msgid "Module name already exists"
-msgstr "Module name already exists"
+msgid "Status: "
+msgstr "Status: "
 
-msgid "WP Clean Admin initialization failed"
-msgstr "WP Clean Admin initialization failed"
+msgid "WPCA [DEBUG]:"
+msgstr "WPCA [DEBUG]:"
 
-msgid "WPCA Error: The configuration object \"wpca_admin\" is missing."
-msgstr "WPCA Error: The configuration object \"wpca_admin\" is missing."
+msgid "WPCA [WARNING]:"
+msgstr "WPCA [WARNING]:"
+
+msgid "WPCA [ERROR]:"
+msgstr "WPCA [ERROR]:"
+
+msgid "Module registered:"
+msgstr "Module registered:"
+
+msgid "Module name already exists:"
+msgstr "Module name already exists:"
+
+msgid "WPCA Initialization Exception:"
+msgstr "WPCA Initialization Exception:"
+
+msgid "WP Clean Admin initialization failed:"
+msgstr "WP Clean Admin initialization failed:"
+
+msgid "Menu management initialization failed"
+msgstr "Menu management initialization failed"
 
 # ===========================================================
 # Login Page Strings
 # ===========================================================
+msgid "WPCA Login Management: Initializing..."
+msgstr "WPCA Login Management: Initializing..."
+
+msgid "WPCA Login Management: Initialized successfully."
+msgstr "WPCA Login Management: Initialized successfully."
+
 msgid "No logo selected"
 msgstr "No logo selected"
 
 msgid "No background selected"
 msgstr "No background selected"
 
-msgid "Login Management - Frontend Module"
-msgstr "Login Management - Frontend Module"
-
-msgid "Frontend Login module is ready"
-msgstr "Frontend Login module is ready"
-
-msgid "Logo updated successfully"
-msgstr "Logo updated successfully"
-
-msgid "Background updated successfully"
-msgstr "Background updated successfully"
-
-msgid "Login style updated successfully"
-msgstr "Login style updated successfully"
-
-msgid "Custom CSS updated successfully"
-msgstr "Custom CSS updated successfully"
-
 msgid "Show Login Form"
 msgstr "Show Login Form"
 
-msgid "Hide Login Form"
-msgstr "Hide Login Form"
+msgid "Login Style"
+msgstr "Login Style"
+
+msgid "Select a login style for your WordPress site"
+msgstr "Select a login style for your WordPress site"
+
+msgid "Default"
+msgstr "Default"
+
+msgid "Modern"
+msgstr "Modern"
+
+msgid "Minimal"
+msgstr "Minimal"
+
+msgid "Dark"
+msgstr "Dark"
+
+msgid "Gradient"
+msgstr "Gradient"
+
+msgid "Custom"
+msgstr "Custom"
+
+msgid "Glassmorphism"
+msgstr "Glassmorphism"
+
+msgid "Neumorphism"
+msgstr "Neumorphism"
+
+msgid "Custom Login Options"
+msgstr "Custom Login Options"
+
+msgid "Login Logo"
+msgstr "Login Logo"
+
+msgid "Upload or select an image for the login logo"
+msgstr "Upload or select an image for the login logo"
+
+msgid "Login Background"
+msgstr "Login Background"
+
+msgid "Upload or select an image for the login background"
+msgstr "Upload or select an image for the login background"
+
+msgid "Custom CSS"
+msgstr "Custom CSS"
+
+msgid "Add custom CSS to further customize the login page"
+msgstr "Add custom CSS to further customize the login page"
+
+msgid "Remove Logo"
+msgstr "Remove Logo"
+
+msgid "Remove Background"
+msgstr "Remove Background"
+
+msgid "Upload Logo"
+msgstr "Upload Logo"
+
+msgid "Upload Background"
+msgstr "Upload Background"
 
 # ===========================================================
 # Reset Messages
 # ===========================================================
-msgid "Are you sure you want to reset login settings to default? This will remove your custom logo, background, and CSS."
-msgstr "Are you sure you want to reset login settings to default? This will remove your custom logo, background, and CSS."
+msgid "Are you sure you want to reset all general settings to default?"
+msgstr "Are you sure you want to reset all general settings to default?"
 
-msgid "Login settings have been reset to default"
-msgstr "Login settings have been reset to default"
+msgid "Are you sure you want to reset all visual style settings to default?"
+msgstr "Are you sure you want to reset all visual style settings to default?"
 
-msgid "Reset successful"
-msgstr "Reset successful"
+msgid "Are you sure you want to reset these settings to default?"
+msgstr "Are you sure you want to reset these settings to default?"
 
-msgid "Reset in progress..."
-msgstr "Reset in progress..."
+msgid "Reset Defaults"
+msgstr "Reset Defaults"
+
+msgid "successful"
+msgstr "successful"
 
 # ===========================================================
-# Permissions UI
-# ===========================================================
+# AJAX Error Messages (from JS files)
+msgid "Request processing failed"
+msgstr "Request processing failed"
+
+msgid "You do not have permission to perform this action"
+msgstr "You do not have permission to perform this action"
+
+msgid "Invalid request parameters"
+msgstr "Invalid request parameters"
+
+msgid "Please log in first"
+msgstr "Please log in first"
+
+msgid "Internal server error"
+msgstr "Internal server error"
+
 msgid "Insufficient permissions"
 msgstr "Insufficient permissions"
+
+# ===========================================================
+# Additional strings from code
+msgid "Hide Dashboard Widgets"
+msgstr "Hide Dashboard Widgets"
+
+msgid "Hide WordPress Title"
+msgstr "Hide WordPress Title"
+
+msgid "Hide WordPress Footer"
+msgstr "Hide WordPress Footer"
+
+msgid "Hide Frontend Admin Bar"
+msgstr "Hide Frontend Admin Bar"
+
+msgid "Hide Admin Bar Items"
+msgstr "Hide Admin Bar Items"
+
+msgid "Font Size"
+msgstr "Font Size"
+
+msgid "Icon Style"
+msgstr "Icon Style"
+
+msgid "Menu Order"
+msgstr "Menu Order"
+
+msgid "Show/Hide Elements"
+msgstr "Show/Hide Elements"
+
+msgid "Menu Customization"
+msgstr "Menu Customization"
+
+msgid "Login Page Elements"
+msgstr "Login Page Elements"
+
+msgid "About WP Clean Admin"
+msgstr "About WP Clean Admin"
+
+msgid "Configure the appearance and behavior of your admin dashboard."
+msgstr "Configure the appearance and behavior of your admin dashboard."
+
+msgid "Customize the overall visual theme, colors, layout and typography."
+msgstr "Customize the overall visual theme, colors, layout and typography."
+
+msgid "Menu Order Customization"
+msgstr "Menu Order Customization"
+
+msgid "Drag and drop menu items to reorder them. Use the toggle switches to show/hide items."
+msgstr "Drag and drop menu items to reorder them. Use the toggle switches to show/hide items."
+
+msgid "Select which admin menu items to hide and reorder them."
+msgstr "Select which admin menu items to hide and reorder them."
+
+msgid "Enable Menu Customization"
+msgstr "Enable Menu Customization"
+
+msgid "Toggle to show/hide and reorder admin menu items"
+msgstr "Toggle to show/hide and reorder admin menu items"
+
+msgid "Version %s"
+msgstr "Version %s"
+
+msgid "Customize which elements appear on the login page."
+msgstr "Customize which elements appear on the login page."
+
+msgid "WordPress News and Events"
+msgstr "WordPress News and Events"
+
+msgid "Quick Draft"
+msgstr "Quick Draft"
+
+msgid "At a Glance"
+msgstr "At a Glance"
+
+msgid "Select dashboard widgets to hide"
+msgstr "Select dashboard widgets to hide"
+
+msgid "Reset to Default Order"
+msgstr "Reset to Default Order"
+
+msgid "Invalid tab specified"
+msgstr "Invalid tab specified"
+
+msgid "Settings reset successfully"
+msgstr "Settings reset successfully"
+
+msgid "Failed to reset settings"
+msgstr "Failed to reset settings"
+
+msgid "Are you sure you want to reset all login page settings to default?"
+msgstr "Are you sure you want to reset all login page settings to default?"

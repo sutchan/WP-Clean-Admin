@@ -747,57 +747,105 @@ class WPCA_Settings {
                                 <div class="wpca-login-style-preview default-style">
                                     <div class="preview-image"></div>
                                     <div class="preview-title"><?php _e('Default', 'wp-clean-admin'); ?></div>
-                                    <div class="preview-badge">
-                                        <span class="dashicons dashicons-yes"></span>
-                                    </div>
-                                </label>
-                            </div>
-                            
-                            <!-- Modern Style -->
-                            <div class="wpca-login-style-item <?php echo $login_style === 'modern' ? 'active' : ''; ?>">
-                                <label>
-                                    <input type="radio" name="wpca_settings[login_style]" value="modern" <?php checked($login_style, 'modern'); ?>>
-                                    <div class="wpca-login-style-preview modern-style">
-                                        <div class="preview-image"></div>
-                                        <div class="preview-title"><?php _e('Modern', 'wp-clean-admin'); ?></div>
-                                    </div>
-                                </label>
-                            </div>
-                            
-                            <!-- Minimal Style -->
-                            <div class="wpca-login-style-item <?php echo $login_style === 'minimal' ? 'active' : ''; ?>">
-                                <label>
-                                    <input type="radio" name="wpca_settings[login_style]" value="minimal" <?php checked($login_style, 'minimal'); ?>>
-                                    <div class="wpca-login-style-preview minimal-style">
-                                        <div class="preview-image"></div>
-                                        <div class="preview-title"><?php _e('Minimal', 'wp-clean-admin'); ?></div>
-                                    </div>
-                                </label>
-                            </div>
-                            
-                            <!-- Dark Style -->
-                            <div class="wpca-login-style-item <?php echo $login_style === 'dark' ? 'active' : ''; ?>">
-                                <label>
-                                    <input type="radio" name="wpca_settings[login_style]" value="dark" <?php checked($login_style, 'dark'); ?>>
-                                    <div class="wpca-login-style-preview dark-style">
-                                        <div class="preview-image"></div>
-                                        <div class="preview-title"><?php _e('Dark', 'wp-clean-admin'); ?></div>
-                                    </div>
-                                </label>
-                            </div>
-                            
-                            <!-- Gradient Style -->
-                            <div class="wpca-login-style-item <?php echo $login_style === 'gradient' ? 'active' : ''; ?>">
-                                <label>
-                                    <input type="radio" name="wpca_settings[login_style]" value="gradient" <?php checked($login_style, 'gradient'); ?>>
-                                    <div class="wpca-login-style-preview gradient-style">
-                                        <div class="preview-image"></div>
-                                        <div class="preview-title"><?php _e('Gradient', 'wp-clean-admin'); ?></div>
-                                    </div>
-                                </label>
-                            </div>
-                            
-                            <!-- Custom Style -->
+                                </div>
+                                <div class="preview-badge">
+                                    <span class="dashicons dashicons-yes"></span>
+                                </div>
+                                <div class="wpca-login-style-label"><?php _e('Default', 'wp-clean-admin'); ?></div>
+                            </label>
+                        </div>
+                         
+                        <!-- Modern Style -->
+                        <div class="wpca-login-style-item <?php echo $login_style === 'modern' ? 'active' : ''; ?>">
+                            <label>
+                                <input type="radio" name="wpca_settings[login_style]" value="modern" <?php checked($login_style, 'modern'); ?>>
+                                <div class="wpca-login-style-preview modern-style">
+                                    <div class="preview-image"></div>
+                                    <div class="preview-title"><?php _e('Modern', 'wp-clean-admin'); ?></div>
+                                </div>
+                                <div class="preview-badge">
+                                    <span class="dashicons dashicons-yes"></span>
+                                </div>
+                                <div class="wpca-login-style-label"><?php _e('Modern', 'wp-clean-admin'); ?></div>
+                            </label>
+                        </div>
+                         
+                        <!-- Minimal Style -->
+                        <div class="wpca-login-style-item <?php echo $login_style === 'minimal' ? 'active' : ''; ?>">
+                            <label>
+                                <input type="radio" name="wpca_settings[login_style]" value="minimal" <?php checked($login_style, 'minimal'); ?>>
+                                <div class="wpca-login-style-preview minimal-style">
+                                    <div class="preview-image"></div>
+                                    <div class="preview-title"><?php _e('Minimal', 'wp-clean-admin'); ?></div>
+                                </div>
+                                <div class="preview-badge">
+                                    <span class="dashicons dashicons-yes"></span>
+                                </div>
+                                <div class="wpca-login-style-label"><?php _e('Minimal', 'wp-clean-admin'); ?></div>
+                            </label>
+                        </div>
+                         
+                        <!-- Dark Style -->
+                        <div class="wpca-login-style-item <?php echo $login_style === 'dark' ? 'active' : ''; ?>">
+                            <label>
+                                <input type="radio" name="wpca_settings[login_style]" value="dark" <?php checked($login_style, 'dark'); ?>>
+                                <div class="wpca-login-style-preview dark-style">
+                                    <div class="preview-image"></div>
+                                    <div class="preview-title"><?php _e('Dark', 'wp-clean-admin'); ?></div>
+                                </div>
+                                <div class="preview-badge">
+                                    <span class="dashicons dashicons-yes"></span>
+                                </div>
+                                <div class="wpca-login-style-label"><?php _e('Dark', 'wp-clean-admin'); ?></div>
+                            </label>
+                        </div>
+                         
+                        <!-- Gradient Style -->
+                        <div class="wpca-login-style-item <?php echo $login_style === 'gradient' ? 'active' : ''; ?>">
+                            <label>
+                                <input type="radio" name="wpca_settings[login_style]" value="gradient" <?php checked($login_style, 'gradient'); ?>>
+                                <div class="wpca-login-style-preview gradient-style">
+                                    <div class="preview-image"></div>
+                                    <div class="preview-title"><?php _e('Gradient', 'wp-clean-admin'); ?></div>
+                                </div>
+                                <div class="preview-badge">
+                                    <span class="dashicons dashicons-yes"></span>
+                                </div>
+                                <div class="wpca-login-style-label"><?php _e('Gradient', 'wp-clean-admin'); ?></div>
+                            </label>
+                        </div>
+                         
+                        <!-- Glassmorphism Style -->
+                        <div class="wpca-login-style-item <?php echo $login_style === 'glassmorphism' ? 'active' : ''; ?>">
+                            <label>
+                                <input type="radio" name="wpca_settings[login_style]" value="glassmorphism" <?php checked($login_style, 'glassmorphism'); ?>>
+                                <div class="wpca-login-style-preview glassmorphism-style">
+                                    <div class="preview-image"></div>
+                                    <div class="preview-title"><?php _e('Glassmorphism', 'wp-clean-admin'); ?></div>
+                                </div>
+                                <div class="preview-badge">
+                                    <span class="dashicons dashicons-yes"></span>
+                                </div>
+                                <div class="wpca-login-style-label"><?php _e('Glassmorphism', 'wp-clean-admin'); ?></div>
+                            </label>
+                        </div>
+                         
+                        <!-- Neumorphism Style -->
+                        <div class="wpca-login-style-item <?php echo $login_style === 'neumorphism' ? 'active' : ''; ?>">
+                            <label>
+                                <input type="radio" name="wpca_settings[login_style]" value="neumorphism" <?php checked($login_style, 'neumorphism'); ?>>
+                                <div class="wpca-login-style-preview neumorphism-style">
+                                    <div class="preview-image"></div>
+                                    <div class="preview-title"><?php _e('Neumorphism', 'wp-clean-admin'); ?></div>
+                                </div>
+                                <div class="preview-badge">
+                                    <span class="dashicons dashicons-yes"></span>
+                                </div>
+                                <div class="wpca-login-style-label"><?php _e('Neumorphism', 'wp-clean-admin'); ?></div>
+                            </label>
+                        </div>
+                         
+                        <!-- Custom Style -->
                             <div class="wpca-login-style-item <?php echo $login_style === 'custom' ? 'active' : ''; ?>">
                                 <label>
                                     <input type="radio" name="wpca_settings[login_style]" value="custom" <?php checked($login_style, 'custom'); ?>>
@@ -805,9 +853,12 @@ class WPCA_Settings {
                                         <div class="preview-image"></div>
                                         <div class="preview-title"><?php _e('Custom', 'wp-clean-admin'); ?></div>
                                     </div>
+                                    <div class="preview-badge">
+                                        <span class="dashicons dashicons-yes"></span>
+                                    </div>
+                                    <div class="wpca-login-style-label"><?php _e('Custom', 'wp-clean-admin'); ?></div>
                                 </label>
                             </div>
-                        </div>
                     </div>
                     
                     <div id="wpca-custom-login-options" class="wpca-login-section" style="<?php echo $login_style === 'custom' ? '' : 'display: none;'; ?>">
