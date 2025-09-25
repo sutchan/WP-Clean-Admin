@@ -6,6 +6,55 @@ jQuery(document).ready(function($) {
     if ($.fn.wpColorPicker) {
         $('.wpca-color-picker').wpColorPicker();
     }
+    
+    // Color picker interaction
+    $(document).on('click', '.wpca-color-preset', function() {
+        var color = $(this).data('color');
+        var colorPicker = $(this).closest('.wpca-color-picker-wrap').find('.wpca-color-picker');
+        var colorValue = $(this).closest('.wpca-color-picker-wrap').find('.wpca-color-value');
+        var previewBox = $(this).closest('.wpca-color-picker-wrap').find('.wpca-color-preview');
+        
+        // Update color picker value
+        colorPicker.val(color).trigger('input');
+        
+        // Update color value text
+        colorValue.text(color);
+        
+        // Update preview box
+        previewBox.css('background-color', color);
+        
+        // Update wpColorPicker if initialized
+        if (colorPicker.hasClass('wp-color-picker')) {
+            colorPicker.wpColorPicker('color', color);
+        }
+    });
+    
+    // Update color preview when input changes
+    $(document).on('input', '.wpca-color-picker', function() {
+        var color = $(this).val();
+        var colorValue = $(this).closest('.wpca-color-picker-wrap').find('.wpca-color-value');
+        var previewBox = $(this).closest('.wpca-color-picker-wrap').find('.wpca-color-preview');
+        
+        // Update color value text
+        colorValue.text(color);
+        
+        // Update preview box
+        previewBox.css('background-color', color);
+    });
+    
+    // Initialize color values and previews on page load
+    $('.wpca-color-picker-wrap').each(function() {
+        var colorPicker = $(this).find('.wpca-color-picker');
+        var colorValue = $(this).find('.wpca-color-value');
+        var previewBox = $(this).find('.wpca-color-preview');
+        var color = colorPicker.val();
+        
+        // Set initial color value text
+        colorValue.text(color);
+        
+        // Set initial preview box color
+        previewBox.css('background-color', color);
+    });
 
     // Media Uploader functionality
     $(document).on('click', '.wpca-upload-button', function(e) {

@@ -1,214 +1,434 @@
-(function($) {
-    'use strict';
+/**
+ * WP Clean Admin - Login Management Module
+ * Handles login page customization and media upload
+ */
 
-    window.WPCA = window.WPCA || {};
-    WPCA.login = {
-        admin: {
-            init: function() {
-                if (!this.shouldRun()) return;
-                
-                this.setupMediaUpload();
-                this.setupStylePreview();
-                this.bindEvents();
-                
-                if (this.config.debug) {
-                    if (typeof WPCA !== 'undefined' && typeof WPCA.core !== 'undefined' && typeof WPCA.core.logDebug === 'function') {
-                        WPCA.core.logDebug('Admin模块初始化完成');
-                    } else {
-                        console.log('Admin模块初始化完成');
-                    }
-                }
-            },
-            
-            config: {
-                debug: window.wpca_admin?.debug || false
-            },
-            
-            shouldRun: function() {
-                return $('body.wp-admin').length > 0;
-            },
-            
-            setupMediaUpload: function() {
-                $('.wpca-upload-button').on('click', function(e) {
-                    e.preventDefault();
-                    const button = $(this);
-                    const targetId = button.data('target');
-                    const field = $('#' + targetId);
-                    const preview = $('#' + targetId + '-preview');
+// Ensure WPCA namespace exists
+window.WPCA = window.WPCA || {};
 
-                    if (typeof wp === 'undefined' || !wp.media) {
-                        if (typeof WPCA !== 'undefined' && typeof WPCA.core !== 'undefined' && typeof WPCA.core.displayErrorNotice === 'function') {
-                            WPCA.core.displayErrorNotice('WordPress媒体上传器不可用');
-                        } else {
-                            alert('WordPress媒体上传器不可用');
-                        }
-                        return;
-                    }
+/**
+ * Login management module
+ */
+WPCA.login = {
+    config: null, // Will store configuration
+    
+    /**
+     * Initialize login management functionality
+     * @returns {boolean} - True on success, false on failure.
+     */
+    init: function() {
+        const $ = jQuery;
 
-                    const frame = wp.media({
-                        title: window.wpca?.media_title || '选择或上传媒体',
-                        button: { text: window.wpca?.media_button || '使用此媒体' },
-                        multiple: false
-                    });
+        // --- Configuration retrieval and validation ---
+        if (typeof window.wpca_admin === 'undefined') {
+            console.error('WPCA Error: The configuration object "wpca_admin" is missing.');
+            return false;
+        }
+        this.config = window.wpca_admin;
 
-                    frame.on('select', function() {
-                        const attachment = frame.state().get('selection').first().toJSON();
-                        field.val(attachment.url);
-                        preview.find('img').attr('src', attachment.url);
-                        preview.show();
-                        
-                        if ($('input[name="wpca_settings[login_style]"]:checked').val() === 'custom') {
-                            WPCA.login.admin.updateLoginPreview('custom');
-                        }
-                    });
+        if (this.config.debug) {
+            console.log('WPCA Login Management: Initializing...');
+        }
 
-                    frame.open();
-                });
-            },
-            
-            updateLoginPreview: function(style) {
-                const $ = jQuery;
-                const preview = $('.wpca-login-preview-content');
-                
-                preview.removeClass((index, className) => {
-                    return (className.match(/(^|\s)\S*preview/g) || []).join(' ');
-                });
-                
-                preview.addClass(style + '-preview');
+        // --- Initialize different components ---
+        this.initMediaUploader();
+        this.initPreviewUpdate();
+        this.initStyleToggle();
+        this.initAutoHideForm();
 
-                switch(style) {
-                    case 'default':
-                        preview.find('.wpca-login-preview-logo').css('background-image', 'url(data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 84 84"><path fill="%232271b1" d="M42,0C18.8,0,0,18.8,0,42s18.8,42,42,42s42-18.8,42-42S65.2,0,42,0z M42,64c-12.2,0-22-9.8-22-22s9.8-22,22-22 s22,9.8,22,22S54.2,64,42,64z"/></svg>)');
-                        preview.css('background-color', '#f1f1f1');
-                        break;
-                    case 'modern':
-                        preview.find('.wpca-login-preview-logo').css('background-image', 'url(data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 84 84"><path fill="%234A90E2" d="M42,0C18.8,0,0,18.8,0,42s18.8,42,42,42s42-18.8,42-42S65.2,0,42,0z M42,64c-12.2,0-22-9.8-22-22s9.8-22,22-22 s22,9.8,22,22S54.2,64,42,64z"/></svg>)');
-                        preview.css('background-color', '#f8f9fa');
-                        break;
-                    case 'minimal':
-                        preview.find('.wpca-login-preview-logo').css('background-image', '');
-                        preview.css('background-color', '#fff');
-                        break;
-                    case 'dark':
-                        preview.find('.wpca-login-preview-logo').css('background-image', 'url(data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 84 84"><path fill="%23fff" d="M42,0C18.8,0,0,18.8,0,42s18.8,42,42,42s42-18.8,42-42S65.2,0,42,0z M42,64c-12.2,0-22-9.8-22-22s9.8-22,22-22 s22,9.8,22,22S54.2,64,42,64z"/></svg>)');
-                        preview.css('background-color', '#222');
-                        break;
-                    case 'gradient':
-                        preview.find('.wpca-login-preview-logo').css('background-image', 'url(data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 84 84"><path fill="%23fff" d="M42,0C18.8,0,0,18.8,0,42s18.8,42,42,42s42-18.8,42-42S65.2,0,42,0z M42,64c-12.2,0-22-9.8-22-22s9.8-22,22-22 s22,9.8,22,22S54.2,64,42,64z"/></svg>)');
-                        preview.css('background', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)');
-                        break;
-                    case 'custom':
-                        const logoUrl = $('input[name="wpca_settings[login_logo]"]').val();
-                        const bgUrl = $('input[name="wpca_settings[login_background]"]').val();
-                        
-                        if (logoUrl) {
-                            preview.find('.wpca-login-preview-logo').css('background-image', `url(${logoUrl})`);
-                        } else {
-                            preview.find('.wpca-login-preview-logo').css('background-image', 'url(data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 84 84"><path fill="%232271b1" d="M42,0C18.8,0,0,18.8,0,42s18.8,42,42,42s42-18.8,42-42S65.2,0,42,0z M42,64c-12.2,0-22-9.8-22-22s9.8-22,22-22 s22,9.8,22,22S54.2,64,42,64z"/></svg>)');
-                        }
-                        
-                        if (bgUrl) {
-                            preview.css('background-image', `url(${bgUrl})`);
-                            preview.css('background-color', '');
-                        } else {
-                            preview.css('background-image', '');
-                            preview.css('background-color', '#f1f1f1');
-                        }
-                        break;
-                }
-            },
-            
-            setupStylePreview: function() {
-                const currentStyle = $('input[name="wpca_settings[login_style]"]:checked').val() || 'default';
-                this.updateLoginPreview(currentStyle);
-            },
-            
-            bindEvents: function() {
-                const self = this;
-                $('input[name="wpca_settings[login_style]"]').on('change', function() {
-                    self.updateLoginPreview($(this).val());
-                });
-                
-                $('.wpca-remove-button').on('click', function(e) {
-                    e.preventDefault();
-                    const targetId = $(this).data('target');
-                    $('#' + targetId).val('');
-                    $('#' + targetId + '-preview').hide().find('img').attr('src', '');
-                    
-                    if ($('input[name="wpca_settings[login_style]"]:checked').val() === 'custom') {
-                        self.updateLoginPreview('custom');
-                    }
-                });
-            }
-        },
+        if (this.config.debug) {
+            console.log('WPCA Login Management: Initialized successfully.');
+        }
+
+        return true;
+    },
+
+    /**
+     * Initialize media uploader for login logo and background
+     */
+    initMediaUploader: function() {
+        const $ = jQuery;
         
-        frontend: {
-            init: function() {
-                if (!this.shouldRun()) return;
-                
-                this.applyLoginStyle();
-                this.toggleElements();
-                
-                if (this.config.debug) {
-                    if (typeof WPCA !== 'undefined' && typeof WPCA.core !== 'undefined' && typeof WPCA.core.logDebug === 'function') {
-                        WPCA.core.logDebug('Frontend模块初始化完成');
-                    } else {
-                        console.log('Frontend模块初始化完成');
-                    }
+        // --- Admin settings page media uploader ---
+        if ($('#wpca-login-media-uploader').length) {
+            // Media uploader for logo
+            $('#wpca-upload-login-logo').on('click', function(e) {
+                e.preventDefault();
+                WPCA.login.openMediaUploader('login_logo', 'Select or Upload Media', 'image');
+            });
+
+            // Media uploader for background
+            $('#wpca-upload-login-background').on('click', function(e) {
+                e.preventDefault();
+                WPCA.login.openMediaUploader('login_background', 'Select or Upload Media', 'image');
+            });
+
+            // Clear logo button
+            $('#wpca-clear-login-logo').on('click', function(e) {
+                e.preventDefault();
+                $('#wpca-login-logo-url').val('');
+                $('#wpca-login-logo-preview').html('<p>No logo selected</p>');
+            });
+
+            // Clear background button
+            $('#wpca-clear-login-background').on('click', function(e) {
+                e.preventDefault();
+                $('#wpca-login-background-url').val('');
+                $('#wpca-login-background-preview').html('<p>No background selected</p>');
+            });
+        }
+    },
+
+    /**
+     * Open WordPress media uploader
+     * @param {string} settingName - The name of the setting to update
+     * @param {string} title - The title of the media uploader
+     * @param {string} type - The type of media to allow
+     */
+    openMediaUploader: function(settingName, title, type) {
+        // Check if WordPress media uploader is available
+        if (typeof wp === 'undefined' || typeof wp.media === 'undefined') {
+            console.error('WPCA Error: WordPress media uploader is not available');
+            alert('WordPress media uploader is not available');
+            return;
+        }
+        
+        // Create the media frame if it doesn't exist
+        let mediaFrame = wp.media({
+            title: title,
+            button: {
+                text: 'Use this media'
+            },
+            multiple: false,
+            library: {
+                type: type
+            }
+        });
+        
+        // When an image is selected, run a callback
+        mediaFrame.on('select', function() {
+            const attachment = mediaFrame.state().get('selection').first().toJSON();
+            
+            // Update the URL field and preview
+            const urlFieldId = `#wpca-${settingName}-url`;
+            const previewId = `#wpca-${settingName}-preview`;
+            
+            jQuery(urlFieldId).val(attachment.url);
+            
+            // Create preview
+            if (type === 'image') {
+                jQuery(previewId).html(`<img src="${attachment.url}" style="max-width: 100%; max-height: 200px;" alt="Preview">`);
+            } else {
+                jQuery(previewId).html(`<p>Selected: ${attachment.filename}</p>`);
+            }
+        });
+        
+        // Open the modal
+        mediaFrame.open();
+    },
+
+    /**
+     * Initialize live preview updates for login page settings
+     */
+    initPreviewUpdate: function() {
+        const $ = jQuery;
+        
+        // Only run on the settings page
+        if (!$('#wpca-login-media-uploader').length) {
+            return;
+        }
+
+        // Update preview when form fields change
+        $('.wpca-login-setting').on('change', function() {
+            WPCA.login.updatePreview();
+        });
+
+        // Initial preview update
+        this.updatePreview();
+    },
+
+    /**
+     * Update the login page preview based on current settings
+     */
+    updatePreview: function() {
+        const $ = jQuery;
+        
+        // Get current settings
+        const logoUrl = $('#wpca-login-logo-url').val();
+        const backgroundColor = $('#wpca-login-background-color').val();
+        const backgroundImage = $('#wpca-login-background-url').val();
+        const textColor = $('#wpca-login-text-color').val();
+        const buttonColor = $('#wpca-login-button-color').val();
+        const buttonTextColor = $('#wpca-login-button-text-color').val();
+        const borderRadius = $('#wpca-login-border-radius').val();
+        const customCss = $('#wpca-login-custom-css').val();
+        
+        // Generate the preview HTML
+        let previewHtml = `
+            <style>
+                body {
+                    background-color: ${backgroundColor} !important;
+                    color: ${textColor} !important;
                 }
-            },
-            
-            config: {
-                debug: window.wpcaLoginVars?.debug || false
-            },
-            
-            shouldRun: function() {
-                return $('body.login').length > 0;
-            },
-            
-            applyLoginStyle: function() {
-                const vars = window.wpcaLoginVars || {};
-                const $body = $('body.login');
                 
-                $body.removeClass((index, className) => {
-                    return (className.match(/(^|\s)wpca-login-\S+/g) || []).join(' ');
-                });
+                ${backgroundImage ? `body.login { background-image: url('${backgroundImage}') !important; background-size: cover !important; background-position: center !important; }` : ''}
                 
-                if (vars.loginStyle) {
-                    $body.addClass('wpca-login-' + vars.loginStyle);
-                    
-                    if (vars.loginStyle === 'custom') {
-                        if (vars.loginLogo) {
-                            $('#login h1 a').css('background-image', 'url(' + vars.loginLogo + ')');
-                        }
-                        if (vars.loginBackground) {
-                            $body.css('background-image', 'url(' + vars.loginBackground + ')');
-                        }
-                    }
+                #login h1 a {
+                    ${logoUrl ? `background-image: url('${logoUrl}') !important;` : ''}
+                    background-size: contain !important;
+                    width: 100% !important;
+                    height: 100px !important;
+                    margin-bottom: 20px !important;
                 }
-            },
-            
-            toggleElements: function() {
-                const controls = window.wpcaLoginVars?.elementControls || {};
                 
-                if (controls.show_language_switcher === '0') $('.language-switcher').hide();
-                if (controls.show_back_to_site === '0') $('#backtoblog').hide();
-                if (controls.show_remember_me === '0') $('.forgetmenot').hide();
-                if (controls.show_register_link === '0') $('#nav').hide();
+                .login form {
+                    border-radius: ${borderRadius}px !important;
+                }
+                
+                .login .button-primary {
+                    background-color: ${buttonColor} !important;
+                    border-color: ${buttonColor} !important;
+                    color: ${buttonTextColor} !important;
+                    text-shadow: none !important;
+                    box-shadow: none !important;
+                    border-radius: ${borderRadius}px !important;
+                }
+                
+                .login .button-primary:hover {
+                    opacity: 0.9 !important;
+                }
+                
+                ${customCss}
+            </style>
+        `;
+        
+        // Update the preview iframe
+        const $previewIframe = $('#wpca-login-preview-iframe');
+        if ($previewIframe.length) {
+            // Create a new iframe or update the existing one
+            if ($previewIframe[0].contentWindow) {
+                const previewDoc = $previewIframe[0].contentWindow.document;
+                previewDoc.open();
+                previewDoc.write(previewHtml);
+                previewDoc.close();
             }
         }
-    };
+    },
 
-    $(function() {
-        try {
-            WPCA.login.admin.init();
-            WPCA.login.frontend.init();
-        } catch (error) {
-            console.error('WPCA Login Manager 初始化错误:', error);
-            if (typeof WPCA !== 'undefined' && typeof WPCA.core !== 'undefined' && typeof WPCA.core.displayErrorNotice === 'function') {
-                WPCA.core.displayErrorNotice('登录管理模块初始化失败: ' + error.message);
-            }
+    /**
+     * Initialize style toggle functionality for login page
+     */
+    initStyleToggle: function() {
+        const $ = jQuery;
+        
+        // Only run on the settings page
+        if (!$('#wpca-login-style-toggle').length) {
+            return;
         }
-    });
 
-})(jQuery);
+        // Toggle between different style presets
+        $('#wpca-login-style-toggle').on('change', function() {
+            const selectedStyle = $(this).val();
+            WPCA.login.applyStylePreset(selectedStyle);
+        });
+    },
+
+    /**
+     * Apply a style preset to the login page settings
+     * @param {string} presetName - The name of the style preset to apply
+     */
+    applyStylePreset: function(presetName) {
+        // Define style presets
+        const presets = {
+            'default': {
+                backgroundColor: '#f0f0f1',
+                textColor: '#3c434a',
+                buttonColor: '#007cba',
+                buttonTextColor: '#ffffff',
+                borderRadius: '3'
+            },
+            'dark': {
+                backgroundColor: '#1d2327',
+                textColor: '#d1d5db',
+                buttonColor: '#2563eb',
+                buttonTextColor: '#ffffff',
+                borderRadius: '6'
+            },
+            'light': {
+                backgroundColor: '#ffffff',
+                textColor: '#111827',
+                buttonColor: '#3b82f6',
+                buttonTextColor: '#ffffff',
+                borderRadius: '8'
+            },
+            'minimal': {
+                backgroundColor: '#f9fafb',
+                textColor: '#374151',
+                buttonColor: '#10b981',
+                buttonTextColor: '#ffffff',
+                borderRadius: '4'
+            }
+        };
+        
+        // Apply the selected preset
+        if (presets[presetName]) {
+            const preset = presets[presetName];
+            const $ = jQuery;
+            
+            $('#wpca-login-background-color').val(preset.backgroundColor);
+            $('#wpca-login-text-color').val(preset.textColor);
+            $('#wpca-login-button-color').val(preset.buttonColor);
+            $('#wpca-login-button-text-color').val(preset.buttonTextColor);
+            $('#wpca-login-border-radius').val(preset.borderRadius);
+            
+            // Update the preview
+            this.updatePreview();
+        }
+    },
+
+    /**
+     * Initialize auto hide login form functionality
+     */
+    initAutoHideForm: function() {
+        const $ = jQuery;
+        
+        // Only run on the settings page
+        if (!$('#wpca-login-auto-hide-form').length) {
+            return;
+        }
+
+        // Show/hide delay field based on auto hide checkbox
+        $('#wpca-login-auto-hide-form').on('change', function() {
+            $('#wpca-login-auto-hide-delay-container').toggle($(this).is(':checked'));
+        });
+
+        // Initial state
+        $('#wpca-login-auto-hide-delay-container').toggle($('#wpca-login-auto-hide-form').is(':checked'));
+    }
+};
+
+/**
+ * Login frontend module
+ */
+WPCA.loginFrontend = {
+    config: null,
+    
+    /**
+     * Initialize login frontend functionality
+     * @returns {boolean} - True on success, false on failure.
+     */
+    init: function() {
+        const $ = jQuery;
+        
+        // --- Configuration retrieval and validation ---
+        if (typeof window.wpca_login_frontend === 'undefined') {
+            console.error('WPCA Error: The configuration object "wpca_login_frontend" is missing.');
+            return false;
+        }
+        this.config = window.wpca_login_frontend;
+        
+        // --- Apply custom styles ---
+        if (this.config.custom_styles) {
+            this.applyCustomStyles();
+        }
+        
+        // --- Initialize auto hide form functionality ---
+        if (this.config.auto_hide_form) {
+            this.initAutoHideForm();
+        }
+        
+        if (this.config.debug) {
+            console.log('WPCA Login Frontend: Initialized successfully.');
+        }
+        
+        return true;
+    },
+    
+    /**
+     * Apply custom styles to the login page
+     */
+    applyCustomStyles: function() {
+        // Add custom styles to the head
+        const styleElement = document.createElement('style');
+        styleElement.textContent = this.config.custom_styles;
+        document.head.appendChild(styleElement);
+    },
+    
+    /**
+     * Initialize auto hide form functionality
+     */
+    initAutoHideForm: function() {
+        const $ = jQuery;
+        
+        // Only run on the actual login page
+        if (!$('body.login').length) {
+            return;
+        }
+        
+        // Add some padding to body
+        $('body.login').css('padding-top', '5%');
+        
+        // Get the form element
+        const $loginForm = $('#loginform');
+        
+        // If no delay is set, use a default of 3 seconds
+        const delay = this.config.auto_hide_delay || 3000;
+        
+        // Create a reveal button
+        const $revealButton = $('<button>')
+            .attr('type', 'button')
+            .attr('id', 'wpca-reveal-login-form')
+            .text('Show Login Form')
+            .css({
+                display: 'none',
+                margin: '20px auto',
+                padding: '10px 20px',
+                backgroundColor: '#007cba',
+                color: 'white',
+                border: 'none',
+                borderRadius: '3px',
+                cursor: 'pointer',
+                fontSize: '16px'
+            })
+            .on('click', function() {
+                $loginForm.fadeIn();
+                $(this).fadeOut();
+            });
+        
+        // Add the button after the form
+        $loginForm.after($revealButton);
+        
+        // Hide the form after the specified delay
+        setTimeout(function() {
+            $loginForm.fadeOut();
+            $revealButton.fadeIn();
+        }, delay);
+    }
+};
+
+// Initialize admin module
+jQuery(document).ready(function() {
+    if (typeof WPCA !== 'undefined' && typeof WPCA.login !== 'undefined' && typeof WPCA.login.init === 'function') {
+        WPCA.login.init();
+        if (WPCA.login.config.debug) {
+            console.log('Admin module initialized');
+        }
+    }
+    
+    // Initialize frontend module
+    if (typeof WPCA !== 'undefined' && typeof WPCA.loginFrontend !== 'undefined' && typeof WPCA.loginFrontend.init === 'function') {
+        WPCA.loginFrontend.init();
+        if (WPCA.loginFrontend.config.debug) {
+            console.log('Frontend module initialized');
+        }
+    }
+    
+    // Error handling if modules fail to load
+    try {
+        if (typeof WPCA === 'undefined' || typeof WPCA.login === 'undefined' && typeof WPCA.loginFrontend === 'undefined') {
+            console.error('WPCA Error: Login management modules failed to load.');
+        }
+    } catch (error) {
+        console.error('WPCA Login initialization failed: ', error);
+    }
+});

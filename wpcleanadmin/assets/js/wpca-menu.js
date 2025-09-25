@@ -1,29 +1,29 @@
 /**
- * WP Clean Admin - 菜单管理模块
- * 合并了菜单排序和菜单切换功能
+ * WP Clean Admin - Menu Management Module
+ * Combines menu sorting and menu toggle functionality
  */
 
-// 确保WPCA命名空间存在
+// Ensure WPCA namespace exists
 window.WPCA = window.WPCA || {};
 
 /**
- * 菜单管理模块
+ * Menu management module
  */
 WPCA.menu = {
-    config: null, // 将存储配置
+    config: null, // Will store configuration
 
     /**
-     * 初始化菜单管理功能
+     * Initialize menu management functionality
      * @returns {boolean} - True on success, false on failure.
      */
     init: function() {
         const $ = jQuery;
 
-        // --- 配置获取和验证 ---
+        // --- Configuration retrieval and validation ---
         if (typeof window.wpca_admin === 'undefined') {
             console.error('WPCA Error: The configuration object "wpca_admin" is missing.');
             if (window.WPCA?.core?.displayErrorNotice) {
-                WPCA.core.displayErrorNotice('菜单管理功能配置加载失败');
+                WPCA.core.displayErrorNotice('Menu management configuration failed to load');
             }
             return false;
         }
@@ -33,19 +33,19 @@ WPCA.menu = {
             console.log('WPCA Menu Management: Initializing...');
         }
 
-        // --- 依赖检查 ---
+        // --- Dependency check ---
         if (typeof $.ui === 'undefined' || typeof $.ui.sortable === 'undefined') {
             console.error('WPCA Error: jQuery UI Sortable is not loaded.');
             if (window.WPCA?.core?.displayErrorNotice) {
-                WPCA.core.displayErrorNotice('菜单管理功能依赖 jQuery UI Sortable，请确保已加载');
+                WPCA.core.displayErrorNotice('Menu management requires jQuery UI Sortable, please ensure it is loaded');
             }
             return false;
         }
 
-        // --- 初始化菜单排序功能 ---
+        // --- Initialize menu sorting functionality ---
         this.initMenuSorting();
 
-        // --- 初始化菜单切换功能 ---
+        // --- Initialize menu toggle functionality ---
         this.initMenuToggle();
 
         if (this.config.debug) {
@@ -56,14 +56,14 @@ WPCA.menu = {
     },
 
     /**
-     * 初始化菜单排序功能
+     * Initialize menu sorting functionality
      */
     initMenuSorting: function() {
         const $ = jQuery;
 
-        // 主菜单排序
+        // Main menu sorting
         $('#wpca-menu-order').sortable({
-            items: 'li.wpca-top-level-item', // 更精确的选择器，防止子菜单项被拖到顶层
+            items: 'li.wpca-top-level-item', // More precise selector to prevent submenu items from being dragged to top level
             handle: '.wpca-drag-handle',
             placeholder: 'wpca-sortable-placeholder',
             axis: 'y',
@@ -71,12 +71,12 @@ WPCA.menu = {
                 const menuOrder = $(this).sortable('toArray', {
                     attribute: 'data-menu-slug'
                 });
-                // 将排序后的数组（JSON字符串）存入隐藏的 input 中，以便随表单提交
+                // Store the sorted array (as JSON string) in a hidden input for form submission
                 $('#wpca-menu-order-input').val(JSON.stringify(menuOrder));
             }
         });
 
-        // 子菜单排序
+        // Submenu sorting
         $('.wpca-submenu-sortable').sortable({
             items: 'li.wpca-submenu-item',
             handle: '.wpca-drag-handle',
@@ -87,7 +87,7 @@ WPCA.menu = {
                 const submenuOrder = $(this).sortable('toArray', {
                     attribute: 'data-menu-slug'
                 });
-                // 找到对应的隐藏 input 并更新其值
+                // Find the corresponding hidden input and update its value
                 const inputName = `wpca_settings[submenu_order][${parentSlug}]`;
                 $(`input[name="${inputName}"`).val(JSON.stringify(submenuOrder));
             }
@@ -99,12 +99,12 @@ WPCA.menu = {
     },
 
     /**
-     * 初始化菜单切换功能
+     * Initialize menu toggle functionality
      */
     initMenuToggle: function() {
         const $ = jQuery;
 
-        // 将事件监听器绑定到 document，以支持动态添加的元素
+        // Bind event listener to document to support dynamically added elements
         $(document).on('change', '.wpca-menu-toggle-checkbox', this.handleToggleChange.bind(this));
 
         if (this.config.debug) {
@@ -113,14 +113,14 @@ WPCA.menu = {
     },
 
     /**
-     * 处理开关状态变化的事件回调
+     * Event callback for handling toggle state changes
      * @param {Event} e - The change event object.
      */
     handleToggleChange: function(e) {
         const $checkbox = jQuery(e.currentTarget);
         const $switch = $checkbox.closest('.wpca-switch');
         
-        // 依赖后端在 checkbox 上提供 slug
+        // Depends on backend providing slug on checkbox
         const slug = $checkbox.data('menu-slug');
         const isChecked = $checkbox.is(':checked');
         const state = isChecked ? 1 : 0;
@@ -128,7 +128,7 @@ WPCA.menu = {
         if (!slug) {
             console.error('WPCA Error: Menu slug is missing from the checkbox data attribute.');
             if (typeof WPCA !== 'undefined' && typeof WPCA.core !== 'undefined' && typeof WPCA.core.displayErrorNotice === 'function') {
-                WPCA.core.displayErrorNotice('菜单slug缺失，请刷新页面重试');
+                WPCA.core.displayErrorNotice('Menu slug is missing, please refresh the page and try again');
             }
             return;
         }
@@ -137,21 +137,21 @@ WPCA.menu = {
             console.log('Toggle changed:', { slug, state });
         }
         
-        // 乐观 UI 更新：立即更新左侧菜单的可见性
+        // Optimistic UI update: immediately update the left menu visibility
         this.updateAdminMenuVisibility(slug, isChecked);
         
         $switch.addClass('loading');
 
-        // 使用 Promise-based AJAX 调用
+        // Use Promise-based AJAX call
         this.sendToggleRequest(slug, state)
             .done((response) => {
                 if (response && response.success) {
                     if (typeof WPCA !== 'undefined' && typeof WPCA.core !== 'undefined' && typeof WPCA.core.displaySuccessNotice === 'function') {
-                        WPCA.core.displaySuccessNotice('设置已保存');
+                        WPCA.core.displaySuccessNotice('Settings saved');
                     }
                 } else {
-                    // 如果后端返回失败，回滚 UI
-                    const errorMessage = response?.data?.message || '发生未知错误';
+                    // If backend returns failure, rollback UI
+                    const errorMessage = response?.data?.message || 'An unknown error occurred';
                     if (typeof WPCA !== 'undefined' && typeof WPCA.core !== 'undefined' && typeof WPCA.core.displayErrorNotice === 'function') {
                         WPCA.core.displayErrorNotice(errorMessage);
                     }
@@ -159,7 +159,7 @@ WPCA.menu = {
                 }
             })
             .fail((xhr) => {
-                // 如果请求本身失败（网络、服务器错误），也回滚 UI
+                // If request itself fails (network, server error), also rollback UI
                 const message = this.getErrorMessageFromXHR(xhr);
                 if (typeof WPCA !== 'undefined' && typeof WPCA.core !== 'undefined' && typeof WPCA.core.displayErrorNotice === 'function') {
                     WPCA.core.displayErrorNotice(message);
@@ -172,14 +172,14 @@ WPCA.menu = {
     },
 
     /**
-     * 发送 AJAX 请求并返回一个 Promise 对象
+     * Send AJAX request and return a Promise object
      * @param {string} slug - The menu slug.
      * @param {number} state - The new state (1 for visible, 0 for hidden).
      * @returns {jqXHR} - The jQuery AJAX promise.
      */
     sendToggleRequest: function(slug, state) {
         return jQuery.ajax({
-            url: this.config.ajaxurl,
+            url: this.config.ajax_url,
             type: 'POST',
             dataType: 'json',
             data: {
@@ -192,7 +192,7 @@ WPCA.menu = {
     },
 
     /**
-     * 回滚开关和菜单的 UI 状态
+     * Rollback UI state for toggle and menu
      * @param {jQuery} $checkbox - The checkbox element.
      * @param {boolean} originalIsChecked - The state before the user's action.
      */
@@ -203,36 +203,36 @@ WPCA.menu = {
     },
 
     /**
-     * 根据 XHR 对象生成用户友好的错误消息
+     * Generate user-friendly error message based on XHR object
      * @param {jqXHR} xhr - The jQuery XHR object from a failed request.
      * @returns {string} - The error message.
      */
     getErrorMessageFromXHR: function(xhr) {
         if (xhr.status === 403) {
-            return '权限不足或安全验证失败。页面将在2秒后刷新。';
+            return 'Insufficient permissions or security verification failed. The page will refresh in 2 seconds.';
         }
         if (xhr.status === 0) {
-            return '网络连接错误，请检查网络后重试。';
+            return 'Network connection error, please check your network and try again.';
         }
-        return `请求失败，服务器返回错误码: ${xhr.status}`;
+        return `Request failed, server returned error code: ${xhr.status}`;
     },
 
     /**
-     * 更新 WordPress 后台左侧主菜单的可见性
+     * Update visibility of WordPress admin left menu
      * @param {string} slug - The menu slug to update.
      * @param {boolean} isVisible - Whether the menu should be visible.
      */
     updateAdminMenuVisibility: function(slug, isVisible) {
         if (!slug) return;
         
-        // 查找菜单项的逻辑可以保持不变，因为它很健壮
+        // Finding logic remains the same as it's robust
         const $menuItem = this.findMenuItem(jQuery, slug);
 
         if ($menuItem.length) {
             if (this.config.debug) {
                 console.log(`Updating visibility for "${slug}" to ${isVisible}`);
             }
-            // 使用 CSS 过渡比 jQuery 动画性能更好
+            // Using CSS transitions is better performance than jQuery animations
             $menuItem.toggleClass('wpca-hidden-menu', !isVisible);
         } else if (this.config.debug) {
             console.warn(`Could not find admin menu item for slug: "${slug}"`);
@@ -240,17 +240,17 @@ WPCA.menu = {
     },
 
     /**
-     * 查找菜单项的辅助函数
+     * Helper function to find menu items
      * @param {jQuery} $ - The jQuery object.
      * @param {string} slug - The menu slug to find.
      * @returns {jQuery} - The found menu item element.
      */
     findMenuItem: function($, slug) {
-        // 尝试通过多种选择器找到菜单项
+        // Try to find menu item through multiple selectors
         const selectors = [
             `#toplevel_page_${slug}`,
             `#menu-posts-${slug}`,
-            `#menu-${slug.replace(/\.php.*/, '')}`, // 匹配 edit.php, themes.php 等
+            `#menu-${slug.replace(/\.php.*/, '')}`, // Match edit.php, themes.php etc
             `li a[href$="page=${slug}"]`,
             `li a[href$="${slug}"]`,
         ];
@@ -261,18 +261,18 @@ WPCA.menu = {
                 return $item;
             }
         }
-        return $(); // 返回一个空的 jQuery 对象
+        return $(); // Return an empty jQuery object
     }
 };
 
-// 页面加载完成后初始化
+// Initialize after page load
 jQuery(document).ready(function() {
     if (WPCA.menu?.init) {
         WPCA.menu.init();
     } else {
         console.error('WPCA Error: Menu management module failed to load.');
         if (typeof WPCA !== 'undefined' && typeof WPCA.core !== 'undefined' && typeof WPCA.core.displayErrorNotice === 'function') {
-            WPCA.core.displayErrorNotice('菜单管理功能初始化失败');
+            WPCA.core.displayErrorNotice('Menu management initialization failed');
         }
     }
 });

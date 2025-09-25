@@ -1,11 +1,11 @@
 /**
- * WP Clean Admin - 标签导航模块
+ * WP Clean Admin - Tab Navigation Module
  */
 
-// 确保WPCA命名空间存在
+// Ensure WPCA namespace exists
 window.WPCA = window.WPCA || {};
 
-// 标签导航模块
+// Tab navigation module
 WPCA.tabs = {
     init: function() {
         const $ = jQuery;
@@ -13,32 +13,32 @@ WPCA.tabs = {
         const $tabContents = $('.wpca-tab-content');
         const $currentTabInput = $('#wpca-current-tab');
 
-        // 如果没有选项卡，直接返回
+        // If there are no tabs, return directly
         if ($tabs.length === 0) {
             return;
         }
 
-        // 获取当前活动选项卡
+        // Get current active tab
         let activeTab = $currentTabInput.val() || $tabs.first().data('tab');
         if (!$("#" + activeTab).length) {
             activeTab = $tabs.first().data('tab');
         }
 
-        // 设置初始活动选项卡
+        // Set initial active tab
         $tabs.removeClass('active');
         $tabContents.removeClass('active');
         $(`.wpca-tab[data-tab="${activeTab}"]`).addClass('active');
         $(`#${activeTab}`).addClass('active');
 
-        // 解绑之前的点击事件，防止重复绑定
+        // Unbind previous click events to prevent duplicate binding
         $tabs.off('click.wpca');
         
-        // 绑定点击事件
+        // Bind click event
         $tabs.on('click.wpca', function(e) {
             e.preventDefault();
             const tabId = $(this).data('tab');
             
-            // 更新活动状态
+            // Update active status
             $tabs.removeClass('active');
             $tabContents.removeClass('active');
 
@@ -46,20 +46,20 @@ WPCA.tabs = {
             $(`#${tabId}`).addClass('active');
             $currentTabInput.val(tabId);
             
-            // 触发自定义事件，以便其他脚本可以响应选项卡切换
+            // Trigger custom event so other scripts can respond to tab switching
             $(document).trigger('wpca.tab.changed', [tabId]);
         });
     },
     
-    // 重新初始化选项卡
+    // Reinitialize tabs
     reinit: function() {
         this.init();
     }
 };
 
-// 页面加载完成后初始化
+// Initialize after page load
 jQuery(document).ready(function($) {
-    // 使用稍微延迟的方式初始化，确保DOM完全加载
+    // Use a slight delay to ensure DOM is fully loaded
     setTimeout(function() {
         if (typeof WPCA !== 'undefined' && typeof WPCA.tabs !== 'undefined') {
             WPCA.tabs.init();
@@ -67,7 +67,7 @@ jQuery(document).ready(function($) {
     }, 100);
 });
 
-// 也监听自定义的初始化事件
+// Also listen for custom initialization event
 jQuery(document).on('wpca.init.tabs', function() {
     if (typeof WPCA !== 'undefined' && typeof WPCA.tabs !== 'undefined') {
         WPCA.tabs.init();

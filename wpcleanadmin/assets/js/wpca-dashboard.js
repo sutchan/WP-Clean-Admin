@@ -1,41 +1,41 @@
 (function ($) {
     'use strict';
 
-    // 初始化插件
+    // Initialize plugin
     $(document).ready(function () {
-        // 加载配置
+        // Load configuration
         const wpcaSettings = window.wpca_admin || {};
         const ajaxUrl = wpcaSettings.ajax_url || '';
         const nonce = wpcaSettings.nonce || '';
 
-        // 初始化仪表盘
+        // Initialize dashboard
         initDashboard();
 
-        // 绑定事件
+        // Bind events
         bindEvents();
 
         /**
-         * 初始化仪表盘
+         * Initialize dashboard
          */
         function initDashboard() {
             console.log('WP Clean Admin Dashboard initialized.');
-            // 加载默认配置
+            // Load default configuration
             loadSettings();
         }
 
         /**
-         * 绑定事件
+         * Bind events
          */
         function bindEvents() {
-            // 保存设置按钮
+            // Save settings button
             $('#wpca-save-settings').on('click', saveSettings);
 
-            // 重置设置按钮
+            // Reset settings button
             $('#wpca-reset-settings').on('click', resetSettings);
         }
 
         /**
-         * 加载设置
+         * Load settings
          */
         function loadSettings() {
             $.ajax({
@@ -59,11 +59,11 @@
         }
 
         /**
-         * 保存设置
+         * Save settings
          */
         function saveSettings() {
             const settings = {
-                // 示例：收集表单数据
+                // Example: Collect form data
                 menu_order: $('#wpca-menu-order').val(),
                 menu_toggles: $('#wpca-menu-toggles').val()
             };
@@ -90,7 +90,7 @@
         }
 
         /**
-         * 重置设置
+         * Reset settings
          */
         function resetSettings() {
             if (confirm('Are you sure you want to reset all settings to default?')) {
@@ -117,16 +117,16 @@
         }
 
         /**
-         * 更新 UI
-         * @param {Object} data 配置数据
+         * Update UI
+         * @param {Object} data Configuration data
          */
         function updateUI(data) {
-            // 示例：更新菜单顺序
+            // Example: Update menu order
             if (data.menu_order) {
                 $('#wpca-menu-order').val(data.menu_order.join(','));
             }
 
-            // 示例：更新菜单开关状态
+            // Example: Update menu toggle status
             if (data.menu_toggles) {
                 Object.keys(data.menu_toggles).forEach(function (key) {
                     $(`#wpca-toggle-${key}`).prop('checked', data.menu_toggles[key] === 1);

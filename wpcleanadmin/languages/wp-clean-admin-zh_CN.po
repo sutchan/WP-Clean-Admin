@@ -1,9 +1,7 @@
-# Copyright (C) 2025 sutchan
-# This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Clean Admin 1.1.0\n"
-"Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin/issues\n"
+"Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"
 "POT-Creation-Date: 2025-09-24 15:00+0800\n"
 "PO-Revision-Date: 2025-09-24 15:00+0800\n"
 "Last-Translator: \n"
@@ -17,663 +15,705 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;_x\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: includes/class-wpca-ajax.php:44 includes/class-wpca-settings.php:45
-msgid "非法请求"
-msgstr "非法请求"
 
-#: includes/class-wpca-ajax.php:51 includes/class-wpca-settings.php:52
-msgid "安全验证失败"
+# ===========================================================
+# Plugin Core Strings
+# ===========================================================
+msgid "WP Clean Admin"
+msgstr "WP Clean Admin"
+
+msgid "WP Clean Admin Settings"
+msgstr "WP Clean Admin 设置"
+
+msgid "Settings"
+msgstr "设置"
+
+# ===========================================================
+# Error Messages
+# ===========================================================
+msgid "Invalid request"
+msgstr "无效请求"
+
+msgid "Invalid AJAX request"
+msgstr "无效的 AJAX 请求"
+
+msgid "Security verification failed"
 msgstr "安全验证失败"
 
-#: includes/class-wpca-ajax.php:59 includes/class-wpca-menu-customizer.php:711
-#: includes/class-wpca-settings.php:60
-msgid "权限不足"
+msgid "Invalid security nonce"
+msgstr "无效的安全码"
+
+msgid "Insufficient permissions"
 msgstr "权限不足"
 
-#: includes/class-wpca-ajax.php:78
-msgid "无效的设置数据"
+msgid "Invalid data structure"
+msgstr "无效的数据结构"
+
+msgid "Invalid settings data"
 msgstr "无效的设置数据"
 
-#: includes/class-wpca-ajax.php:88
-msgid "设置已保存"
-msgstr "设置已保存"
+msgid "Invalid menu slug"
+msgstr "无效的菜单标识符"
 
-#: includes/class-wpca-ajax.php:93
-msgid "设置保存失败"
-msgstr "设置保存失败"
+msgid "User not logged in"
+msgstr "用户未登录"
 
-#: includes/class-wpca-ajax.php:99
-msgid "保存设置时发生错误"
-msgstr "保存设置时发生错误"
+msgid "Missing permission parameter"
+msgstr "缺少权限参数"
 
-#: includes/class-wpca-ajax.php:117
-msgid "设置已重置为默认值"
-msgstr "设置已重置为默认值"
+msgid "Invalid permission name"
+msgstr "无效的权限名称"
 
-#: includes/class-wpca-ajax.php:122
-msgid "重置设置失败"
-msgstr "重置设置失败"
-
-#: includes/class-wpca-ajax.php:128
-msgid "重置设置时发生错误"
-msgstr "重置设置时发生错误"
-
-#: includes/class-wpca-ajax.php:148
-msgid "获取设置时发生错误"
-msgstr "获取设置时发生错误"
-
-#: includes/class-wpca-menu-customizer.php:87
-msgid "Menu settings format is invalid, has been reset"
-msgstr "菜单设置格式无效，已重置"
-
-#: includes/class-wpca-menu-customizer.php:703
-msgid "Invalid AJAX request"
-msgstr "无效的AJAX请求"
-
-#: includes/class-wpca-menu-customizer.php:707
-msgid "Invalid security nonce"
-msgstr "安全验证失败"
-
-#: includes/class-wpca-menu-customizer.php:741
-msgid "Menu item \"%s\" does not exist"
-msgstr "菜单项\"%s\"不存在"
-
-#: includes/class-wpca-menu-customizer.php:752
-msgid "Menu item \"%s\" does not exist"
-msgstr "菜单项\"%s\"不存在"
-
-#: includes/class-wpca-menu-customizer.php:789
-msgid "Please select at least one valid setting type to reset"
-msgstr "请选择至少一个有效的设置类型进行重置"
-
-#: includes/class-wpca-menu-customizer.php:798
-#: includes/class-wpca-settings.php:110
-msgid "Failed to save settings"
-msgstr "保存设置失败"
-
-#: includes/class-wpca-menu-customizer.php:804
-msgid "Menu settings reset successfully"
-msgstr "菜单设置已成功重置"
-
-#: includes/class-wpca-menu-customizer.php:872
-msgid "Failed to reset menu order"
-msgstr "重置菜单顺序失败"
-
-#: includes/class-wpca-menu-customizer.php:878
-msgid "Menu order has been reset to default"
-msgstr "菜单顺序已重置为默认"
-
-#: includes/class-wpca-menu-customizer.php:916
-#: includes/class-wpca-settings.php:151
-msgid "Are you sure you want to reset all menu settings to default?"
-msgstr "您确定要将所有菜单设置重置为默认值吗？"
-
-#: includes/class-wpca-menu-customizer.php:917
-#: includes/class-wpca-settings.php:158
-msgid "Settings updated successfully"
-msgstr "设置已成功更新"
-
-#: includes/class-wpca-menu-customizer.php:918
-#: includes/class-wpca-settings.php:154
 msgid "An error occurred"
 msgstr "发生错误"
 
-#: includes/class-wpca-settings.php:152
-msgid "Resetting..."
-msgstr "重置中..."
+msgid "Unknown error"
+msgstr "未知错误"
 
-#: includes/class-wpca-settings.php:153
-msgid "Reset Defaults"
-msgstr "重置为默认值"
+msgid "Failed to save settings"
+msgstr "设置保存失败"
 
-#: includes/class-wpca-settings.php:154
-msgid "Reset failed. Please try again."
-msgstr "重置失败。请重试。"
+msgid "Error occurred while saving settings"
+msgstr "保存设置时发生错误"
 
-#: includes/class-wpca-settings.php:155
-msgid "Select or Upload Media"
-msgstr "选择或上传媒体"
-
-#: includes/class-wpca-settings.php:156
-msgid "Use this media"
-msgstr "使用此媒体"
-
-#: includes/class-wpca-settings.php:157
-msgid "WordPress media uploader not available."
-msgstr "WordPress媒体上传器不可用。"
-
-#: includes/class-wpca-settings.php:158
 msgid "An error occurred while saving settings."
 msgstr "保存设置时发生错误。"
 
-#: includes/class-wpca-settings.php:159
+msgid "Failed to reset settings"
+msgstr "重置设置失败"
+
+msgid "Error occurred while resetting settings"
+msgstr "重置设置时发生错误"
+
+msgid "Error occurred while retrieving settings"
+msgstr "获取设置时发生错误"
+
+msgid "Failed to reset menu order"
+msgstr "重置菜单顺序失败"
+
+msgid "Reset failed. Please try again."
+msgstr "重置失败，请重试。"
+
+msgid "Menu settings format is invalid, has been reset"
+msgstr "菜单设置格式无效，已重置"
+
+msgid "Menu item \"%s\" does not exist"
+msgstr "菜单项 \"%s\" 不存在"
+
+msgid "WordPress media uploader not available"
+msgstr "WordPress 媒体上传器不可用"
+
+msgid "WordPress media uploader not available."
+msgstr "WordPress 媒体上传器不可用。"
+
+# ===========================================================
+# Success Messages
+# ===========================================================
+msgid "Settings saved"
+msgstr "设置已保存"
+
+msgid "Settings saved successfully!"
+msgstr "设置保存成功！"
+
+msgid "Menu settings updated successfully"
+msgstr "菜单设置更新成功"
+
+msgid "Settings reset to default"
+msgstr "设置已重置为默认值"
+
+msgid "Settings reset successfully!"
+msgstr "设置重置成功！"
+
+msgid "Menu settings reset successfully"
+msgstr "菜单设置重置成功"
+
+msgid "Menu order has been reset to default"
+msgstr "菜单顺序已重置为默认值"
+
+msgid "successful"
+msgstr "成功"
+
+# ===========================================================
+# Action Messages
+# ===========================================================
+msgid "Resetting..."
+msgstr "重置中..."
+
 msgid "Saving..."
 msgstr "保存中..."
 
-#: includes/class-wpca-settings.php:233
-msgid "WP Clean Admin Settings"
-msgstr "WP清洁管理设置"
+msgid "Select or Upload Media"
+msgstr "选择或上传媒体"
 
-#: includes/class-wpca-settings.php:234
-msgid "WP Clean Admin"
-msgstr "WP清洁管理"
+msgid "Use this media"
+msgstr "使用此媒体"
 
-#: includes/class-wpca-settings.php:256
+# ===========================================================
+# Confirmation Messages
+# ===========================================================
+msgid "Are you sure you want to reset all menu settings to default?"
+msgstr "确定要将所有菜单设置重置为默认值吗？"
+
+msgid "Are you sure you want to reset all menu settings?"
+msgstr "确定要重置所有菜单设置吗？"
+
+msgid "Are you sure you want to reset all settings to default?"
+msgstr "确定要将所有设置重置为默认值吗？"
+
+msgid "Please select at least one valid setting type to reset"
+msgstr "请选择至少一个有效的设置类型进行重置"
+
+# ===========================================================
+# Settings Page Strings
+# ===========================================================
+msgid "General"
+msgstr "常规"
+
 msgid "General Settings"
 msgstr "常规设置"
 
-#: includes/class-wpca-settings.php:264
-msgid "Hide Dashboard Widgets"
-msgstr "隐藏仪表盘小工具"
-
-#: includes/class-wpca-settings.php:273
-msgid "Hide WordPress Title"
-msgstr "隐藏WordPress标题"
-
-#: includes/class-wpca-settings.php:282
 msgid "Visual Style"
 msgstr "视觉样式"
 
-#: includes/class-wpca-settings.php:290
 msgid "Theme Style"
 msgstr "主题样式"
 
-#: includes/class-wpca-settings.php:298
 msgid "Primary Color"
 msgstr "主色调"
 
-#: includes/class-wpca-settings.php:306
 msgid "Background Color"
 msgstr "背景色"
 
-#: includes/class-wpca-settings.php:314
 msgid "Text Color"
-msgstr "文字颜色"
+msgstr "文本颜色"
 
-#: includes/class-wpca-settings.php:322
 msgid "Shadow Style"
 msgstr "阴影样式"
 
-#: includes/class-wpca-settings.php:331
 msgid "Layout Density"
 msgstr "布局密度"
 
-#: includes/class-wpca-settings.php:339
 msgid "Border Radius"
-msgstr "边框圆角"
+msgstr "圆角半径"
 
-#: includes/class-wpca-settings.php:347
 msgid "Font Stack"
-msgstr "字体栈"
+msgstr "字体堆栈"
 
-#: includes/class-wpca-settings.php:355
 msgid "Font Size"
 msgstr "字体大小"
 
-#: includes/class-wpca-settings.php:363
 msgid "Icon Style"
 msgstr "图标样式"
 
-#: includes/class-wpca-settings.php:372
 msgid "Menu Customization"
-msgstr "菜单定制"
+msgstr "菜单自定义"
 
-#: includes/class-wpca-settings.php:380
 msgid "Menu Order"
 msgstr "菜单顺序"
 
-#: includes/class-wpca-settings.php:389
+msgid "Hide Dashboard Widgets"
+msgstr "隐藏仪表盘小部件"
+
+msgid "Hide WordPress Title"
+msgstr "隐藏 WordPress 标题"
+
 msgid "Hide Admin Bar Items"
 msgstr "隐藏管理栏项目"
 
-#: includes/class-wpca-settings.php:398
+msgid "Login Page"
+msgstr "登录页面"
+
 msgid "Login Page Elements"
 msgstr "登录页面元素"
 
-#: includes/class-wpca-settings.php:406
 msgid "Show/Hide Elements"
 msgstr "显示/隐藏元素"
 
-#: includes/class-wpca-settings.php:415
-msgid "About WP Clean Admin"
-msgstr "关于WP清洁管理"
+msgid "Login Style"
+msgstr "登录样式"
 
-#: includes/class-wpca-settings.php:425
+msgid "About"
+msgstr "关于"
+
+msgid "About WP Clean Admin"
+msgstr "关于 WP Clean Admin"
+
+# ===========================================================
+# Settings Descriptions
+# ===========================================================
 msgid "Configure the appearance and behavior of your admin dashboard."
 msgstr "配置管理仪表盘的外观和行为。"
 
-#: includes/class-wpca-settings.php:432
 msgid "Customize the overall visual theme, colors, layout and typography."
 msgstr "自定义整体视觉主题、颜色、布局和排版。"
 
-#: includes/class-wpca-settings.php:443
 msgid "Menu Order Customization"
-msgstr "菜单顺序定制"
+msgstr "菜单顺序自定义"
 
-#: includes/class-wpca-settings.php:446
 msgid "Drag and drop menu items to reorder them. Use the toggle switches to show/hide items."
 msgstr "拖放菜单项以重新排序。使用切换开关显示/隐藏项目。"
 
-#: includes/class-wpca-settings.php:450
 msgid "Reset to Default Order"
 msgstr "重置为默认顺序"
 
-#: includes/class-wpca-settings.php:454
 msgid "Select which admin menu items to hide and reorder them."
 msgstr "选择要隐藏的管理菜单项并重新排序。"
 
-#: includes/class-wpca-settings.php:471
 msgid "Enable Menu Customization"
-msgstr "启用菜单定制"
+msgstr "启用菜单自定义"
 
-#: includes/class-wpca-settings.php:473
 msgid "Toggle to show/hide and reorder admin menu items"
 msgstr "切换以显示/隐藏和重新排序管理菜单项"
 
-#: includes/class-wpca-settings.php:547
-msgid "WordPress"
-msgstr "WordPress"
-
-#: includes/class-wpca-settings.php:550
-msgid "Dashboard"
-msgstr "仪表盘"
-
-#: includes/class-wpca-settings.php:551
-msgid "Posts"
-msgstr "文章"
-
-#: includes/class-wpca-settings.php:552
-msgid "Media"
-msgstr "媒体"
-
-#: includes/class-wpca-settings.php:553
-msgid "Pages"
-msgstr "页面"
-
-#: includes/class-wpca-settings.php:554
-msgid "Comments"
-msgstr "评论"
-
-#: includes/class-wpca-settings.php:555
-msgid "Appearance"
-msgstr "外观"
-
-#: includes/class-wpca-settings.php:556
-msgid "Plugins"
-msgstr "插件"
-
-#: includes/class-wpca-settings.php:557
-msgid "Users"
-msgstr "用户"
-
-#: includes/class-wpca-settings.php:558
-msgid "Tools"
-msgstr "工具"
-
-#: includes/class-wpca-settings.php:559
-msgid "Settings"
-msgstr "设置"
-
-#: includes/class-wpca-settings.php:562
-msgid "Submenu"
-msgstr "子菜单"
-
-#: includes/class-wpca-settings.php:613
-msgid "Right Now"
-msgstr "当前情况"
-
-#: includes/class-wpca-settings.php:614
-msgid "Activity"
-msgstr "活动"
-
-#: includes/class-wpca-settings.php:615
-msgid "Quick Draft"
-msgstr "快速草稿"
-
-#: includes/class-wpca-settings.php:616
-msgid "WordPress Events and News"
-msgstr "WordPress活动和新闻"
-
-#: includes/class-wpca-settings.php:617
-msgid "Site Health Status"
-msgstr "站点健康状态"
-
-#: includes/class-wpca-settings.php:618
-msgid "At a Glance"
-msgstr "概览"
-
-#: includes/class-wpca-settings.php:693
-msgid "Default (Flat & Clean)"
-msgstr "默认（扁平简洁）"
-
-#: includes/class-wpca-settings.php:694
-msgid "Light Blue Gray"
-msgstr "浅蓝灰色"
-
-#: includes/class-wpca-settings.php:695
-msgid "Mint Green"
-msgstr "薄荷绿"
-
-#: includes/class-wpca-settings.php:696
-msgid "Dark Mode"
-msgstr "深色模式"
-
-#: includes/class-wpca-settings.php:697
-msgid "Custom Colors"
-msgstr "自定义颜色"
-
-#: includes/class-wpca-settings.php:700
-msgid "Choose a predefined theme or select \"Custom Colors\" to define your own."
-msgstr "选择预定义主题或选择\"自定义颜色\"来定义您自己的主题。"
-
-#: includes/class-wpca-settings.php:706
-msgid "Choose the primary accent color for links, buttons, and active states."
-msgstr "为链接、按钮和活动状态选择主要强调色。"
-
-#: includes/class-wpca-settings.php:712
-msgid "Choose the main background color of the admin area."
-msgstr "选择管理区域的主背景色。"
-
-#: includes/class-wpca-settings.php:718
-msgid "Choose the default text color."
-msgstr "选择默认文字颜色。"
-
-#: includes/class-wpca-settings.php:726
-msgid "None"
-msgstr "无"
-
-#: includes/class-wpca-settings.php:727
-msgid "Subtle (Default)"
-msgstr "轻微（默认）"
-
-#: includes/class-wpca-settings.php:728
-msgid "Medium"
-msgstr "中等"
-
-#: includes/class-wpca-settings.php:729
-msgid "Strong"
-msgstr "强烈"
-
-#: includes/class-wpca-settings.php:732
-msgid "Choose the shadow style for elements like post boxes and buttons."
-msgstr "为文章框和按钮等元素选择阴影样式。"
-
-#: includes/class-wpca-settings.php:740
-msgid "Compact"
-msgstr "紧凑"
-
-#: includes/class-wpca-settings.php:741
-msgid "Standard (Default)"
-msgstr "标准（默认）"
-
-#: includes/class-wpca-settings.php:742
-msgid "Spacious"
-msgstr "宽敞"
-
-#: includes/class-wpca-settings.php:745
-msgid "Adjust the spacing and padding of elements in the admin interface."
-msgstr "调整管理界面中元素的间距和内边距。"
-
-#: includes/class-wpca-settings.php:753
-msgid "None (Sharp Corners)"
-msgstr "无（尖角）"
-
-#: includes/class-wpca-settings.php:754
-msgid "Small (4px, Default)"
-msgstr "小（4px，默认）"
-
-#: includes/class-wpca-settings.php:755
-msgid "Large (8px, Rounded)"
-msgstr "大（8px，圆角）"
-
-#: includes/class-wpca-settings.php:758
-msgid "Choose the border-radius style for various elements."
-msgstr "为各种元素选择边框圆角样式。"
-
-#: includes/class-wpca-settings.php:766
-msgid "System Default"
-msgstr "系统默认"
-
-#: includes/class-wpca-settings.php:767
-msgid "Google Fonts"
-msgstr "谷歌字体"
-
-#: includes/class-wpca-settings.php:770
-msgid "Select the font stack to be used in the admin area."
-msgstr "选择在管理区域使用的字体栈。"
-
-#: includes/class-wpca-settings.php:778
-msgid "Small"
-msgstr "小"
-
-#: includes/class-wpca-settings.php:779
-msgid "Medium (Default)"
-msgstr "中（默认）"
-
-#: includes/class-wpca-settings.php:780
-msgid "Large"
-msgstr "大"
-
-#: includes/class-wpca-settings.php:783
-msgid "Adjust the base font size for the admin interface."
-msgstr "调整管理界面的基础字体大小。"
-
-#: includes/class-wpca-settings.php:791
-msgid "WordPress Dashicons"
-msgstr "WordPress Dashicons"
-
-#: includes/class-wpca-settings.php:792
-msgid "Linear Icons"
-msgstr "线性图标"
-
-#: includes/class-wpca-settings.php:795
-msgid "Choose the icon set for the admin interface."
-msgstr "为管理界面选择图标集。"
-
-#: includes/class-wpca-settings.php:818
-msgid "Language Switcher"
-msgstr "语言切换器"
-
-#: includes/class-wpca-settings.php:823
-msgid "Back to Home Link"
-msgstr "返回首页链接"
-
-#: includes/class-wpca-settings.php:828
-msgid "Register Link"
-msgstr "注册链接"
-
-#: includes/class-wpca-settings.php:833
-msgid "Remember Me Checkbox"
-msgstr "记住我复选框"
-
-#: includes/class-wpca-settings.php:849
 msgid "Hide \"WordPress\" in page titles"
-msgstr "在页面标题中隐藏\"WordPress\""
+msgstr "在页面标题中隐藏 \"WordPress\""
 
-#: includes/class-wpca-settings.php:851
 msgid "When enabled, removes \"WordPress\" from admin page titles."
-msgstr "启用时，从管理页面标题中移除\"WordPress\"。"
+msgstr "启用后，从管理页面标题中移除 \"WordPress\"。"
 
-#: includes/class-wpca-settings.php:862
-msgid "WordPress Logo"
-msgstr "WordPress标志"
-
-#: includes/class-wpca-settings.php:866
-msgid "Site Name"
-msgstr "站点名称"
-
-#: includes/class-wpca-settings.php:870
-msgid "Updates"
-msgstr "更新"
-
-#: includes/class-wpca-settings.php:874
-msgid "Comments"
-msgstr "评论"
-
-#: includes/class-wpca-settings.php:878
-msgid "New Content"
-msgstr "新内容"
-
-#: includes/class-wpca-settings.php:882
-msgid "My Account"
-msgstr "我的账户"
-
-#: includes/class-wpca-settings.php:912
-msgid "Default"
-msgstr "默认"
-
-#: includes/class-wpca-settings.php:916
-msgid "Modern"
-msgstr "现代"
-
-#: includes/class-wpca-settings.php:920
-msgid "Minimal"
-msgstr "极简"
-
-#: includes/class-wpca-settings.php:924
-msgid "Dark"
-msgstr "深色"
-
-#: includes/class-wpca-settings.php:928
-msgid "Gradient"
-msgstr "渐变"
-
-#: includes/class-wpca-settings.php:932
-msgid "Custom"
-msgstr "自定义"
-
-#: includes/class-wpca-settings.php:941
 msgid "Custom Login Options"
 msgstr "自定义登录选项"
 
-#: includes/class-wpca-settings.php:945
 msgid "Choose from predefined login styles or create your own custom style."
-msgstr "从预定义的登录样式中选择或创建您自己的自定义样式。"
+msgstr "从预定义登录样式中选择或创建自己的自定义样式。"
 
-#: includes/class-wpca-settings.php:951
 msgid "Custom Logo"
-msgstr "自定义Logo"
+msgstr "自定义徽标"
 
-#: includes/class-wpca-settings.php:957
-msgid "Choose Image"
-msgstr "选择图像"
-
-#: includes/class-wpca-settings.php:958
-msgid "Remove"
-msgstr "移除"
-
-#: includes/class-wpca-settings.php:959
 msgid "Upload a custom logo for the login page. Recommended size: 320×80px."
-msgstr "为登录页面上传自定义Logo。推荐尺寸：320×80px。"
+msgstr "上传自定义登录页面徽标。推荐尺寸：320×80px。"
 
-#: includes/class-wpca-settings.php:961
-msgid "Login Logo Preview"
-msgstr "登录Logo预览"
-
-#: includes/class-wpca-settings.php:967
 msgid "Background Image"
-msgstr "背景图像"
+msgstr "背景图片"
 
-#: includes/class-wpca-settings.php:973
 msgid "Upload a custom background image for the login page."
-msgstr "为登录页面上传自定义背景图像。"
+msgstr "上传自定义登录页面背景图片。"
 
-#: includes/class-wpca-settings.php:975
-msgid "Background Preview"
-msgstr "背景预览"
-
-#: includes/class-wpca-settings.php:981
 msgid "Custom CSS"
-msgstr "自定义CSS"
+msgstr "自定义 CSS"
 
-#: includes/class-wpca-settings.php:983
 msgid "Add custom CSS to further customize the login page."
-msgstr "添加自定义CSS以进一步自定义登录页面。"
+msgstr "添加自定义 CSS 以进一步自定义登录页面。"
 
-#: includes/class-wpca-settings.php:991
 msgid "Live Preview"
 msgstr "实时预览"
 
-#: includes/class-wpca-settings.php:992
 msgid "Preview how your login page will look with the current settings."
 msgstr "预览当前设置下登录页面的外观。"
 
-#: includes/class-wpca-settings.php:1000
 msgid "This is a preview of how your login page will look."
-msgstr "这是您的登录页面外观预览。"
+msgstr "这是您的登录页面外观的预览。"
 
-#: includes/class-wpca-settings.php:1010
+# ===========================================================
+# Theme & Style Options
+# ===========================================================
+msgid "Default"
+msgstr "默认"
+
+msgid "Default (Flat & Clean)"
+msgstr "默认（扁平 & 简洁）"
+
+msgid "Modern"
+msgstr "现代"
+
+msgid "Minimal"
+msgstr "极简"
+
+msgid "Dark"
+msgstr "暗色"
+
+msgid "Dark Mode"
+msgstr "暗色模式"
+
+msgid "Gradient"
+msgstr "渐变"
+
+msgid "Custom"
+msgstr "自定义"
+
+msgid "Custom Colors"
+msgstr "自定义颜色"
+
+msgid "Light Blue Gray"
+msgstr "浅蓝色灰色"
+
+msgid "Mint Green"
+msgstr "薄荷绿"
+
+msgid "None"
+msgstr "无"
+
+msgid "Subtle (Default)"
+msgstr "柔和（默认）"
+
+msgid "Medium"
+msgstr "中等"
+
+msgid "Strong"
+msgstr "强烈"
+
+msgid "Choose the shadow style for elements like post boxes and buttons."
+msgstr "选择帖子框和按钮等元素的阴影样式。"
+
+msgid "Compact"
+msgstr "紧凑"
+
+msgid "Standard (Default)"
+msgstr "标准（默认）"
+
+msgid "Spacious"
+msgstr "宽敞"
+
+msgid "Adjust the spacing and padding of elements in the admin interface."
+msgstr "调整管理界面中元素的间距和内边距。"
+
+msgid "None (Sharp Corners)"
+msgstr "无（尖角）"
+
+msgid "Small (4px, Default)"
+msgstr "小（4px，默认）"
+
+msgid "Large (8px, Rounded)"
+msgstr "大（8px，圆角）"
+
+msgid "Choose the border-radius style for various elements."
+msgstr "选择各种元素的圆角半径样式。"
+
+msgid "System Default"
+msgstr "系统默认"
+
+msgid "Google Fonts"
+msgstr "Google 字体"
+
+msgid "Select the font stack to be used in the admin area."
+msgstr "选择在管理区域中使用的字体堆栈。"
+
+msgid "Small"
+msgstr "小"
+
+msgid "Medium (Default)"
+msgstr "中等（默认）"
+
+msgid "Large"
+msgstr "大"
+
+msgid "Adjust the base font size for the admin interface."
+msgstr "调整管理界面的基本字体大小。"
+
+msgid "WordPress Dashicons"
+msgstr "WordPress Dashicons 图标"
+
+msgid "Linear Icons"
+msgstr "线性图标"
+
+msgid "Choose the icon set for the admin interface."
+msgstr "选择管理界面的图标集。"
+
+msgid "Choose a predefined theme or select \"Custom Colors\" to define your own."
+msgstr "选择预定义主题或选择 \"自定义颜色\" 定义自己的主题。"
+
+msgid "Choose the primary accent color for links, buttons, and active states."
+msgstr "选择链接、按钮和活动状态的主强调色。"
+
+msgid "Choose the main background color of the admin area."
+msgstr "选择管理区域的主背景色。"
+
+msgid "Choose the default text color."
+msgstr "选择默认文本颜色。"
+
+# ===========================================================
+# WordPress Menu & Dashboard Items
+# ===========================================================
+msgid "WordPress"
+msgstr "WordPress"
+
+msgid "Dashboard"
+msgstr "仪表盘"
+
+msgid "Posts"
+msgstr "文章"
+
+msgid "Media"
+msgstr "媒体"
+
+msgid "Pages"
+msgstr "页面"
+
+msgid "Comments"
+msgstr "评论"
+
+msgid "Appearance"
+msgstr "外观"
+
+msgid "Plugins"
+msgstr "插件"
+
+msgid "Users"
+msgstr "用户"
+
+msgid "Tools"
+msgstr "工具"
+
+msgid "Submenu"
+msgstr "子菜单"
+
+msgid "Right Now"
+msgstr "当前状态"
+
+msgid "Activity"
+msgstr "活动"
+
+msgid "Quick Draft"
+msgstr "快速草稿"
+
+msgid "WordPress Events and News"
+msgstr "WordPress 事件和新闻"
+
+msgid "Site Health Status"
+msgstr "站点健康状态"
+
+msgid "At a Glance"
+msgstr "概览"
+
+msgid "WordPress Logo"
+msgstr "WordPress 标志"
+
+msgid "Site Name"
+msgstr "站点名称"
+
+msgid "Updates"
+msgstr "更新"
+
+msgid "New Content"
+msgstr "新建内容"
+
+msgid "My Account"
+msgstr "我的账户"
+
+# ===========================================================
+# Login Page Elements
+# ===========================================================
+msgid "Language Switcher"
+msgstr "语言切换器"
+
+msgid "Back to Home Link"
+msgstr "返回首页链接"
+
+msgid "Register Link"
+msgstr "注册链接"
+
+msgid "Remember Me Checkbox"
+msgstr "记住我复选框"
+
+msgid "Choose Image"
+msgstr "选择图片"
+
+msgid "Remove"
+msgstr "移除"
+
+msgid "Login Logo Preview"
+msgstr "登录徽标预览"
+
+msgid "Background Preview"
+msgstr "背景预览"
+
+# ===========================================================
+# About Page Strings
+# ===========================================================
 msgid "Version %s"
 msgstr "版本 %s"
 
-#: includes/class-wpca-settings.php:1014
 msgid "Plugin Description"
 msgstr "插件描述"
 
-#: includes/class-wpca-settings.php:1015
 msgid "WP Clean Admin is a powerful WordPress plugin designed to streamline and customize your WordPress admin experience. It provides a cleaner, more efficient interface by allowing you to hide unnecessary elements, customize the visual appearance, and reorganize the admin menu to better suit your workflow."
-msgstr "WP清洁管理是一个功能强大的WordPress插件，旨在简化和定制您的WordPress管理体验。通过隐藏不必要的元素、自定义视觉外观和重新组织管理菜单，它提供了一个更简洁、更高效的界面，以更好地适应您的工作流程。"
+msgstr "WP Clean Admin 是一个功能强大的 WordPress 插件，旨在简化和自定义您的 WordPress 管理体验。它通过允许您隐藏不必要的元素、自定义视觉外观和重新组织管理菜单来提供更清洁、更高效的界面，以更好地适应您的工作流程。"
 
-#: includes/class-wpca-settings.php:1019
 msgid "Key Features"
 msgstr "主要功能"
 
-#: includes/class-wpca-settings.php:1021
 msgid "Hide unnecessary dashboard widgets"
-msgstr "隐藏不必要的仪表盘小工具"
+msgstr "隐藏不必要的仪表盘小部件"
 
-#: includes/class-wpca-settings.php:1022
 msgid "Customize admin menu by hiding or reordering items"
 msgstr "通过隐藏或重新排序项目来自定义管理菜单"
 
-#: includes/class-wpca-settings.php:1023
 msgid "Hide admin bar items for a cleaner top bar"
-msgstr "隐藏管理栏项目以获得更简洁的顶部栏"
+msgstr "隐藏管理栏项目以获得更清洁的顶栏"
 
-#: includes/class-wpca-settings.php:1024
 msgid "Choose from multiple visual themes or create your own"
-msgstr "从多个视觉主题中选择或创建您自己的主题"
+msgstr "从多个视觉主题中选择或创建自己的主题"
 
-#: includes/class-wpca-settings.php:1025
 msgid "Adjust layout density and typography settings"
 msgstr "调整布局密度和排版设置"
 
-#: includes/class-wpca-settings.php:1026
 msgid "Customize colors, shadows, and border styles"
 msgstr "自定义颜色、阴影和边框样式"
 
-#: includes/class-wpca-settings.php:1031
 msgid "Author"
 msgstr "作者"
 
-#: includes/class-wpca-settings.php:1032
 msgid "Created by WordPress Admin UI Specialists"
-msgstr "由WordPress管理界面专家创建"
+msgstr "由 WordPress 管理界面专家创建"
 
-#: includes/class-wpca-settings.php:1033
 msgid "Visit Plugin Website"
 msgstr "访问插件网站"
 
-#: includes/class-wpca-settings.php:1034
 msgid "Documentation"
 msgstr "文档"
 
-#: includes/class-wpca-settings.php:1035
 msgid "Support"
 msgstr "支持"
 
-#: includes/class-wpca-settings.php:1039
 msgid "Rate & Review"
-msgstr "评分和评价"
+msgstr "评分与评价"
 
-#: includes/class-wpca-settings.php:1040
 msgid "If you find this plugin useful, please consider leaving a review on WordPress.org. Your feedback helps improve the plugin and reach more users."
-msgstr "如果您觉得这个插件有用，请考虑在WordPress.org上留下评价。您的反馈有助于改进插件并触达更多用户。"
+msgstr "如果您觉得这个插件有用，请考虑在 WordPress.org 上留下评价。您的反馈有助于改进插件并触达更多用户。"
 
-#: includes/class-wpca-settings.php:1041
 msgid "Rate on WordPress.org"
-msgstr "在WordPress.org上评分"
+msgstr "在 WordPress.org 上评分"
 
-#: wp-clean-admin.php:128
-msgid "Settings"
-msgstr "设置"
+# ===========================================================
+# Error Messages (Extended)
+# ===========================================================
+msgid "Menu management configuration failed to load"
+msgstr "菜单管理功能配置加载失败"
+
+msgid "Menu management requires jQuery UI Sortable, please ensure it is loaded"
+msgstr "菜单管理功能依赖 jQuery UI Sortable，请确保已加载"
+
+msgid "Menu slug is missing, please refresh the page and try again"
+msgstr "菜单 slug 缺失，请刷新页面重试"
+
+msgid "An unknown error occurred"
+msgstr "发生未知错误"
+
+msgid "Insufficient permissions or security verification failed. The page will refresh in 2 seconds."
+msgstr "权限不足或安全验证失败。页面将在2秒后刷新。"
+
+msgid "Network connection error, please check your network and try again."
+msgstr "网络连接错误，请检查网络后重试。"
+
+msgid "Request failed, server returned error code: ${xhr.status}"
+msgstr "请求失败，服务器返回错误码: ${xhr.status}"
+
+msgid "Menu management initialization failed"
+msgstr "菜单管理功能初始化失败"
+
+msgid "Login management module initialization failed: "
+msgstr "登录管理模块初始化失败: "
+
+msgid "Main module initialization failed: "
+msgstr "主模块初始化失败: "
+
+# ===========================================================
+# Permission Related Strings
+# ===========================================================
+msgid "WPCA Permissions: Missing required configuration"
+msgstr "WPCA 权限: 缺少必要的配置"
+
+msgid "WPCA Permissions: Permission check failed -"
+msgstr "WPCA 权限: 权限检查失败 -"
+
+msgid "WPCA Permissions: AJAX error -"
+msgstr "WPCA 权限: AJAX 错误 -"
+
+# ===========================================================
+# Additional Error Messages
+# ===========================================================
+msgid "Core already initialized"
+msgstr "核心已经初始化"
+
+msgid "Missing AJAX URL setting"
+msgstr "缺少 AJAX URL 设置"
+
+msgid "Unable to load necessary JavaScript settings. Please refresh the page and try again."
+msgstr "无法加载必要的 JavaScript 设置。请刷新页面重试。"
+
+msgid "Core initialization failed"
+msgstr "核心初始化失败"
+
+msgid "Using fallback nonce value"
+msgstr "使用备用 nonce 值"
+
+msgid "Request processing failed"
+msgstr "请求处理失败"
+
+msgid "You do not have permission to perform this action"
+msgstr "您没有执行此操作的权限"
+
+msgid "Invalid request parameters"
+msgstr "请求参数错误"
+
+msgid "Please log in first"
+msgstr "请先登录"
+
+msgid "Internal server error"
+msgstr "服务器内部错误"
+
+msgid "Module already registered"
+msgstr "模块已注册"
+
+msgid "Module name already exists"
+msgstr "模块名称已存在"
+
+msgid "WP Clean Admin initialization failed"
+msgstr "WP Clean Admin 初始化失败"
+
+msgid "WPCA Error: The configuration object \"wpca_admin\" is missing."
+msgstr "WPCA 错误: 缺少配置对象 \"wpca_admin\"。"
+
+# ===========================================================
+# Login Page Strings
+# ===========================================================
+msgid "No logo selected"
+msgstr "未选择徽标"
+
+msgid "No background selected"
+msgstr "未选择背景"
+
+msgid "Login Management - Frontend Module"
+msgstr "登录管理 - 前端模块"
+
+msgid "Frontend Login module is ready"
+msgstr "前端登录模块已准备就绪"
+
+msgid "Logo updated successfully"
+msgstr "徽标更新成功"
+
+msgid "Background updated successfully"
+msgstr "背景更新成功"
+
+msgid "Login style updated successfully"
+msgstr "登录样式更新成功"
+
+msgid "Custom CSS updated successfully"
+msgstr "自定义 CSS 更新成功"
+
+msgid "Show Login Form"
+msgstr "显示登录表单"
+
+msgid "Hide Login Form"
+msgstr "隐藏登录表单"
+
+# ===========================================================
+# Reset Messages
+# ===========================================================
+msgid "Are you sure you want to reset login settings to default? This will remove your custom logo, background, and CSS."
+msgstr "确定要将登录设置重置为默认值吗？这将删除您的自定义徽标、背景和 CSS。"
+
+msgid "Login settings have been reset to default"
+msgstr "登录设置已重置为默认值"
+
+msgid "Reset successful"
+msgstr "重置成功"
+
+msgid "Reset in progress..."
+msgstr "重置进行中..."
+
+# ===========================================================
+# Permissions UI
+# ===========================================================
+msgid "Insufficient permissions"
+msgstr "权限不足"

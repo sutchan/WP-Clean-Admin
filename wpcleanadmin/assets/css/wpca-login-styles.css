@@ -1,31 +1,52 @@
 /* Login Page Styles */
 .wpca-login-container {
     display: flex;
-    gap: 30px;
-    margin-top: 20px;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 24px;
+    padding: 0 15px;
 }
 .wpca-login-column {
-    flex: 1;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.03);
+}
+.wpca-login-column:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
 }
 .wpca-login-options {
-    max-width: 60%;
+    flex: 1;
+    min-width: 400px;
+    max-width: calc(65% - 12px);
 }
 .wpca-login-preview {
+    flex: 0 0 35%;
+    min-width: 320px;
+    max-width: 35%;
     position: sticky;
-    top: 40px;
+    top: 24px;
     align-self: flex-start;
 }
 .wpca-login-preview-frame {
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
     max-width: 400px;
     margin: 0 auto;
+    transition: transform 0.3s ease;
+}
+.wpca-login-preview-frame:hover {
+    transform: scale(1.02);
 }
 .wpca-login-preview-content {
-    padding: 20px;
+    padding: 24px;
     background: #f8f9fa;
+    border-radius: 0 0 12px 12px;
 }
 .wpca-login-preview-logo {
     height: 84px;
@@ -36,41 +57,56 @@
 }
 .wpca-login-preview-form {
     background: #fff;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
 }
 .wpca-login-preview-input {
-    height: 42px;
-    margin-bottom: 16px;
+    height: 44px;
+    margin-bottom: 18px;
     background: #f8f9fa;
-    border-radius: 6px;
+    border-radius: 8px;
     border: 1px solid #e0e0e0;
+    transition: border-color 0.3s ease;
+}
+.wpca-login-preview-input:focus {
+    border-color: #2271b1;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(34, 113, 177, 0.2);
 }
 .wpca-login-preview-button {
-    height: 44px;
+    height: 46px;
     background: #2271b1;
-    border-radius: 6px;
-    margin-bottom: 16px;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    transition: background-color 0.3s ease;
+}
+.wpca-login-preview-button:hover {
+    background: #1e6298;
 }
 .wpca-login-preview-links {
     display: flex;
     justify-content: space-between;
 }
 .wpca-login-preview-links div {
-    height: 15px;
+    height: 16px;
     width: 30%;
     background: #f1f1f1;
-    border-radius: 4px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+.wpca-login-preview-links div:hover {
+    background: #e9ecef;
 }
 
 /* Preview styles for each login style */
 .wpca-login-preview.default-preview .wpca-login-preview-form {
-    box-shadow: 0 1px 3px rgba(0,0,0,0.13);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.13);
 }
 .wpca-login-preview.modern-preview .wpca-login-preview-form {
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
     border: 1px solid #e0e0e0;
 }
 .wpca-login-preview.minimal-preview .wpca-login-preview-form {
@@ -82,27 +118,92 @@
 }
 .wpca-login-preview.dark-preview .wpca-login-preview-form {
     background: #333;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 .wpca-login-preview.gradient-preview {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 .wpca-login-preview.gradient-preview .wpca-login-preview-form {
     background: rgba(255,255,255,0.9);
-    border-radius: 8px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 /* Responsive adjustments */
+@media (max-width: 1200px) {
+    .wpca-login-container {
+        gap: 20px;
+    }
+    .wpca-login-options {
+        max-width: calc(60% - 10px);
+        min-width: 350px;
+    }
+    .wpca-login-preview {
+        flex: 0 0 40%;
+        max-width: 40%;
+    }
+}
+
 @media (max-width: 1024px) {
     .wpca-login-container {
         flex-direction: column;
+        gap: 20px;
+    }
+    .wpca-login-column {
+        width: 100%;
+        margin-bottom: 0;
+        padding: 25px;
     }
     .wpca-login-options {
         max-width: 100%;
+        min-width: auto;
     }
     .wpca-login-preview {
-        position: static;
+        max-width: 100%;
+        min-width: auto;
+        position: relative;
+        top: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .wpca-login-container {
+        margin-top: 15px;
+        padding: 0 10px;
+        gap: 16px;
+    }
+    .wpca-login-column {
+        padding: 20px;
+        border-radius: 10px;
+    }
+    .wpca-login-preview-frame {
+        max-width: 100%;
+    }
+    .wpca-login-preview-form {
+        padding: 24px;
+    }
+    .wpca-login-preview-input {
+        height: 40px;
+    }
+    .wpca-login-preview-button {
+        height: 42px;
+    }
+}
+
+@media (max-width: 480px) {
+    .wpca-login-container {
+        margin-top: 10px;
+        padding: 0 8px;
+        gap: 12px;
+    }
+    .wpca-login-column {
+        padding: 16px;
+    }
+    .wpca-login-preview-content {
+        padding: 16px;
+    }
+    .wpca-login-preview-form {
+        padding: 20px;
     }
 }

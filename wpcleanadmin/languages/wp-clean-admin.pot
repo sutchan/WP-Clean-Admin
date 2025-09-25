@@ -1,9 +1,7 @@
-# Copyright (C) 2025 sutchan
-# This file is distributed under the GPL v2 or later.
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Clean Admin 1.1.0\n"
-"Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin/issues\n"
+"Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"
 "POT-Creation-Date: 2025-09-24 15:00+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
@@ -16,663 +14,1122 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;_x\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: includes/class-wpca-ajax.php:44 includes/class-wpca-settings.php:45
-msgid "非法请求"
-msgstr ""
 
-#: includes/class-wpca-ajax.php:51 includes/class-wpca-settings.php:52
-msgid "安全验证失败"
-msgstr ""
-
-#: includes/class-wpca-ajax.php:59 includes/class-wpca-menu-customizer.php:711
-#: includes/class-wpca-settings.php:60
-msgid "权限不足"
-msgstr ""
-
-#: includes/class-wpca-ajax.php:78
-msgid "无效的设置数据"
-msgstr ""
-
-#: includes/class-wpca-ajax.php:88
-msgid "设置已保存"
-msgstr ""
-
-#: includes/class-wpca-ajax.php:93
-msgid "设置保存失败"
-msgstr ""
-
-#: includes/class-wpca-ajax.php:99
-msgid "保存设置时发生错误"
-msgstr ""
-
-#: includes/class-wpca-ajax.php:117
-msgid "设置已重置为默认值"
-msgstr ""
-
-#: includes/class-wpca-ajax.php:122
-msgid "重置设置失败"
-msgstr ""
-
-#: includes/class-wpca-ajax.php:128
-msgid "重置设置时发生错误"
-msgstr ""
-
-#: includes/class-wpca-ajax.php:148
-msgid "获取设置时发生错误"
-msgstr ""
-
-#: includes/class-wpca-menu-customizer.php:87
-msgid "Menu settings format is invalid, has been reset"
-msgstr ""
-
-#: includes/class-wpca-menu-customizer.php:703
-msgid "Invalid AJAX request"
-msgstr ""
-
-#: includes/class-wpca-menu-customizer.php:707
-msgid "Invalid security nonce"
-msgstr ""
-
-#: includes/class-wpca-menu-customizer.php:741
-msgid "Menu item \"%s\" does not exist"
-msgstr ""
-
-#: includes/class-wpca-menu-customizer.php:752
-msgid "Menu item \"%s\" does not exist"
-msgstr ""
-
-#: includes/class-wpca-menu-customizer.php:789
-msgid "Please select at least one valid setting type to reset"
-msgstr ""
-
-#: includes/class-wpca-menu-customizer.php:798
-#: includes/class-wpca-settings.php:110
-msgid "Failed to save settings"
-msgstr ""
-
-#: includes/class-wpca-menu-customizer.php:804
-msgid "Menu settings reset successfully"
-msgstr ""
-
-#: includes/class-wpca-menu-customizer.php:872
-msgid "Failed to reset menu order"
-msgstr ""
-
-#: includes/class-wpca-menu-customizer.php:878
-msgid "Menu order has been reset to default"
-msgstr ""
-
-#: includes/class-wpca-menu-customizer.php:916
-#: includes/class-wpca-settings.php:151
-msgid "Are you sure you want to reset all menu settings to default?"
-msgstr ""
-
-#: includes/class-wpca-menu-customizer.php:917
-#: includes/class-wpca-settings.php:158
-msgid "Settings updated successfully"
-msgstr ""
-
-#: includes/class-wpca-menu-customizer.php:918
-#: includes/class-wpca-settings.php:154
-msgid "An error occurred"
-msgstr ""
-
-#: includes/class-wpca-settings.php:152
-msgid "Resetting..."
-msgstr ""
-
-#: includes/class-wpca-settings.php:153
-msgid "Reset Defaults"
-msgstr ""
-
-#: includes/class-wpca-settings.php:154
-msgid "Reset failed. Please try again."
-msgstr ""
-
-#: includes/class-wpca-settings.php:155
-msgid "Select or Upload Media"
-msgstr ""
-
-#: includes/class-wpca-settings.php:156
-msgid "Use this media"
-msgstr ""
-
-#: includes/class-wpca-settings.php:157
-msgid "WordPress media uploader not available."
-msgstr ""
-
-#: includes/class-wpca-settings.php:158
-msgid "An error occurred while saving settings."
-msgstr ""
-
-#: includes/class-wpca-settings.php:159
-msgid "Saving..."
-msgstr ""
-
-#: includes/class-wpca-settings.php:233
-msgid "WP Clean Admin Settings"
-msgstr ""
-
-#: includes/class-wpca-settings.php:234
+# ===========================================================
+# Plugin Core Strings
+# ===========================================================
 msgid "WP Clean Admin"
 msgstr ""
 
-#: includes/class-wpca-settings.php:256
-msgid "General Settings"
+msgid "WP Clean Admin Settings"
 msgstr ""
 
-#: includes/class-wpca-settings.php:264
-msgid "Hide Dashboard Widgets"
+msgid "Settings"
 msgstr ""
 
-#: includes/class-wpca-settings.php:273
-msgid "Hide WordPress Title"
+# ===========================================================
+# Error Messages
+# ===========================================================
+msgid "Invalid request"
 msgstr ""
 
-#: includes/class-wpca-settings.php:282
-msgid "Visual Style"
+msgid "Invalid AJAX request"
 msgstr ""
 
-#: includes/class-wpca-settings.php:290
-msgid "Theme Style"
+msgid "Security verification failed"
 msgstr ""
 
-#: includes/class-wpca-settings.php:298
-msgid "Primary Color"
+msgid "Invalid security nonce"
 msgstr ""
 
-#: includes/class-wpca-settings.php:306
-msgid "Background Color"
+msgid "Insufficient permissions"
 msgstr ""
 
-#: includes/class-wpca-settings.php:314
-msgid "Text Color"
+msgid "Invalid data structure"
 msgstr ""
 
-#: includes/class-wpca-settings.php:322
-msgid "Shadow Style"
+msgid "Invalid settings data"
 msgstr ""
 
-#: includes/class-wpca-settings.php:331
-msgid "Layout Density"
+msgid "Invalid menu slug"
 msgstr ""
 
-#: includes/class-wpca-settings.php:339
-msgid "Border Radius"
+msgid "User not logged in"
 msgstr ""
 
-#: includes/class-wpca-settings.php:347
-msgid "Font Stack"
+msgid "Missing permission parameter"
 msgstr ""
 
-#: includes/class-wpca-settings.php:355
-msgid "Font Size"
+msgid "Invalid permission name"
 msgstr ""
 
-#: includes/class-wpca-settings.php:363
-msgid "Icon Style"
+msgid "An error occurred"
 msgstr ""
 
-#: includes/class-wpca-settings.php:372
-msgid "Menu Customization"
+msgid "Unknown error"
 msgstr ""
 
-#: includes/class-wpca-settings.php:380
-msgid "Menu Order"
+msgid "Failed to save settings"
 msgstr ""
 
-#: includes/class-wpca-settings.php:389
-msgid "Hide Admin Bar Items"
+msgid "Error occurred while saving settings"
 msgstr ""
 
-#: includes/class-wpca-settings.php:398
-msgid "Login Page Elements"
+msgid "An error occurred while saving settings."
 msgstr ""
 
-#: includes/class-wpca-settings.php:406
-msgid "Show/Hide Elements"
+msgid "Failed to reset settings"
 msgstr ""
 
-#: includes/class-wpca-settings.php:415
-msgid "About WP Clean Admin"
+msgid "Error occurred while resetting settings"
 msgstr ""
 
-#: includes/class-wpca-settings.php:425
-msgid "Configure the appearance and behavior of your admin dashboard."
+msgid "Error occurred while retrieving settings"
 msgstr ""
 
-#: includes/class-wpca-settings.php:432
-msgid "Customize the overall visual theme, colors, layout and typography."
+msgid "Failed to reset menu order"
 msgstr ""
 
-#: includes/class-wpca-settings.php:443
-msgid "Menu Order Customization"
+msgid "Reset failed. Please try again."
 msgstr ""
 
-#: includes/class-wpca-settings.php:446
-msgid "Drag and drop menu items to reorder them. Use the toggle switches to show/hide items."
+msgid "Menu settings format is invalid, has been reset"
 msgstr ""
 
-#: includes/class-wpca-settings.php:450
-msgid "Reset to Default Order"
+msgid "Menu item \"%s\" does not exist"
 msgstr ""
 
-#: includes/class-wpca-settings.php:454
-msgid "Select which admin menu items to hide and reorder them."
+# ===========================================================
+# Dashboard Strings
+# ===========================================================
+msgid "Welcome to WP Clean Admin Dashboard"
 msgstr ""
 
-#: includes/class-wpca-settings.php:471
-msgid "Enable Menu Customization"
-msgstr ""
-
-#: includes/class-wpca-settings.php:473
-msgid "Toggle to show/hide and reorder admin menu items"
-msgstr ""
-
-#: includes/class-wpca-settings.php:547
-msgid "WordPress"
-msgstr ""
-
-#: includes/class-wpca-settings.php:550
 msgid "Dashboard"
 msgstr ""
 
-#: includes/class-wpca-settings.php:551
-msgid "Posts"
+msgid "Plugin Version: %s"
 msgstr ""
 
-#: includes/class-wpca-settings.php:552
-msgid "Media"
+msgid "Total number of registered modules: %d"
 msgstr ""
 
-#: includes/class-wpca-settings.php:553
-msgid "Pages"
+msgid "Total number of available languages: %d"
 msgstr ""
 
-#: includes/class-wpca-settings.php:554
-msgid "Comments"
+msgid "Total number of menu items: %d"
 msgstr ""
 
-#: includes/class-wpca-settings.php:555
-msgid "Appearance"
+msgid "Last Update: %s"
 msgstr ""
 
-#: includes/class-wpca-settings.php:556
-msgid "Plugins"
+msgid "View Documentation"
 msgstr ""
 
-#: includes/class-wpca-settings.php:557
-msgid "Users"
+msgid "Submit Feedback"
 msgstr ""
 
-#: includes/class-wpca-settings.php:558
-msgid "Tools"
+msgid "Visit Plugin Page"
 msgstr ""
 
-#: includes/class-wpca-settings.php:559
-msgid "Settings"
+msgid "System Information"
 msgstr ""
 
-#: includes/class-wpca-settings.php:562
-msgid "Submenu"
+msgid "WordPress Version: %s"
 msgstr ""
 
-#: includes/class-wpca-settings.php:613
-msgid "Right Now"
+msgid "PHP Version: %s"
 msgstr ""
 
-#: includes/class-wpca-settings.php:614
-msgid "Activity"
+msgid "MySQL Version: %s"
 msgstr ""
 
-#: includes/class-wpca-settings.php:615
-msgid "Quick Draft"
+msgid "Server Software: %s"
 msgstr ""
 
-#: includes/class-wpca-settings.php:616
-msgid "WordPress Events and News"
+msgid "Active Theme: %s"
 msgstr ""
 
-#: includes/class-wpca-settings.php:617
-msgid "Site Health Status"
+msgid "Active Plugins: %d"
 msgstr ""
 
-#: includes/class-wpca-settings.php:618
-msgid "At a Glance"
+msgid "Debug Mode: %s"
 msgstr ""
 
-#: includes/class-wpca-settings.php:693
-msgid "Default (Flat & Clean)"
+msgid "Site URL: %s"
 msgstr ""
 
-#: includes/class-wpca-settings.php:694
-msgid "Light Blue Gray"
+msgid "Home URL: %s"
 msgstr ""
 
-#: includes/class-wpca-settings.php:695
-msgid "Mint Green"
+msgid "User Agent: %s"
 msgstr ""
 
-#: includes/class-wpca-settings.php:696
-msgid "Dark Mode"
+# ===========================================================
+# Cleanup Strings
+# ===========================================================
+msgid "Cleanup"
 msgstr ""
 
-#: includes/class-wpca-settings.php:697
-msgid "Custom Colors"
+msgid "Database Cleanup"
 msgstr ""
 
-#: includes/class-wpca-settings.php:700
-msgid "Choose a predefined theme or select \"Custom Colors\" to define your own."
+msgid "Cleanup Options"
 msgstr ""
 
-#: includes/class-wpca-settings.php:706
-msgid "Choose the primary accent color for links, buttons, and active states."
+msgid "Clean unused terms"
 msgstr ""
 
-#: includes/class-wpca-settings.php:712
-msgid "Choose the main background color of the admin area."
+msgid "Clean orphaned postmeta"
 msgstr ""
 
-#: includes/class-wpca-settings.php:718
-msgid "Choose the default text color."
+msgid "Clean orphaned commentmeta"
 msgstr ""
 
-#: includes/class-wpca-settings.php:726
-msgid "None"
+msgid "Clean unused taxonomy term relationships"
 msgstr ""
 
-#: includes/class-wpca-settings.php:727
-msgid "Subtle (Default)"
+msgid "Clean revisions"
 msgstr ""
 
-#: includes/class-wpca-settings.php:728
-msgid "Medium"
+msgid "Clean auto-drafts"
 msgstr ""
 
-#: includes/class-wpca-settings.php:729
-msgid "Strong"
+msgid "Clean spam comments"
 msgstr ""
 
-#: includes/class-wpca-settings.php:732
-msgid "Choose the shadow style for elements like post boxes and buttons."
+msgid "Clean trash comments"
 msgstr ""
 
-#: includes/class-wpca-settings.php:740
+msgid "Clean pingbacks"
+msgstr ""
+
+msgid "Clean trackbacks"
+msgstr ""
+
+msgid "Clean transient options"
+msgstr ""
+
+msgid "Clean expired transients"
+msgstr ""
+
+msgid "Clean all transients"
+msgstr ""
+
+msgid "Optimize database tables"
+msgstr ""
+
+msgid "Cleanup completed: %d items removed"
+msgstr ""
+
+msgid "Cleanup started..."
+msgstr ""
+
+msgid "Cleanup in progress..."
+msgstr ""
+
+msgid "Cleanup failed: %s"
+msgstr ""
+
+msgid "No cleanup needed"
+msgstr ""
+
+msgid "Run Cleanup"
+msgstr ""
+
+msgid "Cleanup Summary"
+msgstr ""
+
+msgid "Start Cleanup"
+msgstr ""
+
+msgid "Cleanup Results"
+msgstr ""
+
+msgid "Items Removed: %d"
+msgstr ""
+
+msgid "Processed in: %s seconds"
+msgstr ""
+
+msgid "Database Size Before: %s"
+msgstr ""
+
+msgid "Database Size After: %s"
+msgstr ""
+
+msgid "Space Saved: %s"
+msgstr ""
+
+msgid "View Details"
+msgstr ""
+
+msgid "Hide Details"
+msgstr ""
+
+# ===========================================================
+# Menu Customizer Strings
+# ===========================================================
+msgid "Menu Customizer"
+msgstr ""
+
+msgid "Admin Menu Management"
+msgstr ""
+
+msgid "Admin Menu"
+msgstr ""
+
+msgid "User Roles"
+msgstr ""
+
+msgid "Select user role"
+msgstr ""
+
+msgid "Show in menu"
+msgstr ""
+
+msgid "Hide in menu"
+msgstr ""
+
+msgid "Enable menu item"
+msgstr ""
+
+msgid "Disable menu item"
+msgstr ""
+
+msgid "Move up"
+msgstr ""
+
+msgid "Move down"
+msgstr ""
+
+msgid "Menu item visibility"
+msgstr ""
+
+msgid "Visibility settings for admin menu items"
+msgstr ""
+
+msgid "All menu items"
+msgstr ""
+
+msgid "Hidden menu items"
+msgstr ""
+
+msgid "Custom menu order"
+msgstr ""
+
+msgid "Reset menu order"
+msgstr ""
+
+msgid "Menu item settings updated successfully"
+msgstr ""
+
+msgid "Menu order saved successfully"
+msgstr ""
+
+msgid "Menu item visibility settings have been saved"
+msgstr ""
+
+msgid "Menu items updated for role: %s"
+msgstr ""
+
+msgid "Search menu items"
+msgstr ""
+
+msgid "Menu item search"
+msgstr ""
+
+msgid "No menu items found"
+msgstr ""
+
+msgid "Toggle all menu items"
+msgstr ""
+
+msgid "Toggle submenu items"
+msgstr ""
+
+msgid "Settings applied to all roles"
+msgstr ""
+
+msgid "Menu Structure"
+msgstr ""
+
+msgid "Drag and drop to reorder menu items"
+msgstr ""
+
+msgid "Save Menu Order"
+msgstr ""
+
+msgid "Reset to Default"
+msgstr ""
+
+msgid "Menu customization"
+msgstr ""
+
+msgid "Customize the WordPress admin menu"
+msgstr ""
+
+# ===========================================================
+# Settings Page Strings
+# ===========================================================
+msgid "General Settings"
+msgstr ""
+
+msgid "Visual Style"
+msgstr ""
+
+msgid "Permissions"
+msgstr ""
+
+msgid "Advanced"
+msgstr ""
+
+msgid "Save Changes"
+msgstr ""
+
+msgid "Reset Settings"
+msgstr ""
+
+msgid "Settings saved successfully"
+msgstr ""
+
+msgid "Settings have been reset to default"
+msgstr ""
+
+msgid "Enable debug mode"
+msgstr ""
+
+msgid "Display debug information in the admin area"
+msgstr ""
+
+msgid "Enable translation debugging"
+msgstr ""
+
+msgid "Show translation keys in the admin interface"
+msgstr ""
+
+msgid "Load minified scripts"
+msgstr ""
+
+msgid "Use compressed JavaScript and CSS files"
+msgstr ""
+
+msgid "Enable admin bar customization"
+msgstr ""
+
+msgid "Customize the WordPress admin bar"
+msgstr ""
+
+msgid "Enable login page customization"
+msgstr ""
+
+msgid "Customize the WordPress login page"
+msgstr ""
+
+msgid "Show plugin admin notice"
+msgstr ""
+
+msgid "Display a notice in the admin area about WP Clean Admin"
+msgstr ""
+
+msgid "Display plugin version in footer"
+msgstr ""
+
+msgid "Show the plugin version number in the admin footer"
+msgstr ""
+
+msgid "Enable performance optimization"
+msgstr ""
+
+msgid "Optimize plugin performance"
+msgstr ""
+
+msgid "Plugin License"
+msgstr ""
+
+msgid "License Key"
+msgstr ""
+
+msgid "Activate License"
+msgstr ""
+
+msgid "Deactivate License"
+msgstr ""
+
+msgid "License Status: %s"
+msgstr ""
+
+msgid "License Expires: %s"
+msgstr ""
+
+# ===========================================================
+# User Roles Strings
+# ===========================================================
+msgid "User Role Management"
+msgstr ""
+
+msgid "Role Settings"
+msgstr ""
+
+msgid "Select Role"
+msgstr ""
+
+msgid "Role Capabilities"
+msgstr ""
+
+msgid "Manage capabilities for the selected role"
+msgstr ""
+
+msgid "View capabilities"
+msgstr ""
+
+msgid "Edit capabilities"
+msgstr ""
+
+msgid "Save Role Capabilities"
+msgstr ""
+
+msgid "Role capabilities updated successfully"
+msgstr ""
+
+msgid "Add New Role"
+msgstr ""
+
+msgid "Role Name"
+msgstr ""
+
+msgid "Display Name"
+msgstr ""
+
+msgid "Base Role"
+msgstr ""
+
+msgid "Create Role"
+msgstr ""
+
+msgid "Role created successfully"
+msgstr ""
+
+msgid "Delete Role"
+msgstr ""
+
+msgid "Role deleted successfully"
+msgstr ""
+
+msgid "Are you sure you want to delete this role?"
+msgstr ""
+
+msgid "This action cannot be undone."
+msgstr ""
+
+msgid "Role name already exists"
+msgstr ""
+
+msgid "Please enter a valid role name"
+msgstr ""
+
+msgid "Please select a base role"
+msgstr ""
+
+msgid "Role Management"
+msgstr ""
+
+# ===========================================================
+# JavaScript Strings
+# ===========================================================
+msgid "Loading..."
+msgstr ""
+
+msgid "Processing..."
+msgstr ""
+
+msgid "Saving..."
+msgstr ""
+
+msgid "Success!"
+msgstr ""
+
+msgid "Error!"
+msgstr ""
+
+msgid "Warning!"
+msgstr ""
+
+msgid "Info!"
+msgstr ""
+
+msgid "Confirm"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "OK"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Yes"
+msgstr ""
+
+msgid "No"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Filter"
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Select All"
+msgstr ""
+
+msgid "Deselect All"
+msgstr ""
+
+msgid "Toggle Selection"
+msgstr ""
+
+msgid "Please wait..."
+msgstr ""
+
+msgid "Please select an option"
+msgstr ""
+
+msgid "Please enter a value"
+msgstr ""
+
+msgid "Invalid input"
+msgstr ""
+
+msgid "Input too short"
+msgstr ""
+
+msgid "Input too long"
+msgstr ""
+
+msgid "Value out of range"
+msgstr ""
+
+msgid "Loading data..."
+msgstr ""
+
+msgid "Data loaded successfully"
+msgstr ""
+
+msgid "Failed to load data"
+msgstr ""
+
+msgid "Saving data..."
+msgstr ""
+
+msgid "Data saved successfully"
+msgstr ""
+
+msgid "Failed to save data"
+msgstr ""
+
+msgid "Deleting..."
+msgstr ""
+
+msgid "Deletion successful"
+msgstr ""
+
+msgid "Deletion failed"
+msgstr ""
+
+msgid "Updating..."
+msgstr ""
+
+msgid "Update successful"
+msgstr ""
+
+msgid "Update failed"
+msgstr ""
+
+msgid "Are you sure?"
+msgstr ""
+
+msgid "This action cannot be undone."
+msgstr ""
+
+msgid "File too large"
+msgstr ""
+
+msgid "Invalid file type"
+msgstr ""
+
+msgid "Upload failed"
+msgstr ""
+
+msgid "Upload successful"
+msgstr ""
+
+msgid "File uploaded successfully"
+msgstr ""
+
+msgid "Please upload a file"
+msgstr ""
+
+msgid "Processing request..."
+msgstr ""
+
+msgid "Request processed successfully"
+msgstr ""
+
+msgid "Request processing failed"
+msgstr ""
+
+msgid "Connection error"
+msgstr ""
+
+msgid "Timeout error"
+msgstr ""
+
+msgid "Server error"
+msgstr ""
+
+msgid "Network error"
+msgstr ""
+
+msgid "No data available"
+msgstr ""
+
+msgid "No results found"
+msgstr ""
+
+msgid "Items per page:"
+msgstr ""
+
+msgid "Page"
+msgstr ""
+
+msgid "of"
+msgstr ""
+
+msgid "First"
+msgstr ""
+
+msgid "Previous"
+msgstr ""
+
+msgid "Next"
+msgstr ""
+
+msgid "Last"
+msgstr ""
+
+msgid "Sort by:"
+msgstr ""
+
+msgid "Ascending"
+msgstr ""
+
+msgid "Descending"
+msgstr ""
+
+msgid "More options"
+msgstr ""
+
+msgid "Less options"
+msgstr ""
+
+msgid "Expand"
+msgstr ""
+
+msgid "Collapse"
+msgstr ""
+
+msgid "Expand All"
+msgstr ""
+
+msgid "Collapse All"
+msgstr ""
+
+msgid "Show Details"
+msgstr ""
+
+msgid "Hide Details"
+msgstr ""
+
+msgid "View Log"
+msgstr ""
+
+msgid "Export Data"
+msgstr ""
+
+msgid "Import Data"
+msgstr ""
+
+msgid "Print"
+msgstr ""
+
+msgid "Refresh"
+msgstr ""
+
+msgid "Reload"
+msgstr ""
+
+msgid "Download"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "Drag and drop files here"
+msgstr ""
+
+msgid "or"
+msgstr ""
+
+msgid "Browse files"
+msgstr ""
+
+msgid "File name"
+msgstr ""
+
+msgid "File size"
+msgstr ""
+
+msgid "File type"
+msgstr ""
+
+msgid "Upload date"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+msgid "View"
+msgstr ""
+
+msgid "Edit"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
+msgid "Move"
+msgstr ""
+
+msgid "Rename"
+msgstr ""
+
+msgid "Duplicate"
+msgstr ""
+
+msgid "Restore"
+msgstr ""
+
+msgid "Archive"
+msgstr ""
+
+msgid "Activate"
+msgstr ""
+
+msgid "Deactivate"
+msgstr ""
+
+msgid "Enable"
+msgstr ""
+
+msgid "Disable"
+msgstr ""
+
+msgid "Open"
+msgstr ""
+
+msgid "Close"
+msgstr ""
+
+msgid "Save"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Apply"
+msgstr ""
+
+msgid "Confirm"
+msgstr ""
+
+msgid "Discard"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Reset"
+msgstr ""
+
+msgid "Clear"
+msgstr ""
+
+msgid "Search"
+msgstr ""
+
+msgid "Filter"
+msgstr ""
+
+msgid "Sort"
+msgstr ""
+
+msgid "Group"
+msgstr ""
+
+msgid "View"
+msgstr ""
+
+msgid "List"
+msgstr ""
+
+msgid "Grid"
+msgstr ""
+
 msgid "Compact"
 msgstr ""
 
-#: includes/class-wpca-settings.php:741
-msgid "Standard (Default)"
+msgid "Detailed"
 msgstr ""
 
-#: includes/class-wpca-settings.php:742
-msgid "Spacious"
+msgid "Columns"
 msgstr ""
 
-#: includes/class-wpca-settings.php:745
-msgid "Adjust the spacing and padding of elements in the admin interface."
+msgid "Settings"
 msgstr ""
 
-#: includes/class-wpca-settings.php:753
-msgid "None (Sharp Corners)"
+msgid "Preferences"
 msgstr ""
 
-#: includes/class-wpca-settings.php:754
-msgid "Small (4px, Default)"
+msgid "Help"
 msgstr ""
 
-#: includes/class-wpca-settings.php:755
-msgid "Large (8px, Rounded)"
+msgid "About"
 msgstr ""
 
-#: includes/class-wpca-settings.php:758
-msgid "Choose the border-radius style for various elements."
-msgstr ""
-
-#: includes/class-wpca-settings.php:766
-msgid "System Default"
-msgstr ""
-
-#: includes/class-wpca-settings.php:767
-msgid "Google Fonts"
-msgstr ""
-
-#: includes/class-wpca-settings.php:770
-msgid "Select the font stack to be used in the admin area."
-msgstr ""
-
-#: includes/class-wpca-settings.php:778
-msgid "Small"
-msgstr ""
-
-#: includes/class-wpca-settings.php:779
-msgid "Medium (Default)"
-msgstr ""
-
-#: includes/class-wpca-settings.php:780
-msgid "Large"
-msgstr ""
-
-#: includes/class-wpca-settings.php:783
-msgid "Adjust the base font size for the admin interface."
-msgstr ""
-
-#: includes/class-wpca-settings.php:791
-msgid "WordPress Dashicons"
-msgstr ""
-
-#: includes/class-wpca-settings.php:792
-msgid "Linear Icons"
-msgstr ""
-
-#: includes/class-wpca-settings.php:795
-msgid "Choose the icon set for the admin interface."
-msgstr ""
-
-#: includes/class-wpca-settings.php:818
-msgid "Language Switcher"
-msgstr ""
-
-#: includes/class-wpca-settings.php:823
-msgid "Back to Home Link"
-msgstr ""
-
-#: includes/class-wpca-settings.php:828
-msgid "Register Link"
-msgstr ""
-
-#: includes/class-wpca-settings.php:833
-msgid "Remember Me Checkbox"
-msgstr ""
-
-#: includes/class-wpca-settings.php:849
-msgid "Hide \"WordPress\" in page titles"
-msgstr ""
-
-#: includes/class-wpca-settings.php:851
-msgid "When enabled, removes \"WordPress\" from admin page titles."
-msgstr ""
-
-#: includes/class-wpca-settings.php:862
-msgid "WordPress Logo"
-msgstr ""
-
-#: includes/class-wpca-settings.php:866
-msgid "Site Name"
-msgstr ""
-
-#: includes/class-wpca-settings.php:870
-msgid "Updates"
-msgstr ""
-
-#: includes/class-wpca-settings.php:874
-msgid "Comments"
-msgstr ""
-
-#: includes/class-wpca-settings.php:878
-msgid "New Content"
-msgstr ""
-
-#: includes/class-wpca-settings.php:882
-msgid "My Account"
-msgstr ""
-
-#: includes/class-wpca-settings.php:912
-msgid "Default"
-msgstr ""
-
-#: includes/class-wpca-settings.php:916
-msgid "Modern"
-msgstr ""
-
-#: includes/class-wpca-settings.php:920
-msgid "Minimal"
-msgstr ""
-
-#: includes/class-wpca-settings.php:924
-msgid "Dark"
-msgstr ""
-
-#: includes/class-wpca-settings.php:928
-msgid "Gradient"
-msgstr ""
-
-#: includes/class-wpca-settings.php:932
-msgid "Custom"
-msgstr ""
-
-#: includes/class-wpca-settings.php:941
-msgid "Custom Login Options"
-msgstr ""
-
-#: includes/class-wpca-settings.php:945
-msgid "Choose from predefined login styles or create your own custom style."
-msgstr ""
-
-#: includes/class-wpca-settings.php:951
-msgid "Custom Logo"
-msgstr ""
-
-#: includes/class-wpca-settings.php:957
-msgid "Choose Image"
-msgstr ""
-
-#: includes/class-wpca-settings.php:958
-msgid "Remove"
-msgstr ""
-
-#: includes/class-wpca-settings.php:959
-msgid "Upload a custom logo for the login page. Recommended size: 320×80px."
-msgstr ""
-
-#: includes/class-wpca-settings.php:961
-msgid "Login Logo Preview"
-msgstr ""
-
-#: includes/class-wpca-settings.php:967
-msgid "Background Image"
-msgstr ""
-
-#: includes/class-wpca-settings.php:973
-msgid "Upload a custom background image for the login page."
-msgstr ""
-
-#: includes/class-wpca-settings.php:975
-msgid "Background Preview"
-msgstr ""
-
-#: includes/class-wpca-settings.php:981
-msgid "Custom CSS"
-msgstr ""
-
-#: includes/class-wpca-settings.php:983
-msgid "Add custom CSS to further customize the login page."
-msgstr ""
-
-#: includes/class-wpca-settings.php:991
-msgid "Live Preview"
-msgstr ""
-
-#: includes/class-wpca-settings.php:992
-msgid "Preview how your login page will look with the current settings."
-msgstr ""
-
-#: includes/class-wpca-settings.php:1000
-msgid "This is a preview of how your login page will look."
-msgstr ""
-
-#: includes/class-wpca-settings.php:1010
-msgid "Version %s"
-msgstr ""
-
-#: includes/class-wpca-settings.php:1014
-msgid "Plugin Description"
-msgstr ""
-
-#: includes/class-wpca-settings.php:1015
-msgid "WP Clean Admin is a powerful WordPress plugin designed to streamline and customize your WordPress admin experience. It provides a cleaner, more efficient interface by allowing you to hide unnecessary elements, customize the visual appearance, and reorganize the admin menu to better suit your workflow."
-msgstr ""
-
-#: includes/class-wpca-settings.php:1019
-msgid "Key Features"
-msgstr ""
-
-#: includes/class-wpca-settings.php:1021
-msgid "Hide unnecessary dashboard widgets"
-msgstr ""
-
-#: includes/class-wpca-settings.php:1022
-msgid "Customize admin menu by hiding or reordering items"
-msgstr ""
-
-#: includes/class-wpca-settings.php:1023
-msgid "Hide admin bar items for a cleaner top bar"
-msgstr ""
-
-#: includes/class-wpca-settings.php:1024
-msgid "Choose from multiple visual themes or create your own"
-msgstr ""
-
-#: includes/class-wpca-settings.php:1025
-msgid "Adjust layout density and typography settings"
-msgstr ""
-
-#: includes/class-wpca-settings.php:1026
-msgid "Customize colors, shadows, and border styles"
-msgstr ""
-
-#: includes/class-wpca-settings.php:1031
-msgid "Author"
-msgstr ""
-
-#: includes/class-wpca-settings.php:1032
-msgid "Created by WordPress Admin UI Specialists"
-msgstr ""
-
-#: includes/class-wpca-settings.php:1033
-msgid "Visit Plugin Website"
-msgstr ""
-
-#: includes/class-wpca-settings.php:1034
 msgid "Documentation"
 msgstr ""
 
-#: includes/class-wpca-settings.php:1035
 msgid "Support"
 msgstr ""
 
-#: includes/class-wpca-settings.php:1039
-msgid "Rate & Review"
+msgid "Feedback"
 msgstr ""
 
-#: includes/class-wpca-settings.php:1040
-msgid "If you find this plugin useful, please consider leaving a review on WordPress.org. Your feedback helps improve the plugin and reach more users."
+msgid "Logout"
 msgstr ""
 
-#: includes/class-wpca-settings.php:1041
-msgid "Rate on WordPress.org"
+# ===========================================================
+# Module Initialization Strings
+# ===========================================================
+msgid "WPCA Module: %s initialized successfully"
 msgstr ""
 
-#: wp-clean-admin.php:128
-msgid "Settings"
+msgid "WPCA Module: %s failed to initialize"
+msgstr ""
+
+msgid "WPCA Module: %s already initialized"
+msgstr ""
+
+msgid "WPCA Module: %s not found"
+msgstr ""
+
+msgid "WPCA Core initialized successfully"
+msgstr ""
+
+msgid "WPCA Core initialization failed"
+msgstr ""
+
+msgid "WPCA Admin menu initialized"
+msgstr ""
+
+msgid "WPCA Admin menu initialization failed"
+msgstr ""
+
+msgid "WPCA Settings module initialized"
+msgstr ""
+
+msgid "WPCA Settings module initialization failed"
+msgstr ""
+
+msgid "WPCA Dashboard module initialized"
+msgstr ""
+
+msgid "WPCA Dashboard module initialization failed"
+msgstr ""
+
+msgid "WPCA Cleanup module initialized"
+msgstr ""
+
+msgid "WPCA Cleanup module initialization failed"
+msgstr ""
+
+msgid "WPCA Menu Customizer module initialized"
+msgstr ""
+
+msgid "WPCA Menu Customizer module initialization failed"
+msgstr ""
+
+msgid "WPCA User Roles module initialized"
+msgstr ""
+
+msgid "WPCA User Roles module initialization failed"
+msgstr ""
+
+msgid "WPCA Permissions module initialized"
+msgstr ""
+
+msgid "WPCA Permissions module initialization failed"
+msgstr ""
+
+msgid "WPCA AJAX handler initialized"
+msgstr ""
+
+msgid "WPCA AJAX handler initialization failed"
+msgstr ""
+
+msgid "Login management module initialized successfully"
+msgstr ""
+
+msgid "Login management module initialization failed: "
+msgstr ""
+
+msgid "Main module initialization failed: "
+msgstr ""
+
+# ===========================================================
+# Permission Related Strings
+# ===========================================================
+msgid "WPCA Permissions: Missing required configuration"
+msgstr ""
+
+msgid "WPCA Permissions: Permission check failed -"
+msgstr ""
+
+msgid "WPCA Permissions: AJAX error -"
+msgstr ""
+
+# ===========================================================
+# Additional Error Messages
+# ===========================================================
+msgid "Core already initialized"
+msgstr ""
+
+msgid "WPCA Error: The configuration object \"wpca_admin\" is missing."
+msgstr ""
+
+msgid "Core initialization failed"
+msgstr ""
+
+msgid "Missing AJAX URL setting"
+msgstr ""
+
+msgid "Cannot load necessary JavaScript settings. Please refresh the page and try again."
+msgstr ""
+
+msgid "Using backup nonce value"
+msgstr ""
+
+msgid "WPCA Core not initialized"
+msgstr ""
+
+msgid "Request processing failed"
+msgstr ""
+
+msgid "You do not have permission to perform this action"
+msgstr ""
+
+msgid "Invalid request parameters"
+msgstr ""
+
+msgid "Please log in first"
+msgstr ""
+
+msgid "Internal server error"
+msgstr ""
+
+msgid "AJAX Error:"
+msgstr ""
+
+msgid "Status:" 
+msgstr ""
+
+msgid "WPCA [DEBUG]:"
+msgstr ""
+
+msgid "WPCA [WARNING]:"
+msgstr ""
+
+msgid "WPCA [ERROR]:"
+msgstr ""
+
+msgid "Module registered:"
+msgstr ""
+
+msgid "Module name already exists:"
+msgstr ""
+
+msgid "WPCA Initialization Exception:"
+msgstr ""
+
+msgid "WP Clean Admin initialization failed:"
+msgstr ""
+
+msgid "Menu management initialization failed"
+msgstr ""
+
+# ===========================================================
+# Login Page Strings
+# ===========================================================
+msgid "WPCA Login Management: Initializing..."
+msgstr ""
+
+msgid "WPCA Login Management: Initialized successfully."
+msgstr ""
+
+msgid "No logo selected"
+msgstr ""
+
+msgid "No background selected"
+msgstr ""
+
+msgid "Show Login Form"
+msgstr ""
+
+# ===========================================================
+# Reset Messages
+# ===========================================================
+msgid "Are you sure you want to reset all general settings to default?"
+msgstr ""
+
+msgid "Are you sure you want to reset all visual style settings to default?"
+msgstr ""
+
+msgid "Are you sure you want to reset these settings to default?"
+msgstr ""
+
+msgid "Reset Defaults"
+msgstr ""
+
+# ===========================================================
+# Permissions UI
+# ===========================================================
+msgid "Insufficient permissions"
 msgstr ""

@@ -1,20 +1,20 @@
 /**
  * WP Clean Admin - Core Module
- * 包含全局变量、通知功能和基础工具
+ * Contains global variables, notification functions and basic utilities
  */
 
-// 确保jQuery可用
+// Ensure jQuery is available
 if (typeof jQuery === 'undefined') {
-    console.error('WP Clean Admin 错误: jQuery 未加载');
+    console.error('WP Clean Admin Error: jQuery is not loaded');
     throw new Error('jQuery is required for WP Clean Admin');
 }
 
-// 创建全局命名空间
+// Create global namespace
 window.WPCA = window.WPCA || {};
 
-// 核心模块
+// Core module
 WPCA.core = {
-    // 配置对象
+    // Configuration object
     config: {
         ajaxurl: '',
         nonce: '',
@@ -23,13 +23,13 @@ WPCA.core = {
         loadedModules: []
     },
     
-    // 状态标志
+    // Status flags
     isInitialized: false,
     hasErrors: false,
     
-    // 获取全局配置，从多个来源合并
+    // Get global configuration, merged from multiple sources
     getGlobalConfig: function() {
-        // 从多个可能的来源合并配置
+        // Merge configuration from multiple possible sources
         const sources = [
             window.wpca_admin || {},
             window.wpca_settings || {},
@@ -45,7 +45,7 @@ WPCA.core = {
             }
         });
         
-        // 确保ajaxurl始终可用
+        // Ensure ajaxurl is always available
         if (!mergedConfig.ajaxurl) {
             mergedConfig.ajaxurl = (typeof ajaxurl !== 'undefined') ? ajaxurl : '/wp-admin/admin-ajax.php';
         }
@@ -53,13 +53,13 @@ WPCA.core = {
         return mergedConfig;
     },
 
-    // 初始化检查
+    // Initialization check
     initCheck: function() {
-        // 获取合并的配置
+        // Get merged configuration
         const config = this.getGlobalConfig();
         this.config = {...this.config, ...config};
         
-        // 验证必要的配置
+        // Validate necessary configuration
         if (!this.config.ajaxurl) {
             this.logError('缺少 AJAX URL 设置');
             this.showNotice('error', '无法加载必要的 JavaScript 设置。请刷新页面重试。');
@@ -67,7 +67,7 @@ WPCA.core = {
             return false;
         }
         
-        // 提供默认的nonce（在AJAX请求中仍然会验证）
+        // Provide default nonce (still verified in AJAX request)
         if (!this.config.nonce) {
             this.config.nonce = typeof wpApiSettings !== 'undefined' ? wpApiSettings.nonce : '';
             this.logWarning('使用备用 nonce 值');
@@ -77,20 +77,20 @@ WPCA.core = {
         return true;
     },
     
-    // 基础 AJAX 请求封装
+    // Basic AJAX request encapsulation
     ajaxRequest: function(action, data = {}, options = {}) {
-        // 确保核心已初始化
+        // Ensure core is initialized
         if (!this.isInitialized && !this.initCheck()) {
             return Promise.reject(new Error('WPCA 核心未初始化'));
         }
         
-        // 默认选项
+        // Default options
         const defaultOptions = {
             type: 'POST',
             url: this.config.ajaxurl,
             dataType: 'json',
             beforeSend: (xhr) => {
-                // 添加 nonce 到请求头
+                // Add nonce to request header
                 if (this.config.nonce) {
                     xhr.setRequestHeader('X-WP-Nonce', this.config.nonce);
                 }
@@ -100,17 +100,17 @@ WPCA.core = {
             }
         };
         
-        // 合并选项和数据
+        // Merge options and data
         const mergedOptions = {...defaultOptions, ...options};
         mergedOptions.data = {...mergedOptions.data, ...data, action: action};
         
-        // 添加调试信息
+        // Add debugging information
         this.logDebug('AJAX 请求:', mergedOptions);
         
         return jQuery.ajax(mergedOptions);
     },
     
-    // AJAX 错误处理
+    // AJAX error handling
     handleAjaxError: function(xhr, status, error) {
         let errorMessage = '请求处理失败';
         
@@ -128,9 +128,9 @@ WPCA.core = {
         this.showNotice('error', errorMessage);
     },
     
-    // 显示通知
+    // Show notification
     showNotice: function(type, message, duration = 3000) {
-        // 确保在管理界面中才显示通知
+        // Ensure notification is displayed only in management interface
         if (jQuery('.wrap').length) {
             const noticeClass = type === 'error' ? 'notice-error' : 
                               type === 'success' ? 'notice-success' : 
@@ -139,24 +139,24 @@ WPCA.core = {
             const notice = jQuery(`<div class="notice ${noticeClass} is-dismissible"><p><strong>WP Clean Admin:</strong> ${message}</p></div>`);
             notice.prependTo('.wrap').hide().fadeIn();
             
-            // 自动关闭（除了错误通知）
+            // Automatically close (except error notifications)
             if (type !== 'error') {
                 setTimeout(() => {
                     notice.fadeOut('slow', () => notice.remove());
                 }, duration);
             }
             
-            // 添加关闭功能
+            // Add closing functionality
             notice.on('click', '.notice-dismiss', function() {
                 notice.fadeOut('slow', () => notice.remove());
             });
         } else {
-            // 如果无法显示通知，则使用alert
+            // If unable to display notification, use alert
             alert(message);
         }
     },
     
-    // 调试日志函数
+    // Debug log function
     logDebug: function(...args) {
         if (this.config.debug && window.console && console.log) {
             console.log('WPCA [DEBUG]:', ...args);
@@ -176,16 +176,16 @@ WPCA.core = {
     },
 
     /**
-     * 初始化核心功能
+     * Initialize core functionality
      */
     init: function() {
-        // 防止重复初始化
+        // Prevent reinitialization
         if (this.isInitialized) {
             this.logWarning('核心已经初始化');
             return;
         }
         
-        // 执行初始化检查
+        // Execute initialization check
         const success = this.initCheck();
         
         if (success) {
@@ -194,13 +194,13 @@ WPCA.core = {
             this.logError('核心初始化失败');
         }
         
-        // 注册全局事件
+        // Register global events
         this.registerGlobalEvents();
     },
     
-    // 注册全局事件
+    // Register global events
     registerGlobalEvents: function() {
-        // 监听AJAX完成事件，用于调试
+        // Listen to AJAX complete event, for debugging
         if (this.config.debug) {
             jQuery(document).ajaxComplete((event, xhr, settings) => {
                 if (settings.url === this.config.ajaxurl && settings.data && settings.data.includes('action=')) {
@@ -210,7 +210,7 @@ WPCA.core = {
         }
     },
     
-    // 模块注册功能
+    // Module registration functionality
     registerModule: function(moduleName, module) {
         if (!WPCA[moduleName]) {
             WPCA[moduleName] = module;

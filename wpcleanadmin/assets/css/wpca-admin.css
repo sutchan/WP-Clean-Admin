@@ -9,7 +9,7 @@
 
 /* Default CSS Variables (aligned with design guide) */
 :root {
-    --wpca-primary-color: #4A90E2; /* 清新蓝 */
+    --wpca-primary-color: #4A90E2; /* Fresh blue */
     --wpca-background-color: #F8F9FA;
     --wpca-text-color: #2D3748;
     --wpca-border-color: #E0E0E0; /* Light gray for borders */
@@ -26,6 +26,10 @@
     --wpca-font-size-small: 13px;
     --wpca-font-size-medium: 14px;
     --wpca-font-size-large: 15px;
+    
+    --wpca-shadow-subtle: 0 1px 3px rgba(0,0,0,0.12);
+    --wpca-shadow-moderate: 0 3px 6px rgba(0,0,0,0.16);
+    --wpca-shadow-pronounced: 0 10px 20px rgba(0,0,0,0.19);
 }
 
 /* Base styles for a flat & clean look */
@@ -176,6 +180,18 @@ body.wpca-shadow-subtle .wp-core-ui .button,
 body.wpca-shadow-subtle .wp-core-ui .button-primary,
 body.wpca-shadow-subtle .wp-core-ui .button-secondary {
     box-shadow: var(--wpca-shadow-subtle);
+}
+body.wpca-shadow-moderate .postbox-container .postbox,
+body.wpca-shadow-moderate .wp-core-ui .button,
+body.wpca-shadow-moderate .wp-core-ui .button-primary,
+body.wpca-shadow-moderate .wp-core-ui .button-secondary {
+    box-shadow: var(--wpca-shadow-moderate);
+}
+body.wpca-shadow-pronounced .postbox-container .postbox,
+body.wpca-shadow-pronounced .wp-core-ui .button,
+body.wpca-shadow-pronounced .wp-core-ui .button-primary,
+body.wpca-shadow-pronounced .wp-core-ui .button-secondary {
+    box-shadow: var(--wpca-shadow-pronounced);
 }
 body.wpca-shadow-none .postbox-container .postbox,
 body.wpca-shadow-none .wp-core-ui .button,
@@ -397,7 +413,7 @@ body.wpca-theme-dark {
     background: #5a6fd1;
 }
 
-/* 新增 Glassmorphism 样式 */
+/* New Glassmorphism Style */
 .wpca-login-glassmorphism {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     background-size: 400% 400%;
@@ -446,7 +462,7 @@ body.wpca-theme-dark {
     border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
-/* 新增 Neumorphism 样式 */
+/* New Neumorphism Style */
 .wpca-login-neumorphism {
     background-color: #e0e5ec;
     color: #2d3748;
@@ -621,18 +637,6 @@ body.wpca-theme-dark {
     background: #1a5d8e;
     transform: translateY(-1px);
 }
-.wpca-login-preview-input {
-    height: 40px;
-    margin-bottom: 15px;
-    background: #f1f1f1;
-    border-radius: 4px;
-}
-.wpca-login-preview-button {
-    height: 40px;
-    background: #2271b1;
-    border-radius: 4px;
-    margin-bottom: 15px;
-}
 .wpca-login-preview-links {
     display: flex;
     justify-content: space-between;
@@ -700,7 +704,7 @@ body.wpca-theme-dark {
     border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* 登录样式预览区域的新增样式 */
+/* New styles for login preview area */
 .wpca-login-preview.glassmorphism-preview {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }

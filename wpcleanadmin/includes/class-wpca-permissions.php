@@ -49,15 +49,23 @@ class WPCA_Permissions {
      * 构造函数
      */
     public function __construct() {
-        add_action('admin_init', array($this, 'register_capabilities'));
-        add_action('wp_ajax_wpca_check_permission', array($this, 'ajax_check_permission'));
-        add_filter('wpca_localize_script_data', array($this, 'add_capabilities_to_js'));
+        if (function_exists('add_action')) {
+            add_action('admin_init', array($this, 'register_capabilities'));
+            add_action('wp_ajax_wpca_check_permission', array($this, 'ajax_check_permission'));
+        }
+        if (function_exists('add_filter')) {
+            add_filter('wpca_localize_script_data', array($this, 'add_capabilities_to_js'));
+        }
     }
 
     /**
      * 注册插件权限
      */
     public function register_capabilities() {
+        if (!function_exists('get_role')) {
+            return;
+        }
+        
         // 定义每个角色的权限配置
         $role_configs = array(
             'administrator' => array(
@@ -83,9 +91,9 @@ class WPCA_Permissions {
             if (!$role) continue;
             
             foreach ($caps as $cap => $grant) {
-                if ($grant) {
+                if ($grant && method_exists($role, 'add_cap')) {
                     $role->add_cap($cap, true);
-                } else {
+                } else if (!$grant) {
                     // 安全地移除权限（防止PHP警告）
                     if (method_exists($role, 'remove_cap')) {
                         $role->remove_cap($cap);
@@ -110,12 +118,20 @@ class WPCA_Permissions {
         global $wp_roles;
         
         if (!isset($wp_roles)) {
-            $wp_roles = new WP_Roles();
+            if (class_exists('WP_Roles')) {
+                $wp_roles = new WP_Roles();
+            } else {
+                return;
+            }
         }
         
-        foreach ($wp_roles->role_objects as $role) {
-            foreach (array_keys($this->capabilities) as $cap) {
-                $role->remove_cap($cap);
+        if (isset($wp_roles->role_objects)) {
+            foreach ($wp_roles->role_objects as $role) {
+                foreach (array_keys($this->capabilities) as $cap) {
+                    if (method_exists($role, 'remove_cap')) {
+                        $role->remove_cap($cap);
+                    }
+                }
             }
         }
     }
@@ -178,52 +194,69 @@ class WPCA_Permissions {
      */
     public function ajax_check_permission() {
         // 检查是否为 AJAX 请求
-        if (!wp_doing_ajax()) {
-            wp_send_json_error(array(
-                'message' => __('非法请求', 'wp-clean-admin')
-            ), 400);
+        if (function_exists('wp_doing_ajax') && !wp_doing_ajax()) {
+            if (function_exists('wp_send_json_error')) {
+                wp_send_json_error(array(
+                    'message' => __('Invalid request', 'wp-clean-admin')
+                ), 400);
+            }
+            return;
         }
         
         // 检查nonce - 注意: 使用静默模式以自定义错误消息
-        if (!check_ajax_referer('wpca_settings-options', 'nonce', false)) {
-            wp_send_json_error(array(
-                'message' => __('安全验证失败', 'wp-clean-admin')
-            ), 403);
+        if (function_exists('check_ajax_referer') && !check_ajax_referer('wpca_settings-options', false, false)) {
+            if (function_exists('wp_send_json_error')) {
+                wp_send_json_error(array(
+                    'message' => __('Security verification failed', 'wp-clean-admin')
+                ), 403);
+            }
+            return;
         }
         
         // 基础安全检查 - 确保用户已登录
-        if (!is_user_logged_in()) {
-            wp_send_json_error(array(
-                'message' => __('用户未登录', 'wp-clean-admin')
-            ), 401);
+        if (function_exists('is_user_logged_in') && !is_user_logged_in()) {
+            if (function_exists('wp_send_json_error')) {
+                wp_send_json_error(array(
+                    'message' => __('User not logged in', 'wp-clean-admin')
+                ), 401);
+            }
+            return;
         }
         
         // 检查参数
         if (!isset($_POST['capability']) || empty($_POST['capability'])) {
-            wp_send_json_error(array(
-                'message' => __('缺少权限参数', 'wp-clean-admin')
-            ), 400);
+            if (function_exists('wp_send_json_error')) {
+                wp_send_json_error(array(
+                    'message' => __('Missing permission parameter', 'wp-clean-admin')
+                ), 400);
+            }
+            return;
         }
         
-        $capability = sanitize_text_field($_POST['capability']);
+        $capability = function_exists('sanitize_text_field') ? sanitize_text_field($_POST['capability']) : filter_var($_POST['capability'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
         
         // 验证权限名称是否有效
         $instance = new self();
         $valid_caps = array_keys($instance->get_capabilities());
         if (!in_array($capability, $valid_caps)) {
-            wp_send_json_error(array(
-                'message' => __('无效的权限名称', 'wp-clean-admin')
-            ), 400);
+            if (function_exists('wp_send_json_error')) {
+                wp_send_json_error(array(
+                    'message' => __('Invalid permission name', 'wp-clean-admin')
+                ), 400);
+            }
+            return;
         }
         
         // 检查权限
         $has_permission = self::current_user_can($capability);
         
-        wp_send_json_success(array(
-            'has_permission' => $has_permission,
-            'capability' => $capability,
-            'timestamp' => time()
-        ));
+        if (function_exists('wp_send_json_success')) {
+            wp_send_json_success(array(
+                'has_permission' => $has_permission,
+                'capability' => $capability,
+                'timestamp' => function_exists('time') ? time() : 0
+            ));
+        }
     }
 
     /**
@@ -240,7 +273,7 @@ class WPCA_Permissions {
         }
         
         $data['user_capabilities'] = $user_capabilities;
-        $data['can_manage_options'] = current_user_can('manage_options');
+        $data['can_manage_options'] = function_exists('current_user_can') ? current_user_can('manage_options') : false;
         
         return $data;
     }
