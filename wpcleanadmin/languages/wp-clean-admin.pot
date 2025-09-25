@@ -99,6 +99,25 @@ msgstr ""
 msgid "Menu item \"%s\" does not exist"
 msgstr ""
 
+# AJAX Error Messages (from JS files)
+msgid "Request processing failed"
+msgstr ""
+
+msgid "You do not have permission to perform this action"
+msgstr ""
+
+msgid "Invalid request parameters"
+msgstr ""
+
+msgid "Please log in first"
+msgstr ""
+
+msgid "Internal server error"
+msgstr ""
+
+msgid "Insufficient permissions"
+msgstr ""
+
 # ===========================================================
 # Dashboard Strings
 # ===========================================================

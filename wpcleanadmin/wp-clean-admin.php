@@ -88,7 +88,13 @@ function wpca_load_admin_resources() {
             'ajaxurl' => function_exists( 'admin_url' ) ? admin_url( 'admin-ajax.php' ) : '/wp-admin/admin-ajax.php',
             'nonce'   => function_exists( 'wp_create_nonce' ) ? wp_create_nonce( 'wpca_admin_nonce' ) : 'dummy_nonce',
             'debug'   => defined( 'WP_DEBUG' ) && WP_DEBUG,
-            'version' => WPCA_VERSION
+            'version' => WPCA_VERSION,
+            // Error messages for AJAX requests
+            'error_request_processing_failed' => __('Request processing failed', 'wp-clean-admin'),
+            'error_insufficient_permissions' => __('You do not have permission to perform this action', 'wp-clean-admin'),
+            'error_invalid_parameters' => __('Invalid request parameters', 'wp-clean-admin'),
+            'error_not_logged_in' => __('Please log in first', 'wp-clean-admin'),
+            'error_server_error' => __('Internal server error', 'wp-clean-admin')
         );
         
         if ( function_exists( 'wp_localize_script' ) ) {

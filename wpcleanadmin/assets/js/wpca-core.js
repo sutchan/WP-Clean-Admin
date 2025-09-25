@@ -112,16 +112,16 @@ WPCA.core = {
     
     // AJAX error handling
     handleAjaxError: function(xhr, status, error) {
-        let errorMessage = '请求处理失败';
+        let errorMessage = wpca_admin.error_request_processing_failed || '请求处理失败';
         
         if (xhr.status === 403) {
-            errorMessage = '您没有执行此操作的权限';
+            errorMessage = wpca_admin.error_insufficient_permissions || '您没有执行此操作的权限';
         } else if (xhr.status === 400) {
-            errorMessage = '请求参数错误';
+            errorMessage = wpca_admin.error_invalid_parameters || '请求参数错误';
         } else if (xhr.status === 401) {
-            errorMessage = '请先登录';
+            errorMessage = wpca_admin.error_not_logged_in || '请先登录';
         } else if (xhr.status === 500) {
-            errorMessage = '服务器内部错误';
+            errorMessage = wpca_admin.error_server_error || '服务器内部错误';
         }
         
         this.logError('AJAX 错误:', error, '状态:', xhr.status);

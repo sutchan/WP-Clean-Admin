@@ -234,7 +234,13 @@ class WPCA_Settings {
                         'reset_successful_text' => __('successful', 'wp-clean-admin'),
                         'media_title' => __('Select or Upload Media', 'wp-clean-admin'),
                         'media_button' => __('Use this media', 'wp-clean-admin'),
-                        'debug' => defined('WP_DEBUG') && WP_DEBUG
+                        'debug' => defined('WP_DEBUG') && WP_DEBUG,
+                        // Error messages for AJAX requests
+                        'error_request_processing_failed' => __('Request processing failed', 'wp-clean-admin'),
+                        'error_insufficient_permissions' => __('You do not have permission to perform this action', 'wp-clean-admin'),
+                        'error_invalid_parameters' => __('Invalid request parameters', 'wp-clean-admin'),
+                        'error_not_logged_in' => __('Please log in first', 'wp-clean-admin'),
+                        'error_server_error' => __('Internal server error', 'wp-clean-admin')
                     )
                 ));
                 

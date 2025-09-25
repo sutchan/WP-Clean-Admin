@@ -77,7 +77,7 @@
                 if (requiredPermission && !window.WPCA.permissions.hasPermission(requiredPermission)) {
                     $button.prop('disabled', true)
                            .addClass('wpca-disabled')
-                           .attr('title', '权限不足');
+                           .attr('title', wpca_admin.error_insufficient_permissions || '权限不足');
                 }
             });
         }

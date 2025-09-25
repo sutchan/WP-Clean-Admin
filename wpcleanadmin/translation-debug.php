@@ -86,6 +86,11 @@ function wpca_get_test_strings() {
         'Security verification failed',
         'Settings saved successfully',
         'An error occurred while saving settings',
+        'Request processing failed',
+        'You do not have permission to perform this action',
+        'Invalid request parameters',
+        'Please log in first',
+        'Internal server error',
         
         // Menu customization
         'Menu Item',
