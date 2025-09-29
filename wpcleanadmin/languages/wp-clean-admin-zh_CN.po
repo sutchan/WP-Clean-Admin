@@ -1,62 +1,194 @@
-msgid ""
-msgstr ""
-"Project-Id-Version: WP Clean Admin 1.1.0\n"
-"Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"
-"POT-Creation-Date: 2025-09-24 15:00+0800\n"
-"PO-Revision-Date: 2025-09-24 15:00+0800\n"
+"Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin/issues\n"
+"POT-Creation-Date: " . date('Y-m-d H:i:sO') . "\n"
+"PO-Revision-Date: " . date('Y-m-d H:i:sO') . "\n"
 "Last-Translator: \n"
-"Language-Team: \n"
+"Language-Team: Chinese (Simplified)\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.7\n"
-"X-Poedit-Basepath: ..\n"
-"X-Poedit-KeywordsList: __;_e;_x\n"
-"X-Poedit-SearchPath-0: .\n"
-
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Trae AI\n"
 
 # ===========================================================
 # Plugin Core Strings
 # ===========================================================
 msgid "WP Clean Admin"
-msgstr "WP Clean Admin"
+msgstr "WP 简洁管理"
 
-msgid "WP Clean Admin Settings"
-msgstr "WP Clean Admin 设置"
-
-msgid "Settings"
-msgstr "设置"
+msgid "Clean up and customize your WordPress admin area"
+msgstr "清理和自定义您的 WordPress 管理区域"
 
 # ===========================================================
 # Error Messages
 # ===========================================================
 msgid "Invalid request"
-msgstr "无效请求"
+msgstr "请求无效"
 
-msgid "Invalid AJAX request"
-msgstr "无效的 AJAX 请求"
+msgid "Invalid or unauthorized request"
+msgstr "无效或未授权的请求"
+
+msgid "Invalid data structure"
+msgstr "数据结构无效"
+
+msgid "Request processing failed"
+msgstr "请求处理失败"
+
+msgid "You do not have permission to perform this action"
+msgstr "您没有权限执行此操作"
+
+msgid "Missing required parameters"
+msgstr "缺少必要的参数"
+
+msgid "Missing menu order data"
+msgstr "缺少菜单顺序数据"
+
+msgid "Invalid menu order data format"
+msgstr "菜单顺序数据格式无效"
+
+msgid "Missing settings data"
+msgstr "缺少设置数据"
+
+msgid "Invalid settings data format"
+msgstr "设置数据格式无效"
+
+msgid "Missing widgets data"
+msgstr "缺少小工具数据"
+
+msgid "Invalid widgets data format"
+msgstr "小工具数据格式无效"
+
+# ===========================================================
+# Settings Page Strings
+# ===========================================================
+msgid "Default"
+msgstr "默认"
+
+msgid "Modern"
+msgstr "现代"
+
+msgid "Minimal"
+msgstr "简约"
+
+msgid "Dark"
+msgstr "暗色"
+
+msgid "Blue"
+msgstr "蓝色"
+
+msgid "Green"
+msgstr "绿色"
+
+msgid "Purple"
+msgstr "紫色"
+
+msgid "Select a theme style for the admin area."
+msgstr "选择管理区域的主题样式。"
+
+msgid "Language Switcher"
+msgstr "语言切换器"
+
+msgid "Back to Home Link"
+msgstr "返回首页链接"
+
+msgid "Register Link"
+msgstr "注册链接"
+
+msgid "Remember Me Checkbox"
+msgstr "记住我复选框"
+
+msgid "Customize which elements appear on the login page."
+msgstr "自定义登录页面上显示的元素。"
+
+msgid "Hide \"WordPress\" in page titles"
+msgstr "在页面标题中隐藏\"WordPress\""
+
+msgid "When enabled, removes \"WordPress\" from admin page titles."
+msgstr "启用时，从管理页面标题中移除\"WordPress\"。"
+
+msgid "Hide admin bar on frontend"
+msgstr "在前端隐藏管理栏"
+
+msgid "When enabled, hides the WordPress admin bar for all users when viewing the website frontend."
+msgstr "启用时，在查看网站前端时对所有用户隐藏WordPress管理栏。"
+
+msgid "Hide WordPress footer"
+msgstr "隐藏WordPress页脚"
+
+msgid "When enabled, removes the \"Thank you for creating with WordPress\" footer text."
+msgstr "启用时，移除\"感谢使用WordPress创建\"页脚文本。"
+
+msgid "WordPress News and Events"
+msgstr "WordPress新闻和事件"
+
+msgid "Quick Draft"
+msgstr "快速草稿"
+
+msgid "At a Glance"
+msgstr "概览"
+
+msgid "Select dashboard widgets to hide"
+msgstr "选择要隐藏的仪表板小部件"
+
+msgid "WordPress Logo"
+msgstr "WordPress标志"
+
+msgid "Site Name"
+msgstr "站点名称"
+
+msgid "Updates"
+msgstr "更新"
+
+msgid "Comments"
+msgstr "评论"
+
+msgid "New Content"
+msgstr "新内容"
+
+msgid "My Account"
+msgstr "我的账户"
+
+msgid "Invalid request parameters"
+msgstr "请求参数无效"
+
+msgid "Please log in first"
+msgstr "请先登录"
+
+msgid "Internal server error"
+msgstr "服务器内部错误"
+
+msgid "Failed to save settings"
+msgstr "保存设置失败"
+
+msgid "Invalid menu slug"
+msgstr "菜单别名无效"
+
+msgid "Failed to save menu settings"
+msgstr "保存菜单设置失败"
+
+msgid "Failed to reset settings"
+msgstr "重置设置失败"
+
+msgid "Security verification failed."
+msgstr "安全验证失败。"
+
+msgid "You do not have sufficient permissions to perform this action."
+msgstr "您没有足够的权限执行此操作。"
+
+msgid "Menu settings format is invalid, has been reset"
+msgstr "菜单设置格式无效，已重置"
+
+msgid "Please select at least one valid setting type to reset"
+msgstr "请至少选择一个有效的设置类型进行重置"
+
+msgid "An error occurred"
+msgstr "发生错误"
 
 msgid "Security verification failed"
 msgstr "安全验证失败"
 
-msgid "Invalid security nonce"
-msgstr "无效的安全码"
-
 msgid "Insufficient permissions"
 msgstr "权限不足"
-
-msgid "Invalid data structure"
-msgstr "无效的数据结构"
-
-msgid "Invalid settings data"
-msgstr "无效的设置数据"
-
-msgid "Invalid menu slug"
-msgstr "无效的菜单标识符"
-
-msgid "User not logged in"
-msgstr "用户未登录"
 
 msgid "Missing permission parameter"
 msgstr "缺少权限参数"
@@ -64,47 +196,23 @@ msgstr "缺少权限参数"
 msgid "Invalid permission name"
 msgstr "无效的权限名称"
 
-msgid "An error occurred"
-msgstr "发生错误"
+# ===========================================================
+# AJAX Error Messages
+# ===========================================================
+msgid "Request processing failed"
+msgstr "请求处理失败"
 
-msgid "Unknown error"
-msgstr "未知错误"
+msgid "You do not have permission to perform this action"
+msgstr "您没有权限执行此操作"
 
-msgid "Failed to save settings"
-msgstr "设置保存失败"
+msgid "Invalid request parameters"
+msgstr "请求参数无效"
 
-msgid "Error occurred while saving settings"
-msgstr "保存设置时发生错误"
+msgid "Please log in first"
+msgstr "请先登录"
 
-msgid "An error occurred while saving settings."
-msgstr "保存设置时发生错误。"
-
-msgid "Failed to reset settings"
-msgstr "重置设置失败"
-
-msgid "Error occurred while resetting settings"
-msgstr "重置设置时发生错误"
-
-msgid "Error occurred while retrieving settings"
-msgstr "获取设置时发生错误"
-
-msgid "Failed to reset menu order"
-msgstr "重置菜单顺序失败"
-
-msgid "Reset failed. Please try again."
-msgstr "重置失败，请重试。"
-
-msgid "Menu settings format is invalid, has been reset"
-msgstr "菜单设置格式无效，已重置"
-
-msgid "Menu item \"%s\" does not exist"
-msgstr "菜单项 \"%s\" 不存在"
-
-msgid "WordPress media uploader not available"
-msgstr "WordPress 媒体上传器不可用"
-
-msgid "WordPress media uploader not available."
-msgstr "WordPress 媒体上传器不可用。"
+msgid "Internal server error"
+msgstr "服务器内部错误"
 
 # ===========================================================
 # Success Messages
@@ -133,14 +241,29 @@ msgstr "菜单顺序已重置为默认值"
 msgid "successful"
 msgstr "成功"
 
+msgid "Settings saved successfully"
+msgstr "设置保存成功"
+
+msgid "Settings have been reset to default"
+msgstr "设置已重置为默认值"
+
+msgid "Menu visibility updated"
+msgstr "菜单可见性已更新"
+
+msgid "Menu order updated"
+msgstr "菜单顺序已更新"
+
+msgid "Dashboard widgets updated"
+msgstr "仪表盘小工具已更新"
+
 # ===========================================================
 # Action Messages
 # ===========================================================
 msgid "Resetting..."
-msgstr "重置中..."
+msgstr "正在重置..."
 
 msgid "Saving..."
-msgstr "保存中..."
+msgstr "正在保存..."
 
 msgid "Select or Upload Media"
 msgstr "选择或上传媒体"
@@ -152,28 +275,70 @@ msgstr "使用此媒体"
 # Confirmation Messages
 # ===========================================================
 msgid "Are you sure you want to reset all menu settings to default?"
-msgstr "确定要将所有菜单设置重置为默认值吗？"
+msgstr "您确定要将所有菜单设置重置为默认值吗？"
 
 msgid "Are you sure you want to reset all menu settings?"
-msgstr "确定要重置所有菜单设置吗？"
+msgstr "您确定要重置所有菜单设置吗？"
 
 msgid "Are you sure you want to reset all settings to default?"
-msgstr "确定要将所有设置重置为默认值吗？"
+msgstr "您确定要将所有设置重置为默认值吗？"
 
-msgid "Please select at least one valid setting type to reset"
-msgstr "请选择至少一个有效的设置类型进行重置"
+msgid "Are you sure you want to delete this role?"
+msgstr "您确定要删除此角色吗？"
+
+msgid "This action cannot be undone."
+msgstr "此操作无法撤销。"
+
+msgid "Are you sure?"
+msgstr "您确定吗？"
 
 # ===========================================================
 # Settings Page Strings
 # ===========================================================
-msgid "General"
-msgstr "常规"
+msgid "WP Clean Admin Settings"
+msgstr "WP 简洁管理设置"
 
 msgid "General Settings"
 msgstr "常规设置"
 
 msgid "Visual Style"
 msgstr "视觉样式"
+
+msgid "Permissions"
+msgstr "权限"
+
+msgid "Advanced"
+msgstr "高级"
+
+msgid "Save Changes"
+msgstr "保存更改"
+
+msgid "Reset Settings"
+msgstr "重置设置"
+
+msgid "Enable debug mode"
+msgstr "启用调试模式"
+
+msgid "Display debug information in the admin area"
+msgstr "在管理区域显示调试信息"
+
+msgid "Enable translation debugging"
+msgstr "启用翻译调试"
+
+msgid "Hide Dashboard Widgets"
+msgstr "隐藏仪表板小部件"
+
+msgid "Hide WordPress Title"
+msgstr "隐藏WordPress标题"
+
+msgid "Hide WordPress Footer"
+msgstr "隐藏WordPress页脚"
+
+msgid "Hide Frontend Admin Bar"
+msgstr "隐藏前端管理栏"
+
+msgid "Hide Admin Bar Items"
+msgstr "隐藏管理栏项目"
 
 msgid "Theme Style"
 msgstr "主题样式"
@@ -194,7 +359,7 @@ msgid "Layout Density"
 msgstr "布局密度"
 
 msgid "Border Radius"
-msgstr "圆角半径"
+msgstr "边框圆角"
 
 msgid "Font Stack"
 msgstr "字体堆栈"
@@ -205,56 +370,29 @@ msgstr "字体大小"
 msgid "Icon Style"
 msgstr "图标样式"
 
-msgid "Menu Customization"
-msgstr "菜单自定义"
-
 msgid "Menu Order"
 msgstr "菜单顺序"
-
-msgid "Hide Dashboard Widgets"
-msgstr "隐藏仪表盘小部件"
-
-msgid "Hide WordPress Title"
-msgstr "隐藏 WordPress 标题"
-
-msgid "Hide Admin Bar Items"
-msgstr "隐藏管理栏项目"
-
-msgid "Login Page"
-msgstr "登录页面"
-
-msgid "Login Page Elements"
-msgstr "登录页面元素"
 
 msgid "Show/Hide Elements"
 msgstr "显示/隐藏元素"
 
-msgid "Login Style"
-msgstr "登录样式"
+msgid "Menu Customization"
+msgstr "菜单自定义"
 
-msgid "About"
-msgstr "关于"
+msgid "Login Page Elements"
+msgstr "登录页面元素"
 
 msgid "About WP Clean Admin"
-msgstr "关于 WP Clean Admin"
+msgstr "关于WP简洁管理"
 
-# ===========================================================
-# Settings Descriptions
-# ===========================================================
 msgid "Configure the appearance and behavior of your admin dashboard."
-msgstr "配置管理仪表盘的外观和行为。"
+msgstr "配置管理仪表板的外观和行为。"
 
 msgid "Customize the overall visual theme, colors, layout and typography."
 msgstr "自定义整体视觉主题、颜色、布局和排版。"
 
-msgid "Menu Order Customization"
-msgstr "菜单顺序自定义"
-
 msgid "Drag and drop menu items to reorder them. Use the toggle switches to show/hide items."
 msgstr "拖放菜单项以重新排序。使用切换开关显示/隐藏项目。"
-
-msgid "Reset to Default Order"
-msgstr "重置为默认顺序"
 
 msgid "Select which admin menu items to hide and reorder them."
 msgstr "选择要隐藏的管理菜单项并重新排序。"
@@ -265,269 +403,632 @@ msgstr "启用菜单自定义"
 msgid "Toggle to show/hide and reorder admin menu items"
 msgstr "切换以显示/隐藏和重新排序管理菜单项"
 
-msgid "Hide \"WordPress\" in page titles"
-msgstr "在页面标题中隐藏 \"WordPress\""
+# ===========================================================
+# Reset Messages
+# ===========================================================
+msgid "Are you sure you want to reset all general settings to default?"
+msgstr "您确定要将所有常规设置重置为默认值吗？"
 
-msgid "When enabled, removes \"WordPress\" from admin page titles."
-msgstr "启用后，从管理页面标题中移除 \"WordPress\"。"
+msgid "Are you sure you want to reset all visual style settings to default?"
+msgstr "您确定要将所有视觉样式设置重置为默认值吗？"
 
-msgid "Custom Login Options"
-msgstr "自定义登录选项"
+msgid "Are you sure you want to reset all login page settings to default?"
+msgstr "您确定要将所有登录页面设置重置为默认值吗？"
+
+msgid "Are you sure you want to reset these settings to default?"
+msgstr "您确定要将这些设置重置为默认值吗？"
+
+msgid "Reset Defaults"
+msgstr "重置默认值"
+
+# ===========================================================
+# Menu Customizer Strings
+# ===========================================================
+msgid "Menu Customizer"
+msgstr "菜单自定义器"
+
+msgid "Admin Menu Management"
+msgstr "管理菜单管理"
+
+msgid "Admin Menu"
+msgstr "管理菜单"
+
+msgid "User Roles"
+msgstr "用户角色"
+
+msgid "Select user role"
+msgstr "选择用户角色"
+
+msgid "Show in menu"
+msgstr "在菜单中显示"
+
+msgid "Hide in menu"
+msgstr "在菜单中隐藏"
+
+msgid "Enable menu item"
+msgstr "启用菜单项"
+
+msgid "Disable menu item"
+msgstr "禁用菜单项"
+
+msgid "Move up"
+msgstr "上移"
+
+msgid "Move down"
+msgstr "下移"
+
+msgid "Menu item visibility"
+msgstr "菜单项可见性"
+
+msgid "Visibility settings for admin menu items"
+msgstr "管理菜单项的可见性设置"
+
+msgid "All menu items"
+msgstr "所有菜单项"
+
+msgid "Hidden menu items"
+msgstr "隐藏的菜单项"
+
+msgid "Custom menu order"
+msgstr "自定义菜单顺序"
+
+msgid "Reset menu order"
+msgstr "重置菜单顺序"
+
+msgid "Menu item settings updated successfully"
+msgstr "菜单项设置更新成功"
+
+msgid "Menu order saved successfully"
+msgstr "菜单顺序保存成功"
+
+msgid "Menu item visibility settings have been saved"
+msgstr "菜单项可见性设置已保存"
+
+msgid "Menu items updated for role: %s"
+msgstr "角色的菜单项已更新：%s"
+
+msgid "Search menu items"
+msgstr "搜索菜单项"
+
+msgid "Menu item search"
+msgstr "菜单项搜索"
+
+msgid "No menu items found"
+msgstr "未找到菜单项"
+
+msgid "Toggle all menu items"
+msgstr "切换所有菜单项"
+
+msgid "Toggle submenu items"
+msgstr "切换子菜单项"
+
+msgid "Settings applied to all roles"
+msgstr "设置应用于所有角色"
+
+msgid "Menu Structure"
+msgstr "菜单结构"
+
+msgid "Drag and drop to reorder menu items"
+msgstr "拖放以重新排序菜单项"
+
+msgid "Save Menu Order"
+msgstr "保存菜单顺序"
+
+msgid "Reset to Default"
+msgstr "重置为默认值"
+
+msgid "Menu customization"
+msgstr "菜单自定义"
+
+msgid "Customize the WordPress admin menu"
+msgstr "自定义WordPress管理菜单"
+
+# ===========================================================
+# User Roles Strings
+# ===========================================================
+msgid "User Role Management"
+msgstr "用户角色管理"
+
+msgid "Role Settings"
+msgstr "角色设置"
+
+msgid "Select Role"
+msgstr "选择角色"
+
+msgid "Role Capabilities"
+msgstr "角色权限"
+
+msgid "Manage capabilities for the selected role"
+msgstr "管理所选角色的权限"
+
+msgid "View capabilities"
+msgstr "查看权限"
+
+msgid "Edit capabilities"
+msgstr "编辑权限"
+
+msgid "Save Role Capabilities"
+msgstr "保存角色权限"
+
+msgid "Role capabilities updated successfully"
+msgstr "角色权限更新成功"
+
+msgid "Add New Role"
+msgstr "添加新角色"
+
+msgid "Role Name"
+msgstr "角色名称"
+
+msgid "Display Name"
+msgstr "显示名称"
+
+msgid "Base Role"
+msgstr "基础角色"
+
+msgid "Create Role"
+msgstr "创建角色"
+
+msgid "Role created successfully"
+msgstr "角色创建成功"
+
+msgid "Delete Role"
+msgstr "删除角色"
+
+msgid "Role deleted successfully"
+msgstr "角色删除成功"
+
+msgid "Role name already exists"
+msgstr "角色名称已存在"
+
+msgid "Please enter a valid role name"
+msgstr "请输入有效的角色名称"
+
+msgid "Please select a base role"
+msgstr "请选择基础角色"
+
+msgid "Role Management"
+msgstr "角色管理"
+
+# ===========================================================
+# JavaScript Strings
+# ===========================================================
+msgid "Loading..."
+msgstr "加载中..."
+
+msgid "Processing..."
+msgstr "处理中..."
+
+msgid "Saving..."
+msgstr "保存中..."
+
+msgid "Success!"
+msgstr "成功！"
+
+msgid "Error!"
+msgstr "错误！"
+
+msgid "Warning!"
+msgstr "警告！"
+
+msgid "Info!"
+msgstr "信息！"
+
+msgid "Confirm"
+msgstr "确认"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "OK"
+msgstr "确定"
+
+msgid "Close"
+msgstr "关闭"
+
+msgid "Yes"
+msgstr "是"
+
+msgid "No"
+msgstr "否"
+
+msgid "Submit"
+msgstr "提交"
+
+msgid "Reset"
+msgstr "重置"
+
+msgid "Filter"
+msgstr "筛选"
+
+msgid "Search"
+msgstr "搜索"
+
+msgid "Clear"
+msgstr "清除"
+
+msgid "Select All"
+msgstr "全选"
+
+msgid "Deselect All"
+msgstr "取消全选"
+
+msgid "Toggle Selection"
+msgstr "切换选择"
+
+msgid "Please wait..."
+msgstr "请稍候..."
+
+msgid "Please select an option"
+msgstr "请选择一个选项"
+
+msgid "Please enter a value"
+msgstr "请输入一个值"
+
+msgid "Invalid input"
+msgstr "输入无效"
+
+msgid "Input too short"
+msgstr "输入太短"
+
+msgid "Input too long"
+msgstr "输入太长"
+
+msgid "Value out of range"
+msgstr "值超出范围"
+
+msgid "Loading data..."
+msgstr "加载数据中..."
+
+msgid "Data loaded successfully"
+msgstr "数据加载成功"
+
+msgid "Failed to load data"
+msgstr "加载数据失败"
+
+msgid "Saving data..."
+msgstr "保存数据中..."
+
+msgid "Data saved successfully"
+msgstr "数据保存成功"
+
+msgid "Failed to save data"
+msgstr "保存数据失败"
+
+msgid "Deleting..."
+msgstr "删除中..."
+
+msgid "Deletion successful"
+msgstr "删除成功"
+
+msgid "Deletion failed"
+msgstr "删除失败"
+
+msgid "Updating..."
+msgstr "更新中..."
+
+msgid "Update successful"
+msgstr "更新成功"
+
+msgid "Update failed"
+msgstr "更新失败"
+
+msgid "File too large"
+msgstr "文件太大"
+
+msgid "Invalid file type"
+msgstr "无效的文件类型"
+
+msgid "Upload failed"
+msgstr "上传失败"
+
+msgid "Upload successful"
+msgstr "上传成功"
+
+msgid "File uploaded successfully"
+msgstr "文件上传成功"
+
+msgid "Please upload a file"
+msgstr "请上传文件"
+
+msgid "Processing request..."
+msgstr "处理请求中..."
+
+msgid "Request processed successfully"
+msgstr "请求处理成功"
+
+msgid "Connection error"
+msgstr "连接错误"
+
+msgid "Timeout error"
+msgstr "超时错误"
+
+msgid "Server error"
+msgstr "服务器错误"
+
+msgid "Network error"
+msgstr "网络错误"
+
+msgid "No data available"
+msgstr "暂无数据"
+
+msgid "No results found"
+msgstr "未找到结果"
+
+msgid "Items per page:"
+msgstr "每页项目数："
+
+msgid "Page"
+msgstr "页"
+
+msgid "of"
+msgstr "共"
+
+msgid "First"
+msgstr "首页"
+
+msgid "Previous"
+msgstr "上一页"
+
+msgid "Next"
+msgstr "下一页"
+
+msgid "Last"
+msgstr "末页"
+
+msgid "Sort by:"
+msgstr "排序方式："
+
+msgid "Ascending"
+msgstr "升序"
+
+msgid "Descending"
+msgstr "降序"
+
+msgid "More options"
+msgstr "更多选项"
+
+msgid "Less options"
+msgstr "更少选项"
+
+msgid "Expand"
+msgstr "展开"
+
+msgid "Collapse"
+msgstr "折叠"
+
+msgid "Expand All"
+msgstr "全部展开"
+
+msgid "Collapse All"
+msgstr "全部折叠"
+
+msgid "Show Details"
+msgstr "显示详情"
+
+msgid "Hide Details"
+msgstr "隐藏详情"
+
+msgid "View Log"
+msgstr "查看日志"
+
+msgid "Export Data"
+msgstr "导出数据"
+
+msgid "Import Data"
+msgstr "导入数据"
+
+msgid "Print"
+msgstr "打印"
+
+msgid "Refresh"
+msgstr "刷新"
+
+msgid "Reload"
+msgstr "重新加载"
+
+msgid "Download"
+msgstr "下载"
+
+msgid "Upload"
+msgstr "上传"
+
+msgid "Drag and drop files here"
+msgstr "在此处拖放文件"
+
+msgid "or"
+msgstr "或"
+
+msgid "Browse files"
+msgstr "浏览文件"
+
+msgid "File name"
+msgstr "文件名"
+
+msgid "File size"
+msgstr "文件大小"
+
+msgid "File type"
+msgstr "文件类型"
+
+msgid "Upload date"
+msgstr "上传日期"
+
+msgid "Status"
+msgstr "状态"
+
+msgid "Actions"
+msgstr "操作"
+
+msgid "View"
+msgstr "查看"
+
+msgid "Edit"
+msgstr "编辑"
+
+msgid "Delete"
+msgstr "删除"
+
+msgid "Copy"
+msgstr "复制"
+
+msgid "Move"
+msgstr "移动"
+
+msgid "Rename"
+msgstr "重命名"
+
+msgid "Duplicate"
+msgstr "复制"
+
+msgid "Restore"
+msgstr "恢复"
+
+msgid "Archive"
+msgstr "归档"
+
+msgid "Activate"
+msgstr "激活"
+
+msgid "Deactivate"
+msgstr "停用"
+
+msgid "Enable"
+msgstr "启用"
+
+msgid "Disable"
+msgstr "禁用"
+
+msgid "Open"
+msgstr "打开"
+
+msgid "Close"
+msgstr "关闭"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Cancel"
+msgstr "取消"
+
+msgid "Apply"
+msgstr "应用"
+
+msgid "Confirm"
+msgstr "确认"
+
+msgid "Discard"
+msgstr "放弃"
+
+msgid "Submit"
+msgstr "提交"
+
+msgid "Reset"
+msgstr "重置"
+
+msgid "Clear"
+msgstr "清除"
+
+msgid "Search"
+msgstr "搜索"
+
+msgid "Filter"
+msgstr "筛选"
+
+msgid "Sort"
+msgstr "排序"
+
+msgid "Group"
+msgstr "分组"
+
+msgid "View"
+msgstr "查看"
+
+msgid "List"
+msgstr "列表"
+
+msgid "Grid"
+msgstr "网格"
+
+msgid "Compact"
+msgstr "紧凑"
+
+msgid "Detailed"
+msgstr "详细"
+
+msgid "Columns"
+msgstr "列"
+
+msgid "Settings"
+msgstr "设置"
+
+msgid "设置"
+msgstr "设置"
+
+msgid "Preferences"
+msgstr "偏好设置"
+
+msgid "Help"
+msgstr "帮助"
+
+msgid "About"
+msgstr "关于"
 
 msgid "Choose from predefined login styles or create your own custom style."
-msgstr "从预定义登录样式中选择或创建自己的自定义样式。"
+msgstr "选择预定义的登录样式或创建自己的自定义样式。"
 
 msgid "Custom Logo"
-msgstr "自定义徽标"
+msgstr "自定义Logo"
 
 msgid "Upload a custom logo for the login page. Recommended size: 320×80px."
-msgstr "上传自定义登录页面徽标。推荐尺寸：320×80px。"
+msgstr "上传登录页面的自定义Logo。推荐尺寸：320×80px。"
+
+msgid "Login Logo Preview"
+msgstr "登录Logo预览"
 
 msgid "Background Image"
 msgstr "背景图片"
 
 msgid "Upload a custom background image for the login page."
-msgstr "上传自定义登录页面背景图片。"
-
-msgid "Custom CSS"
-msgstr "自定义 CSS"
-
-msgid "Add custom CSS to further customize the login page."
-msgstr "添加自定义 CSS 以进一步自定义登录页面。"
-
-msgid "Live Preview"
-msgstr "实时预览"
-
-msgid "Preview how your login page will look with the current settings."
-msgstr "预览当前设置下登录页面的外观。"
-
-msgid "This is a preview of how your login page will look."
-msgstr "这是您的登录页面外观的预览。"
-
-# ===========================================================
-# Theme & Style Options
-# ===========================================================
-msgid "Default"
-msgstr "默认"
-
-msgid "Default (Flat & Clean)"
-msgstr "默认（扁平 & 简洁）"
-
-msgid "Modern"
-msgstr "现代"
-
-msgid "Minimal"
-msgstr "极简"
-
-msgid "Dark"
-msgstr "暗色"
-
-msgid "Dark Mode"
-msgstr "暗色模式"
-
-msgid "Gradient"
-msgstr "渐变"
-
-msgid "Custom"
-msgstr "自定义"
-
-msgid "Custom Colors"
-msgstr "自定义颜色"
-
-msgid "Light Blue Gray"
-msgstr "浅蓝色灰色"
-
-msgid "Mint Green"
-msgstr "薄荷绿"
-
-msgid "None"
-msgstr "无"
-
-msgid "Subtle (Default)"
-msgstr "柔和（默认）"
-
-msgid "Medium"
-msgstr "中等"
-
-msgid "Strong"
-msgstr "强烈"
-
-msgid "Choose the shadow style for elements like post boxes and buttons."
-msgstr "选择帖子框和按钮等元素的阴影样式。"
-
-msgid "Compact"
-msgstr "紧凑"
-
-msgid "Standard (Default)"
-msgstr "标准（默认）"
-
-msgid "Spacious"
-msgstr "宽敞"
-
-msgid "Adjust the spacing and padding of elements in the admin interface."
-msgstr "调整管理界面中元素的间距和内边距。"
-
-msgid "None (Sharp Corners)"
-msgstr "无（尖角）"
-
-msgid "Small (4px, Default)"
-msgstr "小（4px，默认）"
-
-msgid "Large (8px, Rounded)"
-msgstr "大（8px，圆角）"
-
-msgid "Choose the border-radius style for various elements."
-msgstr "选择各种元素的圆角半径样式。"
-
-msgid "System Default"
-msgstr "系统默认"
-
-msgid "Google Fonts"
-msgstr "Google 字体"
-
-msgid "Select the font stack to be used in the admin area."
-msgstr "选择在管理区域中使用的字体堆栈。"
-
-msgid "Small"
-msgstr "小"
-
-msgid "Medium (Default)"
-msgstr "中等（默认）"
-
-msgid "Large"
-msgstr "大"
-
-msgid "Adjust the base font size for the admin interface."
-msgstr "调整管理界面的基本字体大小。"
-
-msgid "WordPress Dashicons"
-msgstr "WordPress Dashicons 图标"
-
-msgid "Linear Icons"
-msgstr "线性图标"
-
-msgid "Choose the icon set for the admin interface."
-msgstr "选择管理界面的图标集。"
-
-msgid "Choose a predefined theme or select \"Custom Colors\" to define your own."
-msgstr "选择预定义主题或选择 \"自定义颜色\" 定义自己的主题。"
-
-msgid "Choose the primary accent color for links, buttons, and active states."
-msgstr "选择链接、按钮和活动状态的主强调色。"
-
-msgid "Choose the main background color of the admin area."
-msgstr "选择管理区域的主背景色。"
-
-msgid "Choose the default text color."
-msgstr "选择默认文本颜色。"
-
-# ===========================================================
-# WordPress Menu & Dashboard Items
-# ===========================================================
-msgid "WordPress"
-msgstr "WordPress"
-
-msgid "Dashboard"
-msgstr "仪表盘"
-
-msgid "Posts"
-msgstr "文章"
-
-msgid "Media"
-msgstr "媒体"
-
-msgid "Pages"
-msgstr "页面"
-
-msgid "Comments"
-msgstr "评论"
-
-msgid "Appearance"
-msgstr "外观"
-
-msgid "Plugins"
-msgstr "插件"
-
-msgid "Users"
-msgstr "用户"
-
-msgid "Tools"
-msgstr "工具"
-
-msgid "Submenu"
-msgstr "子菜单"
-
-msgid "Right Now"
-msgstr "当前状态"
-
-msgid "Activity"
-msgstr "活动"
-
-msgid "Quick Draft"
-msgstr "快速草稿"
-
-msgid "WordPress Events and News"
-msgstr "WordPress 事件和新闻"
-
-msgid "Site Health Status"
-msgstr "站点健康状态"
-
-msgid "At a Glance"
-msgstr "概览"
-
-msgid "WordPress Logo"
-msgstr "WordPress 标志"
-
-msgid "Site Name"
-msgstr "站点名称"
-
-msgid "Updates"
-msgstr "更新"
-
-msgid "New Content"
-msgstr "新建内容"
-
-msgid "My Account"
-msgstr "我的账户"
-
-# ===========================================================
-# Login Page Elements
-# ===========================================================
-msgid "Language Switcher"
-msgstr "语言切换器"
-
-msgid "Back to Home Link"
-msgstr "返回首页链接"
-
-msgid "Register Link"
-msgstr "注册链接"
-
-msgid "Remember Me Checkbox"
-msgstr "记住我复选框"
-
-msgid "Choose Image"
-msgstr "选择图片"
-
-msgid "Remove"
-msgstr "移除"
-
-msgid "Login Logo Preview"
-msgstr "登录徽标预览"
+msgstr "上传登录页面的自定义背景图片。"
 
 msgid "Background Preview"
 msgstr "背景预览"
 
-# ===========================================================
-# About Page Strings
-# ===========================================================
-msgid "Version %s"
-msgstr "版本 %s"
+msgid "Custom CSS"
+msgstr "自定义CSS"
+
+msgid "Add custom CSS to further customize the login page."
+msgstr "添加自定义CSS以进一步自定义登录页面。"
+
+msgid "Preview how your login page will look with the current settings."
+msgstr "预览当前设置下登录页面的外观。"
+
+msgid "Select the primary color for links, buttons, and active states."
+msgstr "选择链接、按钮和活动状态的主色。"
+
+msgid "Select the background color for the admin interface."
+msgstr "选择管理界面的背景颜色。"
+
+msgid "Select the text color for the admin interface."
+msgstr "选择管理界面的文本颜色。"
+
+msgid "Reset to Defaults"
+msgstr "重置为默认值"
+
+msgid "Reset to Default Order"
+msgstr "重置为默认顺序"
+
+msgid "WP Clean Admin"
+msgstr "WP Clean Admin"
+
+msgid "Version"
+msgstr "版本"
 
 msgid "Plugin Description"
 msgstr "插件描述"
 
 msgid "WP Clean Admin is a powerful WordPress plugin designed to streamline and customize your WordPress admin experience. It provides a cleaner, more efficient interface by allowing you to hide unnecessary elements, customize the visual appearance, and reorganize the admin menu to better suit your workflow."
-msgstr "WP Clean Admin 是一个功能强大的 WordPress 插件，旨在简化和自定义您的 WordPress 管理体验。它通过允许您隐藏不必要的元素、自定义视觉外观和重新组织管理菜单来提供更清洁、更高效的界面，以更好地适应您的工作流程。"
+msgstr "WP Clean Admin是一个强大的WordPress插件，旨在简化和自定义您的WordPress管理体验。它通过允许您隐藏不必要的元素、自定义视觉外观和重新组织管理菜单来提供更干净、更高效的界面，以更好地适应您的工作流程。"
 
 msgid "Key Features"
 msgstr "主要功能"
@@ -539,7 +1040,7 @@ msgid "Customize admin menu by hiding or reordering items"
 msgstr "通过隐藏或重新排序项目来自定义管理菜单"
 
 msgid "Hide admin bar items for a cleaner top bar"
-msgstr "隐藏管理栏项目以获得更清洁的顶栏"
+msgstr "隐藏管理栏项目以获得更干净的顶部栏"
 
 msgid "Choose from multiple visual themes or create your own"
 msgstr "从多个视觉主题中选择或创建自己的主题"
@@ -553,140 +1054,29 @@ msgstr "自定义颜色、阴影和边框样式"
 msgid "Author"
 msgstr "作者"
 
-msgid "Created by WordPress Admin UI Specialists"
-msgstr "由 WordPress 管理界面专家创建"
+msgid "Created by Sut"
+msgstr "由Sut创建"
 
 msgid "Visit Plugin Website"
 msgstr "访问插件网站"
-
-msgid "Documentation"
-msgstr "文档"
 
 msgid "Support"
 msgstr "支持"
 
 msgid "Rate & Review"
-msgstr "评分与评价"
+msgstr "评分和评论"
 
 msgid "If you find this plugin useful, please consider leaving a review on WordPress.org. Your feedback helps improve the plugin and reach more users."
-msgstr "如果您觉得这个插件有用，请考虑在 WordPress.org 上留下评价。您的反馈有助于改进插件并触达更多用户。"
+msgstr "如果您觉得这个插件有用，请考虑在WordPress.org上留下评论。您的反馈有助于改进插件并让更多用户受益。"
 
 msgid "Rate on WordPress.org"
-msgstr "在 WordPress.org 上评分"
+msgstr "在WordPress.org上评分"
 
-# ===========================================================
-# Error Messages (Extended)
-# ===========================================================
-msgid "Menu management configuration failed to load"
-msgstr "菜单管理功能配置加载失败"
-
-msgid "Menu management requires jQuery UI Sortable, please ensure it is loaded"
-msgstr "菜单管理功能依赖 jQuery UI Sortable，请确保已加载"
-
-msgid "Menu slug is missing, please refresh the page and try again"
-msgstr "菜单 slug 缺失，请刷新页面重试"
-
-msgid "An unknown error occurred"
-msgstr "发生未知错误"
-
-msgid "Insufficient permissions or security verification failed. The page will refresh in 2 seconds."
-msgstr "权限不足或安全验证失败。页面将在2秒后刷新。"
-
-msgid "Network connection error, please check your network and try again."
-msgstr "网络连接错误，请检查网络后重试。"
-
-msgid "Request failed, server returned error code: ${xhr.status}"
-msgstr "请求失败，服务器返回错误码: ${xhr.status}"
-
-msgid "Menu management initialization failed"
-msgstr "菜单管理功能初始化失败"
-
-msgid "Login management module initialization failed: "
-msgstr "登录管理模块初始化失败: "
-
-msgid "Main module initialization failed: "
-msgstr "主模块初始化失败: "
-
-# ===========================================================
-# Permission Related Strings
-# ===========================================================
-msgid "WPCA Permissions: Missing required configuration"
-msgstr "WPCA 权限: 缺少必要的配置"
-
-msgid "WPCA Permissions: Permission check failed -"
-msgstr "WPCA 权限: 权限检查失败 -"
-
-msgid "WPCA Permissions: AJAX error -"
-msgstr "WPCA 权限: AJAX 错误 -"
-
-# ===========================================================
-# Additional Error Messages
-# ===========================================================
-msgid "Core already initialized"
-msgstr "核心已经初始化"
-
-msgid "Missing AJAX URL setting"
-msgstr "缺少 AJAX URL 设置"
-
-msgid "Unable to load necessary JavaScript settings. Please refresh the page and try again."
-msgstr "无法加载必要的 JavaScript 设置。请刷新页面重试。"
-
-msgid "Core initialization failed"
-msgstr "核心初始化失败"
-
-msgid "Using fallback nonce value"
-msgstr "使用备用 nonce 值"
-
-msgid "Request processing failed"
-msgstr "请求处理失败"
-
-msgid "You do not have permission to perform this action"
-msgstr "您没有执行此操作的权限"
-
-msgid "Invalid request parameters"
-msgstr "请求参数错误"
-
-msgid "Please log in first"
-msgstr "请先登录"
-
-msgid "Internal server error"
-msgstr "服务器内部错误"
-
-msgid "Module already registered"
-msgstr "模块已注册"
-
-msgid "Module name already exists"
-msgstr "模块名称已存在"
-
-msgid "WP Clean Admin initialization failed"
-msgstr "WP Clean Admin 初始化失败"
-
-msgid "WPCA Error: The configuration object \"wpca_admin\" is missing."
-msgstr "WPCA 错误: 缺少配置对象 \"wpca_admin\"。"
-
-# ===========================================================
-# Login Page Strings
-# ===========================================================
-msgid "WPCA Login Management: Initializing..."
-msgstr "WPCA 登录管理：初始化中..."
-
-msgid "WPCA Login Management: Initialized successfully."
-msgstr "WPCA 登录管理：初始化成功。"
-
-msgid "No logo selected"
-msgstr "未选择Logo"
-
-msgid "No background selected"
-msgstr "未选择背景"
-
-msgid "Show Login Form"
-msgstr "显示登录表单"
+msgid "Documentation"
+msgstr "文档"
 
 msgid "Login Style"
 msgstr "登录样式"
-
-msgid "Select a login style for your WordPress site"
-msgstr "为您的WordPress网站选择登录样式"
 
 msgid "Default"
 msgstr "默认"
@@ -695,16 +1085,13 @@ msgid "Modern"
 msgstr "现代"
 
 msgid "Minimal"
-msgstr "极简"
+msgstr "简约"
 
 msgid "Dark"
-msgstr "深色"
+msgstr "暗色"
 
 msgid "Gradient"
 msgstr "渐变"
-
-msgid "Custom"
-msgstr "自定义"
 
 msgid "Glassmorphism"
 msgstr "玻璃拟态"
@@ -712,56 +1099,194 @@ msgstr "玻璃拟态"
 msgid "Neumorphism"
 msgstr "新拟态"
 
+msgid "Custom"
+msgstr "自定义"
+
 msgid "Custom Login Options"
 msgstr "自定义登录选项"
 
-msgid "Login Logo"
-msgstr "登录Logo"
+msgid "Choose Image"
+msgstr "选择图片"
 
-msgid "Upload or select an image for the login logo"
-msgstr "上传或选择登录Logo图片"
+msgid "Remove"
+msgstr "移除"
 
-msgid "Login Background"
-msgstr "登录背景"
+msgid "Support"
+msgstr "支持"
 
-msgid "Upload or select an image for the login background"
-msgstr "上传或选择登录背景图片"
+msgid "Feedback"
+msgstr "反馈"
 
-msgid "Custom CSS"
-msgstr "自定义CSS"
-
-msgid "Add custom CSS to further customize the login page"
-msgstr "添加自定义CSS以进一步自定义登录页面"
-
-msgid "Remove Logo"
-msgstr "移除Logo"
-
-msgid "Remove Background"
-msgstr "移除背景"
-
-msgid "Upload Logo"
-msgstr "上传Logo"
-
-msgid "Upload Background"
-msgstr "上传背景"
+msgid "Logout"
+msgstr "退出登录"
 
 # ===========================================================
-# Reset Messages
+# Cleanup Module Strings
 # ===========================================================
-msgid "Are you sure you want to reset login settings to default? This will remove your custom logo, background, and CSS."
-msgstr "确定要将登录设置重置为默认值吗？这将删除您的自定义徽标、背景和 CSS。"
+msgid "Cleanup Database"
+msgstr "清理数据库"
 
-msgid "Login settings have been reset to default"
-msgstr "登录设置已重置为默认值"
+msgid "Clean trash posts"
+msgstr "清理回收站文章"
 
-msgid "Reset successful"
-msgstr "重置成功"
+msgid "Clean trash pages"
+msgstr "清理回收站页面"
 
-msgid "Reset in progress..."
-msgstr "重置进行中..."
+msgid "Clean trash comments"
+msgstr "清理回收站评论"
+
+msgid "Clean pingbacks"
+msgstr "清理引用"
+
+msgid "Clean trackbacks"
+msgstr "清理引用通知"
+
+msgid "Clean transient options"
+msgstr "清理临时选项"
+
+msgid "Clean expired transients"
+msgstr "清理过期临时数据"
+
+msgid "Clean all transients"
+msgstr "清理所有临时数据"
+
+msgid "Optimize database tables"
+msgstr "优化数据库表"
+
+msgid "Cleanup completed: %d items removed"
+msgstr "清理完成：已移除 %d 项"
+
+msgid "Cleanup started..."
+msgstr "清理开始..."
+
+msgid "Cleanup in progress..."
+msgstr "清理进行中..."
+
+msgid "Cleanup failed: %s"
+msgstr "清理失败：%s"
+
+msgid "No cleanup needed"
+msgstr "无需清理"
+
+msgid "Run Cleanup"
+msgstr "运行清理"
+
+msgid "Cleanup Summary"
+msgstr "清理摘要"
+
+msgid "Start Cleanup"
+msgstr "开始清理"
+
+msgid "Cleanup Results"
+msgstr "清理结果"
+
+msgid "Items Removed: %d"
+msgstr "已移除项目：%d"
+
+msgid "Processed in: %s seconds"
+msgstr "处理时间：%s 秒"
+
+msgid "Database Size Before: %s"
+msgstr "数据库清理前大小：%s"
+
+msgid "Database Size After: %s"
+msgstr "数据库清理后大小：%s"
+
+msgid "Space Saved: %s"
+msgstr "节省空间：%s"
+
+msgid "View Details"
+msgstr "查看详情"
+
+msgid "Hide Details"
+msgstr "隐藏详情"
 
 # ===========================================================
-# Permissions UI
+# 颜色预设名称
 # ===========================================================
+msgid "blue"
+msgstr "蓝色"
+
+msgid "indigo"
+msgstr "靛蓝色"
+
+msgid "purple"
+msgstr "紫色"
+
+msgid "pink"
+msgstr "粉色"
+
+msgid "red"
+msgstr "红色"
+
+msgid "green"
+msgstr "绿色"
+
+msgid "light"
+msgstr "浅色"
+
+msgid "gray"
+msgstr "灰色"
+
+msgid "dark-gray"
+msgstr "深灰色"
+
+msgid "dark"
+msgstr "深色"
+
+msgid "medium"
+msgstr "中等"
+
+msgid "white"
+msgstr "白色"
+
+msgid "Live Preview"
+msgstr "实时预览"
+
+# ===========================================================
+# Module Initialization Strings
+# ===========================================================
+msgid "WPCA Module: %s initialized successfully"
+msgstr "WPCA 模块：%s 初始化成功"
+
+msgid "WPCA Module: %s failed to initialize"
+msgstr "WPCA 模块：%s 初始化失败"
+
+msgid "WPCA Module: %s already initialized"
+msgstr "WPCA 模块：%s 已初始化"
+
+msgid "WPCA Module: %s not found"
+msgstr "WPCA 模块：%s 未找到"
+
+msgid "WPCA Core initialized successfully"
+msgstr "WPCA 核心初始化成功"
+
+msgid "WPCA Core initialization failed"
+msgstr "WPCA 核心初始化失败"
+
+# ===========================================================
+# Media Strings
+# ===========================================================
+msgid "WordPress media uploader not available."
+msgstr "WordPress 媒体上传器不可用。"
+
 msgid "Insufficient permissions"
 msgstr "权限不足"
+
+msgid "Unable to load necessary JavaScript settings. Please refresh the page and try again."
+msgstr "无法加载必要的JavaScript设置。请刷新页面并重试。"
+
+msgid "General"
+msgstr "常规"
+
+msgid "Visual Style"
+msgstr "视觉样式"
+
+msgid "Menu Customization"
+msgstr "菜单定制"
+
+msgid "Login Page"
+msgstr "登录页面"
+
+msgid "About"
+msgstr "关于"

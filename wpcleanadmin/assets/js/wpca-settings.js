@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-    // 触发选项卡初始化事件
+    // Trigger tab initialization event
     $(document).trigger('wpca.init.tabs');
     
     // Initialize color pickers
@@ -64,10 +64,13 @@ jQuery(document).ready(function($) {
         var previewDiv = $('#' + button.data('target') + '-preview');
 
         if (typeof wp === 'undefined' || !wp.media) {
+            // 简化翻译逻辑，直接使用wpca_admin对象中的翻译字符串
+            let message = wpca_admin.media_unavailable || 'WordPress media uploader not available.';
+            
             if (typeof WPCA !== 'undefined' && typeof WPCA.core !== 'undefined' && typeof WPCA.core.showNotice === 'function') {
-                WPCA.core.showNotice('error', wpca_admin.media_unavailable || 'WordPress media uploader not available.');
+                WPCA.core.showNotice('error', message);
             } else {
-                alert(wpca_admin.media_unavailable || 'WordPress media uploader not available.');
+                alert(message);
             }
             return;
         }
@@ -98,7 +101,7 @@ jQuery(document).ready(function($) {
     });
 
     // Menu Ordering Sortable
-    $("#wpca-menu-order-list").sortable({
+    $("#wpca-menu-order").sortable({
         axis: "y",
         handle: ".dashicons-menu",
         items: "li",
@@ -162,7 +165,7 @@ jQuery(document).ready(function($) {
                     .addClass("checked");
                 
                 // Reset menu order to default WordPress order (alphabetical by slug for simplicity)
-                var $sortable = $("#wpca-menu-order-list");
+                var $sortable = $("#wpca-menu-order");
                 $sortable.find("li").sort(function(a, b) {
                     return $(a).data("menu-slug").localeCompare($(b).data("menu-slug"));
                 }).appendTo($sortable);
@@ -199,9 +202,9 @@ jQuery(document).ready(function($) {
         } else {
             $('#wpca-custom-login-options').slideUp();
         }
-        // Trigger login preview update (assuming this function exists in wpca-login.js or wpca-core.js)
-        if (typeof WPCA !== 'undefined' && WPCA.loginPage && WPCA.loginPage.updatePreview) {
-            WPCA.loginPage.updatePreview();
+        // Trigger login preview update (now using correct namespace)
+        if (typeof WPCA !== 'undefined' && WPCA.login && WPCA.login.updatePreview) {
+            WPCA.login.updatePreview();
         }
     });
 
@@ -214,12 +217,12 @@ jQuery(document).ready(function($) {
 
     // Trigger login preview update on relevant field changes
     $('#wpca-login-logo, #wpca-login-background, textarea[name="wpca_settings[login_custom_css]"]').on('change keyup', function() {
-        if (typeof WPCA !== 'undefined' && WPCA.loginPage && WPCA.loginPage.updatePreview) {
-            WPCA.loginPage.updatePreview();
+        if (typeof WPCA !== 'undefined' && WPCA.login && WPCA.login.updatePreview) {
+            WPCA.login.updatePreview();
         }
     });
     // Initial login preview update
-    if (typeof WPCA !== 'undefined' && WPCA.loginPage && WPCA.loginPage.updatePreview) {
-        WPCA.loginPage.updatePreview();
+    if (typeof WPCA !== 'undefined' && WPCA.login && WPCA.login.updatePreview) {
+        WPCA.login.updatePreview();
     }
 });

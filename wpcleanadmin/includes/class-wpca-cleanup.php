@@ -1,13 +1,18 @@
 <?php
 /**
- * WP Clean Admin Cleanup Class
- *
- * Handles various cleanup tasks in the WordPress admin area.
+ * WP Clean Admin - Cleanup Manager
+ * 
+ * @package WPCleanAdmin
+ * @subpackage Cleanup
+ * @since 1.0.0
  */
 
+// Exit if accessed directly
 if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly.
+    exit;
 }
+
+// Using WordPress native functions directly instead of utility class
 
 class WPCA_Cleanup {
 
@@ -16,15 +21,13 @@ class WPCA_Cleanup {
      */
     public function __construct() {
         // Enqueue cleanup specific styles/scripts.
-        if (function_exists('add_action')) {
-            add_action('admin_enqueue_scripts', [$this, 'enqueue_cleanup_assets']);
+        add_action('admin_enqueue_scripts', [$this, 'enqueue_cleanup_assets']);
 
-            // Remove unnecessary admin features based on settings.
-            add_action('admin_init', [$this, 'remove_unnecessary_features']);
+        // Remove unnecessary admin features based on settings.
+        add_action('admin_init', [$this, 'remove_unnecessary_features']);
 
-            // Remove specific menu items for non-admin users.
-            add_action('admin_menu', [$this, 'remove_menu_items_for_non_admins'], 999);
-        }
+        // Remove specific menu items for non-admin users.
+        add_action('admin_menu', [$this, 'remove_menu_items_for_non_admins'], 999);
     }
 
     /**
@@ -42,17 +45,17 @@ class WPCA_Cleanup {
             $options = WPCA_Settings::get_options();
 
             // Hide screen options tab
-            if (isset($options['hide_screen_options']) && $options['hide_screen_options'] && function_exists('add_filter')) {
+            if (isset($options['hide_screen_options']) && $options['hide_screen_options']) {
                 add_filter('screen_options_show_screen', '__return_false');
             }
 
             // Hide help tab
-            if (isset($options['hide_help_tab']) && $options['hide_help_tab'] && function_exists('add_filter')) {
+            if (isset($options['hide_help_tab']) && $options['hide_help_tab']) {
                 add_filter('contextual_help', [$this, 'remove_help_tab'], 999, 3);
             }
 
             // Remove WordPress logo from admin bar
-            if (isset($options['hide_wp_logo']) && $options['hide_wp_logo'] && function_exists('add_action')) {
+            if (isset($options['hide_wp_logo']) && $options['hide_wp_logo']) {
                 add_action('admin_bar_menu', [$this, 'remove_wp_logo_from_admin_bar'], 999);
             }
 
@@ -62,17 +65,17 @@ class WPCA_Cleanup {
             }
 
             // Remove update notices for non-admin users
-            if (isset($options['hide_update_notices']) && $options['hide_update_notices'] && function_exists('add_action')) {
+            if (isset($options['hide_update_notices']) && $options['hide_update_notices']) {
                 add_action('admin_head', [$this, 'hide_update_notices_for_non_admins'], 1);
             }
             
             // Hide WordPress footer
-            if (isset($options['hide_wpfooter']) && $options['hide_wpfooter'] && function_exists('add_action')) {
+            if (isset($options['hide_wpfooter']) && $options['hide_wpfooter']) {
                 add_action('admin_head', [$this, 'hide_wordpress_footer']);
             }
             
             // Hide frontend admin bar
-            if (isset($options['hide_frontend_adminbar']) && $options['hide_frontend_adminbar'] && function_exists('add_filter')) {
+            if (isset($options['hide_frontend_adminbar']) && $options['hide_frontend_adminbar']) {
                 add_filter('show_admin_bar', '__return_false');
             }
         }
@@ -102,60 +105,48 @@ class WPCA_Cleanup {
      */
     private function disable_comments_globally() {
         // Redirect any user trying to access comments page
-        if (function_exists('add_action')) {
-            add_action('admin_init', function () {
-                global $pagenow;
-                if ($pagenow === 'edit-comments.php' && function_exists('wp_redirect') && function_exists('admin_url')) {
-                    wp_redirect(admin_url());
-                    exit;
-                }
-                // Remove comments metabox from dashboard
-                if (function_exists('remove_meta_box')) {
-                    remove_meta_box('dashboard_recent_comments', 'dashboard', 'normal');
-                }
-                // Disable comments on posts and pages
-                if (function_exists('remove_post_type_support')) {
-                    remove_post_type_support('post', 'comments');
-                    remove_post_type_support('page', 'comments');
-                }
-            });
-
-            // Close comments on the frontend
-            if (function_exists('add_filter')) {
-                add_filter('comments_open', '__return_false', 20, 2);
-                add_filter('pings_open', '__return_false', 20, 2);
-
-                // Hide existing comments
-                add_filter('comments_array', '__return_empty_array', 10, 2);
+        add_action('admin_init', function () {
+            global $pagenow;
+            if ($pagenow === 'edit-comments.php') {
+                wp_redirect(admin_url());
+                exit;
             }
+            // Remove comments metabox from dashboard
+            remove_meta_box('dashboard_recent_comments', 'dashboard', 'normal');
+            // Disable comments on posts and pages
+            remove_post_type_support('post', 'comments');
+            remove_post_type_support('page', 'comments');
+        });
 
-            // Remove comments link from admin menu
-            add_action('admin_menu', function () {
-                if (function_exists('remove_menu_page')) {
-                    remove_menu_page('edit-comments.php');
-                }
-            });
+        // Close comments on the frontend
+        add_filter('comments_open', '__return_false', 20, 2);
+        add_filter('pings_open', '__return_false', 20, 2);
 
-            // Remove comments link from admin bar
-            add_action('wp_before_admin_bar_render', function () {
-                global $wp_admin_bar;
-                if (isset($wp_admin_bar) && method_exists($wp_admin_bar, 'remove_menu')) {
-                    $wp_admin_bar->remove_menu('comments');
-                }
-            });
-        }
+        // Hide existing comments
+        add_filter('comments_array', '__return_empty_array', 10, 2);
+
+        // Remove comments link from admin menu
+        add_action('admin_menu', function () {
+            remove_menu_page('edit-comments.php');
+        });
+
+        // Remove comments link from admin bar
+        add_action('wp_before_admin_bar_render', function () {
+            global $wp_admin_bar;
+            if (isset($wp_admin_bar) && method_exists($wp_admin_bar, 'remove_menu')) {
+                $wp_admin_bar->remove_menu('comments');
+            }
+        });
     }
 
     /**
      * Remove specific menu items for non-admin users.
      */
     public function remove_menu_items_for_non_admins() {
-        if (function_exists('current_user_can') && !current_user_can('manage_options')) {
+        if (!current_user_can('manage_options')) {
             // Example: remove Tools menu for non-admin users
-            // if (function_exists('remove_menu_page')) {
-            //     remove_menu_page('tools.php');
-            //     remove_submenu_page('options-general.php', 'options-writing.php');
-            // }
+            // remove_menu_page('tools.php');
+            // remove_submenu_page('options-general.php', 'options-writing.php');
         }
     }
 
@@ -163,7 +154,7 @@ class WPCA_Cleanup {
      * Hide update notices for non-admin users.
      */
     public function hide_update_notices_for_non_admins() {
-        if (function_exists('current_user_can') && !current_user_can('update_core') && function_exists('remove_action')) {
+        if (!current_user_can('update_core')) {
             remove_action('admin_notices', 'update_nag', 3);
         }
     }

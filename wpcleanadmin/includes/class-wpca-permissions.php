@@ -1,27 +1,28 @@
 <?php
 /**
- * WP Clean Admin - 权限管理类
+ * WP Clean Admin - Permission Manager
  *
- * 实现细粒度的用户权限管理，支持权限注册、检查和继承
+ * Implements fine-grained user permission management, supporting permission registration, checking, and inheritance
  *
- * @package WP_Clean_Admin
+ * @package WPCleanAdmin
+ * @subpackage Permissions
  * @since 1.1.0
  */
 
-// 如果直接访问此文件，则中止
+// If accessed directly, abort
 if (!defined('ABSPATH')) {
     exit;
 }
 
-
+// No need to include utility class as we're using native WordPress functions directly
 
 /**
- * 权限管理类
+ * Permission management class
  */
 class WPCA_Permissions {
 
     /**
-     * 插件权限列表
+     * Plugin permission list
      *
      * @var array
      */
@@ -30,13 +31,13 @@ class WPCA_Permissions {
     const CAP_MANAGE_ALL = 'wpca_manage_all';
 
     private $capabilities = array(
-        self::CAP_VIEW_SETTINGS  => '查看设置',
-        self::CAP_MANAGE_MENUS   => '管理菜单',
-        self::CAP_MANAGE_ALL     => '完全控制'
+        self::CAP_VIEW_SETTINGS  => 'View Settings',
+        self::CAP_MANAGE_MENUS   => 'Manage Menus',
+        self::CAP_MANAGE_ALL     => 'Full Control'
     );
 
     /**
-     * 权限继承关系
+     * Permission inheritance relationships
      *
      * @var array
      */
@@ -46,27 +47,19 @@ class WPCA_Permissions {
     );
 
     /**
-     * 构造函数
+     * Constructor
      */
     public function __construct() {
-        if (function_exists('add_action')) {
-            add_action('admin_init', array($this, 'register_capabilities'));
-            add_action('wp_ajax_wpca_check_permission', array($this, 'ajax_check_permission'));
-        }
-        if (function_exists('add_filter')) {
-            add_filter('wpca_localize_script_data', array($this, 'add_capabilities_to_js'));
-        }
+        add_action('admin_init', array($this, 'register_capabilities'));
+        add_action('wp_ajax_wpca_check_permission', array($this, 'ajax_check_permission'));
+        add_filter('wpca_localize_script_data', array($this, 'add_capabilities_to_js'));
     }
 
     /**
-     * 注册插件权限
+     * Register plugin permissions
      */
     public function register_capabilities() {
-        if (!function_exists('get_role')) {
-            return;
-        }
-        
-        // 定义每个角色的权限配置
+        // Define permission configuration for each role
         $role_configs = array(
             'administrator' => array(
                 'wpca_view_settings' => true,
@@ -85,7 +78,7 @@ class WPCA_Permissions {
             )
         );
         
-        // 为每个角色应用权限配置
+        // Apply permission configuration for each role
         foreach ($role_configs as $role_name => $caps) {
             $role = get_role($role_name);
             if (!$role) continue;
@@ -93,26 +86,24 @@ class WPCA_Permissions {
             foreach ($caps as $cap => $grant) {
                 if ($grant && method_exists($role, 'add_cap')) {
                     $role->add_cap($cap, true);
-                } else if (!$grant) {
-                    // 安全地移除权限（防止PHP警告）
-                    if (method_exists($role, 'remove_cap')) {
-                        $role->remove_cap($cap);
-                    }
+                } else if (!$grant && method_exists($role, 'remove_cap')) {
+                    // Safely remove capability
+                    $role->remove_cap($cap);
                 }
             }
         }
     }
 
     /**
-     * 设置默认权限
+     * Set default permissions
      */
     public function set_default_permissions() {
-        // 在插件激活时调用
+        // Called during plugin activation
         $this->register_capabilities();
     }
 
     /**
-     * 清理插件权限
+     * Cleanup plugin permissions
      */
     public function cleanup_capabilities() {
         global $wp_roles;
@@ -137,48 +128,47 @@ class WPCA_Permissions {
     }
 
     /**
-     * 检查当前用户是否有指定权限
+     * Check if current user has specified permission
      *
-     * @param string $capability 权限名称
-     * @return bool 是否有权限
+     * @param string $capability Permission name
+     * @return bool Whether has permission
      */
     public static function current_user_can($capability) {
-        // 简化版本，避免递归调用和复杂的权限检查
+        // Simplified version to avoid recursive calls and complex permission checks
         
-        // 管理员始终有权限
-        if (function_exists('is_super_admin') && is_super_admin()) {
+        // Super admins always have permissions
+        if (is_multisite() && is_super_admin()) {
             return true;
         }
         
-        // 获取当前用户
-        $user = null;
-        if (function_exists('wp_get_current_user')) {
-            $user = wp_get_current_user();
-        }
+        // Get current user
+        $user = wp_get_current_user();
         
-        // 如果用户未登录，返回 false
+        // If user is not logged in, return false
         if (!$user || !$user->ID) {
             return false;
         }
         
-        // 管理员权限检查
+        // Admin permission check
         if (isset($user->allcaps['manage_options']) && $user->allcaps['manage_options']) {
             return true;
         }
         
-        // 直接检查指定权限
+        // Directly check specified permission
         if (isset($user->allcaps[$capability]) && $user->allcaps[$capability]) {
             return true;
         }
         
-        // 简化的权限继承检查
-        $higher_caps = array(
-            'wpca_manage_all' => array('wpca_manage_menus', 'wpca_view_settings'),
+        // Define permission hierarchy for static access
+        // This is duplicated for static access since we can't access private properties
+        // from a static method in PHP without reflection
+        $capability_hierarchy = array(
+            'wpca_manage_all'   => array('wpca_manage_menus', 'wpca_view_settings'),
             'wpca_manage_menus' => array('wpca_view_settings')
         );
         
-        // 检查是否有更高级权限
-        foreach ($higher_caps as $higher_cap => $lower_caps) {
+        // Check for higher-level permissions using the predefined hierarchy
+        foreach ($capability_hierarchy as $higher_cap => $lower_caps) {
             if (in_array($capability, $lower_caps) && 
                 isset($user->allcaps[$higher_cap]) && 
                 $user->allcaps[$higher_cap]) {
@@ -190,80 +180,54 @@ class WPCA_Permissions {
     }
 
     /**
-     * AJAX权限检查
+     * AJAX permission check
      */
     public function ajax_check_permission() {
-        // 检查是否为 AJAX 请求
-        if (function_exists('wp_doing_ajax') && !wp_doing_ajax()) {
-            if (function_exists('wp_send_json_error')) {
-                wp_send_json_error(array(
-                    'message' => __('Invalid request', 'wp-clean-admin')
-                ), 400);
-            }
+        // Verify nonce
+        check_ajax_referer('wpca_settings-options', 'nonce');
+        
+        // Check user capability
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(array(
+                'message' => 'Insufficient permissions'
+            ), 403);
             return;
         }
         
-        // 检查nonce - 注意: 使用静默模式以自定义错误消息
-        if (function_exists('check_ajax_referer') && !check_ajax_referer('wpca_settings-options', false, false)) {
-            if (function_exists('wp_send_json_error')) {
-                wp_send_json_error(array(
-                    'message' => __('Security verification failed', 'wp-clean-admin')
-                ), 403);
-            }
-            return;
-        }
-        
-        // 基础安全检查 - 确保用户已登录
-        if (function_exists('is_user_logged_in') && !is_user_logged_in()) {
-            if (function_exists('wp_send_json_error')) {
-                wp_send_json_error(array(
-                    'message' => __('User not logged in', 'wp-clean-admin')
-                ), 401);
-            }
-            return;
-        }
-        
-        // 检查参数
+        // Check parameters
         if (!isset($_POST['capability']) || empty($_POST['capability'])) {
-            if (function_exists('wp_send_json_error')) {
-                wp_send_json_error(array(
-                    'message' => __('Missing permission parameter', 'wp-clean-admin')
-                ), 400);
-            }
+            wp_send_json_error(array(
+                'message' => 'Missing permission parameter'
+            ), 400);
             return;
         }
         
-        $capability = function_exists('sanitize_text_field') ? sanitize_text_field($_POST['capability']) : filter_var($_POST['capability'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+        $capability = sanitize_text_field($_POST['capability']);
         
-        // 验证权限名称是否有效
-        $instance = new self();
-        $valid_caps = array_keys($instance->get_capabilities());
+        // Validate permission name
+        $valid_caps = array_keys($this->capabilities);
         if (!in_array($capability, $valid_caps)) {
-            if (function_exists('wp_send_json_error')) {
-                wp_send_json_error(array(
-                    'message' => __('Invalid permission name', 'wp-clean-admin')
-                ), 400);
-            }
+            wp_send_json_error(array(
+                'message' => 'Invalid permission name'
+            ), 400);
             return;
         }
         
-        // 检查权限
+        // Check permission
         $has_permission = self::current_user_can($capability);
         
-        if (function_exists('wp_send_json_success')) {
-            wp_send_json_success(array(
-                'has_permission' => $has_permission,
-                'capability' => $capability,
-                'timestamp' => function_exists('time') ? time() : 0
-            ));
-        }
+        wp_send_json_success(array(
+            'has_permission' => $has_permission,
+            'capability' => $capability,
+            'timestamp' => time()
+        ));
     }
 
     /**
-     * 添加用户权限到JavaScript
+     * Add user permissions to JavaScript
      *
-     * @param array $data 现有数据
-     * @return array 添加权限后的数据
+     * @param array $data Existing data
+     * @return array Data with added permissions
      */
     public function add_capabilities_to_js($data) {
         $user_capabilities = array();
@@ -273,24 +237,24 @@ class WPCA_Permissions {
         }
         
         $data['user_capabilities'] = $user_capabilities;
-        $data['can_manage_options'] = function_exists('current_user_can') ? current_user_can('manage_options') : false;
+        $data['can_manage_options'] = current_user_can('manage_options');
         
         return $data;
     }
 
     /**
-     * 获取所有权限
+     * Get all permissions
      *
-     * @return array 权限列表
+     * @return array Permission list
      */
     public function get_capabilities() {
         return $this->capabilities;
     }
 
     /**
-     * 获取权限继承关系
+     * Get permission inheritance relationships
      *
-     * @return array 权限继承关系
+     * @return array Permission inheritance relationships
      */
     public function get_capability_hierarchy() {
         return $this->capability_hierarchy;

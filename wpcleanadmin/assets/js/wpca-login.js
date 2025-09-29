@@ -50,31 +50,26 @@ WPCA.login = {
         const $ = jQuery;
         
         // --- Admin settings page media uploader ---
-        if ($('#wpca-login-media-uploader').length) {
-            // Media uploader for logo
-            $('#wpca-upload-login-logo').on('click', function(e) {
+        if ($('#wpca-login-media-uploader').length || $('.wpca-media-uploader').length) {
+            // Use event delegation for upload buttons to work with the new HTML structure
+            $(document).on('click', '.wpca-upload-button', function(e) {
                 e.preventDefault();
-                WPCA.login.openMediaUploader('login_logo', 'Select or Upload Media', 'image');
+                const button = $(this);
+                const target = button.data('target');
+                const settingName = target.replace('wpca-login-', '');
+                WPCA.login.openMediaUploader(settingName, 'Select or Upload Media', 'image');
             });
 
-            // Media uploader for background
-            $('#wpca-upload-login-background').on('click', function(e) {
+            // Use event delegation for remove buttons
+            $(document).on('click', '.wpca-remove-button', function(e) {
                 e.preventDefault();
-                WPCA.login.openMediaUploader('login_background', 'Select or Upload Media', 'image');
-            });
-
-            // Clear logo button
-            $('#wpca-clear-login-logo').on('click', function(e) {
-                e.preventDefault();
-                $('#wpca-login-logo-url').val('');
-                $('#wpca-login-logo-preview').html('<p>No logo selected</p>');
-            });
-
-            // Clear background button
-            $('#wpca-clear-login-background').on('click', function(e) {
-                e.preventDefault();
-                $('#wpca-login-background-url').val('');
-                $('#wpca-login-background-preview').html('<p>No background selected</p>');
+                const button = $(this);
+                const target = button.data('target');
+                const targetField = $('#' + target);
+                const previewDiv = $('#' + target + '-preview');
+                
+                targetField.val('');
+                previewDiv.hide().html('');
             });
         }
     },
@@ -89,7 +84,7 @@ WPCA.login = {
         // Check if WordPress media uploader is available
         if (typeof wp === 'undefined' || typeof wp.media === 'undefined') {
             console.error('WPCA Error: WordPress media uploader is not available');
-            alert('WordPress media uploader is not available');
+            alert(wpca_admin.media_uploader_not_available || 'WordPress media uploader is not available');
             return;
         }
         
@@ -97,7 +92,7 @@ WPCA.login = {
         let mediaFrame = wp.media({
             title: title,
             button: {
-                text: 'Use this media'
+                text: wpca_admin.use_this_media || 'Use this media'
             },
             multiple: false,
             library: {
@@ -109,18 +104,22 @@ WPCA.login = {
         mediaFrame.on('select', function() {
             const attachment = mediaFrame.state().get('selection').first().toJSON();
             
-            // Update the URL field and preview
-            const urlFieldId = `#wpca-${settingName}-url`;
-            const previewId = `#wpca-${settingName}-preview`;
+            // Update the URL field and preview - using the correct IDs from the HTML
+            const urlFieldId = `#wpca-login-${settingName}`; // ID format from the HTML is wpca-login-logo, not wpca-login-logo-url
+            const previewId = `#wpca-login-${settingName}-preview`;
             
+            // Update the field value
             jQuery(urlFieldId).val(attachment.url);
             
-            // Create preview
+            // Create preview and show it
             if (type === 'image') {
                 jQuery(previewId).html(`<img src="${attachment.url}" style="max-width: 100%; max-height: 200px;" alt="Preview">`);
             } else {
                 jQuery(previewId).html(`<p>Selected: ${attachment.filename}</p>`);
             }
+            
+            // Ensure preview is visible
+            jQuery(previewId).show();
         });
         
         // Open the modal
@@ -133,13 +132,18 @@ WPCA.login = {
     initPreviewUpdate: function() {
         const $ = jQuery;
         
-        // Only run on the settings page
-        if (!$('#wpca-login-media-uploader').length) {
+        // Only run on the login settings page - using preview iframe element as criterion
+        if (!$('#wpca-login-preview-iframe').length) {
             return;
         }
 
-        // Update preview when form fields change
-        $('.wpca-login-setting').on('change', function() {
+        // Update preview when login-related form fields change
+        $('#wpca-login-logo, #wpca-login-background, #wpca-login-custom-css').on('change', function() {
+            WPCA.login.updatePreview();
+        });
+        
+        // Update preview when general color settings change
+        $('.wpca-color-picker-wrap input[data-color-type]').on('change', function() {
             WPCA.login.updatePreview();
         });
 
@@ -153,15 +157,20 @@ WPCA.login = {
     updatePreview: function() {
         const $ = jQuery;
         
-        // Get current settings
-        const logoUrl = $('#wpca-login-logo-url').val();
-        const backgroundColor = $('#wpca-login-background-color').val();
-        const backgroundImage = $('#wpca-login-background-url').val();
-        const textColor = $('#wpca-login-text-color').val();
-        const buttonColor = $('#wpca-login-button-color').val();
-        const buttonTextColor = $('#wpca-login-button-text-color').val();
-        const borderRadius = $('#wpca-login-border-radius').val();
-        const customCss = $('#wpca-login-custom-css').val();
+        // Get current settings - using actual field IDs and default values from the page
+        const logoUrl = $('#wpca-login-logo').val(); // Logo URL field
+        const backgroundImage = $('#wpca-login-background').val(); // Background image field
+        const customCss = $('#wpca-login-custom-css').val(); // Custom CSS field
+        
+        // Use color field values from main interface, or provide default values
+        const primaryColor = $('.wpca-color-picker-wrap input[data-color-type="primary"]').val() || '#007cba';
+        const backgroundColor = $('.wpca-color-picker-wrap input[data-color-type="background"]').val() || '#f0f0f1';
+        const textColor = $('.wpca-color-picker-wrap input[data-color-type="text"]').val() || '#3c434a';
+        
+        // Use default values for button color and border radius
+        const buttonColor = primaryColor; // Button color uses primary color
+        const buttonTextColor = '#ffffff'; // Button text color defaults to white
+        const borderRadius = '3'; // Border radius defaults to 3px
         
         // Generate the preview HTML
         let previewHtml = `
@@ -275,13 +284,12 @@ WPCA.login = {
             const preset = presets[presetName];
             const $ = jQuery;
             
-            $('#wpca-login-background-color').val(preset.backgroundColor);
-            $('#wpca-login-text-color').val(preset.textColor);
-            $('#wpca-login-button-color').val(preset.buttonColor);
-            $('#wpca-login-button-text-color').val(preset.buttonTextColor);
-            $('#wpca-login-border-radius').val(preset.borderRadius);
+            // Use the same selector strategy as updatePreview function to update existing color fields
+            $('.wpca-color-picker-wrap input[data-color-type="background"]').val(preset.backgroundColor);
+            $('.wpca-color-picker-wrap input[data-color-type="text"]').val(preset.textColor);
+            $('.wpca-color-picker-wrap input[data-color-type="primary"]').val(preset.buttonColor);
             
-            // Update the preview
+            // Update preview
             this.updatePreview();
         }
     },
@@ -378,7 +386,7 @@ WPCA.loginFrontend = {
         const $revealButton = $('<button>')
             .attr('type', 'button')
             .attr('id', 'wpca-reveal-login-form')
-            .text('Show Login Form')
+            .text(wpca_admin.show_login_form || 'Show Login Form')
             .css({
                 display: 'none',
                 margin: '20px auto',
