@@ -1,11 +1,9 @@
-WPCleanAdmin.code-workspace
+/.vscode
+/docs
+*.code-workspace
 .gitattributes
 设计指令.txt
 wpca-logo.fw.png
 wpca-logo.png
-/.vscode
-/docs
-*.7z
 *.7z
 *.ffs_lock
-*.7z
