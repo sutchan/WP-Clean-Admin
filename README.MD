@@ -3,7 +3,7 @@
 Tags: admin, dashboard, clean, minimal, ui, simplify, customization, optimization
 Requires at least: 5.0
 Tested up to: 6.5
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 Requires PHP: 7.0
 License: GPLv2 或更高
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -74,8 +74,8 @@ WP Clean Admin经过精心设计，可以与大多数WordPress插件兼容。但
 
 == 升级提示 ==
 
-= 1.1.0 =
-升级到1.1.0版本后，请重新保存一次设置以确保新功能正常工作。
+= 1.1.1 =
+升级到1.1.1版本后，请重新保存一次设置以确保新功能正常工作。
 
 == 项目链接 ==
 
