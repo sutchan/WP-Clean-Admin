@@ -21,7 +21,7 @@ WPCA.core = {
         ajaxurl: '',
         nonce: '',
         debug: false,
-        version: '1.1.0',
+        version: '1.2.0',
         loadedModules: []
     },
     
@@ -35,7 +35,7 @@ WPCA.core = {
     init: function() {
         // Prevent reinitialization
         if (this.isInitialized) {
-            this.logWarning('核心已经初始化');
+            this.logWarning('Core has already been initialized');
             return;
         }
         
@@ -60,7 +60,7 @@ WPCA.core = {
             // Register global events
             this.registerGlobalEvents();
         } else {
-            this.logError('核心初始化失败');
+            this.logError('Core initialization failed');
         }
         
         return success;
@@ -111,8 +111,9 @@ WPCA.core = {
         
         // Validate necessary configuration
         if (!this.config.ajaxurl) {
-            this.logError('缺少 AJAX URL 设置');
-            this.showNotice('error', '无法加载必要的 JavaScript 设置。请刷新页面重试。');
+            this.logError('Missing AJAX URL setting');
+            // 使用翻译后的消息
+            this.showNotice('error', wpca_admin.error_js_settings_missing || 'Unable to load necessary JavaScript settings. Please refresh the page and try again.');
             this.hasErrors = true;
             return false;
         }
@@ -120,7 +121,7 @@ WPCA.core = {
         // Provide default nonce (still verified in AJAX request)
         if (!this.config.nonce) {
             this.config.nonce = typeof wpApiSettings !== 'undefined' ? wpApiSettings.nonce : '';
-            this.logWarning('使用备用 nonce 值');
+            this.logWarning('Using fallback nonce value');
         }
         
         this.isInitialized = true;
@@ -131,7 +132,7 @@ WPCA.core = {
     ajaxRequest: function(action, data = {}, options = {}) {
         // Ensure core is initialized
         if (!this.isInitialized && !this.initCheck()) {
-            return Promise.reject(new Error('WPCA 核心未初始化'));
+            return Promise.reject(new Error('WPCA core not initialized'));
         }
         
         // Default options
@@ -155,26 +156,26 @@ WPCA.core = {
         mergedOptions.data = {...mergedOptions.data, ...data, action: action};
         
         // Add debugging information
-        this.logDebug('AJAX 请求:', mergedOptions);
+        this.logDebug('AJAX request:', mergedOptions);
         
         return jQuery.ajax(mergedOptions);
     },
     
     // AJAX error handling
     handleAjaxError: function(xhr, status, error) {
-        let errorMessage = wpca_admin.error_request_processing_failed || '请求处理失败';
+        let errorMessage = wpca_admin.error_request_processing_failed || 'Request processing failed';
         
         if (xhr.status === 403) {
-            errorMessage = wpca_admin.error_insufficient_permissions || '您没有执行此操作的权限';
+            errorMessage = wpca_admin.error_insufficient_permissions || 'You do not have permission to perform this action';
         } else if (xhr.status === 400) {
-            errorMessage = wpca_admin.error_invalid_parameters || '请求参数错误';
+            errorMessage = wpca_admin.error_invalid_parameters || 'Invalid request parameters';
         } else if (xhr.status === 401) {
-            errorMessage = wpca_admin.error_not_logged_in || '请先登录';
+            errorMessage = wpca_admin.error_not_logged_in || 'Please log in first';
         } else if (xhr.status === 500) {
-            errorMessage = wpca_admin.error_server_error || '服务器内部错误';
+            errorMessage = wpca_admin.error_server_error || 'Internal server error';
         }
         
-        this.logError('AJAX 错误:', error, '状态:', xhr.status);
+        this.logError('AJAX error:', error, 'Status:', xhr.status);
         this.showNotice('error', errorMessage);
     },
 
@@ -211,7 +212,10 @@ WPCA.core = {
                               type === 'success' ? 'success' : 
                               type === 'warning' ? 'warning' : 'info';
             
-            const notice = jQuery(`<div class="wpca-notice ${noticeClass}"><p><strong>WP Clean Admin:</strong> ${message}</p></div>`);
+            // 获取翻译后的插件名称
+            let pluginName = wpca_admin.plugin_name || 'WP Clean Admin';
+            
+            const notice = jQuery(`<div class="wpca-notice ${noticeClass}"><p><strong>${pluginName}:</strong> ${message}</p></div>`);
             notice.prependTo('.wrap').hide().fadeIn();
             
             // Automatically close (except error notifications)
@@ -250,7 +254,7 @@ WPCA.core = {
         if (this.config.debug) {
             jQuery(document).ajaxComplete((event, xhr, settings) => {
                 if (settings.url === this.config.ajaxurl && settings.data && settings.data.includes('action=')) {
-                    this.logDebug('AJAX 完成:', settings.data.substring(0, 100) + (settings.data.length > 100 ? '...' : ''));
+                    this.logDebug('AJAX completed:', settings.data.substring(0, 100) + (settings.data.length > 100 ? '...' : ''));
                 }
             });
         }
@@ -261,34 +265,34 @@ WPCA.core = {
         if (!WPCA[moduleName]) {
             WPCA[moduleName] = module;
             this.config.loadedModules.push(moduleName);
-            this.logDebug('模块已注册:', moduleName);
+            this.logDebug('Module registered:', moduleName);
             return true;
         } else {
-            this.logWarning('模块名称已存在:', moduleName);
+            this.logWarning('Module name already exists:', moduleName);
             return false;
         }
     }
 };
 
-// 为了向后兼容，保留一些全局变量
+// Keep some global variables for backward compatibility
 window.wpca = {
     ajaxurl: WPCA.core.config.ajaxurl,
     nonce: WPCA.core.config.nonce,
     debug: WPCA.core.config.debug,
-    // 提供向后兼容的AJAX方法
+    // Provide backward compatible AJAX method
     ajax: function(action, data, options) {
         return WPCA.core.ajaxRequest(action, data, options);
     }
 };
 
-// 页面加载完成后初始化核心功能
+// Initialize core functionality after page loads
 jQuery(document).ready(function() {
     try {
         WPCA.core.init();
     } catch (error) {
-        console.error('WPCA 初始化异常:', error);
-        // 显示基本错误通知
-        jQuery('<div class="notice notice-error"><p><strong>WP Clean Admin 初始化失败:</strong> ' + error.message + '</p></div>')
+        console.error('WPCA initialization exception:', error);
+        // Display basic error notification
+        jQuery('<div class="notice notice-error"><p><strong>' + (wpca_admin.error_initialization_failed || 'WP Clean Admin initialization failed:') + '</strong> ' + error.message + '</p></div>')
             .prependTo('.wrap');
     }
 });

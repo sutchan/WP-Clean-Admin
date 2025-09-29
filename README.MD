@@ -13,9 +13,9 @@ GitHub: [https://github.com/sutchan/WP-Clean-Admin](https://github.com/sutchan/W
 
 测试版本: 6.5
 
-稳定版本: 1.1.0
+稳定版本: 1.2.2
 
-许可证: GPLv2 或更高
+许可证: GPL v2
 
 许可证URI: http://www.gnu.org/licenses/gpl-2.0.html
 

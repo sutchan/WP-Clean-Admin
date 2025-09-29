@@ -1,0 +1,45 @@
+“Menu Order”设置里菜单拖拽管理的层级关系，保持和后台菜单顺序一致。
+
+Menu Customization 增加一个重置按钮。
+
+在 Menu Order 设置里显示的菜单，忽略掉菜单自己的 span 标签
+
+
+删除 Hide Admin Menu Items 此部分的选项，
+在 “Menu Order” 的每个拖拽菜单项里增加开关，
+给拖拽菜单项增加二级/三次菜单项，次级的菜单做缩进显示。
+
+
+Menu Order	里面的开关改成左右滑动开关，并且把二级/三级管理菜单也显示出来。
+
+
+让 wpca-menu-order 里的 toggle 开关,去控制管理菜单项的显示和隐藏，开则显示，关则隐藏。
+
+删除 wpca-menu-order 里菜单项的 前2个checkbox
+
+让 wpca-menu-order 里菜单项的开关生效，去控制管理菜单项的显示和隐藏，开则显示，关则隐藏。
+
+
+把 “Hide Admin Menu Items” 设置里的开关功能，合并到 wpca-menu-order 的菜单项里，由里面的滑动开关来控制。
+
+
+让 wpca-menu-order 里的二级菜单项 <li> 行缩进显示
+
+
+让 wpca-menu-order 里的菜单项的 slider 向右对齐，同时修复开关显示异常bug
+
+
+在菜单管理选项卡里的尾部，增加一个开关控制wordpress后台菜单的图标显示或隐藏
+
+
+wpca-menu-order 的开关状态没有和wp管理菜单状态显示/隐藏关联上，请修复
+
+
+
+替换作者署名为 Sut，项目网址为 https://github.com/sutchan/WP-Clean-Admin
+
+
+==========国际化指令================
+检查所有界面UI字符串是否都加入翻译文件了，再对比所有 .pot 和 .po 文件，补全缺失字符串
+
+把所有界面字符串加入到 wp-clean-admin.pot 文件里面去，并更新各种语言的.po文件。

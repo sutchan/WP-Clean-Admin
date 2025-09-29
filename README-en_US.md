@@ -1,4 +1,4 @@
-﻿=== WP Clean Admin ===
+=== WP Clean Admin ===
 
 [View in 简体中文](README.md)
 
@@ -12,9 +12,9 @@ Requires at least: 5.0
 
 Tested up to: 6.5
 
-Stable tag: 1.1.0
+Stable tag: 1.2.2
 
-License: GPLv2 or later
+License: GPL v2
 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 

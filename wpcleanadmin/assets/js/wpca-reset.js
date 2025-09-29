@@ -1,39 +1,39 @@
 (function($) {
     'use strict';
     
-    // 确保WPCA对象存在
+    // Ensure WPCA object exists
     if (typeof WPCA === 'undefined') {
         window.WPCA = {};
     }
     
-    // 重置功能模块
+    // Reset functionality module
     WPCA.reset = {
         
         /**
-         * 初始化重置功能
+         * Initialize reset functionality
          */
         init: function() {
-            // 添加重置按钮事件监听器
+            // Add reset button event listeners
             this.addResetButtonListeners();
         },
         
         /**
-         * 为重置按钮添加点击事件监听器
+         * Add click event listeners for reset buttons
          */
         addResetButtonListeners: function() {
-            // 常规设置重置按钮
+            // General settings reset button
             $(document).on('click', '#wpca-reset-general', function(e) {
                 e.preventDefault();
                 WPCA.reset.confirmReset('general');
             });
             
-            // 视觉样式重置按钮
+            // Visual style reset button
             $(document).on('click', '#wpca-reset-visual', function(e) {
                 e.preventDefault();
                 WPCA.reset.confirmReset('visual');
             });
             
-            // 登录页面重置按钮
+            // Login page reset button
             $(document).on('click', '#wpca-reset-login', function(e) {
                 e.preventDefault();
                 WPCA.reset.confirmReset('login');
@@ -41,12 +41,12 @@
         },
         
         /**
-         * 显示重置确认对话框
+         * Show reset confirmation dialog
          */
         confirmReset: function(tab) {
             var confirmText = '';
             
-            // 根据不同的标签页设置不同的确认文本
+            // Set different confirmation text based on tab
             switch(tab) {
                 case 'general':
                     confirmText = wpca_admin.general_reset_confirm || __('Are you sure you want to reset all general settings to default?', 'wp-clean-admin');
@@ -61,25 +61,25 @@
                     confirmText = wpca_admin.reset_confirm || __('Are you sure you want to reset these settings to default?', 'wp-clean-admin');
             }
             
-            // 显示确认对话框
+            // Show confirmation dialog
             if (confirm(confirmText)) {
                 WPCA.reset.performReset(tab);
             }
         },
         
         /**
-         * 执行重置操作
+         * Perform reset operation
          */
         performReset: function(tab) {
-            // 获取当前点击的按钮
+            // Get currently clicked button
             var $button = $('#wpca-reset-' + tab);
             var originalText = $button.html();
             
-            // 显示加载状态
+            // Show loading state
             $button.html('<span class="dashicons dashicons-update spin" style="vertical-align: middle; margin-right: 5px;"></span> ' + (wpca_admin.resetting_text || __('Resetting...', 'wp-clean-admin')));
             $button.prop('disabled', true);
             
-            // 发送AJAX请求
+            // Send AJAX request
             $.ajax({
                 url: wpca_admin.ajax_url,
                 type: 'POST',
@@ -89,24 +89,24 @@
                     nonce: wpca_admin.nonce
                 },
                 success: function(response) {
-                    // 恢复按钮状态
+                    // Restore button state
                     $button.html(originalText);
                     $button.prop('disabled', false);
                     
-                    // 检查响应
+                    // Check response
                     if (response.success) {
-                        // 显示成功通知
+                        // Show success notification
                         if (typeof WPCA.core !== 'undefined' && typeof WPCA.core.showNotice === 'function') {
                             WPCA.core.showNotice('success', (wpca_admin.reset_text || __('Reset Defaults', 'wp-clean-admin')) + ' ' + (wpca_admin.reset_successful_text || __('successful', 'wp-clean-admin')));
                         } else {
                             alert((wpca_admin.reset_text || __('Reset Defaults', 'wp-clean-admin')) + ' ' + (wpca_admin.reset_successful_text || __('successful', 'wp-clean-admin')));
                         }
                         
-                        // 刷新页面以显示重置后的设置
+                        // Reload page to show reset settings
                         location.reload();
                     } else {
-                        // 显示错误通知
-                        var errorMessage = response.data && response.data.message ? response.data.message : (wpca_admin.reset_failed || __('Reset failed. Please try again.', 'wp-clean-admin'));
+                        // Show error notification
+                        var errorMessage = response.data && response.data.message ? response.data.message : (wpca_admin.reset_failed || 'Reset failed. Please try again.');
                         if (typeof WPCA.core !== 'undefined' && typeof WPCA.core.showNotice === 'function') {
                             WPCA.core.showNotice('error', errorMessage);
                         } else {
@@ -115,22 +115,22 @@
                     }
                 },
                 error: function() {
-                    // 恢复按钮状态
+                    // Restore button state
                     $button.html(originalText);
                     $button.prop('disabled', false);
                     
-                    // 显示错误通知
+                    // Show error notification
                     if (typeof WPCA.core !== 'undefined' && typeof WPCA.core.showNotice === 'function') {
-                        WPCA.core.showNotice('error', wpca_admin.reset_failed || __('Reset failed. Please try again.', 'wp-clean-admin'));
+                        WPCA.core.showNotice('error', wpca_admin.reset_failed || 'Reset failed. Please try again.');
                     } else {
-                        alert(wpca_admin.reset_failed || __('Reset failed. Please try again.', 'wp-clean-admin'));
+                        alert(wpca_admin.reset_failed || 'Reset failed. Please try again.');
                     }
                 }
             });
         }
     };
     
-    // 在文档加载完成后初始化重置功能
+    // Initialize reset functionality after document is loaded
     $(document).ready(function() {
         WPCA.reset.init();
     });

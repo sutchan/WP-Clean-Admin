@@ -75,9 +75,12 @@
                 var $button = $(this);
                 var requiredPermission = $button.data('permission');
                 if (requiredPermission && !window.WPCA.permissions.hasPermission(requiredPermission)) {
+                    // 使用翻译对象中的翻译
+                    const message = wpca_admin.error_insufficient_permissions || 'Insufficient permissions';
+                    
                     $button.prop('disabled', true)
                            .addClass('wpca-disabled')
-                           .attr('title', wpca_admin.error_insufficient_permissions || '权限不足');
+                           .attr('title', message);
                 }
             });
         }

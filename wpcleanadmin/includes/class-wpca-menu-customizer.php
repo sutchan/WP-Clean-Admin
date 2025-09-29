@@ -7,19 +7,14 @@
  * @since 1.0.0
  */
 
-defined('ABSPATH') || exit;
-
-// Ensure we're in WordPress context
-if (!defined('WPINC')) {
+/**
+ * Security check: Ensure loading within WordPress environment
+ */
+if (!defined('ABSPATH') || !defined('WPINC')) {
     die('This file must be loaded within WordPress environment');
 }
 
-// Ensure required WordPress functions are available
-if (!function_exists('add_action')) {
-if (defined('ABSPATH')) {
-    require_once ABSPATH . 'wp-admin/includes/plugin.php';
-}
-}
+// No need to include utility class as we're using native WordPress functions directly
 
 /**
  * Class WPCA_Menu_Customizer
@@ -58,14 +53,11 @@ class WPCA_Menu_Customizer {
      * Constructor
      */
     public function __construct() {
-        if (function_exists('add_action')) {
-            add_action('admin_menu', array($this, 'initialize_menu_customization'));
-        }
+        // Register hooks
+        add_action('admin_menu', array($this, 'initialize_menu_customization'));
         add_action('wp_ajax_wpca_toggle_menu', array($this, 'handle_ajax_toggle_menu'));
         add_action('wp_ajax_wpca_reset_menu', array($this, 'handle_ajax_reset_menu'));
         add_action('wp_ajax_wpca_reset_menu_order', array($this, 'handle_ajax_reset_menu_order'));
-        
-        // Add error logging hook
         add_action('wpca_menu_customization_error', array($this, 'log_customization_error'), 10, 3);
     }
     
@@ -94,16 +86,14 @@ class WPCA_Menu_Customizer {
             }
             
             // Menu ordering functionality
-            if (!empty($options['menu_order']) && is_array($options['menu_order'])) {
-                add_filter('custom_menu_order', '__return_true');
-                add_filter('menu_order', array($this, 'handle_admin_menu_reordering'));
-            }
-            
-            // Initialize menu item display control
+            // Always add menu ordering filters to ensure proper handling
+            // even when menu_order is empty (reset to default)
+            add_filter('custom_menu_order', '__return_true');
+            add_filter('menu_order', array($this, 'handle_admin_menu_reordering'));
             add_action('admin_head', array($this, 'handle_menu_item_visibility'));
             
             // Only load scripts for users with full management permissions
-            if (current_user_can('manage_options')) {
+            if ($this->user_can_manage_options()) {
                 add_action('admin_enqueue_scripts', array($this, 'load_menu_scripts'));
             }
         } catch (Exception $e) {
@@ -113,27 +103,45 @@ class WPCA_Menu_Customizer {
     }
     
     /**
+     * Check if user has manage options permission
+     * 
+     * @return bool Whether user has permission
+     */
+    private function user_can_manage_options() {
+        return current_user_can('manage_options');
+    }
+    
+    /**
      * Check if current user has menu customization permissions
      * 
      * @return bool True if user has permissions
      */
     private function current_user_has_menu_permissions() {
-        // Directly check user permissions to avoid recursive calls
-        $user = wp_get_current_user();
-        
-        // Administrators always have permissions
-        if (current_user_can('manage_options')) {
-            return true;
-        }
-        
-        // Check custom permissions
-        if (isset($user->allcaps['wpca_customize_admin']) && $user->allcaps['wpca_customize_admin']) {
-            return true;
-        }
-        
-        // Check higher-level permissions
-        if (isset($user->allcaps['wpca_manage_all']) && $user->allcaps['wpca_manage_all']) {
-            return true;
+        try {
+            // Get current user
+            $user = wp_get_current_user();
+            
+            if (empty($user)) {
+                return false;
+            }
+            
+            // Administrators always have permission
+            if (current_user_can('manage_options')) {
+                return true;
+            }
+            
+            // Check custom permission
+            if (isset($user->allcaps['wpca_customize_admin']) && $user->allcaps['wpca_customize_admin']) {
+                return true;
+            }
+            
+            // Check advanced permission
+            if (isset($user->allcaps['wpca_manage_all']) && $user->allcaps['wpca_manage_all']) {
+                return true;
+            }
+        } catch (Exception $e) {
+            // Log error if exception occurs
+            error_log('WPCA permission check failed: ' . $e->getMessage());
         }
         
         return false;
@@ -152,6 +160,17 @@ class WPCA_Menu_Customizer {
             $this->options_cache = get_option(WPCA_SETTINGS_KEY, array());
         }
         return $this->options_cache;
+    }
+    
+    /**
+     * Ensure menu_toggles array exists in options
+     * 
+     * @param array $options Plugin options
+     */
+    private function ensure_menu_toggles_exist(&$options) {
+        if (!isset($options['menu_toggles']) || !is_array($options['menu_toggles'])) {
+            $options['menu_toggles'] = array();
+        }
     }
     
     /**
@@ -290,17 +309,8 @@ class WPCA_Menu_Customizer {
      * @return array Deduplicated menu items
      */
     private function remove_duplicate_menu_items($menu_items) {
-        $seen = array();
-        $filtered_order = array();
-        
-        foreach ($menu_items as $item) {
-            if (!isset($seen[$item])) {
-                $seen[$item] = true;
-                $filtered_order[] = $item;
-            }
-        }
-        
-        return $filtered_order;
+        // Using array_unique with SORT_STRING to preserve keys and maintain order
+        return array_values(array_unique($menu_items, SORT_STRING));
     }
 
     /**
@@ -378,9 +388,9 @@ class WPCA_Menu_Customizer {
                 return '';
             }
             
-            // 定义安全的键名清理函数
+            // Define safe key sanitization function
             $safe_sanitize_key = function_exists('sanitize_key') ? 'sanitize_key' : function($key) {
-                // 简单的键名清理实现
+                // Simple key sanitization implementation
                 $key = strtolower($key);
                 $key = preg_replace('/[^a-z0-9_\-]/', '', $key);
                 return $key;
@@ -496,7 +506,7 @@ class WPCA_Menu_Customizer {
     private function extract_top_level_menus($menu) {
         $menu_items = array();
         
-        // 定义安全的标签清理函数
+        // Define safe tag sanitization function
         $safe_wp_strip_all_tags = function_exists('wp_strip_all_tags') ? 'wp_strip_all_tags' : function($text) {
             return strip_tags($text);
         };
@@ -527,7 +537,7 @@ class WPCA_Menu_Customizer {
     private function extract_submenus($submenu) {
         $menu_items = array();
         
-        // 定义安全的标签清理函数
+        // Define safe tag cleaning function
         $safe_wp_strip_all_tags = function_exists('wp_strip_all_tags') ? 'wp_strip_all_tags' : function($text) {
             return strip_tags($text);
         };
@@ -684,7 +694,7 @@ class WPCA_Menu_Customizer {
         foreach ($hidden_items as $slug) {
             // Handle top-level menus
             if (strpos($slug, '|') === false) {
-                // 检查 esc_attr 函数是否存在，若不存在则添加基本转义逻辑
+                // Check if esc_attr function exists, add basic escape logic if not
                 if (!function_exists('esc_attr')) {
                     $escaped_slug = htmlspecialchars($slug, ENT_QUOTES, 'UTF-8');
                 } else {
@@ -746,11 +756,18 @@ class WPCA_Menu_Customizer {
             $this->validate_ajax_request('wpca_menu_toggle', 'manage_options');
             
             // Get and validate parameters
-            $slug = isset($_POST['slug']) ? (function_exists('sanitize_text_field') ? sanitize_text_field($_POST['slug']) : filter_var($_POST['slug'], FILTER_SANITIZE_STRING)) : '';
+            $slug = '';
+            if (isset($_POST['slug'])) {
+                if (function_exists('sanitize_text_field')) {
+                    $slug = sanitize_text_field($_POST['slug']);
+                } else {
+                    $slug = filter_var($_POST['slug'], FILTER_SANITIZE_STRING);
+                }
+            }
             $state = isset($_POST['state']) ? intval($_POST['state']) : 0;
             
             if (empty($slug)) {
-                throw new Exception(__('Invalid menu slug', 'wp-clean-admin'), 400);
+                throw new Exception('Invalid menu slug', 400);
             }
             
             // Get current options
@@ -763,10 +780,13 @@ class WPCA_Menu_Customizer {
             $options['menu_toggles'][$slug] = $state;
             
             // Save updated options
-            $updated = function_exists('update_option') ? update_option('wpca_settings', $options) : false;
+            $updated = false;
+            if (function_exists('update_option')) {
+                $updated = update_option('wpca_settings', $options);
+            }
             
             if (!$updated) {
-                throw new Exception(__('Failed to save menu settings', 'wp-clean-admin'), 500);
+                throw new Exception('Failed to save menu settings', 500);
             }
             
             // Clear all caches
@@ -774,30 +794,42 @@ class WPCA_Menu_Customizer {
             $this->options_cache = null;
             
             // Send success response
-            if (function_exists('wp_send_json_success')) {
-                wp_send_json_success(array(
-                    'message' => __('Menu settings updated successfully', 'wp-clean-admin'),
-                    'data' => array(
-                        'slug' => $slug,
-                        'state' => $state
-                    )
-                ));
-            } else {
-                echo json_encode(array('success' => true, 'data' => array('slug' => $slug, 'state' => $state)));
-                wp_die();
-            }
+            $this->send_json_response(true, array(
+                'message' => __('Menu settings updated successfully', 'wp-clean-admin'),
+                'data' => array(
+                    'slug' => $slug,
+                    'state' => $state
+                )
+            ));
             
         } catch (Exception $e) {
             $this->log_error('ajax_toggle_menu_failed', $e);
-            if (function_exists('wp_send_json_error')) {
-                wp_send_json_error(array(
-                    'message' => $e->getMessage(),
-                    'code' => $e->getCode() ?: 500
-                ), $e->getCode() ?: 500);
-            } else {
-                echo json_encode(array('error' => $e->getMessage(), 'code' => $e->getCode() ?: 500));
-                wp_die();
-            }
+            $this->send_json_response(false, array(
+                'message' => $e->getMessage(),
+                'code' => $e->getCode() ?: 500
+            ), $e->getCode() ?: 500);
+        }
+    }
+    
+    /**
+     * Send JSON response (fallback method)
+     * 
+     * @param bool $success Whether successful
+     * @param array $data Response data
+     * @param int $status_code HTTP status code
+     */
+    private function send_json_response($success, $data, $status_code = 200) {
+        if (function_exists('wp_send_json_success') && $success) {
+            wp_send_json_success($data, $status_code);
+        } else if (function_exists('wp_send_json_error') && !$success) {
+            wp_send_json_error($data, $status_code);
+        } else {
+            header('Content-Type: application/json');
+            $response = $success ? 
+                array('success' => true) + $data : 
+                array('error' => $data['message'], 'code' => $data['code']);
+            echo json_encode($response);
+            wp_die();
         }
     }
 
@@ -806,11 +838,18 @@ class WPCA_Menu_Customizer {
      */
     public function handle_ajax_reset_menu() {
         try {
+            // Validate request
             $this->validate_ajax_request('wpca_menu_toggle', 'manage_options');
             
             $reset_types = $this->get_reset_types_from_request();
             $valid_types = array('order', 'toggles');
-            $reset_types = (function_exists('array_intersect')) ? array_intersect($reset_types, $valid_types) : array_filter($reset_types, function($type) use ($valid_types) { return in_array($type, $valid_types); });
+            
+            // Filter array
+            if (function_exists('array_intersect')) {
+                $reset_types = array_intersect($reset_types, $valid_types);
+            } else {
+                $reset_types = array_filter($reset_types, function($type) use ($valid_types) { return in_array($type, $valid_types); });
+            }
             
             if (empty($reset_types)) {
                 throw new Exception(__('Please select at least one valid setting type to reset', 'wp-clean-admin'), 400);
@@ -819,7 +858,11 @@ class WPCA_Menu_Customizer {
             $options = $this->get_plugin_options();
             $options = $this->reset_settings_by_types($options, $reset_types);
 
-            $updated = function_exists('update_option') ? update_option('wpca_settings', $options) : false;
+            // Update option
+            $updated = false;
+            if (function_exists('update_option')) {
+                $updated = update_option('wpca_settings', $options);
+            }
             
             if (!$updated) {
                 throw new Exception(__('Failed to reset settings', 'wp-clean-admin'), 500);
@@ -827,25 +870,19 @@ class WPCA_Menu_Customizer {
             
             $this->clear_menu_cache();
             
-            if (function_exists('wp_send_json_success')) {
-                wp_send_json_success(array(
-                    'message' => __('Menu settings reset successfully', 'wp-clean-admin'),
-                    'data' => array(
-                        'reset_types' => $reset_types,
-                        'new_settings' => $options
-                    )
-                ));
-            } else {
-                echo json_encode(array('success' => true, 'data' => array('reset_types' => $reset_types, 'new_settings' => $options)));
-                wp_die();
-            }
+            // Send success response
+            $this->send_json_response(true, array(
+                'message' => __('Menu settings reset successfully', 'wp-clean-admin'),
+                'data' => array(
+                    'reset_types' => $reset_types,
+                    'new_settings' => $options
+                )
+            ));
         } catch (Exception $e) {
-            if (function_exists('wp_send_json_error')) {
-                wp_send_json_error($e->getMessage(), $e->getCode() ?: 400);
-            } else {
-                echo json_encode(array('error' => $e->getMessage()));
-                wp_die();
-            }
+            $this->send_json_response(false, array(
+                'message' => $e->getMessage(),
+                'code' => $e->getCode() ?: 400
+            ), $e->getCode() ?: 400);
         }
     }
     
@@ -858,11 +895,12 @@ class WPCA_Menu_Customizer {
         $reset_types = array();
         if (isset($_POST['reset_types'])) {
             $reset_types = is_array($_POST['reset_types']) ? $_POST['reset_types'] : array($_POST['reset_types']);
-            // Check if sanitize_key function exists
+            
+            // Sanitize text
             if (function_exists('sanitize_key')) {
                 $reset_types = array_map('sanitize_key', $reset_types);
             } else {
-                // 定义安全的文本清理函数
+                // Define safe text sanitization function
                 $safe_sanitize_text_field = function_exists('sanitize_text_field') ? 'sanitize_text_field' : function($text) {
                     return filter_var($text, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                 };
@@ -909,40 +947,36 @@ class WPCA_Menu_Customizer {
      */
     public function handle_ajax_reset_menu_order() {
         try {
+            // Validate request
             $this->validate_ajax_request('wpca_menu_toggle', 'manage_options');
             
             $options = $this->get_plugin_options();
             $options['menu_order'] = array();
             $options['submenu_order'] = array();
 
-            $updated = function_exists('update_option') ? update_option('wpca_settings', $options) : false;
+            // Update option
+            $updated = false;
+            if (function_exists('update_option')) {
+                $updated = update_option('wpca_settings', $options);
+            }
             
             if (!$updated) {
-                throw new Exception(__('Failed to reset menu order', 'wp-clean-admin'), 500);
+                throw new Exception('Failed to reset menu order', 500);
             }
             
             $this->clear_menu_cache();
             
-            if (function_exists('wp_send_json_success')) {
-                wp_send_json_success(array(
-                    'message' => __('Menu order has been reset to default', 'wp-clean-admin')
-                ));
-            } else {
-                echo json_encode(array('success' => true, 'message' => __('Menu order has been reset to default', 'wp-clean-admin')));
-                wp_die();
-            }
+            // Send success response
+            $this->send_json_response(true, array(
+                'message' => 'Menu order has been reset to default'
+            ));
             
         } catch (Exception $e) {
             $this->log_error('ajax_reset_menu_order_failed', $e);
-            if (function_exists('wp_send_json_error')) {
-                wp_send_json_error(array(
-                    'message' => $e->getMessage(),
-                    'code' => $e->getCode() ?: 500
-                ), $e->getCode() ?: 500);
-            } else {
-                echo json_encode(array('error' => $e->getMessage(), 'code' => $e->getCode() ?: 500));
-                wp_die();
-            }
+            $this->send_json_response(false, array(
+                'message' => $e->getMessage(),
+                'code' => $e->getCode() ?: 500
+            ), $e->getCode() ?: 500);
         }
     }
     
@@ -1016,42 +1050,27 @@ class WPCA_Menu_Customizer {
         $is_ajax = function_exists('wp_doing_ajax') ? wp_doing_ajax() : (defined('DOING_AJAX') && DOING_AJAX);
         
         if (!$is_ajax) {
-            if (function_exists('wp_send_json_error')) {
-                wp_send_json_error(array(
-                    'message' => __('Invalid request', 'wp-clean-admin')
-                ), 400);
-            } else {
-                echo json_encode(array('error' => __('Invalid request', 'wp-clean-admin')));
-                wp_die();
-            }
+            $this->send_json_response(false, array(
+                'message' => 'Invalid request'
+            ), 400);
         }
 
         // Validate nonce
         $nonce_valid = function_exists('check_ajax_referer') ? check_ajax_referer($nonce_action, false, false) : false;
         
         if (!$nonce_valid) {
-            if (function_exists('wp_send_json_error')) {
-                wp_send_json_error(array(
-                    'message' => __('Security verification failed', 'wp-clean-admin')
-                ), 403);
-            } else {
-                echo json_encode(array('error' => __('Security verification failed', 'wp-clean-admin')));
-                wp_die();
-            }
+            $this->send_json_response(false, array(
+                'message' => __('Security verification failed', 'wp-clean-admin')
+            ), 403);
         }
 
         // Check permissions
         $has_permission = function_exists('current_user_can') ? current_user_can($permission) : false;
         
         if (!$has_permission) {
-            if (function_exists('wp_send_json_error')) {
-                wp_send_json_error(array(
-                    'message' => __('Insufficient permissions', 'wp-clean-admin')
-                ), 403);
-            } else {
-                echo json_encode(array('error' => __('Insufficient permissions', 'wp-clean-admin')));
-                wp_die();
-            }
+            $this->send_json_response(false, array(
+                'message' => __('Insufficient permissions', 'wp-clean-admin')
+            ), 403);
         }
     }
 }

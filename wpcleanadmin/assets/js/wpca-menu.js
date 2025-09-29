@@ -18,40 +18,40 @@ WPCA.menu = {
      */
     init: function() {
         const $ = jQuery;
-
+    
         // --- Configuration retrieval and validation ---
         if (typeof window.wpca_admin === 'undefined') {
             console.error('WPCA Error: The configuration object "wpca_admin" is missing.');
             if (window.WPCA?.core?.displayErrorNotice) {
-                WPCA.core.displayErrorNotice('Menu management configuration failed to load');
+                WPCA.core.displayErrorNotice(this.config?.menu_config_failed || 'Menu management configuration failed to load');
             }
             return false;
         }
         this.config = window.wpca_admin;
-
+    
         if (this.config.debug) {
             console.log('WPCA Menu Management: Initializing...');
         }
-
+    
         // --- Dependency check ---
         if (typeof $.ui === 'undefined' || typeof $.ui.sortable === 'undefined') {
             console.error('WPCA Error: jQuery UI Sortable is not loaded.');
             if (window.WPCA?.core?.displayErrorNotice) {
-                WPCA.core.displayErrorNotice('Menu management requires jQuery UI Sortable, please ensure it is loaded');
+                WPCA.core.displayErrorNotice(this.config?.menu_jquery_ui_required || 'Menu management requires jQuery UI Sortable, please ensure it is loaded');
             }
             return false;
         }
-
+    
         // --- Initialize menu sorting functionality ---
         this.initMenuSorting();
-
+    
         // --- Initialize menu toggle functionality ---
         this.initMenuToggle();
-
+    
         if (this.config.debug) {
             console.log('WPCA Menu Management: Initialized successfully.');
         }
-
+    
         return true;
     },
 
@@ -71,8 +71,13 @@ WPCA.menu = {
                 const menuOrder = $(this).sortable('toArray', {
                     attribute: 'data-menu-slug'
                 });
-                // Store the sorted array (as JSON string) in a hidden input for form submission
-                $('#wpca-menu-order-input').val(JSON.stringify(menuOrder));
+                // Update the hidden fields with new order
+                const $menuItems = $(this).find('li[data-menu-slug]');
+                $menuItems.each(function(index) {
+                    const slug = $(this).data('menu-slug');
+                    // Find the corresponding hidden input and update its value
+                    $(this).find('input[name="wpca_settings[menu_order][]"]').val(slug);
+                });
             }
         });
 
@@ -124,15 +129,15 @@ WPCA.menu = {
         const slug = $checkbox.data('menu-slug');
         const isChecked = $checkbox.is(':checked');
         const state = isChecked ? 1 : 0;
-
+    
         if (!slug) {
             console.error('WPCA Error: Menu slug is missing from the checkbox data attribute.');
             if (typeof WPCA !== 'undefined' && typeof WPCA.core !== 'undefined' && typeof WPCA.core.displayErrorNotice === 'function') {
-                WPCA.core.displayErrorNotice('Menu slug is missing, please refresh the page and try again');
+                WPCA.core.displayErrorNotice(this.config?.menu_slug_missing || 'Menu slug is missing, please refresh the page and try again');
             }
             return;
         }
-
+    
         if (this.config.debug) {
             console.log('Toggle changed:', { slug, state });
         }
@@ -141,17 +146,17 @@ WPCA.menu = {
         this.updateAdminMenuVisibility(slug, isChecked);
         
         $switch.addClass('loading');
-
+    
         // Use Promise-based AJAX call
         this.sendToggleRequest(slug, state)
             .done((response) => {
                 if (response && response.success) {
                     if (typeof WPCA !== 'undefined' && typeof WPCA.core !== 'undefined' && typeof WPCA.core.displaySuccessNotice === 'function') {
-                        WPCA.core.displaySuccessNotice('Settings saved');
+                        WPCA.core.displaySuccessNotice(this.config?.settings_saved || 'Settings saved');
                     }
                 } else {
                     // If backend returns failure, rollback UI
-                    const errorMessage = response?.data?.message || 'An unknown error occurred';
+                    const errorMessage = response?.data?.message || (this.config?.unknown_error || 'An unknown error occurred');
                     if (typeof WPCA !== 'undefined' && typeof WPCA.core !== 'undefined' && typeof WPCA.core.displayErrorNotice === 'function') {
                         WPCA.core.displayErrorNotice(errorMessage);
                     }
@@ -209,10 +214,14 @@ WPCA.menu = {
      */
     getErrorMessageFromXHR: function(xhr) {
         if (xhr.status === 403) {
-            return 'Insufficient permissions or security verification failed. The page will refresh in 2 seconds.';
+            return this.config?.insufficient_permissions || 'Insufficient permissions or security verification failed. The page will refresh in 2 seconds.';
         }
         if (xhr.status === 0) {
-            return 'Network connection error, please check your network and try again.';
+            return this.config?.network_connection_error || 'Network connection error, please check your network and try again.';
+        }
+        // Format error message with status code
+        if (this.config?.request_failed_format) {
+            return this.config.request_failed_format.replace('%d', xhr.status);
         }
         return `Request failed, server returned error code: ${xhr.status}`;
     },
@@ -272,7 +281,7 @@ jQuery(document).ready(function() {
     } else {
         console.error('WPCA Error: Menu management module failed to load.');
         if (typeof WPCA !== 'undefined' && typeof WPCA.core !== 'undefined' && typeof WPCA.core.displayErrorNotice === 'function') {
-            WPCA.core.displayErrorNotice('Menu management initialization failed');
+            WPCA.core.displayErrorNotice(this.config?.menu_initialization_failed || 'Menu management initialization failed');
         }
     }
 });

@@ -515,76 +515,65 @@ body.wpca-theme-dark {
 }
 
 .wpca-login-style-item {
-    border: 2px solid transparent;
-    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
     padding: 0;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    background: #fff;
+    transition: border-color 0.2s ease;
+    background: #ffffff;
     overflow: hidden;
     position: relative;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    box-shadow: none;
 }
 
 .wpca-login-style-item:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-    border-color: rgba(34, 113, 177, 0.3);
+    border-color: var(--wpca-primary-color, #2271b1);
+    transform: none;
+    box-shadow: none;
 }
 
 .wpca-login-style-item.active {
     border-color: var(--wpca-primary-color, #2271b1);
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.8), 0 0 0 5px var(--wpca-primary-color, #2271b1), 0 15px 30px rgba(0, 0, 0, 0.15);
-    transform: translateY(-4px);
-    z-index: 10;
+    box-shadow: none;
+    transform: none;
+    z-index: 1;
+    background-color: #f8fafc;
 }
 
 .wpca-login-style-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: var(--wpca-primary-color, #2271b1);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.wpca-login-style-item.active::before {
-    opacity: 1;
+    display: none;
 }
 
 .wpca-login-style-preview {
-    height: 120px;
+    height: 100px;
     margin-bottom: 0;
-    border-radius: 16px 16px 0 0;
+    border-radius: 0;
     overflow: hidden;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f8f9fa;
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    background: #f1f5f9;
+    transition: background-color 0.2s ease;
 }
 
 .wpca-login-style-item:hover .wpca-login-style-preview {
-    background: #f1f3f5;
-    transform: scale(1.02);
+    background: #e2e8f0;
+    transform: none;
 }
 
 .wpca-login-style-preview .preview-image {
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.12));
-    transition: transform 0.3s ease;
+    filter: none;
+    transition: none;
 }
 
 .wpca-login-style-item:hover .wpca-login-style-preview .preview-image {
-    transform: scale(1.1);
+    transform: none;
 }
 
 .wpca-login-style-preview .preview-title {
@@ -594,22 +583,22 @@ body.wpca-theme-dark {
     right: 0;
     text-align: center;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: rgba(0, 0, 0, 0.5);
-    background: linear-gradient(to top, rgba(255,255,255,0.9), transparent);
-    padding-top: 10px;
+    color: var(--wpca-text-color, #32373c);
+    background: none;
+    padding-top: 0;
 }
 
 .wpca-login-style-label {
-    padding: 12px 8px;
+    padding: 10px 8px;
     font-weight: 500;
     color: var(--wpca-text-color, #32373c);
-    background: #fff;
-    transition: all 0.3s ease;
+    background: #ffffff;
+    transition: color 0.2s ease;
     text-align: center;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .wpca-login-style-item:hover .wpca-login-style-label {
@@ -624,66 +613,53 @@ body.wpca-theme-dark {
 /* Preview badge for active style */
 .wpca-login-style-item .preview-badge {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 2px;
     background: var(--wpca-primary-color, #2271b1);
     color: white;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: 10px;
     font-weight: bold;
     opacity: 0;
-    transform: scale(0.8);
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
-    z-index: 10;
+    transform: none;
+    transition: opacity 0.2s ease;
+    box-shadow: none;
+    z-index: 5;
 }
 
 .wpca-login-style-item.active .preview-badge {
     opacity: 1;
-    transform: scale(1);
-    animation: badgePulse 2s infinite;
-}
-
-@keyframes badgePulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(34, 113, 177, 0.4);
-    }
-    70% {
-        box-shadow: 0 0 0 8px rgba(34, 113, 177, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(34, 113, 177, 0);
-    }
+    animation: none;
 }
 
 /* Style-specific preview backgrounds */
 .wpca-login-style-preview.default-style {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: #f8f9fa;
 }
 
 .wpca-login-style-preview.modern-style {
-    background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+    background: #ffffff;
 }
 
 .wpca-login-style-preview.minimal-style {
-    background: linear-gradient(135deg, #fafafa 0%, #f0f0f0 100%);
+    background: #fafafa;
 }
 
 .wpca-login-style-preview.dark-style {
-    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    background: #2d3748;
 }
 
 .wpca-login-style-preview.gradient-style {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #667eea;
 }
 
 .wpca-login-style-preview.custom-style {
-    background: linear-gradient(135deg, #4fd1c5 0%, #38b2ac 100%);
+    background: #4fd1c5;
 }
 
 /* Hidden radio button */
@@ -692,23 +668,6 @@ body.wpca-theme-dark {
     opacity: 0;
     width: 0;
     height: 0;
-}
-
-/* Animation for selection */
-@keyframes wpca-style-select {
-    0% {
-        box-shadow: 0 0 0 0 rgba(34, 113, 177, 0.4);
-    }
-    70% {
-        box-shadow: 0 0 0 15px rgba(34, 113, 177, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(34, 113, 177, 0);
-    }
-}
-
-.wpca-login-style-item.active {
-    animation: wpca-style-select 0.6s ease-out;
 }
 
 /* Login preview styles in settings page */

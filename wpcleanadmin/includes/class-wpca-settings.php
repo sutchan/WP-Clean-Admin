@@ -1,13 +1,22 @@
 <?php
-// includes/class-wpca-settings.php
+/**
+ * WP Clean Admin - Settings Manager
+ * 
+ * @package WPCleanAdmin
+ * @subpackage Settings
+ * @since 1.0.0
+ */
 
+// Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
 /**
  * Class WPCA_Settings
- * Handles the plugin settings page.
+ *
+ * Handles the plugin settings page, including registration, validation, saving and retrieval of settings.
+ * Manages admin menu integration and AJAX handlers for settings operations.
  */
 class WPCA_Settings {
 
@@ -38,67 +47,65 @@ class WPCA_Settings {
      * Validate AJAX request with nonce and permission checks
      * @param string $nonce_action Optional. Nonce action name
      * @param string $permission Optional. Permission to check
+     * @return bool True if request is valid, false otherwise
      */
     private function validate_ajax_request($nonce_action = 'wpca_settings-options', $permission = 'wpca_manage_menus') {
-        // Check if it's an AJAX request
-        if (function_exists('wp_doing_ajax') && function_exists('wp_send_json_error') && !wp_doing_ajax()) {
-            wp_send_json_error(array(
-                'message' => __('Invalid request', 'wp-clean-admin')
-            ), 400);
-        }
-
-        // Validate nonce
-        if (function_exists('check_ajax_referer') && function_exists('wp_send_json_error') && !check_ajax_referer($nonce_action, false, false)) {
-            wp_send_json_error(array(
-                'message' => __('Security verification failed', 'wp-clean-admin')
-            ), 403);
-        }
-
-        // Check permissions
-        if (class_exists('WPCA_Permissions') && method_exists('WPCA_Permissions', 'current_user_can') && function_exists('current_user_can') && function_exists('wp_send_json_error')) {
-            if (!WPCA_Permissions::current_user_can($permission) && 
-                !current_user_can('manage_options')) {
+        // Validate AJAX request directly
+        if (!function_exists('wp_doing_ajax') || !wp_doing_ajax() ||
+            !function_exists('check_ajax_referer') || !check_ajax_referer($nonce_action, 'nonce', false) ||
+            !function_exists('current_user_can') || !current_user_can($permission)) {
+            
+            if (function_exists('wp_send_json_error')) {
                 wp_send_json_error(array(
-                    'message' => __('Insufficient permissions', 'wp-clean-admin')
+                    'message' => __('Invalid or unauthorized request', 'wp-clean-admin')
                 ), 403);
             }
+            
+            return false;
         }
 
         // Filter and validate input data
         if (function_exists('sanitize_text_field')) {
             $_POST = array_map('sanitize_text_field', $_POST);
         }
+        
+        return true;
     }
 
     /**
      * AJAX handler to save tab preference and menu state
      */
     public function ajax_save_tab_preference() {
-        $this->validate_ajax_request('wpca_settings-options', 'wpca_manage_all');
+        if (!$this->validate_ajax_request('wpca_settings-options', 'wpca_manage_all')) {
+            return;
+        }
         
         // Get and validate data
         $allowed_tabs = ['tab-general', 'tab-visual-style', 'tab-menu', 'tab-login', 'tab-about'];
-        $tab = isset($_POST['tab']) && in_array($_POST['tab'], $allowed_tabs) && function_exists('sanitize_text_field') ? sanitize_text_field($_POST['tab']) : 'tab-general';
+        $tab = isset($_POST['tab']) && in_array($_POST['tab'], $allowed_tabs) ? 
+            (function_exists('sanitize_text_field') ? sanitize_text_field($_POST['tab']) : filter_var($_POST['tab'], FILTER_SANITIZE_STRING)) : 'tab-general';
         $options = self::get_options();
         
         // Only update if data is valid
         if (isset($_POST['menu_order']) && is_array($_POST['menu_order']) && 
             isset($_POST['menu_toggles']) && is_array($_POST['menu_toggles'])) {
             $options['current_tab'] = $tab;
-            if (function_exists('sanitize_text_field')) {
-                $options['menu_order'] = array_map('sanitize_text_field', $_POST['menu_order']);
-            }
+            // Use WordPress native sanitize_text_field function
+            $options['menu_order'] = array_map('sanitize_text_field', $_POST['menu_order']);
             $options['menu_toggles'] = array_map('intval', $_POST['menu_toggles']);
-        } else if (function_exists('wp_send_json_error')) {
-            wp_send_json_error(array(
-                'message' => __('Invalid data structure', 'wp-clean-admin')
-            ), 400);
+        } else {
+            if (function_exists('wp_send_json_error')) {
+                wp_send_json_error(array(
+                    'message' => __('Invalid data structure', 'wp-clean-admin')
+                ), 400);
+            }
+            return;
         }
         
         // Save and respond
-        $update_result = function_exists('update_option') ? update_option('wpca_settings', $options) : false;
+        $update_result = update_option('wpca_settings', $options);
         
-        if ($update_result && function_exists('wp_send_json_success')) {
+        if ($update_result) {
             self::$cached_options = null;
             wp_send_json_success(array(
                 'message' => __('Settings saved successfully', 'wp-clean-admin'),
@@ -107,8 +114,8 @@ class WPCA_Settings {
                     'menu_toggles' => $options['menu_toggles']
                 )
             ));
-        } else if (function_exists('wp_send_json_error')) {
-            if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
+        } else {
+            if (defined('WP_DEBUG') && WP_DEBUG) {
                 error_log('WP Clean Admin: Failed to save settings. Options: ' . print_r($options, true));
             }
             
@@ -126,7 +133,7 @@ class WPCA_Settings {
      * @param string $tab Current tab
      */
     private function update_options_from_post(&$options, $tab) {
-        // 定义安全的文本清理函数
+        // Define safe text sanitization function
         $safe_sanitize_text_field = function_exists('sanitize_text_field') ? 'sanitize_text_field' : function($text) {
             return filter_var($text, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
         };
@@ -263,7 +270,14 @@ class WPCA_Settings {
     public static function get_options() {
         if (self::$cached_options === null) {
             if (function_exists('wp_parse_args') && function_exists('get_option')) {
-                self::$cached_options = wp_parse_args( get_option( 'wpca_settings', array() ), self::get_default_settings() );
+                $options = get_option( 'wpca_settings', array() );
+                
+                // Ensure options is an array
+                if ( ! is_array( $options ) ) {
+                    $options = array();
+                }
+                
+                self::$cached_options = wp_parse_args( $options, self::get_default_settings() );
             } else {
                 self::$cached_options = self::get_default_settings();
             }
@@ -345,7 +359,7 @@ class WPCA_Settings {
      * Initialize settings.
      */
     public function settings_init() {
-        // 为所有WordPress设置函数添加存在性检查
+        // Add existence checks for all WordPress settings functions
         if (function_exists('register_setting')) {
             register_setting( 
                 'wpca_settings', 
@@ -603,8 +617,6 @@ class WPCA_Settings {
         echo '<p class="description">' . __('Toggle to show/hide and reorder admin menu items', 'wp-clean-admin') . '</p>';
         echo '</div>';
         
-        echo '<ul id="wpca-menu-order-list" class="wpca-menu-sortable" style="' . (isset($options['menu_toggle']) && !$options['menu_toggle'] ? 'display:none;' : '') . '">';
-
         // Get all menu items including top-level and submenus
         $menu_customizer = new WPCA_Menu_Customizer();
         $all_menu_items = $menu_customizer->get_all_menu_items();
@@ -624,7 +636,7 @@ class WPCA_Settings {
         }
         ?>
         <div class="wpca-menu-order-wrapper">
-            <ul id="wpca-menu-order-list" class="wpca-menu-sortable">
+            <ul id="wpca-menu-order" class="wpca-menu-sortable" style="<?php echo (isset($options['menu_toggle']) && !$options['menu_toggle'] ? 'display:none;' : ''); ?>">
                 <?php 
                 // Combine all menu items (top level and submenus) into a single flat list
                 $all_items = [];
@@ -677,7 +689,8 @@ class WPCA_Settings {
                             '/\s*[\d]+\s*/',  // Remove numbers
                             '/pending comments/',    // Remove comment status
                             '/pending$/',         // Remove trailing status
-                            '/items?$/'            // Remove counter
+                            '/items?$/',            // Remove counter
+                            '/条评论待审/'           // Remove Chinese comment pending text
                         ], '', strip_tags($item['title']));
                         echo $indent . esc_html(trim($clean_title));
                         echo '<label class="wpca-menu-toggle-switch" data-menu-slug="'.esc_attr($slug).'">';
@@ -910,18 +923,8 @@ class WPCA_Settings {
                     <h3><?php _e('Live Preview', 'wp-clean-admin'); ?></h3>
                     <p class="description"><?php _e('Preview how your login page will look with the current settings.', 'wp-clean-admin'); ?></p>
                     <div class="wpca-login-preview-frame">
-                        <div class="wpca-login-preview-content">
-                            <div class="wpca-login-preview-logo"></div>
-                            <div class="wpca-login-preview-form">
-                                <div class="wpca-login-preview-input"></div>
-                                <div class="wpca-login-preview-input"></div>
-                                <div class="wpca-login-preview-button"></div>
-                                <div class="wpca-login-preview-links">
-                                    <div></div>
-                                    <div></div>
-                                </div>
-                            </div>
-                        </div>
+                        <!-- Actual iframe element for live preview -->
+                        <iframe id="wpca-login-preview-iframe" width="100%" height="400" frameborder="0" scrolling="no"></iframe>
                     </div>
                 </div>
             </div>
@@ -941,7 +944,7 @@ class WPCA_Settings {
         <div class="wpca-about-wrapper">
             <div class="wpca-about-header">
                 <h2><?php _e('WP Clean Admin', 'wp-clean-admin'); ?></h2>
-                <p class="wpca-version"><?php echo sprintf(__('Version %s', 'wp-clean-admin'), WPCA_VERSION); ?></p>
+                <p class="wpca-version"><?php _e('Version', 'wp-clean-admin'); ?> <?php echo WPCA_VERSION; ?></p>
             </div>
             
             <div class="wpca-about-section">
@@ -994,19 +997,19 @@ class WPCA_Settings {
         <fieldset>
             <label>
                 <input type="checkbox" name="wpca_settings[login_elements][language_switcher]" value="1" <?php checked( $login_elements['language_switcher'], 1 ); ?>>
-                <?php _e( 'Language Switcher', 'wp-clean-admin' ); ?>
+                <?php _e('Language Switcher', 'wp-clean-admin'); ?>
             </label><br>
             <label>
                 <input type="checkbox" name="wpca_settings[login_elements][home_link]" value="1" <?php checked( $login_elements['home_link'], 1 ); ?>>
-                <?php _e( 'Back to Home Link', 'wp-clean-admin' ); ?>
+                <?php _e('Back to Home Link', 'wp-clean-admin'); ?>
             </label><br>
             <label>
                 <input type="checkbox" name="wpca_settings[login_elements][register_link]" value="1" <?php checked( $login_elements['register_link'], 1 ); ?>>
-                <?php _e( 'Register Link', 'wp-clean-admin' ); ?>
+                <?php _e('Register Link', 'wp-clean-admin'); ?>
             </label><br>
             <label>
                 <input type="checkbox" name="wpca_settings[login_elements][remember_me]" value="1" <?php checked( $login_elements['remember_me'], 1 ); ?>>
-                <?php _e( 'Remember Me Checkbox', 'wp-clean-admin' ); ?>
+                <?php _e('Remember Me Checkbox', 'wp-clean-admin'); ?>
             </label>
         </fieldset>
         <?php
@@ -1016,7 +1019,7 @@ class WPCA_Settings {
      * Login Elements section callback.
      */
     public function login_elements_section_callback() {
-        echo __( 'Customize which elements appear on the login page.', 'wp-clean-admin' );
+        echo __('Customize which elements appear on the login page.', 'wp-clean-admin');
     }
 
     /**
@@ -1027,9 +1030,9 @@ class WPCA_Settings {
         ?>
         <label>
             <input type="checkbox" name="wpca_settings[hide_wordpress_title]" value="1" <?php checked( $options['hide_wordpress_title'] ?? 0, 1 ); ?>>
-            <?php _e( 'Hide "WordPress" in page titles', 'wp-clean-admin' ); ?>
+            <?php _e('Hide "WordPress" in page titles', 'wp-clean-admin'); ?>
         </label>
-        <p class="description"><?php _e( 'When enabled, removes "WordPress" from admin page titles.', 'wp-clean-admin' ); ?></p>
+        <p class="description"><?php _e('When enabled, removes "WordPress" from admin page titles.', 'wp-clean-admin'); ?></p>
         <?php
     }
     
@@ -1041,9 +1044,9 @@ class WPCA_Settings {
         ?>
         <label>
             <input type="checkbox" name="wpca_settings[hide_frontend_adminbar]" value="1" <?php checked( $options['hide_frontend_adminbar'] ?? 0, 1 ); ?>>
-            <?php _e( 'Hide admin bar on frontend', 'wp-clean-admin' ); ?>
+            <?php _e('Hide admin bar on frontend', 'wp-clean-admin'); ?>
         </label>
-        <p class="description"><?php _e( 'When enabled, hides the WordPress admin bar for all users when viewing the website frontend.', 'wp-clean-admin' ); ?></p>
+        <p class="description"><?php _e('When enabled, hides the WordPress admin bar for all users when viewing the website frontend.', 'wp-clean-admin'); ?></p>
         <?php
     }
     
@@ -1055,9 +1058,9 @@ class WPCA_Settings {
         ?>
         <label>
             <input type="checkbox" name="wpca_settings[hide_wpfooter]" value="1" <?php checked( $options['hide_wpfooter'] ?? 0, 1 ); ?>>
-            <?php _e( 'Hide WordPress footer', 'wp-clean-admin' ); ?>
+            <?php _e('Hide WordPress footer', 'wp-clean-admin'); ?>
         </label>
-        <p class="description"><?php _e( 'When enabled, removes the "Thank you for creating with WordPress" footer text.', 'wp-clean-admin' ); ?></p>
+        <p class="description"><?php _e('When enabled, removes the "Thank you for creating with WordPress" footer text.', 'wp-clean-admin'); ?></p>
         <?php
     }
 
@@ -1090,27 +1093,27 @@ class WPCA_Settings {
         <fieldset>
             <label>
                 <input type="checkbox" name="wpca_settings[hide_admin_bar_items][]" value="wp-logo" <?php checked( in_array( 'wp-logo', $admin_bar_items_to_hide ) ); ?>>
-                <?php _e( 'WordPress Logo', 'wp-clean-admin' ); ?>
+                <?php _e('WordPress Logo', 'wp-clean-admin'); ?>
             </label><br>
             <label>
                 <input type="checkbox" name="wpca_settings[hide_admin_bar_items][]" value="site-name" <?php checked( in_array( 'site-name', $admin_bar_items_to_hide ) ); ?>>
-                <?php _e( 'Site Name', 'wp-clean-admin' ); ?>
+                <?php _e('Site Name', 'wp-clean-admin'); ?>
             </label><br>
             <label>
                 <input type="checkbox" name="wpca_settings[hide_admin_bar_items][]" value="updates" <?php checked( in_array( 'updates', $admin_bar_items_to_hide ) ); ?>>
-                <?php _e( 'Updates', 'wp-clean-admin' ); ?>
+                <?php _e('Updates', 'wp-clean-admin'); ?>
             </label><br>
             <label>
                 <input type="checkbox" name="wpca_settings[hide_admin_bar_items][]" value="comments" <?php checked( in_array( 'comments', $admin_bar_items_to_hide ) ); ?>>
-                <?php _e( 'Comments', 'wp-clean-admin' ); ?>
+                <?php _e('Comments', 'wp-clean-admin'); ?>
             </label><br>
             <label>
                 <input type="checkbox" name="wpca_settings[hide_admin_bar_items][]" value="new-content" <?php checked( in_array( 'new-content', $admin_bar_items_to_hide ) ); ?>>
-                <?php _e( 'New Content', 'wp-clean-admin' ); ?>
+                <?php _e('New Content', 'wp-clean-admin'); ?>
             </label><br>
             <label>
                 <input type="checkbox" name="wpca_settings[hide_admin_bar_items][]" value="my-account" <?php checked( in_array( 'my-account', $admin_bar_items_to_hide ) ); ?>>
-                <?php _e( 'My Account', 'wp-clean-admin' ); ?>
+                My Account
             </label><br>
             <!-- Add more admin bar items as needed. Use the node ID. -->
         </fieldset>
@@ -1155,12 +1158,12 @@ class WPCA_Settings {
                     data-color-type="primary"
                 >
                 <div class="wpca-color-value"><?php echo esc_attr($primary_color); ?></div>
-                <button type="button" class="wpca-color-preset-btn" data-preset="blue">#3b82f6</button>
-                <button type="button" class="wpca-color-preset-btn" data-preset="indigo">#6366f1</button>
-                <button type="button" class="wpca-color-preset-btn" data-preset="purple">#8b5cf6</button>
-                <button type="button" class="wpca-color-preset-btn" data-preset="pink">#ec4899</button>
-                <button type="button" class="wpca-color-preset-btn" data-preset="red">#ef4444</button>
-                <button type="button" class="wpca-color-preset-btn" data-preset="green">#22c55e</button>
+                <button type="button" class="wpca-color-preset-btn" data-preset="<?php _e('blue', 'wp-clean-admin'); ?>">#3b82f6</button>
+                <button type="button" class="wpca-color-preset-btn" data-preset="<?php _e('indigo', 'wp-clean-admin'); ?>">#6366f1</button>
+                <button type="button" class="wpca-color-preset-btn" data-preset="<?php _e('purple', 'wp-clean-admin'); ?>">#8b5cf6</button>
+                <button type="button" class="wpca-color-preset-btn" data-preset="<?php _e('pink', 'wp-clean-admin'); ?>">#ec4899</button>
+                <button type="button" class="wpca-color-preset-btn" data-preset="<?php _e('red', 'wp-clean-admin'); ?>">#ef4444</button>
+                <button type="button" class="wpca-color-preset-btn" data-preset="<?php _e('green', 'wp-clean-admin'); ?>">#22c55e</button>
             </div>
             <p class="description"><?php _e('Select the primary color for links, buttons, and active states.', 'wp-clean-admin'); ?></p>
         </div>
@@ -1185,10 +1188,10 @@ class WPCA_Settings {
                     data-color-type="background"
                 >
                 <div class="wpca-color-value"><?php echo esc_attr($background_color); ?></div>
-                <button type="button" class="wpca-color-preset-btn" data-preset="light">#ffffff</button>
-                <button type="button" class="wpca-color-preset-btn" data-preset="gray">#f9fafb</button>
-                <button type="button" class="wpca-color-preset-btn" data-preset="dark-gray">#f3f4f6</button>
-                <button type="button" class="wpca-color-preset-btn" data-preset="dark">#1f2937</button>
+                <button type="button" class="wpca-color-preset-btn" data-preset="<?php _e('light', 'wp-clean-admin'); ?>">#ffffff</button>
+                <button type="button" class="wpca-color-preset-btn" data-preset="<?php _e('gray', 'wp-clean-admin'); ?>">#f9fafb</button>
+                <button type="button" class="wpca-color-preset-btn" data-preset="<?php _e('dark-gray', 'wp-clean-admin'); ?>">#f3f4f6</button>
+                <button type="button" class="wpca-color-preset-btn" data-preset="<?php _e('dark', 'wp-clean-admin'); ?>">#1f2937</button>
             </div>
             <p class="description"><?php _e('Select the background color for the admin interface.', 'wp-clean-admin'); ?></p>
         </div>
@@ -1213,10 +1216,10 @@ class WPCA_Settings {
                     data-color-type="text"
                 >
                 <div class="wpca-color-value"><?php echo esc_attr($text_color); ?></div>
-                <button type="button" class="wpca-color-preset-btn" data-preset="dark">#111827</button>
-                <button type="button" class="wpca-color-preset-btn" data-preset="medium">#374151</button>
-                <button type="button" class="wpca-color-preset-btn" data-preset="light">#4b5563</button>
-                <button type="button" class="wpca-color-preset-btn" data-preset="white">#ffffff</button>
+                <button type="button" class="wpca-color-preset-btn" data-preset="<?php _e('dark', 'wp-clean-admin'); ?>">#111827</button>
+                <button type="button" class="wpca-color-preset-btn" data-preset="<?php _e('medium', 'wp-clean-admin'); ?>">#374151</button>
+                <button type="button" class="wpca-color-preset-btn" data-preset="<?php _e('light', 'wp-clean-admin'); ?>">#4b5563</button>
+                <button type="button" class="wpca-color-preset-btn" data-preset="<?php _e('white', 'wp-clean-admin'); ?>">#ffffff</button>
             </div>
             <p class="description"><?php _e('Select the text color for the admin interface.', 'wp-clean-admin'); ?></p>
         </div>
@@ -1328,26 +1331,26 @@ class WPCA_Settings {
     public function sanitize_settings($input) {
         $output = array();
         
-        // 定义一个安全的文本清理函数，如果WordPress函数不存在则使用自定义实现
+        // Define a safe text sanitization function, using custom implementation if WordPress function doesn't exist
         $safe_sanitize_text_field = function_exists('sanitize_text_field') ? 'sanitize_text_field' : function($text) {
             return filter_var($text, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
         };
         
-        // 定义一个安全的十六进制颜色清理函数
+        // Define a safe hex color sanitization function
         $safe_sanitize_hex_color = function_exists('sanitize_hex_color') ? 'sanitize_hex_color' : function($color) {
-            // 简单的十六进制颜色验证
+            // Simple hex color validation
             if (preg_match('/^#[0-9a-fA-F]{6}$/', $color)) {
                 return $color;
             }
-            return '#000000'; // 默认返回黑色
+            return '#000000'; // Default to black
         };
         
-        // 定义一个安全的URL清理函数
+        // Define a safe URL sanitization function
         $safe_esc_url_raw = function_exists('esc_url_raw') ? 'esc_url_raw' : function($url) {
             return filter_var($url, FILTER_SANITIZE_URL);
         };
         
-        // 定义一个安全的标签清理函数
+        // Define a safe tag sanitization function
         $safe_wp_strip_all_tags = function_exists('wp_strip_all_tags') ? 'wp_strip_all_tags' : function($text) {
             return strip_tags($text);
         };
@@ -1516,7 +1519,7 @@ class WPCA_Settings {
         
         if (!in_array($tab, $allowed_tabs)) {
             wp_send_json_error(array(
-                'message' => __('Invalid tab specified', 'wp-clean-admin')
+                'message' => 'Invalid tab specified'
             ), 400);
         }
         
@@ -1564,7 +1567,7 @@ class WPCA_Settings {
         if ($update_result) {
             self::$cached_options = null;
             wp_send_json_success(array(
-                'message' => __('Settings reset successfully', 'wp-clean-admin'),
+                'message' => 'Settings reset successfully',
                 'tab' => $tab
             ));
         } else {
@@ -1573,7 +1576,7 @@ class WPCA_Settings {
             }
             
             wp_send_json_error(array(
-                'message' => __('Failed to reset settings', 'wp-clean-admin'),
+                'message' => 'Failed to reset settings',
                 'debug_info' => defined('WP_DEBUG') && WP_DEBUG ? 'Option update failed for wpca_settings' : null
             ), 500);
         }
