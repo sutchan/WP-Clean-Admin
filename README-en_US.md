@@ -1,22 +1,19 @@
 ﻿=== WP Clean Admin ===
+Contributors: SutChan
+Tags: admin, dashboard, clean, minimal, ui, simplify, customization, optimization
+Requires at least: 5.0
+Tested up to: 6.5
+Stable tag: 1.1.0
+Requires PHP: 7.0
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: wp-clean-admin
+Domain Path: /languages
 
 [View in 简体中文](README.md)
 
-项目主页: [https://github.com/sutchan/WP-Clean-Admin](https://github.com/sutchan/WP-Clean-Admin)
-
-Contributors: SutChan
-
-Tags: admin, dashboard, clean, minimal, ui, simplify
-
-Requires at least: 5.0
-
-Tested up to: 6.5
-
-Stable tag: 1.1.0
-
-License: GPLv2 or later
-
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Project Home: [https://github.com/sutchan/WP-Clean-Admin](https://github.com/sutchan/WP-Clean-Admin)
+GitHub: [https://github.com/sutchan/WP-Clean-Admin](https://github.com/sutchan/WP-Clean-Admin)
 
 Simplify and customize your WordPress admin dashboard with a flat, minimal, and fresh UI.
 

@@ -1,23 +1,19 @@
 === WP Clean Admin 简体中文 ===
+Contributors: SutChan
+Tags: admin, dashboard, clean, minimal, ui, simplify, customization, optimization
+Requires at least: 5.0
+Tested up to: 6.5
+Stable tag: 1.1.0
+Requires PHP: 7.0
+License: GPLv2 或更高
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: wp-clean-admin
+Domain Path: /languages
 
 项目主页: [https://github.com/sutchan/WP-Clean-Admin](https://github.com/sutchan/WP-Clean-Admin)
 GitHub: [https://github.com/sutchan/WP-Clean-Admin](https://github.com/sutchan/WP-Clean-Admin)
 
 [View in English](README-en_US.md)
-
-贡献者: SutChan
-
-标签: 管理后台, 仪表盘, 简洁, 极简, 界面, 简化
-
-最低要求: WordPress 5.0
-
-测试版本: 6.5
-
-稳定版本: 1.1.0
-
-许可证: GPLv2 或更高
-
-许可证URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 通过扁平化、极简和清新的UI来简化和自定义您的WordPress管理后台。
 
