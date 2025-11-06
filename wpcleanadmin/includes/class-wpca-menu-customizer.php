@@ -85,11 +85,10 @@ class WPCA_Menu_Customizer {
             // Validate options format
             if (!is_array($options)) {
                 $this->reset_plugin_options();
-                do_action(
-                    'wpca_menu_customization_error', 
+                $this->log_error(
                     'invalid_options_format', 
                     __('Menu settings format is invalid, has been reset', 'wp-clean-admin'), 
-                    array()
+                    array('action' => 'options_reset')
                 );
             }
             
@@ -441,15 +440,34 @@ class WPCA_Menu_Customizer {
     }
     
     /**
-     * Log error from exception
+     * Log an error with WordPress error logger
      * 
      * @param string $code Error code
-     * @param Exception $exception Exception object
+     * @param Exception|string $error Exception object or error message
      * @param array $context Additional context
      */
-    private function log_error($code, $exception, $context = array()) {
-        $context['trace'] = $exception->getTraceAsString();
-        $this->log_customization_error($code, $exception->getMessage(), $context);
+    private function log_error($code, $error, $context = array()) {
+        // Get the message
+        $message = is_object($error) && method_exists($error, 'getMessage') ? $error->getMessage() : (string)$error;
+        
+        // Add trace to context if available
+        if (is_object($error) && method_exists($error, 'getTraceAsString')) {
+            $context['trace'] = $error->getTraceAsString();
+        }
+        
+        // Only log errors in debug mode
+        if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
+            error_log('WP Clean Admin - Menu Customizer Error (' . $code . '): ' . $message);
+            
+            if (defined('WP_DEBUG_LOG') && WP_DEBUG_LOG && isset($context['trace'])) {
+                error_log('WP Clean Admin - Stack Trace: ' . $context['trace']);
+            }
+        }
+        
+        // Also trigger the error action hook for external handling
+        if (function_exists('do_action')) {
+            do_action('wpca_menu_customization_error', $code, $message, $context);
+        }
     }
     
     /**
@@ -749,20 +767,43 @@ class WPCA_Menu_Customizer {
             $slug = isset($_POST['slug']) ? (function_exists('sanitize_text_field') ? sanitize_text_field($_POST['slug']) : filter_var($_POST['slug'], FILTER_SANITIZE_STRING)) : '';
             $state = isset($_POST['state']) ? intval($_POST['state']) : 0;
             
+            // Enhanced input validation
             if (empty($slug)) {
                 throw new Exception(__('Invalid menu slug', 'wp-clean-admin'), 400);
             }
             
+            // Validate slug format (prevent injection attacks)
+            if (!preg_match('/^[a-zA-Z0-9_\-|\.]+$/', $slug)) {
+                throw new Exception(__('Invalid menu slug format', 'wp-clean-admin'), 'invalid_slug_format');
+            }
+            
+            // Validate state is boolean (0 or 1)
+            if (!in_array($state, array(0, 1))) {
+                throw new Exception(__('Invalid menu state', 'wp-clean-admin'), 'invalid_state');
+            }
+            
             // Get current options
             $options = $this->get_plugin_options();
+            if (!is_array($options)) {
+                throw new Exception(__('Failed to retrieve settings', 'wp-clean-admin'), 'settings_retrieval_failed');
+            }
             
             // Ensure menu_toggles array exists
             $this->ensure_menu_toggles_exist($options);
             
+            // Check if this menu can be hidden (if toggling to hidden state)
+            if ($state === 0) {
+                $slug_parts = explode('|', $slug);
+                $main_slug = $slug_parts[0]; // Get the main slug part
+                if (in_array($main_slug, self::PROTECTED_MENUS)) {
+                    throw new Exception(__('This menu item cannot be hidden', 'wp-clean-admin'), 'menu_protected');
+                }
+            }
+            
             // Update the toggle state
             $options['menu_toggles'][$slug] = $state;
             
-            // Save updated options
+            // Save updated options with error handling
             $updated = function_exists('update_option') ? update_option('wpca_settings', $options) : false;
             
             if (!$updated) {
@@ -772,6 +813,11 @@ class WPCA_Menu_Customizer {
             // Clear all caches
             $this->clear_menu_cache();
             $this->options_cache = null;
+            
+            // Log successful update if in debug mode
+            if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
+                error_log('WP Clean Admin - Menu item "' . $slug . '" visibility toggled to ' . ($state ? 'visible' : 'hidden'));
+            }
             
             // Send success response
             if (function_exists('wp_send_json_success')) {
@@ -788,14 +834,25 @@ class WPCA_Menu_Customizer {
             }
             
         } catch (Exception $e) {
-            $this->log_error('ajax_toggle_menu_failed', $e);
+            $code = method_exists($e, 'getCode') && $e->getCode() ? $e->getCode() : 'ajax_toggle_menu_failed';
+            
+            // Log error with context
+            $this->log_error($code, $e, array(
+                'menu_slug' => isset($_POST['slug']) ? (function_exists('sanitize_text_field') ? sanitize_text_field($_POST['slug']) : 'unknown') : 'unknown',
+                'state' => isset($_POST['state']) ? intval($_POST['state']) : null
+            ));
+            
+            // Send error response with standardized format
             if (function_exists('wp_send_json_error')) {
                 wp_send_json_error(array(
-                    'message' => $e->getMessage(),
-                    'code' => $e->getCode() ?: 500
-                ), $e->getCode() ?: 500);
+                    'code' => $code,
+                    'message' => $e->getMessage()
+                ), $e->getCode() ?: 400);
             } else {
-                echo json_encode(array('error' => $e->getMessage(), 'code' => $e->getCode() ?: 500));
+                echo json_encode(array(
+                    'error' => $e->getMessage(),
+                    'code' => $code
+                ));
                 wp_die();
             }
         }

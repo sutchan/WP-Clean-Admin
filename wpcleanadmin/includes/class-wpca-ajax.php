@@ -23,20 +23,10 @@ class WPCA_Ajax {
     public function init_hooks() {
         if ( function_exists( 'add_action' ) ) {
             // Public AJAX actions (available to both logged in and non-logged in users)
-            if ( function_exists( 'add_action' ) ) {
-if ( function_exists( 'add_action' ) ) {
-    add_action( 'wp_ajax_nopriv_wpca_get_public_data', array( $this, 'get_public_data' ) );
-}
-            }
+            add_action( 'wp_ajax_nopriv_wpca_get_public_data', array( $this, 'get_public_data' ) );
             
             // Admin AJAX actions (only available to logged in users with proper permissions)
-            if ( function_exists( 'add_action' ) ) {
-if ( function_exists( 'add_action' ) ) {
-if ( function_exists( 'add_action' ) ) {
-    add_action( 'wp_ajax_wpca_toggle_menu', array( $this, 'toggle_menu' ) );
-}
-}
-            }
+            add_action( 'wp_ajax_wpca_toggle_menu', array( $this, 'toggle_menu' ) );
             add_action( 'wp_ajax_wpca_update_menu_order', array( $this, 'update_menu_order' ) );
             add_action( 'wp_ajax_wpca_reset_settings', array( $this, 'reset_settings' ) );
             add_action( 'wp_ajax_wpca_save_settings', array( $this, 'save_settings' ) );
@@ -82,49 +72,90 @@ if ( function_exists( 'add_action' ) ) {
      * Toggle menu visibility
      */
     public function toggle_menu() {
-        if ( ! $this->validate_ajax_request( 'toggle_menu' ) ) {
-            return;
-        }
-        
-        if ( ! isset( $_POST['slug'] ) || ! isset( $_POST['state'] ) ) {
+        try {
+            if ( ! $this->validate_ajax_request( 'toggle_menu' ) ) {
+                return;
+            }
+            
+            // Check if all required parameters are present
+            if ( ! isset( $_POST['slug'] ) || ! isset( $_POST['state'] ) ) {
+                throw new Exception('Missing required parameters', 'missing_parameters');
+            }
+            
+            // Sanitize input
+            $slug = function_exists( 'sanitize_text_field' ) ? sanitize_text_field( $_POST['slug'] ) : filter_var( $_POST['slug'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES );
+            $state = intval( $_POST['state'] );
+            
+            // Validate slug format (prevent injection attacks)
+            if ( ! preg_match( '/^[a-zA-Z0-9_\-]+$/', $slug ) ) {
+                throw new Exception('Invalid menu slug format', 'invalid_slug_format');
+            }
+            
+            // Get current settings
+            $settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
+            
+            if ( ! isset( $settings['hidden_menus'] ) ) {
+                $settings['hidden_menus'] = array();
+            }
+            
+            // Update menu visibility
+            if ( $state === 0 ) {
+                // Hide menu
+                if ( ! in_array( $slug, $settings['hidden_menus'] ) ) {
+                    $settings['hidden_menus'][] = $slug;
+                }
+            } else {
+                // Show menu
+                $key = array_search( $slug, $settings['hidden_menus'] );
+                if ( $key !== false ) {
+                    unset( $settings['hidden_menus'][$key] );
+                    $settings['hidden_menus'] = array_values( $settings['hidden_menus'] );
+                }
+            }
+            
+            // Save updated settings
+            if ( function_exists( 'update_option' ) ) {
+                $save_result = update_option( 'wpca_settings', $settings );
+                
+                // Clear cache if available
+                if ( function_exists( 'wp_cache_delete' ) ) {
+                    wp_cache_delete( 'wpca_settings', 'options' );
+                }
+                
+                // Log successful update
+                if ( defined( 'WP_DEBUG' ) && WP_DEBUG && function_exists( 'error_log' ) ) {
+                    error_log( 'WP Clean Admin - Menu item "' . $slug . '" visibility toggled to ' . ( $state === 0 ? 'hidden' : 'visible' ) );
+                }
+                
+                if ( ! $save_result ) {
+                    throw new Exception('Failed to update menu visibility', 'update_failed');
+                }
+            } else {
+                throw new Exception('Required WordPress functions not available', 'functions_unavailable');
+            }
+            
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( array( 
+                    'message' => 'Menu visibility updated',
+                    'slug' => $slug,
+                    'state' => $state
+                ) );
+            }
+        } catch ( Exception $e ) {
+            $code = method_exists( $e, 'getCode' ) && $e->getCode() ? $e->getCode() : 'toggle_menu_error';
+            
+            // Log the error
+            if ( defined( 'WP_DEBUG' ) && WP_DEBUG && function_exists( 'error_log' ) ) {
+                error_log( 'WP Clean Admin - Toggle Menu Error (' . $code . '): ' . $e->getMessage() );
+            }
+            
+            // Send error response
             if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( array( 'message' => 'Missing required parameters' ) );
+                wp_send_json_error( array( 
+                    'code' => $code,
+                    'message' => $e->getMessage()
+                ), 400 );
             }
-            return;
-        }
-        
-        $slug = function_exists( 'sanitize_text_field' ) ? sanitize_text_field( $_POST['slug'] ) : filter_var( $_POST['slug'], FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES );
-        $state = intval( $_POST['state'] );
-        
-        // Get current settings
-        $settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
-        
-        if ( ! isset( $settings['hidden_menus'] ) ) {
-            $settings['hidden_menus'] = array();
-        }
-        
-        // Update menu visibility
-        if ( $state === 0 ) {
-            // Hide menu
-            if ( ! in_array( $slug, $settings['hidden_menus'] ) ) {
-                $settings['hidden_menus'][] = $slug;
-            }
-        } else {
-            // Show menu
-            $key = array_search( $slug, $settings['hidden_menus'] );
-            if ( $key !== false ) {
-                unset( $settings['hidden_menus'][$key] );
-                $settings['hidden_menus'] = array_values( $settings['hidden_menus'] );
-            }
-        }
-        
-        // Save updated settings
-        if ( function_exists( 'update_option' ) ) {
-            update_option( 'wpca_settings', $settings );
-        }
-        
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( array( 'message' => 'Menu visibility updated' ) );
         }
     }
     
