@@ -38,84 +38,166 @@ class WPCA_Settings {
      * Validate AJAX request with nonce and permission checks
      * @param string $nonce_action Optional. Nonce action name
      * @param string $permission Optional. Permission to check
+     * @return bool True if validation passed, false otherwise
      */
     private function validate_ajax_request($nonce_action = 'wpca_settings-options', $permission = 'wpca_manage_menus') {
+        // 安全检查函数列表
+        if (!function_exists('wp_send_json_error')) {
+            return false;
+        }
+        
         // Check if it's an AJAX request
-        if (function_exists('wp_doing_ajax') && function_exists('wp_send_json_error') && !wp_doing_ajax()) {
+        if (function_exists('wp_doing_ajax') && !wp_doing_ajax()) {
             wp_send_json_error(array(
                 'message' => __('Invalid request', 'wp-clean-admin')
             ), 400);
+            return false;
         }
 
         // Validate nonce
-        if (function_exists('check_ajax_referer') && function_exists('wp_send_json_error') && !check_ajax_referer($nonce_action, false, false)) {
+        if (function_exists('check_ajax_referer') && !check_ajax_referer($nonce_action, false, false)) {
             wp_send_json_error(array(
                 'message' => __('Security verification failed', 'wp-clean-admin')
             ), 403);
+            return false;
         }
 
         // Check permissions
-        if (class_exists('WPCA_Permissions') && method_exists('WPCA_Permissions', 'current_user_can') && function_exists('current_user_can') && function_exists('wp_send_json_error')) {
+        if (!function_exists('current_user_can')) {
+            wp_send_json_error(array(
+                'message' => __('Insufficient permissions', 'wp-clean-admin')
+            ), 403);
+            return false;
+        }
+        
+        // 优先使用插件权限系统
+        if (class_exists('WPCA_Permissions') && method_exists('WPCA_Permissions', 'current_user_can')) {
             if (!WPCA_Permissions::current_user_can($permission) && 
                 !current_user_can('manage_options')) {
                 wp_send_json_error(array(
                     'message' => __('Insufficient permissions', 'wp-clean-admin')
                 ), 403);
+                return false;
+            }
+        } else {
+            // 降级到WordPress原生权限检查
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(array(
+                    'message' => __('Insufficient permissions', 'wp-clean-admin')
+                ), 403);
+                return false;
             }
         }
-
-        // Filter and validate input data
-        if (function_exists('sanitize_text_field')) {
-            $_POST = array_map('sanitize_text_field', $_POST);
-        }
+        
+        // 注意：不再使用array_map直接过滤整个$_POST数组，这会破坏嵌套数组结构
+        // 数据应该在各个处理函数中单独进行验证和清理
+        
+        return true;
     }
 
     /**
      * AJAX handler to save tab preference and menu state
      */
     public function ajax_save_tab_preference() {
-        $this->validate_ajax_request('wpca_settings-options', 'wpca_manage_all');
-        
-        // Get and validate data
-        $allowed_tabs = ['tab-general', 'tab-visual-style', 'tab-menu', 'tab-login', 'tab-about'];
-        $tab = isset($_POST['tab']) && in_array($_POST['tab'], $allowed_tabs) && function_exists('sanitize_text_field') ? sanitize_text_field($_POST['tab']) : 'tab-general';
-        $options = self::get_options();
-        
-        // Only update if data is valid
-        if (isset($_POST['menu_order']) && is_array($_POST['menu_order']) && 
-            isset($_POST['menu_toggles']) && is_array($_POST['menu_toggles'])) {
-            $options['current_tab'] = $tab;
-            if (function_exists('sanitize_text_field')) {
-                $options['menu_order'] = array_map('sanitize_text_field', $_POST['menu_order']);
-            }
-            $options['menu_toggles'] = array_map('intval', $_POST['menu_toggles']);
-        } else if (function_exists('wp_send_json_error')) {
-            wp_send_json_error(array(
-                'message' => __('Invalid data structure', 'wp-clean-admin')
-            ), 400);
+        // 验证请求
+        if (!$this->validate_ajax_request('wpca_settings-options', 'wpca_manage_all')) {
+            return;
         }
         
-        // Save and respond
-        $update_result = function_exists('update_option') ? update_option('wpca_settings', $options) : false;
+        // 安全函数检查
+        if (!function_exists('sanitize_text_field') || !function_exists('wp_send_json_error') || !function_exists('wp_send_json_success')) {
+            return;
+        }
         
-        if ($update_result && function_exists('wp_send_json_success')) {
-            self::$cached_options = null;
-            wp_send_json_success(array(
-                'message' => __('Settings saved successfully', 'wp-clean-admin'),
-                'data' => array(
-                    'menu_order' => $options['menu_order'],
-                    'menu_toggles' => $options['menu_toggles']
-                )
-            ));
-        } else if (function_exists('wp_send_json_error')) {
-            if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
-                error_log('WP Clean Admin: Failed to save settings. Options: ' . print_r($options, true));
+        // Get and validate data with strict type checking
+        $allowed_tabs = ['tab-general', 'tab-visual-style', 'tab-menu', 'tab-login', 'tab-about'];
+        $tab = 'tab-general'; // 默认值
+        
+        if (isset($_POST['tab']) && is_string($_POST['tab']) && in_array($_POST['tab'], $allowed_tabs)) {
+            $tab = sanitize_text_field($_POST['tab']);
+        }
+        
+        // 获取现有选项
+        $options = self::get_options();
+        
+        // 严格验证数据结构和内容
+        $has_valid_data = false;
+        
+        // 安全地处理菜单顺序数据
+        if (isset($_POST['menu_order']) && is_array($_POST['menu_order'])) {
+            $safe_menu_order = array();
+            foreach ($_POST['menu_order'] as $menu_item) {
+                if (is_string($menu_item) && !empty($menu_item)) {
+                    // 只允许字母、数字、短横线、下划线
+                    if (preg_match('/^[a-zA-Z0-9_-]+$/', $menu_item)) {
+                        $safe_menu_order[] = sanitize_text_field($menu_item);
+                    }
+                }
             }
-            
+            if (!empty($safe_menu_order)) {
+                $options['menu_order'] = $safe_menu_order;
+                $has_valid_data = true;
+            }
+        }
+        
+        // 安全地处理菜单开关数据
+        if (isset($_POST['menu_toggles']) && is_array($_POST['menu_toggles'])) {
+            $safe_menu_toggles = array();
+            foreach ($_POST['menu_toggles'] as $key => $value) {
+                // 验证键名格式
+                if (is_string($key) && preg_match('/^[a-zA-Z0-9_-]+$/', $key)) {
+                    $safe_key = sanitize_text_field($key);
+                    // 确保值是布尔类型
+                    $safe_menu_toggles[$safe_key] = filter_var($value, FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
+                }
+            }
+            if (!empty($safe_menu_toggles)) {
+                $options['menu_toggles'] = $safe_menu_toggles;
+                $has_valid_data = true;
+            }
+        }
+        
+        // 总是更新当前选项卡
+        $options['current_tab'] = $tab;
+        
+        // 如果没有有效数据，返回错误
+        if (!$has_valid_data && isset($_POST['menu_order']) && isset($_POST['menu_toggles'])) {
             wp_send_json_error(array(
-                'message' => __('Failed to save settings', 'wp-clean-admin'),
-                'debug_info' => defined('WP_DEBUG') && WP_DEBUG ? 'Option update failed for wpca_settings' : null
-            ), 500);
+                'message' => __('Invalid data structure or content', 'wp-clean-admin')
+            ), 400);
+            return;
+        }
+        
+        // 保存选项并响应
+        if (function_exists('update_option')) {
+            $update_result = update_option('wpca_settings', $options);
+            
+            if ($update_result) {
+                self::$cached_options = null;
+                wp_send_json_success(array(
+                    'message' => __('Settings saved successfully', 'wp-clean-admin'),
+                    'data' => array(
+                        'menu_order' => $options['menu_order'] ?? array(),
+                        'menu_toggles' => $options['menu_toggles'] ?? array()
+                    )
+                ));
+            } else if (function_exists('wp_send_json_error')) {
+                if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
+                    error_log('WP Clean Admin: Failed to save settings. Options: ' . print_r($options, true));
+                }
+                
+                wp_send_json_error(array(
+                    'message' => __('Failed to save settings', 'wp-clean-admin'),
+                    'debug_info' => defined('WP_DEBUG') && WP_DEBUG ? 'Option update failed for wpca_settings' : null
+                ), 500);
+            }
+        } else {
+            // 如果不支持update_option，返回错误
+            if (function_exists('wp_send_json_error')) {
+                wp_send_json_error(array(
+                    'message' => __('Failed to save settings', 'wp-clean-admin')
+                ), 500);
+            }
         }
     }
     
@@ -1503,21 +1585,29 @@ class WPCA_Settings {
      * AJAX handler to reset settings for a specific tab
      */
     public function ajax_reset_settings() {
-        // Validate AJAX request
-        $this->validate_ajax_request('wpca_ajax_request', 'wpca_manage_all');
+        // 验证请求
+        if (!$this->validate_ajax_request('wpca_ajax_request', 'wpca_manage_all')) {
+            return;
+        }
         
-        // Get and validate data
-        $safe_sanitize_text_field = function_exists('sanitize_text_field') ? 'sanitize_text_field' : function($text) {
-            return filter_var($text, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
-        };
+        // 安全函数检查
+        if (!function_exists('wp_send_json_error') || !function_exists('wp_send_json_success')) {
+            return;
+        }
         
-        $tab = isset($_POST['tab']) ? $safe_sanitize_text_field($_POST['tab']) : '';
+        // 获取并验证tab参数
         $allowed_tabs = ['general', 'visual', 'login'];
+        $tab = 'general'; // 默认值
         
-        if (!in_array($tab, $allowed_tabs)) {
+        if (isset($_POST['tab']) && is_string($_POST['tab']) && in_array($_POST['tab'], $allowed_tabs)) {
+            if (function_exists('sanitize_text_field')) {
+                $tab = sanitize_text_field($_POST['tab']);
+            }
+        } else {
             wp_send_json_error(array(
                 'message' => __('Invalid tab specified', 'wp-clean-admin')
             ), 400);
+            return;
         }
         
         // Get current options and default settings
@@ -1558,23 +1648,31 @@ class WPCA_Settings {
                 break;
         }
         
-        // Save and respond
-        $update_result = update_option('wpca_settings', $options);
-        
-        if ($update_result) {
-            self::$cached_options = null;
-            wp_send_json_success(array(
-                'message' => __('Settings reset successfully', 'wp-clean-admin'),
-                'tab' => $tab
-            ));
-        } else {
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('WP Clean Admin: Failed to reset settings. Options: ' . print_r($options, true));
-            }
+        // 保存选项并响应
+        if (function_exists('update_option')) {
+            $update_result = update_option('wpca_settings', $options);
             
+            if ($update_result) {
+                self::$cached_options = null;
+                wp_send_json_success(array(
+                    'message' => __('Settings reset successfully', 'wp-clean-admin'),
+                    'tab' => $tab
+                ));
+            } else {
+                // 保存失败的处理
+                if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
+                    error_log('WP Clean Admin: Failed to reset settings. Options: ' . print_r($options, true));
+                }
+            
+                wp_send_json_error(array(
+                    'message' => __('Failed to reset settings', 'wp-clean-admin'),
+                    'debug_info' => defined('WP_DEBUG') && WP_DEBUG ? 'Option update failed for wpca_settings' : null
+                ), 500);
+            }
+        } else {
+            // 如果update_option函数不存在
             wp_send_json_error(array(
-                'message' => __('Failed to reset settings', 'wp-clean-admin'),
-                'debug_info' => defined('WP_DEBUG') && WP_DEBUG ? 'Option update failed for wpca_settings' : null
+                'message' => __('Failed to reset settings', 'wp-clean-admin')
             ), 500);
         }
     }

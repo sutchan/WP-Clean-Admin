@@ -60,13 +60,11 @@ class WPCA_Menu_Customizer {
     public function __construct() {
         if (function_exists('add_action')) {
             add_action('admin_menu', array($this, 'initialize_menu_customization'));
+            
+            // 添加错误日志钩子
+            add_action('wpca_menu_customization_error', array($this, 'log_customization_error'), 10, 3);
         }
-        add_action('wp_ajax_wpca_toggle_menu', array($this, 'handle_ajax_toggle_menu'));
-        add_action('wp_ajax_wpca_reset_menu', array($this, 'handle_ajax_reset_menu'));
-        add_action('wp_ajax_wpca_reset_menu_order', array($this, 'handle_ajax_reset_menu_order'));
-        
-        // Add error logging hook
-        add_action('wpca_menu_customization_error', array($this, 'log_customization_error'), 10, 3);
+        // AJAX钩子已移至WPCA_Ajax类统一管理，避免重复注册
     }
     
     /**
@@ -789,7 +787,9 @@ class WPCA_Menu_Customizer {
             }
             
             // Ensure menu_toggles array exists
-            $this->ensure_menu_toggles_exist($options);
+            if (!isset($options['menu_toggles']) || !is_array($options['menu_toggles'])) {
+                $options['menu_toggles'] = array();
+            }
             
             // Check if this menu can be hidden (if toggling to hidden state)
             if ($state === 0) {
@@ -863,7 +863,7 @@ class WPCA_Menu_Customizer {
      */
     public function handle_ajax_reset_menu() {
         try {
-            $this->validate_ajax_request('wpca_menu_toggle', 'manage_options');
+            $this->validate_ajax_request('wpca_reset_menu', 'manage_options');
             
             $reset_types = $this->get_reset_types_from_request();
             $valid_types = array('order', 'toggles');
@@ -966,7 +966,7 @@ class WPCA_Menu_Customizer {
      */
     public function handle_ajax_reset_menu_order() {
         try {
-            $this->validate_ajax_request('wpca_menu_toggle', 'manage_options');
+            $this->validate_ajax_request('wpca_reset_menu_order', 'manage_options');
             
             $options = $this->get_plugin_options();
             $options['menu_order'] = array();
@@ -1063,52 +1063,36 @@ class WPCA_Menu_Customizer {
     }
     
     /**
-     * Validate AJAX request with nonce and permission checks
+     * Validate AJAX request
      * 
-     * @param string $nonce_action Nonce action name
-     * @param string $permission Permission to check
+     * @param string $action The action name to validate
+     * @return bool True if the request is valid, false otherwise
      */
-    private function validate_ajax_request($nonce_action = 'wpca_menu_toggle', $permission = 'manage_options') {
-        // Check if it's an AJAX request
-        $is_ajax = function_exists('wp_doing_ajax') ? wp_doing_ajax() : (defined('DOING_AJAX') && DOING_AJAX);
-        
-        if (!$is_ajax) {
+    private function validate_ajax_request($action) {
+        // Check if this is an AJAX request
+        if (!function_exists('wp_doing_ajax') || !wp_doing_ajax()) {
             if (function_exists('wp_send_json_error')) {
-                wp_send_json_error(array(
-                    'message' => __('Invalid request', 'wp-clean-admin')
-                ), 400);
-            } else {
-                echo json_encode(array('error' => __('Invalid request', 'wp-clean-admin')));
-                wp_die();
+                wp_send_json_error(array('message' => 'Invalid request'), 400);
             }
+            return false;
         }
 
-        // Validate nonce
-        $nonce_valid = function_exists('check_ajax_referer') ? check_ajax_referer($nonce_action, false, false) : false;
-        
-        if (!$nonce_valid) {
+        // Verify nonce
+        if (!isset($_POST['nonce']) || !function_exists('wp_verify_nonce') || !wp_verify_nonce($_POST['nonce'], 'wpca_admin_nonce')) {
             if (function_exists('wp_send_json_error')) {
-                wp_send_json_error(array(
-                    'message' => __('Security verification failed', 'wp-clean-admin')
-                ), 403);
-            } else {
-                echo json_encode(array('error' => __('Security verification failed', 'wp-clean-admin')));
-                wp_die();
+                wp_send_json_error(array('message' => 'Invalid nonce'), 403);
             }
+            return false;
         }
 
-        // Check permissions
-        $has_permission = function_exists('current_user_can') ? current_user_can($permission) : false;
-        
-        if (!$has_permission) {
+        // Check user capabilities
+        if (!function_exists('current_user_can') || !current_user_can('manage_options')) {
             if (function_exists('wp_send_json_error')) {
-                wp_send_json_error(array(
-                    'message' => __('Insufficient permissions', 'wp-clean-admin')
-                ), 403);
-            } else {
-                echo json_encode(array('error' => __('Insufficient permissions', 'wp-clean-admin')));
-                wp_die();
+                wp_send_json_error(array('message' => 'Insufficient permissions'), 403);
             }
+            return false;
         }
+
+        return true;
     }
 }

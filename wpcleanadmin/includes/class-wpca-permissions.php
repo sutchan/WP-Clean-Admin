@@ -143,22 +143,26 @@ class WPCA_Permissions {
      * @return bool 是否有权限
      */
     public static function current_user_can($capability) {
-        // 简化版本，避免递归调用和复杂的权限检查
+        // 参数类型验证
+        if (!is_string($capability) || empty($capability)) {
+            return false;
+        }
         
-        // 管理员始终有权限
-        if (function_exists('is_super_admin') && is_super_admin()) {
+        // 超级管理员检查
+        if (is_multisite() && function_exists('is_super_admin') && is_super_admin()) {
             return true;
         }
         
-        // 获取当前用户
-        $user = null;
-        if (function_exists('wp_get_current_user')) {
-            $user = wp_get_current_user();
+        // 获取当前用户对象并验证
+        $user = wp_get_current_user();
+        if (!is_object($user) || empty($user->ID)) {
+            return false;
         }
         
-        // 如果用户未登录，返回 false
-        if (!$user || !$user->ID) {
-            return false;
+        // 检查用户对象中的allcaps属性是否存在且为数组
+        if (!isset($user->allcaps) || !is_array($user->allcaps)) {
+            // 使用WordPress原生函数作为后备
+            return function_exists('current_user_can') ? current_user_can($capability) : false;
         }
         
         // 管理员权限检查
@@ -166,28 +170,75 @@ class WPCA_Permissions {
             return true;
         }
         
-        // 直接检查指定权限
+        // 直接权限检查
         if (isset($user->allcaps[$capability]) && $user->allcaps[$capability]) {
             return true;
         }
         
-        // 简化的权限继承检查
+        // 权限继承检查
         $higher_caps = array(
-            'wpca_manage_all' => array('wpca_manage_menus', 'wpca_view_settings'),
+            'wpca_manage_all'   => array('wpca_manage_menus', 'wpca_view_settings'),
             'wpca_manage_menus' => array('wpca_view_settings')
         );
         
         // 检查是否有更高级权限
-        foreach ($higher_caps as $higher_cap => $lower_caps) {
-            if (in_array($capability, $lower_caps) && 
-                isset($user->allcaps[$higher_cap]) && 
-                $user->allcaps[$higher_cap]) {
-                return true;
+        if (isset($user->allcaps) && is_array($user->allcaps)) {
+            foreach ($higher_caps as $higher_cap => $lower_caps) {
+                if (in_array($capability, $lower_caps) && 
+                    isset($user->allcaps[$higher_cap]) && 
+                    $user->allcaps[$higher_cap]) {
+                    return true;
+                }
             }
+        }
+        
+        // WordPress原生函数检查作为最后后备
+        if (function_exists('current_user_can')) {
+            return current_user_can($capability);
         }
         
         return false;
     }
+    
+    /**
+     * 处理AJAX权限检查请求
+     */
+    public function ajax_check_permission() {
+        // 安全检查
+        if (!function_exists('check_ajax_referer') || !function_exists('wp_send_json_success') || !function_exists('wp_send_json_error')) {
+            return;
+        }
+        
+        // 验证nonce
+        check_ajax_referer('wpca_permissions', 'security');
+        
+        // 获取并验证权限名称
+        if (!isset($_POST['capability']) || !is_string($_POST['capability'])) {
+            wp_send_json_error(array('message' => 'Invalid capability parameter'));
+        }
+        
+        $capability = sanitize_text_field($_POST['capability']);
+        $has_permission = $this->current_user_can($capability);
+        
+        wp_send_json_success(array('has_permission' => $has_permission));
+    }
+    
+    /**
+     * 将权限信息添加到JavaScript本地化数据中
+     * 
+     * @param array $data 当前本地化数据
+     * @return array 更新后的数据
+     */
+    public function add_capabilities_to_js($data) {
+        $user_capabilities = array();
+        
+        foreach (array_keys($this->capabilities) as $cap) {
+            $user_capabilities[$cap] = $this->current_user_can($cap);
+        }
+        
+        return array_merge($data, array('user_capabilities' => $user_capabilities));
+    }
+}
 
     /**
      * AJAX权限检查

@@ -3,7 +3,7 @@
  * Plugin Name: WP Clean Admin
  * Plugin URI: https://github.com/sutchan/WP-Clean-Admin
  * Description: Simplifies and optimizes the WordPress admin interface, providing a cleaner backend experience.
- * Version: 1.1.1
+ * Version: 1.4.1
  * Author: Sut
  * Author URI: https://github.com/sutchan/
  * License: GPLv2 or later
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Define constants
 if ( ! defined( 'WPCA_VERSION' ) ) {
-	define( 'WPCA_VERSION', '1.1.1' );
+	define( 'WPCA_VERSION', '1.4.1' );
 }
 
 if ( ! defined( 'WPCA_BASENAME' ) ) {
@@ -59,6 +59,55 @@ if ( ! function_exists( 'site_url' ) ) {
 		}
 		return $url;
 	}
+}
+
+// Include the autoloader
+require_once WPCA_PLUGIN_DIR . 'includes/autoload.php';
+
+// Include core functions
+require_once WPCA_PLUGIN_DIR . 'includes/wpca-core-functions.php';
+
+/**
+ * Initialize the plugin components
+ */
+function wpca_initialize_plugin() {
+    // 初始化插件组件
+    global $wpca_settings, $wpca_menu_customizer, $wpca_permissions, 
+           $wpca_ajax, $wpca_cleanup, $wpca_dashboard, $wpca_login, $wpca_user_roles;
+    
+    // 创建必要的类实例
+    $wpca_permissions = new WPCA_Permissions();
+    $wpca_settings = new WPCA_Settings();
+    $wpca_menu_customizer = new WPCA_Menu_Customizer();
+    
+    // 初始化附加组件
+    if (class_exists('WPCA_AJAX')) {
+        $wpca_ajax = new WPCA_AJAX();
+    }
+    
+    if (class_exists('WPCA_Cleanup')) {
+        $wpca_cleanup = new WPCA_Cleanup();
+    }
+    
+    if (class_exists('WPCA_Dashboard')) {
+        $wpca_dashboard = new WPCA_Dashboard();
+    }
+    
+    if (class_exists('WPCA_Login')) {
+        $wpca_login = new WPCA_Login();
+    }
+    
+    if (class_exists('WPCA_User_Roles')) {
+        $wpca_user_roles = new WPCA_User_Roles();
+    }
+    
+    // 设置默认权限
+    $wpca_permissions->set_default_permissions();
+}
+
+// 注册插件初始化
+if (function_exists('add_action')) {
+    add_action('plugins_loaded', 'wpca_initialize_plugin', 10);
 }
 
 if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
@@ -106,20 +155,6 @@ if ( function_exists( 'add_action' ) ) {
     add_action( 'admin_enqueue_scripts', 'wpca_load_admin_resources' );
 }
 
-function wpca_include_core_files() {
-    require_once WPCA_PLUGIN_DIR . 'includes/wpca-core-functions.php';
-    require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-settings.php';
-    require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-menu-customizer.php';
-    require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-ajax.php';
-    require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-dashboard.php';
-    require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-login.php';
-    require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-cleanup.php';
-    require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-permissions.php';
-}
-if ( function_exists( 'add_action' ) ) {
-    add_action( 'plugins_loaded', 'wpca_include_core_files' );
-}
-
 function wpca_activate_plugin() {
     if ( function_exists( 'get_option' ) && ! get_option( 'wpca_settings' ) ) {
         $default_settings = array(
@@ -146,21 +181,13 @@ function wpca_activate_plugin() {
     if ( function_exists( 'flush_rewrite_rules' ) ) {
         flush_rewrite_rules();
     }
-    
-    require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-permissions.php';
-    if ( class_exists( 'WPCA_Permissions' ) ) {
-        $permissions = new WPCA_Permissions();
-        if ( method_exists( $permissions, 'set_default_permissions' ) ) {
-            $permissions->set_default_permissions();
-        }
-    }
 }
 if ( function_exists( 'register_activation_hook' ) ) {
     register_activation_hook( __FILE__, 'wpca_activate_plugin' );
 }
 
 function wpca_deactivate_plugin() {
-    require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-permissions.php';
+    // 清理权限
     if ( class_exists( 'WPCA_Permissions' ) ) {
         $permissions = new WPCA_Permissions();
         if ( method_exists( $permissions, 'cleanup_capabilities' ) ) {
