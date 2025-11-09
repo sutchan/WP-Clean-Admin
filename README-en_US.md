@@ -3,7 +3,7 @@
 Tags: admin, dashboard, clean, minimal, ui, simplify, customization, optimization
 Requires at least: 5.0
 Tested up to: 6.5
-Stable tag: 1.2.0
+Stable tag: 1.4.2
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -24,8 +24,15 @@ Simplify and customize your WordPress admin dashboard with a flat, minimal, and 
 * **Visual Customization:** Choose from preset themes or tweak colors and layout for a personalized look.
 * **Flat & Minimal Design:** Embrace a clean aesthetic that reduces visual noise and focuses on what's important.
 * **User-Friendly Settings:** A dedicated settings page lets you configure the plugin without touching code.
-* **Performance Optimization:** Improve admin dashboard loading speed by reducing unnecessary elements and requests.
-* **Role Management:** Set different admin interface experiences for different user roles.
+* **Performance Optimization Module:** Comprehensive features to improve WordPress admin interface speed and efficiency
+  - **Database Optimization:** Automatic and manual database table optimization to improve query performance
+  - **Resource Management:** CSS/JS resource control and loading optimization
+  - **Performance Monitoring:** Track page load times, query counts, and memory usage
+  - **Database Cleanup:** Remove unnecessary data like revisions, auto-drafts, spam comments, etc.
+* **Login Page Customization:** Multiple login page style options
+* **Menu Management:** Hide/restore/sort capabilities
+* **Role Management:** Set different admin interface experiences for different user roles
+* **Security Improvements:** Added nonce verification and capability checks for enhanced security
 
 Get a cleaner, faster, and more enjoyable WordPress admin experience with WP Clean Admin.
 
@@ -62,12 +69,35 @@ WP Clean Admin is carefully designed to be compatible with most WordPress plugin
 
 == Changelog ==
 
+= 1.4.2 =
+* Fixed missing PHP closing tags in multiple files
+* Fixed duplicate closing curly brace in class-wpca-ajax.php
+* Fixed version number inconsistency between files
+* Ensured all PHP files follow proper syntax standards
+* Fixed class loading order issue by changing direct performance class includes to autoloader loading
+* Fixed missing $raw_stats private property definition in WPCA_Performance class
+* Updated all documentation to version 1.4.2 to match plugin version
+
+= 1.3.0 =
+* **Performance Optimization Module**: Added comprehensive performance optimization features to improve WordPress admin interface speed and efficiency
+  - **Database Optimization**: Implemented automatic and manual database table optimization to reduce overhead and improve query performance
+  - **Resource Management**: Added CSS/JS resource control, loading optimization, and cleanup functionality for admin interface
+  - **Performance Monitoring**: Built-in performance monitoring to track page load times, query counts, and memory usage
+  - **Database Cleanup**: Added options to clean up unnecessary data including revisions, auto-drafts, spam comments, etc.
+* Architecture Enhancement: Implemented singleton pattern for all new components to ensure consistent object instantiation
+* Security Improvements: Added nonce verification and capability checks for all AJAX operations and admin actions
+
+= 1.2.0 =
+* Login page customization with multiple style options
+* Menu management with hiding/restoring/sorting capabilities
+* Dashboard widget removal and customization
+* Admin interface styling improvements
+
 = 1.1.0 =
-* Added role management feature to set different interfaces for different user roles
-* Optimized admin dashboard loading speed
-* Added more theme style options
-* Fixed compatibility issues with WordPress 6.5
-* Improved settings page user experience
+* User permissions management
+* Admin bar cleanup
+* Page title optimization
+* Translation support
 
 = 1.0.0 =
 * Initial release.

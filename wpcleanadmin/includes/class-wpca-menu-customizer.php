@@ -608,11 +608,30 @@ class WPCA_Menu_Customizer {
     private function get_hidden_menu_items($options, $all_items) {
         $hidden_items = array();
         
+        // 检查是否有旧的hidden_menus数组，如果有则迁移到新的menu_toggles格式
+        if (isset($options['hidden_menus']) && is_array($options['hidden_menus'])) {
+            // 将hidden_menus数组迁移到menu_toggles格式
+            foreach ($options['hidden_menus'] as $slug) {
+                $options['menu_toggles'][$slug] = 0; // 0表示隐藏
+            }
+            // 保存迁移后的数据
+            if (function_exists('update_option')) {
+                update_option('wpca_settings', $options);
+            }
+        }
+        
+        // 处理标准的menu_toggles数组
         if (!isset($options['menu_toggles']) || !is_array($options['menu_toggles'])) {
             return $hidden_items;
         }
         
         foreach ($options['menu_toggles'] as $slug => $state) {
+            // 验证slug是否为字符串且不为空
+            if (!is_string($slug) || empty($slug)) {
+                continue;
+            }
+            
+            // 检查菜单是否需要隐藏 (state === 0) 并且是有效的菜单项且不在受保护菜单列表中
             if ($state === 0 && isset($all_items[$slug]) && !in_array($slug, self::PROTECTED_MENUS)) {
                 $hidden_items[] = $slug;
             }
@@ -759,7 +778,7 @@ class WPCA_Menu_Customizer {
     public function handle_ajax_toggle_menu() {
         try {
             // Validate request
-            $this->validate_ajax_request('wpca_menu_toggle', 'manage_options');
+            $this->validate_ajax_request('wpca_admin_nonce');
             
             // Get and validate parameters
             $slug = isset($_POST['slug']) ? (function_exists('sanitize_text_field') ? sanitize_text_field($_POST['slug']) : filter_var($_POST['slug'], FILTER_SANITIZE_STRING)) : '';
@@ -863,7 +882,7 @@ class WPCA_Menu_Customizer {
      */
     public function handle_ajax_reset_menu() {
         try {
-            $this->validate_ajax_request('wpca_reset_menu', 'manage_options');
+            $this->validate_ajax_request('wpca_admin_nonce');
             
             $reset_types = $this->get_reset_types_from_request();
             $valid_types = array('order', 'toggles');
@@ -966,7 +985,7 @@ class WPCA_Menu_Customizer {
      */
     public function handle_ajax_reset_menu_order() {
         try {
-            $this->validate_ajax_request('wpca_reset_menu_order', 'manage_options');
+            $this->validate_ajax_request('wpca_admin_nonce');
             
             $options = $this->get_plugin_options();
             $options['menu_order'] = array();
@@ -1004,55 +1023,50 @@ class WPCA_Menu_Customizer {
     }
     
     /**
-     * Load menu scripts
-     * 
-     * @param string $hook Current admin page hook
+     * Load menu scripts and styles
      */
     public function load_menu_scripts() {
-        // Check if get_current_screen function exists
-        if (function_exists('get_current_screen')) {
-            $screen = get_current_screen();
-            $hook = $screen->id;
-            
-            // Only load scripts on the settings page and admin menu
-            if (strpos($hook, 'settings_page_wp-clean-admin') === false && $hook !== 'index.php') {
-                return;
+        // Only load on admin pages
+        if (!is_admin() || !function_exists('wp_enqueue_script') || !function_exists('wp_enqueue_style')) {
+            return;
+        }
+
+        // Get current screen to determine if we should load scripts
+        $current_screen = get_current_screen();
+        
+        // Only load on specific admin pages
+        if ($current_screen && isset($current_screen->id) && (strpos($current_screen->id, 'settings_page_wp-clean-admin') !== false || $current_screen->id === 'index.php')) {
+            // Register and enqueue scripts
+            if (function_exists('wp_register_script')) {
+                wp_register_script(
+                    'wpca-menu-customizer',
+                    WPCA_PLUGIN_URL . 'assets/js/wpca-menu.js',
+                    array('jquery', 'jquery-ui-sortable', 'wpca-core'),
+                    WPCA_VERSION,
+                    true
+                );
             }
-        }
-        
-        // Register and enqueue scripts
-        if (function_exists('wp_register_script')) {
-            wp_register_script(
-                'wpca-menu-customizer',
-                WPCA_PLUGIN_URL . 'assets/js/wpca-menu.js',
-                array('jquery', 'jquery-ui-sortable', 'wpca-core'),
-                WPCA_VERSION,
-                true
-            );
-        }
-        
-        // Localize script with menu data
-        if (function_exists('wp_localize_script')) {
-            $ajaxUrl = function_exists('admin_url') ? admin_url('admin-ajax.php') : site_url('/wp-admin/admin-ajax.php');
-            $nonce = function_exists('wp_create_nonce') ? wp_create_nonce('wpca_menu_toggle') : '';
             
-            wp_localize_script('wpca-menu-customizer', 'wpcaMenuData', array(
-                'ajaxUrl' => $ajaxUrl,
-                'nonce' => $nonce,
-                'i18n' => array(
-                    'confirmReset' => __('Are you sure you want to reset all menu settings?', 'wp-clean-admin'),
-                    'success' => __('Settings updated successfully', 'wp-clean-admin'),
-                    'error' => __('An error occurred', 'wp-clean-admin')
-                )
-            ));
-        }
-        
-        if (function_exists('wp_enqueue_script')) {
+            // Localize script with menu data only if script is enqueued
+            if (function_exists('wp_localize_script')) {
+                $ajaxUrl = function_exists('admin_url') ? admin_url('admin-ajax.php') : site_url('/wp-admin/admin-ajax.php');
+                $nonce = function_exists('wp_create_nonce') ? wp_create_nonce('wpca_admin_nonce') : '';
+                
+                wp_localize_script('wpca-menu-customizer', 'wpcaMenuData', array(
+                    'ajaxUrl' => $ajaxUrl,
+                    'nonce' => $nonce,
+                    'i18n' => array(
+                        'confirmReset' => __('Are you sure you want to reset all menu settings?', 'wp-clean-admin'),
+                        'success' => __('Settings updated successfully', 'wp-clean-admin'),
+                        'error' => __('An error occurred', 'wp-clean-admin')
+                    )
+                ));
+            }
+            
+            // Enqueue the script
             wp_enqueue_script('wpca-menu-customizer');
-        }
-        
-        // Enqueue styles
-        if (function_exists('wp_enqueue_style')) {
+            
+            // Enqueue styles
             wp_enqueue_style(
                 'wpca-menu-customizer',
                 WPCA_PLUGIN_URL . 'assets/css/wpca-admin.css',
@@ -1096,3 +1110,4 @@ class WPCA_Menu_Customizer {
         return true;
     }
 }
+?>

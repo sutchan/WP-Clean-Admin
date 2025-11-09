@@ -2,8 +2,8 @@
 /**
  * Plugin Name: WP Clean Admin
  * Plugin URI: https://github.com/sutchan/WP-Clean-Admin
- * Description: Simplifies and optimizes the WordPress admin interface, providing a cleaner backend experience.
- * Version: 1.4.1
+ * Description: Simplifies and optimizes the WordPress admin interface, providing a cleaner backend experience with database optimization capabilities.
+ * Version: 1.6.0
  * Author: Sut
  * Author URI: https://github.com/sutchan/
  * License: GPLv2 or later
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Define constants
 if ( ! defined( 'WPCA_VERSION' ) ) {
-	define( 'WPCA_VERSION', '1.4.1' );
+	define( 'WPCA_VERSION', '1.6.0' );
 }
 
 if ( ! defined( 'WPCA_BASENAME' ) ) {
@@ -61,11 +61,20 @@ if ( ! function_exists( 'site_url' ) ) {
 	}
 }
 
+// Include core functions
+require_once WPCA_PLUGIN_DIR . 'includes/wpca-core-functions.php';
+
 // Include the autoloader
 require_once WPCA_PLUGIN_DIR . 'includes/autoload.php';
 
-// Include core functions
-require_once WPCA_PLUGIN_DIR . 'includes/wpca-core-functions.php';
+// Performance optimization classes will be loaded automatically by the autoloader when needed
+
+// Performance Settings will be loaded automatically by the autoloader when needed
+
+// Include Performance Tests (only in development environment)
+if ( defined( 'WP_DEBUG' ) && WP_DEBUG && file_exists( WPCA_PLUGIN_DIR . 'includes/tests/test-wpca-performance.php' ) ) {
+    require_once( WPCA_PLUGIN_DIR . 'includes/tests/test-wpca-performance.php' );
+}
 
 /**
  * Initialize the plugin components
@@ -114,6 +123,15 @@ if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
 	include_once WPCA_PLUGIN_DIR . 'translation-debug.php';
 }
 
+// 加载多语言支持类
+if (file_exists(WPCA_PLUGIN_DIR . 'includes/class-wpca-i18n.php')) {
+    require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-i18n.php';
+    // 初始化多语言支持
+    if (class_exists('WPCA_i18n')) {
+        WPCA_i18n::get_instance();
+    }
+}
+
 function wpca_load_textdomain() {
     if ( function_exists( 'load_plugin_textdomain' ) ) {
         if ( function_exists( 'plugin_basename' ) ) {
@@ -132,6 +150,14 @@ function wpca_load_admin_resources() {
     
     if ( function_exists( 'wp_enqueue_script' ) ) {
         wp_enqueue_script( 'wpca-main', WPCA_PLUGIN_URL . 'assets/js/wpca-main.js', array( 'jquery' ), WPCA_VERSION, true );
+        
+        // Database optimization scripts
+        wp_enqueue_script( 'wpca-database', WPCA_PLUGIN_URL . 'assets/js/wpca-database.js', array( 'jquery' ), WPCA_VERSION, true );
+        
+        // Database optimization styles
+        if ( function_exists( 'wp_enqueue_style' ) ) {
+            wp_enqueue_style( 'wpca-database', WPCA_PLUGIN_URL . 'assets/css/wpca-database.css', array(), WPCA_VERSION );
+        }
         
         $wpca_admin_data = array(
             'ajaxurl' => function_exists( 'admin_url' ) ? admin_url( 'admin-ajax.php' ) : '/wp-admin/admin-ajax.php',
@@ -158,10 +184,10 @@ if ( function_exists( 'add_action' ) ) {
 function wpca_activate_plugin() {
     if ( function_exists( 'get_option' ) && ! get_option( 'wpca_settings' ) ) {
         $default_settings = array(
-            'version'             => WPCA_VERSION,
+            'version'             => '1.6.0',
             'menu_order'          => array(),
             'submenu_order'       => array(),
-            'hidden_menus'        => array(),
+            'menu_toggles'        => array(),
             'dashboard_widgets'   => array(),
             'login_style'         => 'default',
             'custom_admin_bar'    => 0,
@@ -228,8 +254,31 @@ function wpca_initialize_components() {
     if ( class_exists( 'WPCA_Permissions' ) ) {
         new WPCA_Permissions();
     }
+    
+    if ( class_exists( 'WPCA_Performance' ) && method_exists('WPCA_Performance', 'get_instance') ) {
+        WPCA_Performance::get_instance();
+    } else if ( class_exists( 'WPCA_Performance' ) ) {
+        new WPCA_Performance();
+    }
+    
+    if ( class_exists( 'WPCA_Resources' ) ) {
+        new WPCA_Resources();
+    }
+    
+    if ( class_exists( 'WPCA_Database' ) ) {
+        new WPCA_Database();
+    }
+    
+    if ( class_exists( 'WPCA_Database_Settings' ) ) {
+        WPCA_Database_Settings::get_instance();
+    }
+    
+    if ( class_exists( 'WPCA_Performance_Settings' ) ) {
+        WPCA_Performance_Settings::get_instance();
+    }
 }
 
 if ( function_exists( 'add_action' ) ) {
     add_action( 'plugins_loaded', 'wpca_initialize_components', 20 );
 }
+?>

@@ -102,3 +102,4 @@ class WPCA_User_Roles {
         return $settings;
     }
 }
+?>

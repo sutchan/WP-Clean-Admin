@@ -1,0 +1,161 @@
+/**
+ * WPCleanAdmin Database Optimization Styles
+ * 
+ * Styles for the database optimization settings pages.
+ * 
+ * @package WP_Clean_Admin
+ * @since 1.6.0
+ */
+
+/* Settings page structure */
+.wpca-settings-section {
+    margin: 20px 0;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.wpca-settings-section h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+    color: #1a202c;
+}
+
+.wpca-settings-section h3 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e2e8f0;
+    font-size: 1.2em;
+    color: #2d3748;
+}
+
+.wpca-settings-section p {
+    margin-bottom: 20px;
+    color: #4a5568;
+}
+
+/* Actions section */
+.wpca-optimization-actions,
+.wpca-cleanup-actions {
+    margin-bottom: 30px;
+    padding: 15px;
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+}
+
+.wpca-optimization-actions .button,
+.wpca-cleanup-actions .button {
+    margin-right: 10px;
+}
+
+.wpca-optimization-actions .button span.dashicons,
+.wpca-cleanup-actions .button span.dashicons {
+    margin-top: 2px;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+/* Results display */
+.wpca-results {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.wpca-results .notice {
+    margin-bottom: 0;
+}
+
+/* Form styling */
+.wpca-optimization-tables table,
+.wpca-database-info table,
+.wpca-cleanup-stats table {
+    margin-top: 15px;
+}
+
+.wpca-optimization-tables table th,
+.wpca-database-info table th,
+.wpca-cleanup-stats table th {
+    width: 70%;
+}
+
+.wpca-optimization-tables table td,
+.wpca-database-info table td,
+.wpca-cleanup-stats table td {
+    vertical-align: middle;
+}
+
+.wpca-optimization-tables table input[type="checkbox"],
+.wpca-cleanup-options table input[type="checkbox"] {
+    margin-top: 0;
+}
+
+/* Indentation for nested options */
+.wpca-cleanup-options-indent {
+    margin-top: 10px;
+    margin-left: 30px;
+}
+
+.wpca-cleanup-options-indent input,
+.wpca-cleanup-options-indent label {
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.wpca-cleanup-options-indent input[type="number"] {
+    width: 70px;
+}
+
+/* Detailed results */
+.wpca-detailed-results {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+}
+
+.wpca-detailed-results h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1em;
+    color: #2d3748;
+}
+
+.wpca-detailed-results ul {
+    margin-bottom: 0;
+    padding-left: 20px;
+}
+
+/* Settings submit section */
+.wpca-settings-submit {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* Responsive styles */
+@media screen and (max-width: 782px) {
+    .wpca-optimization-tables table th,
+    .wpca-database-info table th,
+    .wpca-cleanup-stats table th {
+        width: auto;
+    }
+    
+    .wpca-optimization-actions .button,
+    .wpca-cleanup-actions .button {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    
+    .wpca-cleanup-options-indent {
+        margin-left: 15px;
+    }
+}

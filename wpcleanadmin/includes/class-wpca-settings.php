@@ -31,16 +31,16 @@ class WPCA_Settings {
         add_action( 'admin_init', array( $this, 'settings_init' ) );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
         add_action( 'wp_ajax_wpca_save_tab_preference', array( $this, 'ajax_save_tab_preference' ) );
-        add_action( 'wp_ajax_wpca_reset_settings', array( $this, 'ajax_reset_settings' ) );
+        add_action( 'wp_ajax_wpca_reset_tab_settings', array( $this, 'ajax_reset_settings' ) );
+        add_action( 'wp_ajax_wpca_reset_menu_order', array( $this, 'ajax_reset_menu_order' ) );
     }
     
     /**
      * Validate AJAX request with nonce and permission checks
-     * @param string $nonce_action Optional. Nonce action name
-     * @param string $permission Optional. Permission to check
+     * @param string $action Optional. Action name
      * @return bool True if validation passed, false otherwise
      */
-    private function validate_ajax_request($nonce_action = 'wpca_settings-options', $permission = 'wpca_manage_menus') {
+    private function validate_ajax_request($action = 'wpca_settings-options') {
         // 安全检查函数列表
         if (!function_exists('wp_send_json_error')) {
             return false;
@@ -55,7 +55,7 @@ class WPCA_Settings {
         }
 
         // Validate nonce
-        if (function_exists('check_ajax_referer') && !check_ajax_referer($nonce_action, false, false)) {
+        if (!isset($_POST['nonce']) || function_exists('wp_verify_nonce') && !wp_verify_nonce($_POST['nonce'], 'wpca_admin_nonce')) {
             wp_send_json_error(array(
                 'message' => __('Security verification failed', 'wp-clean-admin')
             ), 403);
@@ -63,30 +63,11 @@ class WPCA_Settings {
         }
 
         // Check permissions
-        if (!function_exists('current_user_can')) {
+        if (!function_exists('current_user_can') || !current_user_can('manage_options')) {
             wp_send_json_error(array(
                 'message' => __('Insufficient permissions', 'wp-clean-admin')
             ), 403);
             return false;
-        }
-        
-        // 优先使用插件权限系统
-        if (class_exists('WPCA_Permissions') && method_exists('WPCA_Permissions', 'current_user_can')) {
-            if (!WPCA_Permissions::current_user_can($permission) && 
-                !current_user_can('manage_options')) {
-                wp_send_json_error(array(
-                    'message' => __('Insufficient permissions', 'wp-clean-admin')
-                ), 403);
-                return false;
-            }
-        } else {
-            // 降级到WordPress原生权限检查
-            if (!current_user_can('manage_options')) {
-                wp_send_json_error(array(
-                    'message' => __('Insufficient permissions', 'wp-clean-admin')
-                ), 403);
-                return false;
-            }
         }
         
         // 注意：不再使用array_map直接过滤整个$_POST数组，这会破坏嵌套数组结构
@@ -100,7 +81,7 @@ class WPCA_Settings {
      */
     public function ajax_save_tab_preference() {
         // 验证请求
-        if (!$this->validate_ajax_request('wpca_settings-options', 'wpca_manage_all')) {
+        if (!$this->validate_ajax_request('wpca_admin_nonce')) {
             return;
         }
         
@@ -1449,14 +1430,24 @@ class WPCA_Settings {
         $output['menu_toggles'] = array();
         if (isset($input['menu_toggles']) && is_array($input['menu_toggles'])) {
             foreach ($input['menu_toggles'] as $slug => $value) {
-                $output['menu_toggles'][$safe_sanitize_text_field($slug)] = (int)$value;
+                // 确保值只能是0或1，并进行适当的清理
+                if (is_string($slug) && ($value === 0 || $value === 1)) {
+                    $sanitized_slug = $safe_sanitize_text_field($slug);
+                    $output['menu_toggles'][$sanitized_slug] = intval($value);
+                }
             }
         }
         
-        // Validate menu order
+        // Validate menu order with stricter checks
         $output['menu_order'] = array();
         if (isset($input['menu_order']) && is_array($input['menu_order'])) {
-            $output['menu_order'] = array_map($safe_sanitize_text_field, $input['menu_order']);
+            // 过滤掉非字符串或空的菜单项
+            $output['menu_order'] = array_filter(
+                array_map($safe_sanitize_text_field, $input['menu_order']),
+                function($item) {
+                    return !empty($item);
+                }
+            );
         }
         
         // Validate submenu order
@@ -1539,15 +1530,17 @@ class WPCA_Settings {
                 echo '</div>';
                 
                 // Menu Customization tab content
-                echo '<div id="tab-menu" class="wpca-tab-content ' . ($active_tab === 'tab-menu' ? 'active' : '') . '">';
-                do_settings_sections('wpca_settings_menu');
-                echo '<div class="wpca-reset-section">';
-                echo '<button type="button" id="wpca-reset-menu-order" class="wpca-reset-button button-secondary">';
-                echo '<span class="dashicons dashicons-image-rotate" style="vertical-align: middle; margin-right: 5px;"></span>';
-                echo __('Reset to Default Order', 'wp-clean-admin');
-                echo '</button>';
-                echo '</div>';
-                echo '</div>';
+                echo '<div id="tab-menu" class="wpca-tab-content ' . ($active_tab === 'tab-menu' ? 'active' : '') . '">
+';                do_settings_sections('wpca_settings_menu');
+                echo '<div class="wpca-reset-section">
+';                echo '<button type="button" id="wpca-reset-menu" class="wpca-reset-button button-secondary">'.__('Reset to Defaults', 'wp-clean-admin').'</button>
+';                echo '<button type="button" id="wpca-reset-menu-order" class="wpca-reset-button button-secondary" style="margin-left: 10px;">
+';                echo '<span class="dashicons dashicons-image-rotate" style="vertical-align: middle; margin-right: 5px;"></span>
+';                echo __('Reset to Default Order', 'wp-clean-admin');
+                echo '</button>
+';                echo '</div>
+';                echo '</div>
+';
                 
                 // Visual Style tab content
                 echo '<div id="tab-visual-style" class="wpca-tab-content ' . ($active_tab === 'tab-visual-style' ? 'active' : '') . '">';
@@ -1586,7 +1579,7 @@ class WPCA_Settings {
      */
     public function ajax_reset_settings() {
         // 验证请求
-        if (!$this->validate_ajax_request('wpca_ajax_request', 'wpca_manage_all')) {
+        if (!$this->validate_ajax_request('wpca_admin_nonce')) {
             return;
         }
         
@@ -1596,7 +1589,7 @@ class WPCA_Settings {
         }
         
         // 获取并验证tab参数
-        $allowed_tabs = ['general', 'visual', 'login'];
+        $allowed_tabs = ['general', 'visual', 'login', 'menu'];
         $tab = 'general'; // 默认值
         
         if (isset($_POST['tab']) && is_string($_POST['tab']) && in_array($_POST['tab'], $allowed_tabs)) {
@@ -1646,6 +1639,16 @@ class WPCA_Settings {
                 $options['login_custom_css'] = $defaults['login_custom_css'];
                 $options['login_elements'] = $defaults['login_elements'];
                 break;
+            
+            case 'menu':
+                // Reset menu settings
+                $options['menu_toggle'] = $defaults['menu_toggle'];
+                $options['menu_toggles'] = $defaults['menu_toggles'];
+                $options['menu_order'] = $defaults['menu_order'];
+                $options['submenu_order'] = $defaults['submenu_order'];
+                $options['hide_admin_menu_items'] = $defaults['hide_admin_menu_items'];
+                $options['hide_admin_bar_items'] = $defaults['hide_admin_bar_items'];
+                break;
         }
         
         // 保存选项并响应
@@ -1663,7 +1666,7 @@ class WPCA_Settings {
                 if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
                     error_log('WP Clean Admin: Failed to reset settings. Options: ' . print_r($options, true));
                 }
-            
+                
                 wp_send_json_error(array(
                     'message' => __('Failed to reset settings', 'wp-clean-admin'),
                     'debug_info' => defined('WP_DEBUG') && WP_DEBUG ? 'Option update failed for wpca_settings' : null
@@ -1676,4 +1679,58 @@ class WPCA_Settings {
             ), 500);
         }
     }
+    
+    /**
+     * AJAX handler to reset menu order specifically
+     */
+    public function ajax_reset_menu_order() {
+        // 验证请求
+        if (!$this->validate_ajax_request('wpca_admin_nonce')) {
+            return;
+        }
+        
+        // 安全函数检查
+        if (!function_exists('wp_send_json_error') || !function_exists('wp_send_json_success') || !function_exists('update_option')) {
+            return;
+        }
+        
+        try {
+            // 获取当前选项和默认设置
+            $options = self::get_options();
+            $defaults = self::get_default_settings();
+            
+            // 仅重置菜单顺序相关设置
+            $options['menu_order'] = $defaults['menu_order'];
+            $options['submenu_order'] = $defaults['submenu_order'];
+            
+            // 保存选项并响应
+            $update_result = update_option('wpca_settings', $options);
+            
+            if ($update_result) {
+                self::$cached_options = null;
+                wp_send_json_success(array(
+                    'message' => __('Menu order reset successfully', 'wp-clean-admin')
+                ));
+            } else {
+                // 保存失败的处理
+                if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
+                    error_log('WP Clean Admin: Failed to reset menu order.');
+                }
+                
+                wp_send_json_error(array(
+                    'message' => __('Failed to reset menu order', 'wp-clean-admin')
+                ), 500);
+            }
+        } catch (Exception $e) {
+            // 异常处理
+            if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
+                error_log('WP Clean Admin: Exception when resetting menu order: ' . $e->getMessage());
+            }
+            
+            wp_send_json_error(array(
+                'message' => __('An error occurred while resetting menu order', 'wp-clean-admin')
+            ), 500);
+        }
+    }
 }
+?>

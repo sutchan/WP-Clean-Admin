@@ -10,6 +10,141 @@
 class WPCA_Ajax {
     
     /**
+     * 保存登录页面设置
+     */
+    public function save_login_settings() {
+        // 验证请求
+        if ( ! $this->validate_ajax_request( 'wpca_save_login_settings' ) ) {
+            return;
+        }
+        
+        // 获取并验证设置数据
+        if ( ! isset( $_POST['login_settings'] ) || ! is_array( $_POST['login_settings'] ) ) {
+            wp_send_json_error( array( 'message' => __( 'Invalid data structure', 'wp-clean-admin' ) ), 400 );
+            return;
+        }
+        
+        $login_settings = $_POST['login_settings'];
+        $sanitized_settings = array();
+        
+        // 清理设置数据
+        if ( isset( $login_settings['login_style'] ) ) {
+            $sanitized_settings['login_style'] = sanitize_text_field( $login_settings['login_style'] );
+        }
+        
+        if ( isset( $login_settings['login_logo_url'] ) ) {
+            $sanitized_settings['login_logo_url'] = esc_url_raw( $login_settings['login_logo_url'] );
+        }
+        
+        if ( isset( $login_settings['login_background_url'] ) ) {
+            $sanitized_settings['login_background_url'] = esc_url_raw( $login_settings['login_background_url'] );
+        }
+        
+        if ( isset( $login_settings['login_custom_css'] ) ) {
+            $sanitized_settings['login_custom_css'] = wp_kses_post( $login_settings['login_custom_css'] );
+        }
+        
+        if ( isset( $login_settings['login_elements'] ) && is_array( $login_settings['login_elements'] ) ) {
+            $sanitized_settings['login_elements'] = array_map( 'intval', $login_settings['login_elements'] );
+        }
+        
+        // 获取现有选项并合并
+        if ( class_exists( 'WPCA_Settings' ) && method_exists( 'WPCA_Settings', 'get_options' ) ) {
+            $options = WPCA_Settings::get_options();
+            $updated_options = array_merge( $options, $sanitized_settings );
+            
+            // 保存更新后的设置
+            if ( method_exists( 'WPCA_Settings', 'update_options' ) ) {
+                if ( WPCA_Settings::update_options( $updated_options ) ) {
+                    wp_send_json_success( array( 'message' => __( 'Login settings saved successfully', 'wp-clean-admin' ) ) );
+                } else {
+                    wp_send_json_error( array( 'message' => __( 'Failed to save login settings', 'wp-clean-admin' ) ) );
+                }
+            } else {
+                wp_send_json_error( array( 'message' => __( 'Settings update method not available', 'wp-clean-admin' ) ) );
+            }
+        } else {
+            wp_send_json_error( array( 'message' => __( 'Settings class not available', 'wp-clean-admin' ) ) );
+        }
+    }
+    
+    /**
+     * 获取登录页面设置
+     */
+    public function get_login_settings() {
+        // 验证请求
+        if ( ! $this->validate_ajax_request( 'wpca_get_login_settings' ) ) {
+            return;
+        }
+        
+        // 获取设置
+        if ( class_exists( 'WPCA_Settings' ) && method_exists( 'WPCA_Settings', 'get_options' ) ) {
+            $options = WPCA_Settings::get_options();
+            
+            // 提取登录相关设置
+            $login_settings = array(
+                'login_style' => $options['login_style'] ?? 'default',
+                'login_logo_url' => $options['login_logo_url'] ?? '',
+                'login_background_url' => $options['login_background_url'] ?? '',
+                'login_custom_css' => $options['login_custom_css'] ?? '',
+                'login_elements' => $options['login_elements'] ?? array(
+                    'language_switcher' => 1,
+                    'home_link' => 1,
+                    'register_link' => 1,
+                    'remember_me' => 1
+                )
+            );
+            
+            wp_send_json_success( array( 'login_settings' => $login_settings ) );
+        } else {
+            wp_send_json_error( array( 'message' => __( 'Settings class not available', 'wp-clean-admin' ) ) );
+        }
+    }
+    
+    /**
+     * 重置登录页面设置
+     */
+    public function reset_login_settings() {
+        // 验证请求
+        if ( ! $this->validate_ajax_request( 'wpca_reset_login_settings' ) ) {
+            return;
+        }
+        
+        // 获取现有选项并移除登录相关设置
+        if ( class_exists( 'WPCA_Settings' ) && method_exists( 'WPCA_Settings', 'get_options' ) ) {
+            $options = WPCA_Settings::get_options();
+            
+            // 删除登录相关设置
+            $login_settings_keys = array(
+                'login_style',
+                'login_logo_url',
+                'login_background_url',
+                'login_custom_css',
+                'login_elements'
+            );
+            
+            foreach ( $login_settings_keys as $key ) {
+                if ( isset( $options[ $key ] ) ) {
+                    unset( $options[ $key ] );
+                }
+            }
+            
+            // 保存更新后的设置
+            if ( method_exists( 'WPCA_Settings', 'update_options' ) ) {
+                if ( WPCA_Settings::update_options( $options ) ) {
+                    wp_send_json_success( array( 'message' => __( 'Login settings reset successfully', 'wp-clean-admin' ) ) );
+                } else {
+                    wp_send_json_error( array( 'message' => __( 'Failed to reset login settings', 'wp-clean-admin' ) ) );
+                }
+            } else {
+                wp_send_json_error( array( 'message' => __( 'Settings update method not available', 'wp-clean-admin' ) ) );
+            }
+        } else {
+            wp_send_json_error( array( 'message' => __( 'Settings class not available', 'wp-clean-admin' ) ) );
+        }
+    }
+    
+    /**
      * Constructor
      */
     public function __construct() {
@@ -34,6 +169,10 @@ class WPCA_Ajax {
             add_action( 'wp_ajax_wpca_save_settings', array( $this, 'save_settings' ) );
             add_action( 'wp_ajax_wpca_get_settings', array( $this, 'get_settings' ) );
             add_action( 'wp_ajax_wpca_update_dashboard_widgets', array( $this, 'update_dashboard_widgets' ) );
+            // 登录页面自定义相关AJAX操作
+            add_action( 'wp_ajax_wpca_save_login_settings', array( $this, 'save_login_settings' ) );
+            add_action( 'wp_ajax_wpca_get_login_settings', array( $this, 'get_login_settings' ) );
+            add_action( 'wp_ajax_wpca_reset_login_settings', array( $this, 'reset_login_settings' ) );
         }
     }
     
@@ -43,26 +182,53 @@ class WPCA_Ajax {
      * @return bool - True if valid, false otherwise
      */
     protected function validate_ajax_request( $action ) {
-        // Check if it's an AJAX request
-        if ( function_exists( 'wp_doing_ajax' ) && ! wp_doing_ajax() ) {
+        // 确保action参数有效
+        if ( ! is_string( $action ) || empty( $action ) ) {
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( array( 'message' => 'Invalid validation action' ), 400 );
+            }
+            return false;
+        }
+        
+        // 检查是否是AJAX请求，兼容旧版本WordPress
+        if ( ( function_exists( 'wp_doing_ajax' ) && ! wp_doing_ajax() ) || 
+             ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) ) {
             if ( function_exists( 'wp_send_json_error' ) ) {
                 wp_send_json_error( array( 'message' => 'Invalid request' ), 400 );
             }
             return false;
         }
         
-        // Verify nonce
-        if ( ! isset( $_POST['nonce'] ) || ( function_exists( 'wp_verify_nonce' ) && ! wp_verify_nonce( $_POST['nonce'], 'wpca_admin_nonce' ) ) ) {
+        // 验证nonce，使用传入的action参数
+        if ( ! isset( $_POST['nonce'] ) || 
+             ( function_exists( 'wp_verify_nonce' ) && ! wp_verify_nonce( $_POST['nonce'], $action ) ) ) {
             if ( function_exists( 'wp_send_json_error' ) ) {
                 wp_send_json_error( array( 'message' => 'Invalid nonce' ), 403 );
             }
             return false;
         }
         
-        // Check user capabilities
-        if ( function_exists( 'current_user_can' ) && ! current_user_can( 'manage_options' ) ) {
+        // 检查用户权限，优先使用WPCA_Permissions类的方法
+        if ( class_exists( 'WPCA_Permissions' ) && method_exists( 'WPCA_Permissions', 'current_user_can' ) ) {
+            // 使用类的权限检查方法，确保用户有管理选项权限
+            if ( ! WPCA_Permissions::current_user_can( 'manage_options' ) ) {
+                if ( function_exists( 'wp_send_json_error' ) ) {
+                    wp_send_json_error( array( 'message' => 'Insufficient permissions' ), 403 );
+                }
+                return false;
+            }
+        } else if ( function_exists( 'current_user_can' ) ) {
+            // 后备方案：使用WordPress原生函数检查权限
+            if ( ! current_user_can( 'manage_options' ) ) {
+                if ( function_exists( 'wp_send_json_error' ) ) {
+                    wp_send_json_error( array( 'message' => 'Insufficient permissions' ), 403 );
+                }
+                return false;
+            }
+        } else {
+            // 如果没有权限检查函数，拒绝请求以确保安全
             if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( array( 'message' => 'Insufficient permissions' ), 403 );
+                wp_send_json_error( array( 'message' => 'Permission check unavailable' ), 500 );
             }
             return false;
         }
@@ -76,7 +242,7 @@ class WPCA_Ajax {
     public function toggle_menu() {
         try {
             // 增强的AJAX请求验证
-            if ( ! $this->validate_ajax_request( 'toggle_menu' ) ) {
+            if ( ! $this->validate_ajax_request( 'wpca_admin_nonce' ) ) {
                 // 如果验证失败，确保结束请求
                 if ( function_exists( 'wp_die' ) ) {
                     wp_die();
@@ -110,25 +276,13 @@ class WPCA_Ajax {
             
             $settings = get_option( 'wpca_settings', array() );
             
-            // 确保数组结构正确
-            if ( ! isset( $settings['hidden_menus'] ) || ! is_array( $settings['hidden_menus'] ) ) {
-                $settings['hidden_menus'] = array();
+            // 确保数组结构正确 - 使用menu_toggles与WPCA_Menu_Customizer类保持一致
+            if ( ! isset( $settings['menu_toggles'] ) || ! is_array( $settings['menu_toggles'] ) ) {
+                $settings['menu_toggles'] = array();
             }
             
             // 更新菜单可见性
-            if ( $state === 0 ) {
-                // 隐藏菜单
-                if ( ! in_array( $slug, $settings['hidden_menus'] ) ) {
-                    $settings['hidden_menus'][] = $slug;
-                }
-            } else {
-                // 显示菜单
-                $key = array_search( $slug, $settings['hidden_menus'] );
-                if ( $key !== false ) {
-                    unset( $settings['hidden_menus'][$key] );
-                    $settings['hidden_menus'] = array_values( $settings['hidden_menus'] );
-                }
-            }
+            $settings['menu_toggles'][$slug] = $state;
             
             // 保存更新后的设置
             if ( ! function_exists( 'update_option' ) ) {
@@ -189,7 +343,7 @@ class WPCA_Ajax {
     public function update_menu_order() {
         try {
             // 增强的AJAX请求验证
-            if ( ! $this->validate_ajax_request( 'update_menu_order' ) ) {
+            if ( ! $this->validate_ajax_request( 'wpca_admin_nonce' ) ) {
                 if ( function_exists( 'wp_die' ) ) {
                     wp_die();
                 }
@@ -300,7 +454,7 @@ class WPCA_Ajax {
     public function reset_settings() {
         try {
             // 增强的AJAX请求验证
-            if ( ! $this->validate_ajax_request( 'reset_settings' ) ) {
+            if ( ! $this->validate_ajax_request( 'wpca_admin_nonce' ) ) {
                 // 如果验证失败，确保结束请求
                 if ( function_exists( 'wp_die' ) ) {
                     wp_die();
@@ -324,7 +478,7 @@ class WPCA_Ajax {
                 'version'             => WPCA_VERSION,
                 'menu_order'          => array(),
                 'submenu_order'       => array(),
-                'hidden_menus'        => array(),
+                'menu_toggles'        => array(),
                 'dashboard_widgets'   => array(),
                 'login_style'         => 'default',
                 'custom_admin_bar'    => 0,
@@ -390,7 +544,7 @@ class WPCA_Ajax {
     public function save_settings() {
         try {
             // 增强的AJAX请求验证
-            if ( ! $this->validate_ajax_request( 'save_settings' ) ) {
+            if ( ! $this->validate_ajax_request( 'wpca_admin_nonce' ) ) {
                 // 如果验证失败，确保结束请求
                 if ( function_exists( 'wp_die' ) ) {
                     wp_die();
@@ -434,7 +588,7 @@ class WPCA_Ajax {
                 'login_style',
                 'menu_order',
                 'submenu_order',
-                'hidden_menus',
+                'menu_toggles',
                 'dashboard_widgets'
             );
             
@@ -448,8 +602,8 @@ class WPCA_Ajax {
                         // 字符串类型设置
                         $sanitized_settings[$key] = function_exists( 'sanitize_text_field' ) ? 
                             sanitize_text_field( $value ) : filter_var( $value, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES );
-                    } else if ( in_array( $key, array( 'menu_order', 'submenu_order', 'hidden_menus' ) ) && is_array( $value ) ) {
-                        // 数组类型设置
+                    } else if ( in_array( $key, array( 'menu_order', 'submenu_order' ) ) && is_array( $value ) ) {
+                        // 数组类型设置 - 对于简单数组
                         $sanitized_array = array();
                         foreach ( $value as $item ) {
                             if ( is_string( $item ) ) {
@@ -457,6 +611,20 @@ class WPCA_Ajax {
                                     sanitize_text_field( $item ) : filter_var( $item, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES );
                                 if ( ! empty( $sanitized_item ) ) {
                                     $sanitized_array[] = $sanitized_item;
+                                }
+                            }
+                        }
+                        $sanitized_settings[$key] = $sanitized_array;
+                    } else if ( $key === 'menu_toggles' && is_array( $value ) ) {
+                        // 关联数组类型设置 - 对于menu_toggles
+                        $sanitized_array = array();
+                        foreach ( $value as $slug => $state ) {
+                            // 清理键值对
+                            if ( is_string( $slug ) && ( $state === 0 || $state === 1 ) ) {
+                                $sanitized_slug = function_exists( 'sanitize_text_field' ) ? 
+                                    sanitize_text_field( $slug ) : filter_var( $slug, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES );
+                                if ( ! empty( $sanitized_slug ) ) {
+                                    $sanitized_array[$sanitized_slug] = intval( $state ); // 确保state是整数
                                 }
                             }
                         }
@@ -531,15 +699,47 @@ class WPCA_Ajax {
      * Get current plugin settings
      */
     public function get_settings() {
-        if ( ! $this->validate_ajax_request( 'get_settings' ) ) {
-            return;
+        try {
+            if ( ! $this->validate_ajax_request( 'wpca_admin_nonce' ) ) {
+                return;
+            }
+            
+            // 获取当前设置 - 确保函数存在
+            if ( ! function_exists( 'get_option' ) ) {
+                throw new Exception('Required WordPress function not available', 'functions_missing');
+            }
+            
+            $settings = get_option( 'wpca_settings', array() );
+            
+            // 确保 $settings 是数组
+            if ( ! is_array( $settings ) ) {
+                $settings = array();
+            }
+            
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( array( 'settings' => $settings ) );
+            }
+        } catch ( Exception $e ) {
+            $code = method_exists( $e, 'getCode' ) && $e->getCode() ? $e->getCode() : 'get_settings_error';
+            $message = $e->getMessage();
+            
+            // 记录错误
+            if ( function_exists( 'error_log' ) ) {
+                error_log( 'WP Clean Admin - Get Settings Error (' . $code . '): ' . $message );
+            }
+            
+            // 发送错误响应
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( array( 
+                    'code' => $code,
+                    'message' => $message
+                ), 400 );
+            }
         }
         
-        // Get current settings
-        $settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
-        
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( array( 'settings' => $settings ) );
+        // 确保请求终止
+        if ( function_exists( 'wp_die' ) ) {
+            wp_die();
         }
     }
     
@@ -547,48 +747,89 @@ class WPCA_Ajax {
      * Update dashboard widgets visibility
      */
     public function update_dashboard_widgets() {
-        if ( ! $this->validate_ajax_request( 'update_dashboard_widgets' ) ) {
-            return;
-        }
-        
-        if ( ! isset( $_POST['widgets'] ) ) {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( array( 'message' => 'Missing widgets data' ) );
+        try {
+            if ( ! $this->validate_ajax_request( 'wpca_admin_nonce' ) ) {
+                return;
             }
-            return;
-        }
-        
-        // Get and sanitize widgets data
-        $widgets = ( function_exists( 'json_decode' ) && function_exists( 'stripslashes' ) ) ? 
-            json_decode( stripslashes( $_POST['widgets'] ), true ) : array();
-        
-        if ( ! is_array( $widgets ) ) {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( array( 'message' => 'Invalid widgets data format' ) );
+            
+            // 验证必要函数存在
+            if ( ! function_exists( 'update_option' ) || ! function_exists( 'get_option' ) ) {
+                throw new Exception('Required WordPress functions not available', 'functions_missing');
             }
-            return;
+            
+            if ( ! isset( $_POST['widgets'] ) ) {
+                throw new Exception('Missing widgets data', 'missing_widgets');
+            }
+            
+            // 获取和清理小部件数据
+            $widgets = ( function_exists( 'json_decode' ) && function_exists( 'stripslashes' ) ) ? 
+                json_decode( stripslashes( $_POST['widgets'] ), true ) : array();
+            
+            if ( ! is_array( $widgets ) ) {
+                throw new Exception('Invalid widgets data format', 'invalid_format');
+            }
+            
+            // 清理每个小部件 ID
+            $sanitized_widgets = array();
+            foreach ( $widgets as $widget_id => $is_visible ) {
+                $sanitized_id = function_exists( 'sanitize_text_field' ) ? 
+                    sanitize_text_field( $widget_id ) : 
+                    filter_var( $widget_id, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES );
+                $sanitized_widgets[ $sanitized_id ] = (bool) $is_visible;
+            }
+            
+            // 获取当前设置
+            $settings = get_option( 'wpca_settings', array() );
+            
+            // 确保 $settings 是数组
+            if ( ! is_array( $settings ) ) {
+                $settings = array();
+            }
+            
+            // 更新仪表盘小部件设置
+            $settings['dashboard_widgets'] = $sanitized_widgets;
+            
+            // 保存更新后的设置
+            $success = update_option( 'wpca_settings', $settings );
+            
+            if ( $success ) {
+                // 清除缓存
+                if ( function_exists( 'wp_cache_delete' ) ) {
+                    wp_cache_delete( 'wpca_settings', 'options' );
+                }
+                
+                // 记录更新操作
+                if ( defined( 'WP_DEBUG' ) && WP_DEBUG && function_exists( 'error_log' ) ) {
+                    error_log( 'WP Clean Admin - Dashboard widgets visibility has been updated' );
+                }
+                
+                if ( function_exists( 'wp_send_json_success' ) ) {
+                    wp_send_json_success( array( 'message' => 'Dashboard widgets updated' ) );
+                }
+            } else {
+                throw new Exception('Failed to update dashboard widgets', 'update_failed');
+            }
+        } catch ( Exception $e ) {
+            $code = method_exists( $e, 'getCode' ) && $e->getCode() ? $e->getCode() : 'update_widgets_error';
+            $message = $e->getMessage();
+            
+            // 记录错误
+            if ( function_exists( 'error_log' ) ) {
+                error_log( 'WP Clean Admin - Update Widgets Error (' . $code . '): ' . $message );
+            }
+            
+            // 发送错误响应
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( array( 
+                    'code' => $code,
+                    'message' => $message
+                ), 400 );
+            }
         }
         
-        // Sanitize each widget ID
-        $sanitized_widgets = array();
-        foreach ( $widgets as $widget_id => $is_visible ) {
-            $sanitized_id = function_exists( 'sanitize_text_field' ) ? sanitize_text_field( $widget_id ) : filter_var( $widget_id, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES );
-            $sanitized_widgets[ $sanitized_id ] = (bool) $is_visible;
-        }
-        
-        // Get current settings
-        $settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
-        
-        // Update dashboard widgets settings
-        $settings['dashboard_widgets'] = $sanitized_widgets;
-        
-        // Save updated settings
-        if ( function_exists( 'update_option' ) ) {
-            update_option( 'wpca_settings', $settings );
-        }
-        
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( array( 'message' => 'Dashboard widgets updated' ) );
+        // 确保请求终止
+        if ( function_exists( 'wp_die' ) ) {
+            wp_die();
         }
     }
     
@@ -596,7 +837,7 @@ class WPCA_Ajax {
      * Reset menu to default state
      */
     public function reset_menu() {
-        if ( ! $this->validate_ajax_request( 'wpca_reset_menu' ) ) {
+        if ( ! $this->validate_ajax_request( 'wpca_admin_nonce' ) ) {
             return;
         }
         
@@ -609,9 +850,12 @@ class WPCA_Ajax {
             // 获取当前设置
             $settings = get_option( 'wpca_settings', array() );
             
-            // 移除隐藏菜单设置，恢复默认状态
+            // 移除菜单设置，恢复默认状态
             if ( isset( $settings['hidden_menus'] ) ) {
                 unset( $settings['hidden_menus'] );
+            }
+            if ( isset( $settings['menu_toggles'] ) ) {
+                unset( $settings['menu_toggles'] );
             }
             
             // 保存更新后的设置
@@ -662,7 +906,7 @@ class WPCA_Ajax {
      * Reset menu order to default
      */
     public function reset_menu_order() {
-        if ( ! $this->validate_ajax_request( 'wpca_reset_menu_order' ) ) {
+        if ( ! $this->validate_ajax_request( 'wpca_admin_nonce' ) ) {
             return;
         }
         
@@ -765,4 +1009,4 @@ public function get_public_data() {
         wp_die();
     }
 }
-}
+?>

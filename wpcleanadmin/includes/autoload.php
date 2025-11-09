@@ -6,7 +6,7 @@
  * This allows for automatic class loading without requiring manual includes.
  * 
  * @package WPCleanAdmin
- * @since 1.4.0
+ * @since 1.4.1
  */
 
 // Exit if accessed directly
@@ -58,3 +58,4 @@ function wpca_autoloader($class_name) {
 if (function_exists('wpca_register_autoloader')) {
     wpca_register_autoloader();
 }
+?>

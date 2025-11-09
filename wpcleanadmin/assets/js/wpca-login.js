@@ -35,6 +35,7 @@ WPCA.login = {
         this.initPreviewUpdate();
         this.initStyleToggle();
         this.initAutoHideForm();
+        this.initAJAXHandlers();
 
         if (this.config.debug) {
             console.log('WPCA Login Management: Initialized successfully.');
@@ -267,6 +268,36 @@ WPCA.login = {
                 buttonColor: '#10b981',
                 buttonTextColor: '#ffffff',
                 borderRadius: '4'
+            },
+            'gradient': {
+                backgroundColor: '#667eea',
+                textColor: '#333333',
+                buttonColor: '#667eea',
+                buttonTextColor: '#ffffff',
+                borderRadius: '12'
+            },
+            'glassmorphism': {
+                backgroundColor: '#f5f7fa',
+                textColor: '#333333',
+                buttonColor: '#667eea',
+                buttonTextColor: '#ffffff',
+                borderRadius: '16'
+            },
+            'neumorphism': {
+                backgroundColor: '#e6e9ef',
+                textColor: '#333333',
+                buttonColor: '#e6e9ef',
+                buttonTextColor: '#2271b1',
+                borderRadius: '20'
+            },
+            'custom': {
+                // For custom style, we don't preset values
+                // Users will define their own through custom CSS
+                backgroundColor: '#f0f0f1',
+                textColor: '#3c434a',
+                buttonColor: '#007cba',
+                buttonTextColor: '#ffffff',
+                borderRadius: '8'
             }
         };
         
@@ -275,11 +306,17 @@ WPCA.login = {
             const preset = presets[presetName];
             const $ = jQuery;
             
+            // Update form fields with preset values
             $('#wpca-login-background-color').val(preset.backgroundColor);
             $('#wpca-login-text-color').val(preset.textColor);
             $('#wpca-login-button-color').val(preset.buttonColor);
             $('#wpca-login-button-text-color').val(preset.buttonTextColor);
             $('#wpca-login-border-radius').val(preset.borderRadius);
+            
+            // For custom style, focus on the custom CSS field
+            if (presetName === 'custom' && $('#wpca-login-custom-css').length) {
+                $('#wpca-login-custom-css').focus();
+            }
             
             // Update the preview
             this.updatePreview();
@@ -304,6 +341,194 @@ WPCA.login = {
 
         // Initial state
         $('#wpca-login-auto-hide-delay-container').toggle($('#wpca-login-auto-hide-form').is(':checked'));
+    },
+    
+    /**
+     * Initialize AJAX handlers for login settings
+     */
+    initAJAXHandlers: function() {
+        const $ = jQuery;
+        
+        // Save login settings button
+        if ($('#wpca-save-login-settings').length) {
+            $('#wpca-save-login-settings').on('click', function(e) {
+                e.preventDefault();
+                WPCA.login.saveLoginSettings();
+            });
+        }
+        
+        // Reset login settings button
+        if ($('#wpca-reset-login-settings').length) {
+            $('#wpca-reset-login-settings').on('click', function(e) {
+                e.preventDefault();
+                if (confirm('Are you sure you want to reset login settings to default?')) {
+                    WPCA.login.resetLoginSettings();
+                }
+            });
+        }
+    },
+    
+    /**
+     * Save login settings via AJAX
+     */
+    saveLoginSettings: function() {
+        const $ = jQuery;
+        const $saveButton = $('#wpca-save-login-settings');
+        const $statusMessage = $saveButton.closest('form').find('.wpca-status-message');
+        
+        // Show loading state
+        $saveButton.prop('disabled', true).data('original-text', $saveButton.html());
+        $saveButton.html('<span class="spinner is-active"></span> Saving...');
+        $statusMessage.html('').removeClass('success error');
+        
+        // Collect form data
+        const formData = {
+            login_style: $('#wpca-login-style').val(),
+            login_logo_url: $('#wpca-login-logo-url').val(),
+            login_background_url: $('#wpca-login-background-url').val(),
+            login_custom_css: $('#wpca-login-custom-css').val(),
+            login_elements: {}
+        };
+        
+        // Collect login elements settings
+        $('#wpca-login-elements-tabs input[type="checkbox"]').each(function() {
+            const elementName = $(this).attr('name');
+            if (elementName) {
+                formData.login_elements[elementName] = $(this).is(':checked') ? 1 : 0;
+            }
+        });
+        
+        // Send AJAX request
+        $.ajax({
+            url: this.config.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'wpca_save_login_settings',
+                nonce: this.config.nonce,
+                settings: JSON.stringify(formData)
+            },
+            success: function(response) {
+                $saveButton.prop('disabled', false).html($saveButton.data('original-text'));
+                
+                if (response.success) {
+                    $statusMessage.html('<div class="updated notice notice-success"><p>Login settings saved successfully!</p></div>').addClass('success');
+                    
+                    // Update preview if it exists
+                    WPCA.login.updatePreview();
+                } else {
+                    $statusMessage.html('<div class="error notice notice-error"><p>Failed to save settings. ' + (response.data.message || '') + '</p></div>').addClass('error');
+                }
+                
+                // Clear status message after 5 seconds
+                setTimeout(function() {
+                    $statusMessage.html('').removeClass('success error');
+                }, 5000);
+            },
+            error: function(xhr, status, error) {
+                $saveButton.prop('disabled', false).html($saveButton.data('original-text'));
+                $statusMessage.html('<div class="error notice notice-error"><p>AJAX Error: ' + error + '</p></div>').addClass('error');
+            }
+        });
+    },
+    
+    /**
+     * Get login settings via AJAX
+     */
+    getLoginSettings: function() {
+        const $ = jQuery;
+        
+        $.ajax({
+            url: this.config.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'wpca_get_login_settings',
+                nonce: this.config.nonce
+            },
+            success: function(response) {
+                if (response.success && response.data) {
+                    const settings = response.data;
+                    
+                    // Update form fields
+                    if (settings.login_style) $('#wpca-login-style').val(settings.login_style);
+                    if (settings.login_logo_url) $('#wpca-login-logo-url').val(settings.login_logo_url);
+                    if (settings.login_background_url) $('#wpca-login-background-url').val(settings.login_background_url);
+                    if (settings.login_custom_css) $('#wpca-login-custom-css').val(settings.login_custom_css);
+                    
+                    // Update login elements checkboxes
+                    if (settings.login_elements) {
+                        $.each(settings.login_elements, function(element, value) {
+                            if ($('#' + element).length) {
+                                $('#' + element).prop('checked', value === 1);
+                            }
+                        });
+                    }
+                    
+                    // Update preview
+                    WPCA.login.updatePreview();
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('WPCA Error: Failed to fetch login settings', error);
+            }
+        });
+    },
+    
+    /**
+     * Reset login settings via AJAX
+     */
+    resetLoginSettings: function() {
+        const $ = jQuery;
+        const $resetButton = $('#wpca-reset-login-settings');
+        const $statusMessage = $resetButton.closest('form').find('.wpca-status-message');
+        
+        // Show loading state
+        $resetButton.prop('disabled', true).data('original-text', $resetButton.html());
+        $resetButton.html('<span class="spinner is-active"></span> Resetting...');
+        $statusMessage.html('').removeClass('success error');
+        
+        // Send AJAX request
+        $.ajax({
+            url: this.config.ajaxurl,
+            type: 'POST',
+            data: {
+                action: 'wpca_reset_login_settings',
+                nonce: this.config.nonce
+            },
+            success: function(response) {
+                $resetButton.prop('disabled', false).html($resetButton.data('original-text'));
+                
+                if (response.success) {
+                    // Clear form fields
+                    $('#wpca-login-logo-url').val('');
+                    $('#wpca-login-background-url').val('');
+                    $('#wpca-login-custom-css').val('');
+                    $('#wpca-login-style').val('default');
+                    
+                    // Reset checkboxes
+                    $('#wpca-login-elements-tabs input[type="checkbox"]').prop('checked', true);
+                    
+                    // Clear previews
+                    $('#wpca-login-logo-preview').html('<p>No logo selected</p>');
+                    $('#wpca-login-background-preview').html('<p>No background selected</p>');
+                    
+                    $statusMessage.html('<div class="updated notice notice-success"><p>Login settings reset to default!</p></div>').addClass('success');
+                    
+                    // Update preview
+                    WPCA.login.updatePreview();
+                } else {
+                    $statusMessage.html('<div class="error notice notice-error"><p>Failed to reset settings. ' + (response.data.message || '') + '</p></div>').addClass('error');
+                }
+                
+                // Clear status message after 5 seconds
+                setTimeout(function() {
+                    $statusMessage.html('').removeClass('success error');
+                }, 5000);
+            },
+            error: function(xhr, status, error) {
+                $resetButton.prop('disabled', false).html($resetButton.data('original-text'));
+                $statusMessage.html('<div class="error notice notice-error"><p>AJAX Error: ' + error + '</p></div>').addClass('error');
+            }
+        });
     }
 };
 
@@ -410,6 +635,8 @@ WPCA.loginFrontend = {
 jQuery(document).ready(function() {
     if (typeof WPCA !== 'undefined' && typeof WPCA.login !== 'undefined' && typeof WPCA.login.init === 'function') {
         WPCA.login.init();
+        // Load current settings on init
+        WPCA.login.getLoginSettings();
         if (WPCA.login.config.debug) {
             console.log('Admin module initialized');
         }

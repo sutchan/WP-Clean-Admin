@@ -20,3 +20,4 @@ class WPCA_Dashboard {
         // All dashboard widget removal logic has been moved to wpca_remove_dashboard_widgets in wpca-core-functions.php
     }
 }
+?>

@@ -28,10 +28,14 @@ class WPCA_Permissions {
     const CAP_VIEW_SETTINGS = 'wpca_view_settings';
     const CAP_MANAGE_MENUS = 'wpca_manage_menus';
     const CAP_MANAGE_ALL = 'wpca_manage_all';
+    const CAP_MANAGE_PERFORMANCE = 'wpca_manage_performance';
+    const CAP_VIEW_DATABASE_INFO = 'wpca_view_database_info';
 
     private $capabilities = array(
         self::CAP_VIEW_SETTINGS  => '查看设置',
         self::CAP_MANAGE_MENUS   => '管理菜单',
+        self::CAP_MANAGE_PERFORMANCE => '管理性能',
+        self::CAP_VIEW_DATABASE_INFO => '查看数据库信息',
         self::CAP_MANAGE_ALL     => '完全控制'
     );
 
@@ -41,8 +45,10 @@ class WPCA_Permissions {
      * @var array
      */
     private $capability_hierarchy = array(
-        'wpca_manage_all'   => array('wpca_manage_menus', 'wpca_view_settings'),
-        'wpca_manage_menus' => array('wpca_view_settings')
+        'wpca_manage_all'   => array('wpca_manage_menus', 'wpca_manage_performance', 'wpca_view_database_info', 'wpca_view_settings'),
+        'wpca_manage_menus' => array('wpca_view_settings'),
+        'wpca_manage_performance' => array('wpca_view_database_info', 'wpca_view_settings'),
+        'wpca_view_database_info' => array('wpca_view_settings')
     );
 
     /**
@@ -71,16 +77,22 @@ class WPCA_Permissions {
             'administrator' => array(
                 'wpca_view_settings' => true,
                 'wpca_manage_menus' => true,
+                'wpca_manage_performance' => true,
+                'wpca_view_database_info' => true,
                 'wpca_manage_all' => true
             ),
             'editor' => array(
                 'wpca_view_settings' => true,
                 'wpca_manage_menus' => true,
+                'wpca_manage_performance' => false,
+                'wpca_view_database_info' => true,
                 'wpca_manage_all' => false
             ),
             'author' => array(
                 'wpca_view_settings' => true,
                 'wpca_manage_menus' => false,
+                'wpca_manage_performance' => false,
+                'wpca_view_database_info' => false,
                 'wpca_manage_all' => false
             )
         );
@@ -154,8 +166,12 @@ class WPCA_Permissions {
         }
         
         // 获取当前用户对象并验证
+        if (!function_exists('wp_get_current_user')) {
+            return false;
+        }
+        
         $user = wp_get_current_user();
-        if (!is_object($user) || empty($user->ID)) {
+        if (!is_object($user) || !isset($user->ID) || empty($user->ID)) {
             return false;
         }
         
@@ -175,18 +191,16 @@ class WPCA_Permissions {
             return true;
         }
         
-        // 权限继承检查
-        $higher_caps = array(
-            'wpca_manage_all'   => array('wpca_manage_menus', 'wpca_view_settings'),
-            'wpca_manage_menus' => array('wpca_view_settings')
-        );
+        // 使用类的私有属性进行权限继承检查
+        $instance = new self();
+        $hierarchy = $instance->get_capability_hierarchy();
         
-        // 检查是否有更高级权限
-        if (isset($user->allcaps) && is_array($user->allcaps)) {
-            foreach ($higher_caps as $higher_cap => $lower_caps) {
-                if (in_array($capability, $lower_caps) && 
-                    isset($user->allcaps[$higher_cap]) && 
-                    $user->allcaps[$higher_cap]) {
+        // 确保hierarchy是有效的数组
+        if (is_array($hierarchy)) {
+            foreach ($hierarchy as $higher_cap => $lower_caps) {
+                // 确保lower_caps是有效的数组
+                if (is_array($lower_caps) && in_array($capability, $lower_caps) && 
+                    isset($user->allcaps[$higher_cap]) && $user->allcaps[$higher_cap]) {
                     return true;
                 }
             }
@@ -200,46 +214,6 @@ class WPCA_Permissions {
         return false;
     }
     
-    /**
-     * 处理AJAX权限检查请求
-     */
-    public function ajax_check_permission() {
-        // 安全检查
-        if (!function_exists('check_ajax_referer') || !function_exists('wp_send_json_success') || !function_exists('wp_send_json_error')) {
-            return;
-        }
-        
-        // 验证nonce
-        check_ajax_referer('wpca_permissions', 'security');
-        
-        // 获取并验证权限名称
-        if (!isset($_POST['capability']) || !is_string($_POST['capability'])) {
-            wp_send_json_error(array('message' => 'Invalid capability parameter'));
-        }
-        
-        $capability = sanitize_text_field($_POST['capability']);
-        $has_permission = $this->current_user_can($capability);
-        
-        wp_send_json_success(array('has_permission' => $has_permission));
-    }
-    
-    /**
-     * 将权限信息添加到JavaScript本地化数据中
-     * 
-     * @param array $data 当前本地化数据
-     * @return array 更新后的数据
-     */
-    public function add_capabilities_to_js($data) {
-        $user_capabilities = array();
-        
-        foreach (array_keys($this->capabilities) as $cap) {
-            $user_capabilities[$cap] = $this->current_user_can($cap);
-        }
-        
-        return array_merge($data, array('user_capabilities' => $user_capabilities));
-    }
-}
-
     /**
      * AJAX权限检查
      */
@@ -347,3 +321,4 @@ class WPCA_Permissions {
         return $this->capability_hierarchy;
     }
 }
+?>

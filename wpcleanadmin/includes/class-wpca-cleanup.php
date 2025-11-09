@@ -181,3 +181,4 @@ class WPCA_Cleanup {
         <?php
     }
 }
+?>

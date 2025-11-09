@@ -38,6 +38,12 @@
                 e.preventDefault();
                 WPCA.reset.confirmReset('login');
             });
+            
+            // 菜单设置重置按钮
+            $(document).on('click', '#wpca-reset-menu', function(e) {
+                e.preventDefault();
+                WPCA.reset.confirmReset('menu');
+            });
         },
         
         /**
@@ -56,6 +62,9 @@
                     break;
                 case 'login':
                     confirmText = wpca_admin.login_reset_confirm || __('Are you sure you want to reset all login page settings to default?', 'wp-clean-admin');
+                    break;
+                case 'menu':
+                    confirmText = wpca_admin.menu_reset_confirm || __('Are you sure you want to reset all menu settings to default?', 'wp-clean-admin');
                     break;
                 default:
                     confirmText = wpca_admin.reset_confirm || __('Are you sure you want to reset these settings to default?', 'wp-clean-admin');
@@ -84,7 +93,7 @@
                 url: wpca_admin.ajax_url,
                 type: 'POST',
                 data: {
-                    action: 'wpca_reset_settings',
+                    action: 'wpca_reset_tab_settings',
                     tab: tab,
                     nonce: wpca_admin.nonce
                 },

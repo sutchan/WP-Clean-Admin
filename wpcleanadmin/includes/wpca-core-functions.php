@@ -276,3 +276,4 @@ function wpca_remove_wordpress_from_wp_title($title, $sep, $seplocation) {
 if (function_exists('add_filter')) {
     add_filter('wp_title', 'wpca_remove_wordpress_from_wp_title', 100, 3);
 }
+?>

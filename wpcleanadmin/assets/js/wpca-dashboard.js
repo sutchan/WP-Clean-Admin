@@ -99,18 +99,20 @@
                     type: 'POST',
                     data: {
                         action: 'wpca_reset_settings',
-                        _wpnonce: nonce
+                        nonce: nonce
                     },
                     success: function (response) {
                         if (response.success) {
-                            alert('Settings reset successfully!');
-                            loadSettings();
+                            alert(response.data && response.data.message ? response.data.message : 'Settings reset successfully!');
+                            location.reload();
                         } else {
                             console.error('Failed to reset settings:', response.data);
+                            alert('Error: ' + (response.data && response.data.message ? response.data.message : 'Unknown error'));
                         }
                     },
                     error: function (xhr, status, error) {
-                        console.error('AJAX error:', error);
+                        console.error('WPCA AJAX Error:', error);
+                        alert('AJAX request failed');
                     }
                 });
             }

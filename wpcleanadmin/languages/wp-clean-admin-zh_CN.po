@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Clean Admin 1.1.1\n"
+msgid "Project-Id-Version: WP Clean Admin 1.6.0\n"
 "Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"
 "POT-Creation-Date: 2025-09-24 15:00+0800\n"
 "PO-Revision-Date: 2025-09-24 15:00+0800\n"
@@ -29,6 +29,213 @@ msgid "Settings"
 msgstr "设置"
 
 # ===========================================================
+# Database Optimization Module
+# ===========================================================
+msgid "Database Optimization"
+msgstr "数据库优化"
+
+msgid "Database Settings"
+msgstr "数据库设置"
+
+msgid "Database Optimization Settings"
+msgstr "数据库优化设置"
+
+msgid "Table Optimization"
+msgstr "表优化"
+
+msgid "Database Cleanup"
+msgstr "数据库清理"
+
+msgid "Scheduled Tasks"
+msgstr "计划任务"
+
+msgid "Database Info"
+msgstr "数据库信息"
+
+msgid "Select tables to optimize:"
+msgstr "选择要优化的表："
+
+msgid "Optimize Selected Tables"
+msgstr "优化所选表"
+
+msgid "Optimize All Tables"
+msgstr "优化所有表"
+
+msgid "Cleanup Database"
+msgstr "清理数据库"
+
+msgid "Enable scheduled database cleanup"
+msgstr "启用计划数据库清理"
+
+msgid "Cleanup frequency"
+msgstr "清理频率"
+
+msgid "Daily"
+msgstr "每天"
+
+msgid "Weekly"
+msgstr "每周"
+
+msgid "Monthly"
+msgstr "每月"
+
+msgid "Quarterly"
+msgstr "每季度"
+
+msgid "Database cleanup scheduled tasks"
+msgstr "数据库清理计划任务"
+
+msgid "Scheduled cleanup enabled:"
+msgstr "计划清理已启用："
+
+msgid "Last cleanup:"
+msgstr "上次清理："
+
+msgid "Next scheduled cleanup:"
+msgstr "下次计划清理："
+
+msgid "Database size:"
+msgstr "数据库大小："
+
+msgid "Number of tables:"
+msgstr "表数量："
+
+msgid "Database server version:"
+msgstr "数据库服务器版本："
+
+msgid "Database type:"
+msgstr "数据库类型："
+
+msgid "Optimization in progress..."
+msgstr "优化中..."
+
+msgid "Cleanup in progress..."
+msgstr "清理中..."
+
+msgid "Optimization completed successfully!"
+msgstr "优化成功完成！"
+
+msgid "Cleanup completed successfully!"
+msgstr "清理成功完成！"
+
+msgid "Tables optimized: %d"
+msgstr "优化表数量：%d"
+
+msgid "Space saved: %s"
+msgstr "节省空间：%s"
+
+msgid "Items cleaned: %d"
+msgstr "清理项目数量：%d"
+
+msgid "Revisions"
+msgstr "修订版本"
+
+msgid "Auto Drafts"
+msgstr "自动草稿"
+
+msgid "Trashed Posts"
+msgstr "回收站文章"
+
+msgid "Spam Comments"
+msgstr "垃圾评论"
+
+msgid "Trashed Comments"
+msgstr "回收站评论"
+
+msgid "Pingbacks/Trackbacks"
+msgstr "引用/引用通告"
+
+msgid "Orphaned Post Meta"
+msgstr "孤立的文章元数据"
+
+msgid "Orphaned Comment Meta"
+msgstr "孤立的评论元数据"
+
+msgid "Orphaned Term Relationships"
+msgstr "孤立的分类关系"
+
+msgid "Orphaned User Meta"
+msgstr "孤立的用户元数据"
+
+msgid "Expired Transients"
+msgstr "过期的临时数据"
+
+msgid "All Transients"
+msgstr "所有临时数据"
+
+msgid "oEmbed Cache"
+msgstr "oEmbed缓存"
+
+msgid "Select cleanup items:"
+msgstr "选择清理项目："
+
+msgid "Days to keep"
+msgstr "保留天数"
+
+msgid "Cleanup"
+msgstr "清理"
+
+msgid "Get Database Info"
+msgstr "获取数据库信息"
+
+msgid "Get Cleanup Stats"
+msgstr "获取清理统计"
+
+msgid "Database optimization options"
+msgstr "数据库优化选项"
+
+msgid "Database cleanup options"
+msgstr "数据库清理选项"
+
+msgid "Database optimization scheduled tasks"
+msgstr "数据库优化计划任务"
+
+msgid "Database information"
+msgstr "数据库信息"
+
+msgid "Cleanup statistics"
+msgstr "清理统计"
+
+msgid "Database optimization results"
+msgstr "数据库优化结果"
+
+msgid "Database cleanup results"
+msgstr "数据库清理结果"
+
+msgid "Error: Invalid table name"
+msgstr "错误：无效的表名"
+
+msgid "Error: Table does not exist"
+msgstr "错误：表不存在"
+
+msgid "Error: Failed to optimize table"
+msgstr "错误：表优化失败"
+
+msgid "Error: Failed to clean up database"
+msgstr "错误：数据库清理失败"
+
+msgid "Error: Invalid cleanup items"
+msgstr "错误：无效的清理项目"
+
+msgid "Error: Failed to get database info"
+msgstr "错误：获取数据库信息失败"
+
+msgid "Error: Failed to get cleanup stats"
+msgstr "错误：获取清理统计失败"
+
+msgid "Database optimization task"
+msgstr "数据库优化任务"
+
+msgid "Scheduled database cleanup"
+msgstr "计划数据库清理"
+
+msgid "Database optimization completed"
+msgstr "数据库优化完成"
+
+msgid "Cleanup summary"
+msgstr "清理摘要"
+
+# ===========================================================
 # Error Messages
 # ===========================================================
 msgid "Invalid request"
@@ -45,6 +252,195 @@ msgstr "无效的安全码"
 
 msgid "Insufficient permissions"
 msgstr "权限不足"
+
+# ===========================================================
+# Performance Monitoring Additional Strings
+# ===========================================================
+msgid "Performance Monitoring"
+msgstr "性能监控"
+
+msgid "Performance Stats"
+msgstr "性能统计"
+
+msgid "Page Load Time"
+msgstr "页面加载时间"
+
+msgid "Memory Usage"
+msgstr "内存使用"
+
+msgid "Database Queries"
+msgstr "数据库查询"
+
+msgid "Slow Queries"
+msgstr "慢查询"
+
+msgid "Total Time"
+msgstr "总时间"
+
+msgid "Average Time"
+msgstr "平均时间"
+
+msgid "Peak Memory"
+msgstr "峰值内存"
+
+msgid "Query Count"
+msgstr "查询数量"
+
+msgid "Slow Query Count"
+msgstr "慢查询数量"
+
+msgid "Page URL"
+msgstr "页面URL"
+
+msgid "Loading Time"
+msgstr "加载时间"
+
+msgid "Slow Pages"
+msgstr "慢页面"
+
+msgid "Pages"
+msgstr "页面"
+
+msgid "Samples"
+msgstr "样本"
+
+msgid "Monitoring Status"
+msgstr "监控状态"
+
+msgid "Monitoring is currently active"
+msgstr "监控当前处于激活状态"
+
+msgid "Monitoring is currently inactive"
+msgstr "监控当前处于非激活状态"
+
+msgid "Start Monitoring"
+msgstr "开始监控"
+
+msgid "Stop Monitoring"
+msgstr "停止监控"
+
+msgid "Toggle Monitoring"
+msgstr "切换监控"
+
+msgid "Performance Report"
+msgstr "性能报告"
+
+msgid "View Report"
+msgstr "查看报告"
+
+msgid "Clear Data"
+msgstr "清除数据"
+
+msgid "Clear all performance monitoring data"
+msgstr "清除所有性能监控数据"
+
+msgid "Performance data has been cleared."
+msgstr "性能数据已清除。"
+
+msgid "Failed to clear performance data."
+msgstr "清除性能数据失败。"
+
+msgid "Performance Report for"
+msgstr "性能报告："
+
+msgid "Last 24 Hours"
+msgstr "最近24小时"
+
+msgid "Last 7 Days"
+msgstr "最近7天"
+
+msgid "Last 30 Days"
+msgstr "最近30天"
+
+msgid "All Time"
+msgstr "所有时间"
+
+msgid "No data available for the selected period"
+msgstr "所选时间段没有可用数据"
+
+msgid "Processing..."
+msgstr "处理中..."
+
+msgid "Dismiss"
+msgstr "关闭"
+
+msgid "Close"
+msgstr "关闭"
+
+msgid "optimization"
+msgstr "优化"
+
+msgid "Optimize database tables"
+msgstr "优化数据库表"
+
+msgid "Cleanup database"
+msgstr "清理数据库"
+
+msgid "Optimize Success: %d of %d tables optimized successfully"
+msgstr "优化成功：%d/%d个表已成功优化"
+
+msgid "Cleanup Success: Removed %d items"
+msgstr "清理成功：已移除%d个项目"
+
+msgid "Cleanup Summary: %d of %d items selected for cleanup"
+msgstr "清理摘要：已选择%d/%d个项目进行清理"
+
+msgid "Critical CSS"
+msgstr "关键CSS"
+
+msgid "Generate Critical CSS"
+msgstr "生成关键CSS"
+
+msgid "Test Resource Removal"
+msgstr "测试资源移除"
+
+msgid "Resource Management"
+msgstr "资源管理"
+
+msgid "Database Optimization"
+msgstr "数据库优化"
+
+msgid "Settings"
+msgstr "设置"
+
+msgid "Performance Sampling Rate"
+msgstr "性能采样率"
+
+msgid "Data Retention Period"
+msgstr "数据保留期"
+
+msgid "days"
+msgstr "天"
+
+msgid "Enable Performance Monitoring"
+msgstr "启用性能监控"
+
+msgid "Select percentage of requests to monitor"
+msgstr "选择要监控的请求百分比"
+
+msgid "Select how long to keep performance data"
+msgstr "选择保留性能数据的时间"
+
+msgid "Performance Tips"
+msgstr "性能提示"
+
+msgid "Optimize your database regularly"
+msgstr "定期优化数据库"
+
+msgid "Clean up unnecessary data to improve performance"
+msgstr "清理不必要的数据以提高性能"
+
+msgid "Remove unused CSS and JavaScript resources"
+msgstr "移除未使用的CSS和JavaScript资源"
+
+msgid "Consider using a caching plugin for better performance"
+msgstr "考虑使用缓存插件以提高性能"
+
+msgid "Optimize images and media files"
+msgstr "优化图像和媒体文件"
+
+msgid "Limit the number of active plugins"
+msgstr "限制活动插件的数量"
 
 msgid "Invalid data structure"
 msgstr "无效的数据结构"
@@ -90,6 +486,12 @@ msgstr "获取设置时发生错误"
 
 msgid "Failed to reset menu order"
 msgstr "重置菜单顺序失败"
+
+msgid "Menu order reset successfully"
+msgstr "菜单顺序重置成功"
+
+msgid "An error occurred while resetting menu order"
+msgstr "重置菜单顺序时发生错误"
 
 msgid "Reset failed. Please try again."
 msgstr "重置失败，请重试。"
@@ -751,8 +1153,83 @@ msgstr "上传背景"
 msgid "Are you sure you want to reset login settings to default? This will remove your custom logo, background, and CSS."
 msgstr "确定要将登录设置重置为默认值吗？这将删除您的自定义徽标、背景和 CSS。"
 
+# ===========================================================
+# Login Page Customization Additional Strings
+# ===========================================================
+msgid "Login Page Elements"
+msgstr "登录页面元素"
+
+msgid "Language Switcher"
+msgstr "语言切换器"
+
+msgid "Back to Home Link"
+msgstr "返回首页链接"
+
+msgid "Register Link"
+msgstr "注册链接"
+
+msgid "Remember Me Checkbox"
+msgstr "记住我复选框"
+
+msgid "Choose Image"
+msgstr "选择图片"
+
+msgid "Remove"
+msgstr "移除"
+
+msgid "Login Logo Preview"
+msgstr "登录Logo预览"
+
+msgid "Background Preview"
+msgstr "背景预览"
+
+msgid "Custom Login Options"
+msgstr "自定义登录选项"
+
+msgid "Choose from predefined login styles or create your own custom style."
+msgstr "选择预定义的登录样式或创建自己的自定义样式。"
+
+msgid "Custom Logo"
+msgstr "自定义Logo"
+
+msgid "Upload a custom logo for the login page. Recommended size: 320×80px."
+msgstr "上传登录页面的自定义Logo。推荐尺寸：320×80px。"
+
+msgid "Background Image"
+msgstr "背景图片"
+
+msgid "Upload a custom background image for the login page."
+msgstr "上传登录页面的自定义背景图片。"
+
+msgid "Custom CSS"
+msgstr "自定义CSS"
+
+msgid "Add custom CSS to further customize the login page."
+msgstr "添加自定义CSS以进一步自定义登录页面。"
+
+msgid "Live Preview"
+msgstr "实时预览"
+
+msgid "Preview how your login page will look with the current settings."
+msgstr "预览当前设置下登录页面的外观。"
+
+msgid "This is a preview of how your login page will look."
+msgstr "这是您的登录页面外观预览。"
+
+msgid "Reset login settings to default"
+msgstr "重置登录设置为默认值"
+
 msgid "Login settings have been reset to default"
 msgstr "登录设置已重置为默认值"
+
+msgid "Failed to reset login settings"
+msgstr "重置登录设置失败"
+
+msgid "Login settings saved successfully"
+msgstr "登录设置保存成功"
+
+msgid "Failed to save login settings"
+msgstr "保存登录设置失败"
 
 msgid "Reset successful"
 msgstr "重置成功"

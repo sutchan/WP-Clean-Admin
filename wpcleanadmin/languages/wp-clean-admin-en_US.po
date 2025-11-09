@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Clean Admin 1.1.1\n"
+msgid "Project-Id-Version: WP Clean Admin 1.6.0\n"
 "Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"
 "POT-Creation-Date: 2025-09-24 15:00+0800\n"
 "PO-Revision-Date: 2025-09-24 15:00+0800\n"
@@ -27,6 +27,213 @@ msgstr "WP Clean Admin Settings"
 
 msgid "Settings"
 msgstr "Settings"
+
+# ===========================================================
+# Database Optimization Module
+# ===========================================================
+msgid "Database Optimization"
+msgstr "Database Optimization"
+
+msgid "Database Settings"
+msgstr "Database Settings"
+
+msgid "Database Optimization Settings"
+msgstr "Database Optimization Settings"
+
+msgid "Table Optimization"
+msgstr "Table Optimization"
+
+msgid "Database Cleanup"
+msgstr "Database Cleanup"
+
+msgid "Scheduled Tasks"
+msgstr "Scheduled Tasks"
+
+msgid "Database Info"
+msgstr "Database Info"
+
+msgid "Select tables to optimize:"
+msgstr "Select tables to optimize:"
+
+msgid "Optimize Selected Tables"
+msgstr "Optimize Selected Tables"
+
+msgid "Optimize All Tables"
+msgstr "Optimize All Tables"
+
+msgid "Cleanup Database"
+msgstr "Cleanup Database"
+
+msgid "Enable scheduled database cleanup"
+msgstr "Enable scheduled database cleanup"
+
+msgid "Cleanup frequency"
+msgstr "Cleanup frequency"
+
+msgid "Daily"
+msgstr "Daily"
+
+msgid "Weekly"
+msgstr "Weekly"
+
+msgid "Monthly"
+msgstr "Monthly"
+
+msgid "Quarterly"
+msgstr "Quarterly"
+
+msgid "Database cleanup scheduled tasks"
+msgstr "Database cleanup scheduled tasks"
+
+msgid "Scheduled cleanup enabled:"
+msgstr "Scheduled cleanup enabled:"
+
+msgid "Last cleanup:"
+msgstr "Last cleanup:"
+
+msgid "Next scheduled cleanup:"
+msgstr "Next scheduled cleanup:"
+
+msgid "Database size:"
+msgstr "Database size:"
+
+msgid "Number of tables:"
+msgstr "Number of tables:"
+
+msgid "Database server version:"
+msgstr "Database server version:"
+
+msgid "Database type:"
+msgstr "Database type:"
+
+msgid "Optimization in progress..."
+msgstr "Optimization in progress..."
+
+msgid "Cleanup in progress..."
+msgstr "Cleanup in progress..."
+
+msgid "Optimization completed successfully!"
+msgstr "Optimization completed successfully!"
+
+msgid "Cleanup completed successfully!"
+msgstr "Cleanup completed successfully!"
+
+msgid "Tables optimized: %d"
+msgstr "Tables optimized: %d"
+
+msgid "Space saved: %s"
+msgstr "Space saved: %s"
+
+msgid "Items cleaned: %d"
+msgstr "Items cleaned: %d"
+
+msgid "Revisions"
+msgstr "Revisions"
+
+msgid "Auto Drafts"
+msgstr "Auto Drafts"
+
+msgid "Trashed Posts"
+msgstr "Trashed Posts"
+
+msgid "Spam Comments"
+msgstr "Spam Comments"
+
+msgid "Trashed Comments"
+msgstr "Trashed Comments"
+
+msgid "Pingbacks/Trackbacks"
+msgstr "Pingbacks/Trackbacks"
+
+msgid "Orphaned Post Meta"
+msgstr "Orphaned Post Meta"
+
+msgid "Orphaned Comment Meta"
+msgstr "Orphaned Comment Meta"
+
+msgid "Orphaned Term Relationships"
+msgstr "Orphaned Term Relationships"
+
+msgid "Orphaned User Meta"
+msgstr "Orphaned User Meta"
+
+msgid "Expired Transients"
+msgstr "Expired Transients"
+
+msgid "All Transients"
+msgstr "All Transients"
+
+msgid "oEmbed Cache"
+msgstr "oEmbed Cache"
+
+msgid "Select cleanup items:"
+msgstr "Select cleanup items:"
+
+msgid "Days to keep"
+msgstr "Days to keep"
+
+msgid "Cleanup"
+msgstr "Cleanup"
+
+msgid "Get Database Info"
+msgstr "Get Database Info"
+
+msgid "Get Cleanup Stats"
+msgstr "Get Cleanup Stats"
+
+msgid "Database optimization options"
+msgstr "Database optimization options"
+
+msgid "Database cleanup options"
+msgstr "Database cleanup options"
+
+msgid "Database optimization scheduled tasks"
+msgstr "Database optimization scheduled tasks"
+
+msgid "Database information"
+msgstr "Database information"
+
+msgid "Cleanup statistics"
+msgstr "Cleanup statistics"
+
+msgid "Database optimization results"
+msgstr "Database optimization results"
+
+msgid "Database cleanup results"
+msgstr "Database cleanup results"
+
+msgid "Error: Invalid table name"
+msgstr "Error: Invalid table name"
+
+msgid "Error: Table does not exist"
+msgstr "Error: Table does not exist"
+
+msgid "Error: Failed to optimize table"
+msgstr "Error: Failed to optimize table"
+
+msgid "Error: Failed to clean up database"
+msgstr "Error: Failed to clean up database"
+
+msgid "Error: Invalid cleanup items"
+msgstr "Error: Invalid cleanup items"
+
+msgid "Error: Failed to get database info"
+msgstr "Error: Failed to get database info"
+
+msgid "Error: Failed to get cleanup stats"
+msgstr "Error: Failed to get cleanup stats"
+
+msgid "Database optimization task"
+msgstr "Database optimization task"
+
+msgid "Scheduled database cleanup"
+msgstr "Scheduled database cleanup"
+
+msgid "Database optimization completed"
+msgstr "Database optimization completed"
+
+msgid "Cleanup summary"
+msgstr "Cleanup summary"
 
 # ===========================================================
 # Error Messages
@@ -90,6 +297,12 @@ msgstr "Error occurred while retrieving settings"
 
 msgid "Failed to reset menu order"
 msgstr "Failed to reset menu order"
+
+msgid "Menu order reset successfully"
+msgstr "Menu order reset successfully"
+
+msgid "An error occurred while resetting menu order"
+msgstr "An error occurred while resetting menu order"
 
 msgid "Reset failed. Please try again."
 msgstr "Reset failed. Please try again."
@@ -1037,6 +1250,150 @@ msgid "Logout"
 msgstr "Logout"
 
 # ===========================================================
+# Performance Monitoring Strings
+# ===========================================================
+msgid "Performance Monitoring"
+msgstr "Performance Monitoring"
+
+msgid "Performance Stats"
+msgstr "Performance Stats"
+
+msgid "Page Load Time"
+msgstr "Page Load Time"
+
+msgid "Memory Usage"
+msgstr "Memory Usage"
+
+msgid "Database Queries"
+msgstr "Database Queries"
+
+msgid "Slow Queries"
+msgstr "Slow Queries"
+
+msgid "Total Time"
+msgstr "Total Time"
+
+msgid "Average Time"
+msgstr "Average Time"
+
+msgid "Peak Memory"
+msgstr "Peak Memory"
+
+msgid "Query Count"
+msgstr "Query Count"
+
+msgid "Slow Query Count"
+msgstr "Slow Query Count"
+
+msgid "Page URL"
+msgstr "Page URL"
+
+msgid "Loading Time"
+msgstr "Loading Time"
+
+msgid "Slow Pages"
+msgstr "Slow Pages"
+
+msgid "Pages"
+msgstr "Pages"
+
+msgid "Samples"
+msgstr "Samples"
+
+msgid "Monitoring Status"
+msgstr "Monitoring Status"
+
+msgid "Monitoring is currently active"
+msgstr "Monitoring is currently active"
+
+msgid "Monitoring is currently inactive"
+msgstr "Monitoring is currently inactive"
+
+msgid "Start Monitoring"
+msgstr "Start Monitoring"
+
+msgid "Stop Monitoring"
+msgstr "Stop Monitoring"
+
+msgid "Toggle Monitoring"
+msgstr "Toggle Monitoring"
+
+msgid "Performance Report"
+msgstr "Performance Report"
+
+msgid "View Report"
+msgstr "View Report"
+
+msgid "Clear Data"
+msgstr "Clear Data"
+
+msgid "Clear all performance monitoring data"
+msgstr "Clear all performance monitoring data"
+
+msgid "Performance Report for"
+msgstr "Performance Report for"
+
+msgid "Last 24 Hours"
+msgstr "Last 24 Hours"
+
+msgid "Last 7 Days"
+msgstr "Last 7 Days"
+
+msgid "Last 30 Days"
+msgstr "Last 30 Days"
+
+msgid "All Time"
+msgstr "All Time"
+
+msgid "No data available for the selected period"
+msgstr "No data available for the selected period"
+
+msgid "Performance data has been cleared."
+msgstr "Performance data has been cleared."
+
+msgid "Failed to clear performance data."
+msgstr "Failed to clear performance data."
+
+msgid "Performance Sampling Rate"
+msgstr "Performance Sampling Rate"
+
+msgid "Data Retention Period"
+msgstr "Data Retention Period"
+
+msgid "days"
+msgstr "days"
+
+msgid "Enable Performance Monitoring"
+msgstr "Enable Performance Monitoring"
+
+msgid "Select percentage of requests to monitor"
+msgstr "Select percentage of requests to monitor"
+
+msgid "Select how long to keep performance data"
+msgstr "Select how long to keep performance data"
+
+msgid "Performance Tips"
+msgstr "Performance Tips"
+
+msgid "Optimize your database regularly"
+msgstr "Optimize your database regularly"
+
+msgid "Clean up unnecessary data to improve performance"
+msgstr "Clean up unnecessary data to improve performance"
+
+msgid "Remove unused CSS and JavaScript resources"
+msgstr "Remove unused CSS and JavaScript resources"
+
+msgid "Consider using a caching plugin for better performance"
+msgstr "Consider using a caching plugin for better performance"
+
+msgid "Optimize images and media files"
+msgstr "Optimize images and media files"
+
+msgid "Limit the number of active plugins"
+msgstr "Limit the number of active plugins"
+
+# ===========================================================
 # Module Initialization Strings
 # ===========================================================
 msgid "WPCA Module: %s initialized successfully"
@@ -1405,3 +1762,81 @@ msgstr "Failed to reset settings"
 
 msgid "Are you sure you want to reset all login page settings to default?"
 msgstr "Are you sure you want to reset all login page settings to default?"
+
+# ===========================================================
+# Login Page Customization Additional Strings
+# ===========================================================
+msgid "Login Page Elements"
+msgstr "Login Page Elements"
+
+msgid "Language Switcher"
+msgstr "Language Switcher"
+
+msgid "Back to Home Link"
+msgstr "Back to Home Link"
+
+msgid "Register Link"
+msgstr "Register Link"
+
+msgid "Remember Me Checkbox"
+msgstr "Remember Me Checkbox"
+
+msgid "Choose Image"
+msgstr "Choose Image"
+
+msgid "Remove"
+msgstr "Remove"
+
+msgid "Login Logo Preview"
+msgstr "Login Logo Preview"
+
+msgid "Background Preview"
+msgstr "Background Preview"
+
+msgid "Custom Login Options"
+msgstr "Custom Login Options"
+
+msgid "Choose from predefined login styles or create your own custom style."
+msgstr "Choose from predefined login styles or create your own custom style."
+
+msgid "Custom Logo"
+msgstr "Custom Logo"
+
+msgid "Upload a custom logo for the login page. Recommended size: 320×80px."
+msgstr "Upload a custom logo for the login page. Recommended size: 320×80px."
+
+msgid "Background Image"
+msgstr "Background Image"
+
+msgid "Upload a custom background image for the login page."
+msgstr "Upload a custom background image for the login page."
+
+msgid "Custom CSS"
+msgstr "Custom CSS"
+
+msgid "Add custom CSS to further customize the login page."
+msgstr "Add custom CSS to further customize the login page."
+
+msgid "Live Preview"
+msgstr "Live Preview"
+
+msgid "Preview how your login page will look with the current settings."
+msgstr "Preview how your login page will look with the current settings."
+
+msgid "This is a preview of how your login page will look."
+msgstr "This is a preview of how your login page will look."
+
+msgid "Reset login settings to default"
+msgstr "Reset login settings to default"
+
+msgid "Login settings have been reset to default"
+msgstr "Login settings have been reset to default"
+
+msgid "Failed to reset login settings"
+msgstr "Failed to reset login settings"
+
+msgid "Login settings saved successfully"
+msgstr "Login settings saved successfully"
+
+msgid "Failed to save login settings"
+msgstr "Failed to save login settings"
