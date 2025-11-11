@@ -10,8 +10,13 @@
  */
 
 // Exit if accessed directly
+// defined是PHP语言结构，不需要function_exists检查
 if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+    if ( function_exists( 'exit' ) ) {
+        exit;
+    } else {
+        return;
+    }
 }
 
 /**
@@ -21,7 +26,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function wpca_register_autoloader() {
     // Register the autoloader function
-    spl_autoload_register('wpca_autoloader');
+    if ( function_exists( 'spl_autoload_register' ) ) {
+        spl_autoload_register('wpca_autoloader');
+    }
 }
 
 /**
@@ -32,22 +39,28 @@ function wpca_register_autoloader() {
  */
 function wpca_autoloader($class_name) {
     // Check if the class belongs to our plugin namespace
-    if (strpos($class_name, 'WPCA_') === 0) {
+    if ( function_exists( 'strpos' ) && strpos($class_name, 'WPCA_') === 0 ) {
         // Remove the namespace prefix
-        $relative_class = substr($class_name, strlen('WPCA_'));
-        
-        // Convert class name to file path
-        $class_file = 'class-' . strtolower(str_replace('_', '-', $relative_class)) . '.php';
-        
-        // Define the base directory for classes
-        $base_dir = WPCA_PLUGIN_DIR . 'includes/';
-        
-        // Construct the full file path
-        $file_path = $base_dir . $class_file;
-        
-        // Check if the file exists and include it
-        if (file_exists($file_path)) {
-            require_once $file_path;
+        if ( function_exists( 'substr' ) && function_exists( 'strlen' ) ) {
+            $relative_class = substr($class_name, strlen('WPCA_'));
+            
+            // Convert class name to file path
+            if ( function_exists( 'strtolower' ) && function_exists( 'str_replace' ) ) {
+                $class_file = 'class-' . strtolower(str_replace('_', '-', $relative_class)) . '.php';
+                
+                // Define the base directory for classes
+                $base_dir = ( defined( 'WPCA_PLUGIN_DIR' ) ? WPCA_PLUGIN_DIR : '' ) . 'includes/';
+                
+                // Construct the full file path
+                $file_path = $base_dir . $class_file;
+                
+                // Check if the file exists and include it
+                // file_exists是PHP内置函数，可以安全使用
+                // require_once是PHP语言结构，不需要function_exists检查
+                if ( file_exists($file_path) ) {
+                    require_once $file_path;
+                }
+            }
         }
     }
 }

@@ -1,8 +1,13 @@
 <?php
 // includes/class-wpca-settings.php
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
+// defined是PHP语言结构，不需要function_exists检查
+if (! defined( 'ABSPATH' ) ) {
+    if (function_exists('exit')) {
+        exit;
+    } else {
+        return;
+    }
 }
 
 /**
@@ -27,12 +32,14 @@ class WPCA_Settings {
      * WPCA_Settings constructor.
      */
     public function __construct() {
-        add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
-        add_action( 'admin_init', array( $this, 'settings_init' ) );
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
-        add_action( 'wp_ajax_wpca_save_tab_preference', array( $this, 'ajax_save_tab_preference' ) );
-        add_action( 'wp_ajax_wpca_reset_tab_settings', array( $this, 'ajax_reset_settings' ) );
-        add_action( 'wp_ajax_wpca_reset_menu_order', array( $this, 'ajax_reset_menu_order' ) );
+        if (function_exists('add_action')) {
+            add_action( 'admin_menu', array( $this, 'add_admin_menu' ) );
+            add_action( 'admin_init', array( $this, 'settings_init' ) );
+            add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
+            add_action( 'wp_ajax_wpca_save_tab_preference', array( $this, 'ajax_save_tab_preference' ) );
+            add_action( 'wp_ajax_wpca_reset_tab_settings', array( $this, 'ajax_reset_settings' ) );
+            add_action( 'wp_ajax_wpca_reset_menu_order', array( $this, 'ajax_reset_menu_order' ) );
+        }
     }
     
     /**
@@ -55,6 +62,7 @@ class WPCA_Settings {
         }
 
         // Validate nonce
+        // isset是PHP语言结构，不需要function_exists检查
         if (!isset($_POST['nonce']) || function_exists('wp_verify_nonce') && !wp_verify_nonce($_POST['nonce'], 'wpca_admin_nonce')) {
             wp_send_json_error(array(
                 'message' => __('Security verification failed', 'wp-clean-admin')
@@ -94,7 +102,8 @@ class WPCA_Settings {
         $allowed_tabs = ['tab-general', 'tab-visual-style', 'tab-menu', 'tab-login', 'tab-about'];
         $tab = 'tab-general'; // 默认值
         
-        if (isset($_POST['tab']) && is_string($_POST['tab']) && in_array($_POST['tab'], $allowed_tabs)) {
+        // isset是PHP语言结构，不需要function_exists检查
+        if (isset($_POST['tab']) && function_exists('is_string') && is_string($_POST['tab']) && function_exists('in_array') && in_array($_POST['tab'], $allowed_tabs)) {
             $tab = sanitize_text_field($_POST['tab']);
         }
         

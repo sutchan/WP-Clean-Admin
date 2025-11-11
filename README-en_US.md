@@ -3,7 +3,7 @@
 Tags: admin, dashboard, clean, minimal, ui, simplify, customization, optimization
 Requires at least: 5.0
 Tested up to: 6.5
-Stable tag: 1.4.2
+Stable tag: 1.7.0
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -68,6 +68,16 @@ WP Clean Admin is carefully designed to be compatible with most WordPress plugin
 4. Simplified WordPress admin dashboard showcase.
 
 == Changelog ==
+
+= 1.7.0 =
+* **Menu Management Enhancement**: Added dedicated Menu Manager class for more efficient menu hiding functionality
+* **Menu Protection**: Implemented menu protection mechanism to prevent accidental hiding of core functionality menus
+* **Menu Statistics**: Added menu statistics functionality to display menu item count and hiding status
+
+= 1.6.0 =
+* **Database Optimization Module**: Added comprehensive database optimization and cleanup functionality
+* **Architecture Enhancement**: Separated database logic from performance module for better code organization
+* **Security Improvements**: Added nonce verification and input sanitization for all database operations
 
 = 1.4.2 =
 * Fixed missing PHP closing tags in multiple files

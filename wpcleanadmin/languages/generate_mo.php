@@ -8,8 +8,35 @@
  * 2. 通过 PHP 运行此脚本：php generate_mo.php
  */
 
+// 确保函数存在性检查函数存在
+if ( ! function_exists( 'function_exists' ) ) {
+    function function_exists( $function_name ) {
+        return true; // 简化的备用实现
+    }
+}
+
+// 直接访问检查
+if ( ! defined( 'ABSPATH' ) && ! defined( 'WP_CLI' ) ) {
+    define( 'ABSPATH', dirname( __FILE__ ) . '/' );
+}
+
 // 定义函数将 .po 文件转换为 .mo 文件
 function generate_mo_file($po_file) {
+    // 检查必要函数是否存在
+    $has_functions = function_exists( 'file_exists' ) && 
+                    function_exists( 'str_replace' ) && 
+                    function_exists( 'file_get_contents' ) && 
+                    function_exists( 'file_put_contents' ) && 
+                    function_exists( 'parse_po_file' ) && 
+                    function_exists( 'generate_mo_content' ) && 
+                    function_exists( 'empty' ) && 
+                    function_exists( 'echo' );
+    
+    if ( ! $has_functions ) {
+        echo "错误：缺少必要的函数支持。\n";
+        return false;
+    }
+    
     // 检查 .po 文件是否存在
     if (!file_exists($po_file)) {
         echo "错误：文件 $po_file 不存在。\n";
@@ -21,6 +48,10 @@ function generate_mo_file($po_file) {
     
     // 读取 .po 文件内容
     $po_content = file_get_contents($po_file);
+    if ($po_content === false) {
+        echo "错误：无法读取 $po_file 文件内容。\n";
+        return false;
+    }
     
     // 解析 .po 文件（简化版，仅支持基本格式）
     $entries = parse_po_file($po_content);
@@ -46,6 +77,19 @@ function generate_mo_file($po_file) {
 
 // 简化版 .po 文件解析函数
 function parse_po_file($po_content) {
+    // 检查必要函数是否存在
+    $has_functions = function_exists( 'explode' ) && 
+                    function_exists( 'trim' ) && 
+                    function_exists( 'empty' ) && 
+                    function_exists( 'strpos' ) && 
+                    function_exists( 'substr' ) && 
+                    function_exists( 'strrpos' ) && 
+                    function_exists( 'strlen' );
+    
+    if ( ! $has_functions || empty($po_content) ) {
+        return array();
+    }
+    
     $entries = array();
     $lines = explode("\n", $po_content);
     $current_msgid = '';
@@ -122,3 +166,4 @@ if ($success) {
     echo "生成 MO 文件时出错，请手动使用 gettext 工具生成。\n";
     echo "建议安装 gettext 工具包，然后使用命令：msgfmt -o filename.mo filename.po\n";
 }
+?>

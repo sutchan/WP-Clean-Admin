@@ -5,7 +5,7 @@
  * Handles all performance-related optimizations and monitoring for the WordPress admin area.
  *
  * @package WP_Clean_Admin
- * @since 1.3.0
+ * @since 1.6.0
  */
 
 if (!defined('ABSPATH')) {

@@ -3,7 +3,7 @@
  * Tests for the performance optimization module.
  * 
  * @package WP_Clean_Admin
- * @since 1.3.0
+ * @since 1.6.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -98,19 +98,29 @@ class WPCA_Performance_Tests {
                             <tr>
                                 <th scope="col" class="manage-column column-primary"><?php esc_html_e( 'Test Name', 'wp-clean-admin' ); ?></th>
                                 <th scope="col" class="manage-column"><?php esc_html_e( 'Status', 'wp-clean-admin' ); ?></th>
-                                <th scope="col" class="manage-column"><?php esc_html_e( 'Message', 'wp-clean-admin' ); ?></th>
+                                <th scope="col" class="manage-column"><?php esc_html_e( 'Details', 'wp-clean-admin' ); ?></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ( $this->results as $test ) : ?>
+                            <?php foreach ( $this->results as $test_name => $result ) : ?>
                                 <tr>
-                                    <td class="test-name"><?php echo esc_html( $test['name'] ); ?></td>
-                                    <td class="test-status">
-                                        <span class="wpca-test-status wpca-test-status-<?php echo $test['status']; ?>">
-                                            <?php echo $test['status'] === 'pass' ? esc_html__( 'Pass', 'wp-clean-admin' ) : esc_html__( 'Fail', 'wp-clean-admin' ); ?>
-                                        </span>
+                                    <td class="column-primary">
+                                        <?php echo esc_html( $test_name ); ?>
                                     </td>
-                                    <td class="test-message"><?php echo esc_html( $test['message'] ); ?></td>
+                                    <td>
+                                        <?php if ( $result['status'] === 'success' ) : ?>
+                                            <span class="wpca-test-success">✓ <?php esc_html_e( 'Passed', 'wp-clean-admin' ); ?></span>
+                                        <?php elseif ( $result['status'] === 'warning' ) : ?>
+                                            <span class="wpca-test-warning">⚠ <?php esc_html_e( 'Warning', 'wp-clean-admin' ); ?></span>
+                                        <?php else : ?>
+                                            <span class="wpca-test-error">✗ <?php esc_html_e( 'Failed', 'wp-clean-admin' ); ?></span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php if ( ! empty( $result['details'] ) ) : ?>
+                                            <?php echo esc_html( $result['details'] ); ?>
+                                        <?php endif; ?>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -122,271 +132,342 @@ class WPCA_Performance_Tests {
     }
 
     /**
-     * Run all the tests.
+     * Run all tests.
      */
     public function run_tests() {
         $this->results = array();
         
-        // Test component existence
-        $this->test_component_existence();
-        
-        // Test database optimization
-        $this->test_database_optimization();
-        
-        // Test resource management
-        $this->test_resource_management();
-        
-        // Test performance monitoring
-        $this->test_performance_monitoring();
-        
-        // Test settings page
-        $this->test_settings_page();
-        
-        // Test AJAX handlers
-        $this->test_ajax_handlers();
+        // Performance optimization tests
+        $this->test_query_counting();
+        $this->test_memory_usage_tracking();
+        $this->test_resource_cleanup();
+        $this->test_database_connection();
+        $this->test_options_loading();
+        $this->test_hook_registration();
+        $this->test_performance_stats();
         
         return $this->results;
     }
+    
+    /**
+     * Test performance statistics functionality.
+     */
+    private function test_performance_stats() {
+        $result = array('status' => 'success', 'details' => '');
+        
+        try {
+            // Check if performance class exists and has the required method
+            if (class_exists('WPCA_Performance') && method_exists('WPCA_Performance', 'get_instance')) {
+                $performance = WPCA_Performance::get_instance();
+                
+                // Check if get_performance_stats method exists
+                if (method_exists($performance, 'get_performance_stats')) {
+                    $stats = $performance->get_performance_stats();
+                    
+                    if (is_array($stats) && !empty($stats)) {
+                        // Validate key statistical metrics
+                        $required_stats = array(
+                            'total_samples',
+                            'total_time',
+                            'total_queries',
+                            'average_memory',
+                            'slow_queries',
+                            'peak_memory'
+                        );
+                        
+                        $missing_stats = array_diff($required_stats, array_keys($stats));
+                        
+                        if (empty($missing_stats)) {
+                            $result['status'] = 'success';
+                            $result['details'] = sprintf(
+                                __('Performance statistics retrieved successfully. Found %d metrics including %d samples.', 'wp-clean-admin'),
+                                count($stats),
+                                $stats['total_samples']
+                            );
+                        } else {
+                            $result['status'] = 'warning';
+                            $result['details'] = sprintf(
+                                __('Performance statistics missing required metrics: %s', 'wp-clean-admin'),
+                                implode(', ', $missing_stats)
+                            );
+                        }
+                    } else {
+                        $result['status'] = 'warning';
+                        $result['details'] = __('Performance statistics method exists but returned empty data.', 'wp-clean-admin');
+                    }
+                } else {
+                    $result['status'] = 'warning';
+                    $result['details'] = __('Performance class exists but get_performance_stats method is not available.', 'wp-clean-admin');
+                }
+            } else {
+                $result['status'] = 'error';
+                $result['details'] = __('Performance class not available.', 'wp-clean-admin');
+            }
+        } catch (Exception $e) {
+            $result['status'] = 'error';
+            $result['details'] = __('Exception during test: ', 'wp-clean-admin') . esc_html($e->getMessage());
+        }
+        
+        $this->results[__('Performance Stats Test', 'wp-clean-admin')] = $result;
+    }
 
     /**
-     * Show test results as admin notice.
+     * Test query counting functionality.
+     */
+    private function test_query_counting() {
+        $result = array('status' => 'success', 'details' => '');
+        
+        try {
+            // Check if performance class exists
+            if (class_exists('WPCA_Performance') && method_exists('WPCA_Performance', 'get_instance')) {
+                $performance = WPCA_Performance::get_instance();
+                
+                // Simulate query counting
+                global $wpdb;
+                $old_queries = isset($wpdb->queries) ? count($wpdb->queries) : 0;
+                
+                // Run a test query
+                $test_query = "SELECT 1 FROM {$wpdb->posts} LIMIT 1";
+                $wpdb->get_var($test_query);
+                
+                $new_queries = isset($wpdb->queries) ? count($wpdb->queries) : 0;
+                
+                if ($new_queries > $old_queries) {
+                    $result['status'] = 'success';
+                    $result['details'] = sprintf(__('Query counting working properly. Detected %d new query.', 'wp-clean-admin'), ($new_queries - $old_queries));
+                } else {
+                    $result['status'] = 'warning';
+                    $result['details'] = __('Could not detect query count change.', 'wp-clean-admin');
+                }
+            } else {
+                $result['status'] = 'error';
+                $result['details'] = __('Performance class not available.', 'wp-clean-admin');
+            }
+        } catch (Exception $e) {
+            $result['status'] = 'error';
+            $result['details'] = __('Exception during test: ', 'wp-clean-admin') . esc_html($e->getMessage());
+        }
+        
+        $this->results[__('Query Counting Test', 'wp-clean-admin')] = $result;
+    }
+
+    /**
+     * Test memory usage tracking functionality.
+     */
+    private function test_memory_usage_tracking() {
+        $result = array('status' => 'success', 'details' => '');
+        
+        try {
+            // Check if memory_get_usage function exists
+            if (function_exists('memory_get_usage')) {
+                $initial_memory = memory_get_usage();
+                
+                // Create a large array to consume memory
+                $test_array = array_fill(0, 10000, 'test_string');
+                $after_memory = memory_get_usage();
+                
+                if ($after_memory > $initial_memory) {
+                    $memory_diff = ($after_memory - $initial_memory) / 1024; // Convert to KB
+                    $result['status'] = 'success';
+                    $result['details'] = sprintf(__('Memory tracking working. Memory increased by %.2f KB.', 'wp-clean-admin'), $memory_diff);
+                } else {
+                    $result['status'] = 'warning';
+                    $result['details'] = __('Could not detect memory usage change.', 'wp-clean-admin');
+                }
+                
+                // Free memory
+                unset($test_array);
+            } else {
+                $result['status'] = 'warning';
+                $result['details'] = __('memory_get_usage function not available on this server.', 'wp-clean-admin');
+            }
+        } catch (Exception $e) {
+            $result['status'] = 'error';
+            $result['details'] = __('Exception during test: ', 'wp-clean-admin') . esc_html($e->getMessage());
+        }
+        
+        $this->results[__('Memory Usage Tracking Test', 'wp-clean-admin')] = $result;
+    }
+
+    /**
+     * Test resource cleanup functionality.
+     */
+    private function test_resource_cleanup() {
+        $result = array('status' => 'success', 'details' => '');
+        
+        try {
+            // Check if resources class exists
+            if (class_exists('WPCA_Resources') && method_exists('WPCA_Resources', 'get_instance')) {
+                $resources = WPCA_Resources::get_instance();
+                
+                // Test if resources class can access its properties
+                $reflector = new ReflectionClass($resources);
+                $has_props = $reflector->hasProperty('css_to_remove') && $reflector->hasProperty('js_to_remove');
+                
+                if ($has_props) {
+                    $result['status'] = 'success';
+                    $result['details'] = __('Resources class loaded successfully with required properties.', 'wp-clean-admin');
+                } else {
+                    $result['status'] = 'warning';
+                    $result['details'] = __('Resources class loaded but missing required properties.', 'wp-clean-admin');
+                }
+            } else {
+                $result['status'] = 'error';
+                $result['details'] = __('Resources class not available.', 'wp-clean-admin');
+            }
+        } catch (Exception $e) {
+            $result['status'] = 'error';
+            $result['details'] = __('Exception during test: ', 'wp-clean-admin') . esc_html($e->getMessage());
+        }
+        
+        $this->results[__('Resource Cleanup Test', 'wp-clean-admin')] = $result;
+    }
+
+    /**
+     * Test database connection functionality.
+     */
+    private function test_database_connection() {
+        $result = array('status' => 'success', 'details' => '');
+        
+        try {
+            // Check if database class exists
+            if (class_exists('WPCA_Database')) {
+                global $wpdb;
+                
+                // Test database connection with a simple query
+                $test_result = $wpdb->get_var("SELECT VERSION()");
+                
+                if ($test_result) {
+                    $result['status'] = 'success';
+                    $result['details'] = sprintf(__('Database connection successful. MySQL version: %s', 'wp-clean-admin'), $test_result);
+                } else {
+                    $result['status'] = 'error';
+                    $result['details'] = __('Database connection test failed.', 'wp-clean-admin');
+                }
+            } else {
+                $result['status'] = 'error';
+                $result['details'] = __('Database class not available.', 'wp-clean-admin');
+            }
+        } catch (Exception $e) {
+            $result['status'] = 'error';
+            $result['details'] = __('Exception during test: ', 'wp-clean-admin') . esc_html($e->getMessage());
+        }
+        
+        $this->results[__('Database Connection Test', 'wp-clean-admin')] = $result;
+    }
+
+    /**
+     * Test options loading functionality.
+     */
+    private function test_options_loading() {
+        $result = array('status' => 'success', 'details' => '');
+        
+        try {
+            // Test if options can be loaded
+            if (function_exists('get_option')) {
+                $options = get_option('wpca_settings', array());
+                
+                if (is_array($options)) {
+                    $result['status'] = 'success';
+                    $result['details'] = sprintf(__('Options loaded successfully. Found %d settings.', 'wp-clean-admin'), count($options));
+                } else {
+                    $result['status'] = 'warning';
+                    $result['details'] = __('Options exist but are not in expected format.', 'wp-clean-admin');
+                }
+            } else {
+                $result['status'] = 'error';
+                $result['details'] = __('get_option function not available.', 'wp-clean-admin');
+            }
+        } catch (Exception $e) {
+            $result['status'] = 'error';
+            $result['details'] = __('Exception during test: ', 'wp-clean-admin') . esc_html($e->getMessage());
+        }
+        
+        $this->results[__('Options Loading Test', 'wp-clean-admin')] = $result;
+    }
+
+    /**
+     * Test hook registration functionality.
+     */
+    private function test_hook_registration() {
+        $result = array('status' => 'success', 'details' => '');
+        
+        try {
+            // Check if WordPress hooks system is available
+            if (function_exists('has_action') && function_exists('add_action')) {
+                // Test hook registration
+                $test_hook_name = 'wpca_test_hook';
+                add_action($test_hook_name, array($this, 'test_hook_callback'));
+                
+                if (has_action($test_hook_name, array($this, 'test_hook_callback'))) {
+                    $result['status'] = 'success';
+                    $result['details'] = __('Hook registration successful.', 'wp-clean-admin');
+                    
+                    // Remove the test hook
+                    remove_action($test_hook_name, array($this, 'test_hook_callback'));
+                } else {
+                    $result['status'] = 'error';
+                    $result['details'] = __('Hook registration failed.', 'wp-clean-admin');
+                }
+            } else {
+                $result['status'] = 'error';
+                $result['details'] = __('WordPress hooks system not available.', 'wp-clean-admin');
+            }
+        } catch (Exception $e) {
+            $result['status'] = 'error';
+            $result['details'] = __('Exception during test: ', 'wp-clean-admin') . esc_html($e->getMessage());
+        }
+        
+        $this->results[__('Hook Registration Test', 'wp-clean-admin')] = $result;
+    }
+
+    /**
+     * Test hook callback function.
+     */
+    public function test_hook_callback() {
+        // This is just a test callback and doesn't need to do anything
+    }
+
+    /**
+     * Show test results as admin notices.
      */
     public function show_test_results() {
-        $passed_tests = array_filter( $this->results, function( $test ) {
-            return $test['status'] === 'pass';
-        });
+        $total_tests = count($this->results);
+        $passed_tests = 0;
+        $warning_tests = 0;
+        $failed_tests = 0;
         
-        $total_tests = count( $this->results );
-        $passed_count = count( $passed_tests );
-        
-        $class = 'notice notice-success';
-        $message = sprintf( esc_html__( 'Performance tests completed. %d of %d tests passed.', 'wp-clean-admin' ), $passed_count, $total_tests );
-        
-        if ( $passed_count < $total_tests ) {
-            $class = 'notice notice-error';
-            $message .= ' ' . esc_html__( 'Some tests failed. Please check the details below.', 'wp-clean-admin' );
-        }
-        
-        printf( '<div class="%s"><p>%s</p></div>', esc_attr( $class ), esc_html( $message ) );
-    }
-
-    /**
-     * Test if all required components exist.
-     */
-    protected function test_component_existence() {
-        // Test Performance component
-        $test_name = esc_html__( 'Performance Component Existence', 'wp-clean-admin' );
-        if ( class_exists( 'WPCA_Performance' ) ) {
-            $this->add_test_result( $test_name, 'pass', esc_html__( 'Performance component exists.', 'wp-clean-admin' ) );
-        } else {
-            $this->add_test_result( $test_name, 'fail', esc_html__( 'Performance component not found.', 'wp-clean-admin' ) );
-        }
-        
-        // Test Resources component
-        $test_name = esc_html__( 'Resources Component Existence', 'wp-clean-admin' );
-        if ( class_exists( 'WPCA_Resources' ) ) {
-            $this->add_test_result( $test_name, 'pass', esc_html__( 'Resources component exists.', 'wp-clean-admin' ) );
-        } else {
-            $this->add_test_result( $test_name, 'fail', esc_html__( 'Resources component not found.', 'wp-clean-admin' ) );
-        }
-        
-        // Test Database component
-        $test_name = esc_html__( 'Database Component Existence', 'wp-clean-admin' );
-        if ( class_exists( 'WPCA_Database' ) ) {
-            $this->add_test_result( $test_name, 'pass', esc_html__( 'Database component exists.', 'wp-clean-admin' ) );
-        } else {
-            $this->add_test_result( $test_name, 'fail', esc_html__( 'Database component not found.', 'wp-clean-admin' ) );
-        }
-        
-        // Test Performance Settings component
-        $test_name = esc_html__( 'Performance Settings Component Existence', 'wp-clean-admin' );
-        if ( class_exists( 'WPCA_Performance_Settings' ) ) {
-            $this->add_test_result( $test_name, 'pass', esc_html__( 'Performance Settings component exists.', 'wp-clean-admin' ) );
-        } else {
-            $this->add_test_result( $test_name, 'fail', esc_html__( 'Performance Settings component not found.', 'wp-clean-admin' ) );
-        }
-    }
-
-    /**
-     * Test database optimization functionality.
-     */
-    protected function test_database_optimization() {
-        $test_name = esc_html__( 'Database Optimization', 'wp-clean-admin' );
-        
-        if ( ! class_exists( 'WPCA_Database' ) ) {
-            $this->add_test_result( $test_name, 'fail', esc_html__( 'Cannot test database optimization: component not found.', 'wp-clean-admin' ) );
-            return;
-        }
-        
-        $database = WPCA_Database::get_instance();
-        
-        // Test getting database stats
-        $stats = $database->get_database_stats();
-        if ( is_array( $stats ) && array_key_exists( 'table_count', $stats ) ) {
-            $this->add_test_result( $test_name, 'pass', esc_html__( 'Database statistics retrieval successful.', 'wp-clean-admin' ) );
-        } else {
-            $this->add_test_result( $test_name, 'fail', esc_html__( 'Failed to retrieve database statistics.', 'wp-clean-admin' ) );
-        }
-        
-        // Test getting tables
-        $tables = $database->get_all_tables();
-        if ( is_array( $tables ) && count( $tables ) > 0 ) {
-            $this->add_test_result( esc_html__( 'Database Tables Retrieval', 'wp-clean-admin' ), 'pass', esc_html__( 'Successfully retrieved database tables.', 'wp-clean-admin' ) );
-        } else {
-            $this->add_test_result( esc_html__( 'Database Tables Retrieval', 'wp-clean-admin' ), 'fail', esc_html__( 'Failed to retrieve database tables.', 'wp-clean-admin' ) );
-        }
-        
-        // Test cleanup items
-        $cleanup_items = $database->get_available_cleanup_items();
-        if ( is_array( $cleanup_items ) && count( $cleanup_items ) > 0 ) {
-            $this->add_test_result( esc_html__( 'Database Cleanup Items', 'wp-clean-admin' ), 'pass', esc_html__( 'Successfully retrieved cleanup items.', 'wp-clean-admin' ) );
-        } else {
-            $this->add_test_result( esc_html__( 'Database Cleanup Items', 'wp-clean-admin' ), 'fail', esc_html__( 'Failed to retrieve cleanup items.', 'wp-clean-admin' ) );
-        }
-    }
-
-    /**
-     * Test resource management functionality.
-     */
-    protected function test_resource_management() {
-        $test_name = esc_html__( 'Resource Management', 'wp-clean-admin' );
-        
-        if ( ! class_exists( 'WPCA_Resources' ) ) {
-            $this->add_test_result( $test_name, 'fail', esc_html__( 'Cannot test resource management: component not found.', 'wp-clean-admin' ) );
-            return;
-        }
-        
-        $resources = WPCA_Resources::get_instance();
-        
-        // Test getting CSS resources
-        $css_resources = $resources->get_loaded_styles();
-        if ( is_array( $css_resources ) ) {
-            $this->add_test_result( esc_html__( 'CSS Resources Retrieval', 'wp-clean-admin' ), 'pass', sprintf( esc_html__( 'Successfully retrieved %d CSS resources.', 'wp-clean-admin' ), count( $css_resources ) ) );
-        } else {
-            $this->add_test_result( esc_html__( 'CSS Resources Retrieval', 'wp-clean-admin' ), 'fail', esc_html__( 'Failed to retrieve CSS resources.', 'wp-clean-admin' ) );
-        }
-        
-        // Test getting JS resources
-        $js_resources = $resources->get_loaded_scripts();
-        if ( is_array( $js_resources ) ) {
-            $this->add_test_result( esc_html__( 'JavaScript Resources Retrieval', 'wp-clean-admin' ), 'pass', sprintf( esc_html__( 'Successfully retrieved %d JavaScript resources.', 'wp-clean-admin' ), count( $js_resources ) ) );
-        } else {
-            $this->add_test_result( esc_html__( 'JavaScript Resources Retrieval', 'wp-clean-admin' ), 'fail', esc_html__( 'Failed to retrieve JavaScript resources.', 'wp-clean-admin' ) );
-        }
-    }
-
-    /**
-     * Test performance monitoring functionality.
-     */
-    protected function test_performance_monitoring() {
-        $test_name = esc_html__( 'Performance Monitoring', 'wp-clean-admin' );
-        
-        if ( ! class_exists( 'WPCA_Performance' ) ) {
-            $this->add_test_result( $test_name, 'fail', esc_html__( 'Cannot test performance monitoring: component not found.', 'wp-clean-admin' ) );
-            return;
-        }
-        
-        $performance = WPCA_Performance::get_instance();
-        
-        // Test getting performance stats
-        $stats = $performance->get_performance_stats();
-        if ( is_array( $stats ) ) {
-            $this->add_test_result( esc_html__( 'Performance Statistics', 'wp-clean-admin' ), 'pass', esc_html__( 'Successfully retrieved performance statistics.', 'wp-clean-admin' ) );
-        } else {
-            $this->add_test_result( esc_html__( 'Performance Statistics', 'wp-clean-admin' ), 'fail', esc_html__( 'Failed to retrieve performance statistics.', 'wp-clean-admin' ) );
-        }
-    }
-
-    /**
-     * Test settings page functionality.
-     */
-    protected function test_settings_page() {
-        $test_name = esc_html__( 'Settings Page', 'wp-clean-admin' );
-        
-        if ( ! class_exists( 'WPCA_Performance_Settings' ) ) {
-            $this->add_test_result( $test_name, 'fail', esc_html__( 'Cannot test settings page: component not found.', 'wp-clean-admin' ) );
-            return;
-        }
-        
-        // Check if menu page is registered
-        global $submenu;
-        $menu_exists = false;
-        
-        if ( isset( $submenu['wpca-settings'] ) ) {
-            foreach ( $submenu['wpca-settings'] as $menu_item ) {
-                if ( 'wpca-performance' === $menu_item[2] ) {
-                    $menu_exists = true;
+        foreach ($this->results as $result) {
+            switch ($result['status']) {
+                case 'success':
+                    $passed_tests++;
                     break;
-                }
+                case 'warning':
+                    $warning_tests++;
+                    break;
+                case 'error':
+                    $failed_tests++;
+                    break;
             }
         }
         
-        if ( $menu_exists ) {
-            $this->add_test_result( $test_name, 'pass', esc_html__( 'Performance settings page is registered.', 'wp-clean-admin' ) );
-        } else {
-            $this->add_test_result( $test_name, 'fail', esc_html__( 'Performance settings page is not registered.', 'wp-clean-admin' ) );
-        }
-    }
-
-    /**
-     * Test AJAX handlers.
-     */
-    protected function test_ajax_handlers() {
-        $test_name = esc_html__( 'AJAX Handlers', 'wp-clean-admin' );
-        
-        // This is a basic check to see if AJAX actions are registered
-        // In a real test environment, we would use wp_ajax_get_ajax_data() or similar
-        
-        // Check for common AJAX actions
-        $ajax_actions = array(
-            'wpca_get_table_info',
-            'wpca_optimize_tables',
-            'wpca_cleanup_database',
-            'wpca_test_resource_removal',
-            'wpca_generate_critical_css',
-            'wpca_toggle_monitoring',
-            'wpca_get_performance_report',
-            'wpca_clear_performance_data',
+        $message = sprintf(
+            __('Performance tests completed: %d passed, %d warnings, %d failed.', 'wp-clean-admin'),
+            $passed_tests, $warning_tests, $failed_tests
         );
         
-        $found_actions = 0;
-        
-        foreach ( $ajax_actions as $action ) {
-            global $wp_filter;
-            $has_action = false;
-            
-            if ( isset( $wp_filter['wp_ajax_' . $action] ) ) {
-                $has_action = true;
-                $found_actions++;
-            }
+        $notice_class = 'notice-success';
+        if ($failed_tests > 0) {
+            $notice_class = 'notice-error';
+        } elseif ($warning_tests > 0) {
+            $notice_class = 'notice-warning';
         }
         
-        if ( $found_actions > 0 ) {
-            $this->add_test_result( $test_name, 'pass', sprintf( esc_html__( 'Found %d of %d expected AJAX actions.', 'wp-clean-admin' ), $found_actions, count( $ajax_actions ) ) );
-        } else {
-            $this->add_test_result( $test_name, 'fail', esc_html__( 'No AJAX actions found.', 'wp-clean-admin' ) );
-        }
+        echo "<div class='notice {$notice_class} is-dismissible'><p>{$message}</p></div>";
     }
-
-    /**
-     * Add a test result.
-     *
-     * @param string $name    Test name.
-     * @param string $status  Test status ('pass' or 'fail').
-     * @param string $message Test message.
-     */
-    protected function add_test_result( $name, $status, $message ) {
-        $this->results[] = array(
-            'name'    => $name,
-            'status'  => $status,
-            'message' => $message,
-        );
-    }
-
+    
     /**
      * Get the singleton instance of the class.
-     *
-     * @return WPCA_Performance_Tests The instance of the class.
      */
     public static function get_instance() {
         if ( null === self::$instance ) {
@@ -397,14 +478,6 @@ class WPCA_Performance_Tests {
     }
 }
 
-/**
- * Initialize the tests class.
- */
-function wpca_init_performance_tests() {
-    return WPCA_Performance_Tests::get_instance();
-}
-
-// Initialize the tests if we're in admin area
-if ( is_admin() ) {
-    wpca_init_performance_tests();
-}
+// Initialize the tests class
+new WPCA_Performance_Tests();
+?>

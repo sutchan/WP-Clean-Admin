@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-msgid "Project-Id-Version: WP Clean Admin 1.6.0\n"
+msgid "Project-Id-Version: WP Clean Admin 1.7.0\n"
 "Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"
 "POT-Creation-Date: 2025-09-24 15:00+0800\n"
 "PO-Revision-Date: 2025-09-24 15:00+0800\n"
@@ -1392,6 +1392,27 @@ msgstr "Optimize images and media files"
 
 msgid "Limit the number of active plugins"
 msgstr "Limit the number of active plugins"
+
+msgid "Performance statistics retrieved successfully."
+msgstr "Performance statistics retrieved successfully."
+
+msgid "Performance statistics retrieved successfully. Found %d metrics including %d samples."
+msgstr "Performance statistics retrieved successfully. Found %d metrics including %d samples."
+
+msgid "Performance statistics missing required metrics: %s"
+msgstr "Performance statistics missing required metrics: %s"
+
+msgid "Performance statistics method exists but returned empty data."
+msgstr "Performance statistics method exists but returned empty data."
+
+msgid "Performance class exists but get_performance_stats method is not available."
+msgstr "Performance class exists but get_performance_stats method is not available."
+
+msgid "Performance class not available."
+msgstr "Performance class not available."
+
+msgid "Exception during test: "
+msgstr "Exception during test: "
 
 # ===========================================================
 # Module Initialization Strings

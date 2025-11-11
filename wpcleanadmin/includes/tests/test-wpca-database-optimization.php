@@ -166,3 +166,4 @@ class WPCA_Database_Optimization_Test extends WP_UnitTestCase {
         }
     }
 }
+?>

@@ -21,6 +21,11 @@ if (defined('ABSPATH')) {
 }
 }
 
+// Include menu manager class
+if (!class_exists('WPCA_Menu_Manager') && defined('WPCA_PLUGIN_DIR')) {
+    require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-menu-manager.php';
+}
+
 /**
  * Class WPCA_Menu_Customizer
  *
@@ -41,6 +46,13 @@ class WPCA_Menu_Customizer {
     );
     
     /**
+     * Menu manager instance
+     * 
+     * @var WPCA_Menu_Manager|null
+     */
+    private $menu_manager = null;
+    
+    /**
      * Cache for menu items to improve performance
      * 
      * @var array|null
@@ -58,6 +70,11 @@ class WPCA_Menu_Customizer {
      * Constructor
      */
     public function __construct() {
+        // Initialize menu manager if available
+        if (class_exists('WPCA_Menu_Manager')) {
+            $this->menu_manager = WPCA_Menu_Manager::get_instance();
+        }
+        
         if (function_exists('add_action')) {
             add_action('admin_menu', array($this, 'initialize_menu_customization'));
             
@@ -576,204 +593,22 @@ class WPCA_Menu_Customizer {
     }
     
     /**
-     * Handle menu item visibility
+     * 处理菜单项可见性
+     * 
+     * 委托给Menu_Manager处理菜单隐藏功能
      */
     public function handle_menu_item_visibility() {
-        try {
-            $options = $this->get_plugin_options();
-            $all_items = $this->get_all_menu_items();
-            $hidden_items = $this->get_hidden_menu_items($options, $all_items);
-
-            if (empty($hidden_items)) {
-                return;
-            }
-
-            // Generate CSS for hiding menu items
-            $css = $this->generate_menu_hide_css($hidden_items);
-            
-            // Output CSS safely
-            $this->output_menu_css($css);
-        } catch (Exception $e) {
-            $this->log_error('menu_visibility_failed', $e);
-        }
+        // 已委托给WPCA_Menu_Manager处理，此方法保留以保持兼容性
+        // Menu_Manager会通过自己注册的hooks处理菜单隐藏
     }
     
-    /**
-     * Get hidden menu items
-     * 
-     * @param array $options Plugin options
-     * @param array $all_items All menu items
-     * @return array Hidden menu items
-     */
-    private function get_hidden_menu_items($options, $all_items) {
-        $hidden_items = array();
-        
-        // 检查是否有旧的hidden_menus数组，如果有则迁移到新的menu_toggles格式
-        if (isset($options['hidden_menus']) && is_array($options['hidden_menus'])) {
-            // 将hidden_menus数组迁移到menu_toggles格式
-            foreach ($options['hidden_menus'] as $slug) {
-                $options['menu_toggles'][$slug] = 0; // 0表示隐藏
-            }
-            // 保存迁移后的数据
-            if (function_exists('update_option')) {
-                update_option('wpca_settings', $options);
-            }
-        }
-        
-        // 处理标准的menu_toggles数组
-        if (!isset($options['menu_toggles']) || !is_array($options['menu_toggles'])) {
-            return $hidden_items;
-        }
-        
-        foreach ($options['menu_toggles'] as $slug => $state) {
-            // 验证slug是否为字符串且不为空
-            if (!is_string($slug) || empty($slug)) {
-                continue;
-            }
-            
-            // 检查菜单是否需要隐藏 (state === 0) 并且是有效的菜单项且不在受保护菜单列表中
-            if ($state === 0 && isset($all_items[$slug]) && !in_array($slug, self::PROTECTED_MENUS)) {
-                $hidden_items[] = $slug;
-            }
-        }
-        
-        return $hidden_items;
-    }
-    
-    /**
-     * Generate menu hide CSS
-     * 
-     * @param array $hidden_items Hidden menu items
-     * @return string CSS
-     */
-    private function generate_menu_hide_css($hidden_items) {
-        try {
-            if (empty($hidden_items)) {
-                return '';
-            }
-            
-            $css = $this->get_base_hide_css();
-            $selectors = $this->generate_menu_selectors($hidden_items);
-            
-            if (!empty($selectors)) {
-                $css .= "\n" . implode(",\n", $selectors) . $this->get_hide_css_rules();
-            }
-            
-            return $css;
-        } catch (Exception $e) {
-            $this->log_error('css_generation_failed', $e);
-            return '';
-        }
-    }
-    
-    /**
-     * Get base hide CSS
-     * 
-     * @return string Base CSS
-     */
-    private function get_base_hide_css() {
-        return 'li.wpca-hidden-menu, 
-           li.wpca-hidden-menu > a, 
-           li.wpca-hidden-menu .wp-submenu, 
-           li.wpca-hidden-menu .wp-submenu-wrap,
-           li.wpca-hidden-menu .wp-submenu-head,
-           .folded li.wpca-hidden-menu .wp-submenu {
-             display: none !important;
-             width: 0 !important;
-             height: 0 !important;
-             overflow: hidden !important;
-             margin: 0 !important;
-             padding: 0 !important;
-             opacity: 0 !important;
-             pointer-events: none !important;
-           }';
-    }
-    
-    /**
-     * Get hide CSS rules
-     * 
-     * @return string CSS rules
-     */
-    private function get_hide_css_rules() {
-        return ' { 
-            display: none !important;
-            width: 0 !important;
-            height: 0 !important;
-            overflow: hidden !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            opacity: 0 !important;
-            pointer-events: none !important;
-        }';
-    }
-    
-    /**
-     * Generate menu selectors
-     * 
-     * @param array $hidden_items Hidden menu items
-     * @return array CSS selectors
-     */
-    private function generate_menu_selectors($hidden_items) {
-        $selectors = array();
-        
-        foreach ($hidden_items as $slug) {
-            // Handle top-level menus
-            if (strpos($slug, '|') === false) {
-                // 检查 esc_attr 函数是否存在，若不存在则添加基本转义逻辑
-                if (!function_exists('esc_attr')) {
-                    $escaped_slug = htmlspecialchars($slug, ENT_QUOTES, 'UTF-8');
-                } else {
-                    $escaped_slug = esc_attr($slug);
-                }
-                $selectors[] = "#adminmenu li.menu-top.toplevel_page_" . $escaped_slug;
-                $selectors[] = "#adminmenu li.menu-top.menu-icon-" . esc_attr($slug);
-                $selectors[] = "#adminmenu li.menu-top#menu-" . esc_attr(str_replace('.php', '', $slug));
-                
-                // Direct match for core menus
-                if (strpos($slug, '.php') !== false) {
-                    $selectors[] = "#adminmenu li.menu-top#" . esc_attr(str_replace('.php', '', $slug));
-                }
-            } 
-            // Handle submenus
-            else {
-                list($parent, $child) = explode('|', $slug);
-                $selectors[] = "#adminmenu li.menu-top.toplevel_page_" . esc_attr($parent) . " .wp-submenu li a[href$='" . esc_attr($child) . "']";
-                $selectors[] = "#adminmenu li.menu-top.menu-icon-" . esc_attr($parent) . " .wp-submenu li a[href$='" . esc_attr($child) . "']";
-                $selectors[] = "#adminmenu li.menu-top#menu-" . esc_attr(str_replace('.php', '', $parent)) . " .wp-submenu li a[href$='" . esc_attr($child) . "']";
-                
-                // Direct match for core submenus
-                if (strpos($parent, '.php') !== false) {
-                    $selectors[] = "#adminmenu li.menu-top#" . esc_attr(str_replace('.php', '', $parent)) . " .wp-submenu li a[href$='" . esc_attr($child) . "']";
-                }
-            }
-        }
-        
-        return $selectors;
-    }
-    
-    /**
-     * Output menu CSS
-     * 
-     * @param string $css CSS to output
-     */
-    private function output_menu_css($css) {
-        if (empty($css)) {
-            return;
-        }
-        
-        echo '<style type="text/css" id="wpca-menu-customizer-css">' . "\n";
-        echo "/* WP Clean Admin - Menu Customizer CSS */\n";
-        // Check if esc_html function exists
-        if (function_exists('esc_html')) {
-            echo esc_html($css);
-        } else {
-            echo htmlspecialchars($css, ENT_QUOTES, 'UTF-8');
-        }
-        echo "\n</style>\n";
-    }
+    // 菜单项显示/隐藏相关方法已移至WPCA_Menu_Manager类
+    // 以下方法不再需要，但为了兼容性，保留空实现
     
     /**
      * Handle AJAX menu toggle
+     * 
+     * 委托给Menu_Manager处理菜单显示/隐藏操作
      */
     public function handle_ajax_toggle_menu() {
         try {
@@ -784,70 +619,87 @@ class WPCA_Menu_Customizer {
             $slug = isset($_POST['slug']) ? (function_exists('sanitize_text_field') ? sanitize_text_field($_POST['slug']) : filter_var($_POST['slug'], FILTER_SANITIZE_STRING)) : '';
             $state = isset($_POST['state']) ? intval($_POST['state']) : 0;
             
-            // Enhanced input validation
-            if (empty($slug)) {
-                throw new Exception(__('Invalid menu slug', 'wp-clean-admin'), 400);
-            }
-            
-            // Validate slug format (prevent injection attacks)
-            if (!preg_match('/^[a-zA-Z0-9_\-|\.]+$/', $slug)) {
-                throw new Exception(__('Invalid menu slug format', 'wp-clean-admin'), 'invalid_slug_format');
-            }
-            
-            // Validate state is boolean (0 or 1)
-            if (!in_array($state, array(0, 1))) {
-                throw new Exception(__('Invalid menu state', 'wp-clean-admin'), 'invalid_state');
-            }
-            
-            // Get current options
-            $options = $this->get_plugin_options();
-            if (!is_array($options)) {
-                throw new Exception(__('Failed to retrieve settings', 'wp-clean-admin'), 'settings_retrieval_failed');
-            }
-            
-            // Ensure menu_toggles array exists
-            if (!isset($options['menu_toggles']) || !is_array($options['menu_toggles'])) {
-                $options['menu_toggles'] = array();
-            }
-            
-            // Check if this menu can be hidden (if toggling to hidden state)
-            if ($state === 0) {
-                $slug_parts = explode('|', $slug);
-                $main_slug = $slug_parts[0]; // Get the main slug part
-                if (in_array($main_slug, self::PROTECTED_MENUS)) {
-                    throw new Exception(__('This menu item cannot be hidden', 'wp-clean-admin'), 'menu_protected');
+            // 委托给菜单管理器处理
+            if ($this->menu_manager) {
+                $result = $this->menu_manager->toggle_menu_item($slug, $state);
+                
+                if ($result['success']) {
+                    // Send success response
+                    if (function_exists('wp_send_json_success')) {
+                        wp_send_json_success($result);
+                    } else {
+                        echo json_encode(array('success' => true, 'data' => $result['data']));
+                        wp_die();
+                    }
+                } else {
+                    throw new Exception($result['message'], $result['code']);
                 }
-            }
-            
-            // Update the toggle state
-            $options['menu_toggles'][$slug] = $state;
-            
-            // Save updated options with error handling
-            $updated = function_exists('update_option') ? update_option('wpca_settings', $options) : false;
-            
-            if (!$updated) {
-                throw new Exception(__('Failed to save menu settings', 'wp-clean-admin'), 500);
-            }
-            
-            // Clear all caches
-            $this->clear_menu_cache();
-            $this->options_cache = null;
-            
-            // Log successful update if in debug mode
-            if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
-                error_log('WP Clean Admin - Menu item "' . $slug . '" visibility toggled to ' . ($state ? 'visible' : 'hidden'));
-            }
-            
-            // Send success response
-            if (function_exists('wp_send_json_success')) {
-                wp_send_json_success(array(
-                    'message' => __('Menu settings updated successfully', 'wp-clean-admin'),
-                    'data' => array(
-                        'slug' => $slug,
-                        'state' => $state
-                    )
-                ));
             } else {
+                // 降级处理，保持原有逻辑以确保兼容性
+                // Enhanced input validation
+                if (empty($slug)) {
+                    throw new Exception(__('Invalid menu slug', 'wp-clean-admin'), 400);
+                }
+                
+                // Validate slug format (prevent injection attacks)
+                if (!preg_match('/^[a-zA-Z0-9_\-|\.]+$/', $slug)) {
+                    throw new Exception(__('Invalid menu slug format', 'wp-clean-admin'), 'invalid_slug_format');
+                }
+                
+                // Validate state is boolean (0 or 1)
+                if (!in_array($state, array(0, 1))) {
+                    throw new Exception(__('Invalid menu state', 'wp-clean-admin'), 'invalid_state');
+                }
+                
+                // Get current options
+                $options = $this->get_plugin_options();
+                if (!is_array($options)) {
+                    throw new Exception(__('Failed to retrieve settings', 'wp-clean-admin'), 'settings_retrieval_failed');
+                }
+                
+                // Ensure menu_toggles array exists
+                if (!isset($options['menu_toggles']) || !is_array($options['menu_toggles'])) {
+                    $options['menu_toggles'] = array();
+                }
+                
+                // Check if this menu can be hidden (if toggling to hidden state)
+                if ($state === 0) {
+                    $slug_parts = explode('|', $slug);
+                    $main_slug = $slug_parts[0]; // Get the main slug part
+                    if (in_array($main_slug, self::PROTECTED_MENUS)) {
+                        throw new Exception(__('This menu item cannot be hidden', 'wp-clean-admin'), 'menu_protected');
+                    }
+                }
+                
+                // Update the toggle state
+                $options['menu_toggles'][$slug] = $state;
+                
+                // Save updated options with error handling
+                $updated = function_exists('update_option') ? update_option('wpca_settings', $options) : false;
+                
+                if (!$updated) {
+                    throw new Exception(__('Failed to save menu settings', 'wp-clean-admin'), 500);
+                }
+                
+                // Clear all caches
+                $this->clear_menu_cache();
+                $this->options_cache = null;
+                
+                // Log successful update if in debug mode
+                if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
+                    error_log('WP Clean Admin - Menu item "' . $slug . '" visibility toggled to ' . ($state ? 'visible' : 'hidden'));
+                }
+                
+                // Send success response
+                if (function_exists('wp_send_json_success')) {
+                    wp_send_json_success(array(
+                        'message' => __('Menu settings updated successfully', 'wp-clean-admin'),
+                        'data' => array(
+                            'slug' => $slug,
+                            'state' => $state
+                        )
+                    ));
+                } else {
                 echo json_encode(array('success' => true, 'data' => array('slug' => $slug, 'state' => $state)));
                 wp_die();
             }

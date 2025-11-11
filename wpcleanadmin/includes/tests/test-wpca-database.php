@@ -447,3 +447,5 @@ function wpca_init_database_tests() {
 if ( is_admin() ) {
     wpca_init_database_tests();
 }
+?>
+

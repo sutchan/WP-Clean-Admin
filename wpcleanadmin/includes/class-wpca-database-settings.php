@@ -877,3 +877,4 @@ class WPCA_Database_Settings {
 function wpca_init_database_settings() {
     return WPCA_Database_Settings::get_instance();
 }
+?>

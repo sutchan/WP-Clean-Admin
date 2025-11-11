@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-msgid "Project-Id-Version: WP Clean Admin 1.6.0\n"
+msgid "Project-Id-Version: WP Clean Admin 1.7.0\n"
 "Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"
 "POT-Creation-Date: 2025-09-24 15:00+0800\n"
 "PO-Revision-Date: 2025-09-24 15:00+0800\n"
@@ -256,6 +256,27 @@ msgstr "权限不足"
 # ===========================================================
 # Performance Monitoring Additional Strings
 # ===========================================================
+
+msgid "Performance statistics retrieved successfully."
+msgstr "性能统计数据获取成功。"
+
+msgid "Performance statistics retrieved successfully. Found %d metrics including %d samples."
+msgstr "性能统计数据获取成功。发现%d个指标，包括%d个样本。"
+
+msgid "Performance statistics missing required metrics: %s"
+msgstr "性能统计缺少必要指标：%s"
+
+msgid "Performance statistics method exists but returned empty data."
+msgstr "性能统计方法存在但返回空数据。"
+
+msgid "Performance class exists but get_performance_stats method is not available."
+msgstr "性能类存在但get_performance_stats方法不可用。"
+
+msgid "Performance class not available."
+msgstr "性能类不可用。"
+
+msgid "Exception during test: "
+msgstr "测试期间发生异常："
 msgid "Performance Monitoring"
 msgstr "性能监控"
 
