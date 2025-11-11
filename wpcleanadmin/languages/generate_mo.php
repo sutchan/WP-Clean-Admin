@@ -23,7 +23,8 @@ if ( ! defined( 'ABSPATH' ) && ! defined( 'WP_CLI' ) ) {
 // 定义函数将 .po 文件转换为 .mo 文件
 function generate_mo_file($po_file) {
     // 检查必要函数是否存在
-    $has_functions = function_exists( 'file_exists' ) && 
+    // file_exists是PHP内置函数，不需要function_exists检查
+$has_functions = 
                     function_exists( 'str_replace' ) && 
                     function_exists( 'file_get_contents' ) && 
                     function_exists( 'file_put_contents' ) && 
