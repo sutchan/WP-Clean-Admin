@@ -1,5 +1,11 @@
 # WP Clean Admin Changelog
 
+## 1.7.6 - 2024-01-16
+
+### Fixed
+- 修复wpca-core-functions.php文件中的语法错误（删除多余的else语句块）
+- 统一更新所有文件版本号确保一致性
+
 ## 1.7.5 - 2024-12-16
 
 ### Fixed
