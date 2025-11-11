@@ -281,14 +281,16 @@ class WPCA_Performance {
             $user_id = function_exists('get_current_user_id') ? get_current_user_id() : 0;
             
             // 安全计算加载时间
-            $load_time = 0;
-            if (function_exists('microtime') && isset($this->stats['start_time'])) {
+              $load_time = 0;
+              // isset是PHP语言结构，不需要function_exists检查
+              if (function_exists('microtime') && isset($this->stats['start_time'])) {
                 $load_time = microtime(true) - $this->stats['start_time'];
             }
             
             // 安全计算内存使用量
-            $memory_usage = 0;
-            if (function_exists('memory_get_peak_usage') && isset($this->stats['start_memory'])) {
+              $memory_usage = 0;
+              // isset是PHP语言结构，不需要function_exists检查
+              if (function_exists('memory_get_peak_usage') && isset($this->stats['start_memory'])) {
                 $memory_usage = memory_get_peak_usage(true) - $this->stats['start_memory'];
                 // 确保内存值为正数
                 $memory_usage = max(0, $memory_usage);
@@ -513,7 +515,8 @@ class WPCA_Performance {
             }
             
             // 安全处理峰值内存
-            $stats['peak_memory'] = function_exists('max') && isset($stats['peak_memory']) ? max(0, $stats['peak_memory']) : 0;
+              // isset是PHP语言结构，不需要function_exists检查
+              $stats['peak_memory'] = function_exists('max') && isset($stats['peak_memory']) ? max(0, $stats['peak_memory']) : 0;
             
             // 安全处理慢查询计数
             $stats['slow_queries_count'] = isset($stats['slow_queries_count']) ? max(0, intval($stats['slow_queries_count'])) : 0;

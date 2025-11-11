@@ -42,19 +42,21 @@ $po_files = array(
  */
 function update_po_file($pot_file, $po_file) {
     // 检查必要函数是否存在
-    $has_functions = function_exists( 'echo' ) && 
-                    function_exists( 'file_exists' ) && 
+    // echo是PHP语言结构，不需要function_exists检查
+      $has_functions = 
+                    // file_exists是PHP内置函数，不需要function_exists检查
                     function_exists( 'copy' ) && 
                     function_exists( 'file_get_contents' ) && 
                     function_exists( 'parse_po_file' ) && 
-                    function_exists( 'empty' ) && 
+                    // empty是PHP语言结构，不需要function_exists检查 
                     function_exists( 'array_merge' ) && 
                     function_exists( 'extract_po_header' ) && 
                     function_exists( 'generate_po_content' ) && 
                     function_exists( 'file_put_contents' );
     
     if ( ! $has_functions ) {
-        if (function_exists('echo')) echo "错误：缺少必要的函数支持。\n";
+         // echo是PHP语言结构，不需要function_exists检查
+         echo "错误：缺少必要的函数支持。\n";
         return false;
     }
     
@@ -171,9 +173,9 @@ function parse_po_file($po_content) {
                     function_exists( 'strrpos' ) && 
                     function_exists( 'substr' ) && 
                     function_exists( 'strlen' ) && 
-                    function_exists( 'empty' ) && 
-                    function_exists( 'is_array' ) && 
-                    function_exists( 'isset' );
+                    // empty是PHP语言结构，不需要function_exists检查 
+                    // is_array是PHP内置函数，不需要function_exists检查
+                    // isset是PHP语言结构，不需要function_exists检查
     
     if ( ! $has_functions || empty($po_content) || !is_string($po_content) ) {
         return array();
@@ -263,10 +265,11 @@ function parse_po_file($po_content) {
  */
 function generate_po_content($entries, $header) {
     // 检查必要函数是否存在
-    $has_functions = function_exists( 'empty' ) && 
-                    function_exists( 'is_array' ) && 
-                    function_exists( 'is_string' ) && 
-                    function_exists( 'isset' ) && 
+    // empty是PHP语言结构，不需要function_exists检查
+      $has_functions = 
+                    // is_array是PHP内置函数，不需要function_exists检查
+                    // is_string是PHP内置函数，不需要function_exists检查
+                    // isset是PHP语言结构，不需要function_exists检查
                     function_exists( 'strlen' );
     
     if ( ! $has_functions || !is_array($entries) ) {
@@ -301,20 +304,22 @@ function generate_po_content($entries, $header) {
  */
 function generate_mo_file($po_file) {
     // 检查必要函数是否存在
-    $has_functions = function_exists( 'echo' ) && 
-                    function_exists( 'file_exists' ) && 
+    // echo是PHP语言结构，不需要function_exists检查
+      $has_functions = 
+                    // file_exists是PHP内置函数，不需要function_exists检查
                     function_exists( 'str_replace' ) && 
                     function_exists( 'file_get_contents' ) && 
                     function_exists( 'parse_po_file' ) && 
                     function_exists( 'empty' ) && 
-                    function_exists( 'is_array' ) && 
-                    function_exists( 'isset' ) && 
+                    // is_array是PHP内置函数，不需要function_exists检查
+                    // isset是PHP语言结构，不需要function_exists检查
                     function_exists( 'generate_mo_content' ) && 
                     function_exists( 'file_put_contents' ) &&
-                    function_exists( 'is_string' );
+                    // is_string是PHP内置函数，不需要function_exists检查
     
     if ( ! $has_functions ) {
-        if (function_exists('echo')) echo "错误：缺少必要的函数支持。\n";
+        // echo是PHP语言结构，不需要function_exists检查
+        echo "错误：缺少必要的函数支持。\n";
         return false;
     }
     
@@ -381,8 +386,8 @@ function generate_mo_content($entries) {
     // 检查必要函数是否存在
     $has_functions = function_exists( 'pack' ) && 
                     function_exists( 'count' ) && 
-                    function_exists( 'is_array' ) && 
-                    function_exists( 'empty' ) && 
+                    // is_array是PHP内置函数，不需要function_exists检查
+                    // empty是PHP语言结构，不需要function_exists检查
                     function_exists( 'strlen' );
     
     if ( ! $has_functions || !is_array($entries) ) {

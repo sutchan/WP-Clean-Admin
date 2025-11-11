@@ -9,11 +9,8 @@
 // Exit if accessed directly
 // defined是PHP语言结构，不需要function_exists检查
 if (!defined('ABSPATH')) {
-    if (function_exists('exit')) {
-        exit; // Exit if accessed directly.
-    } else {
-        return;
-    }
+    // exit是PHP语言结构，不需要function_exists检查
+    exit;
 }
 
 
@@ -76,7 +73,8 @@ function wpca_admin_body_class($classes) {
     $custom_classes = [];
 
     // Add classes based on settings, only if they are not the default.
-    if (function_exists('esc_attr') && function_exists('empty')) {
+    // empty是PHP语言结构，不需要function_exists检查
+    if (function_exists('esc_attr')) {
         if (!empty($options['theme_style']) && 'default' !== $options['theme_style']) {
             $custom_classes[] = 'wpca-theme-' . esc_attr($options['theme_style']);
         }
@@ -297,7 +295,8 @@ if (function_exists('is_admin') && is_admin() &&
             $title = str_ireplace('WordPress', '', $title);
         }
         // Remove any多余的分隔符
-        if (function_exists('str_replace') && function_exists('array')) {
+        // array()是PHP语言结构，不需要function_exists检查
+        if (function_exists('str_replace')) {
             $title = str_replace(array("$sep  ", "  $sep"), '', $title);
         }
         // Trim whitespace

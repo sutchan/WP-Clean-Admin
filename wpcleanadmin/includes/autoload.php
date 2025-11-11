@@ -11,13 +11,10 @@
 
 // Exit if accessed directly
 // defined是PHP语言结构，不需要function_exists检查
-if ( ! defined( 'ABSPATH' ) ) {
-    if ( function_exists( 'exit' ) ) {
-        exit;
-    } else {
-        return;
-    }
-}
+  if ( ! defined( 'ABSPATH' ) ) {
+     // exit是PHP语言结构，不需要function_exists检查
+     exit;
+  }
 
 /**
  * Register the autoloader

@@ -14,11 +14,8 @@
 // Exit if accessed directly
 // defined是PHP语言结构，不需要function_exists检查
 if ( ! defined( 'ABSPATH' ) ) {
-    if ( function_exists( 'exit' ) ) {
-        exit;
-    } else {
-        return;
-    }
+    // exit是PHP语言结构，不需要function_exists检查
+    exit;
 }
 
 // Define constants
@@ -362,6 +359,7 @@ function wpca_activate_plugin() {
     }
     
     // 仅在WordPress初始化后且函数存在时刷新重写规则
+    // defined是PHP语言结构，不需要function_exists检查
     if ( function_exists( 'flush_rewrite_rules' ) && defined( 'ABSPATH' ) && ABSPATH ) {
         // 延迟刷新重写规则，避免在激活钩子中直接调用导致的问题
         if ( function_exists( 'add_action' ) ) {

@@ -8,12 +8,7 @@
  * 2. 通过 PHP 运行此脚本：php generate_mo.php
  */
 
-// 确保函数存在性检查函数存在
-if ( ! function_exists( 'function_exists' ) ) {
-    function function_exists( $function_name ) {
-        return true; // 简化的备用实现
-    }
-}
+// function_exists是PHP内置函数，不需要备用实现
 
 // 直接访问检查
 if ( ! defined( 'ABSPATH' ) && ! defined( 'WP_CLI' ) ) {
@@ -23,15 +18,13 @@ if ( ! defined( 'ABSPATH' ) && ! defined( 'WP_CLI' ) ) {
 // 定义函数将 .po 文件转换为 .mo 文件
 function generate_mo_file($po_file) {
     // 检查必要函数是否存在
-    // file_exists是PHP内置函数，不需要function_exists检查
+    // empty和echo是PHP语言结构，不需要function_exists检查
 $has_functions = 
                     function_exists( 'str_replace' ) && 
                     function_exists( 'file_get_contents' ) && 
                     function_exists( 'file_put_contents' ) && 
                     function_exists( 'parse_po_file' ) && 
-                    function_exists( 'generate_mo_content' ) && 
-                    function_exists( 'empty' ) && 
-                    function_exists( 'echo' );
+                    function_exists( 'generate_mo_content' );
     
     if ( ! $has_functions ) {
         echo "错误：缺少必要的函数支持。\n";
@@ -78,10 +71,9 @@ $has_functions =
 
 // 简化版 .po 文件解析函数
 function parse_po_file($po_content) {
-    // 检查必要函数是否存在
+    // 检查必要函数是否存在，empty是PHP语言结构不需要检查
     $has_functions = function_exists( 'explode' ) && 
                     function_exists( 'trim' ) && 
-                    function_exists( 'empty' ) && 
                     function_exists( 'strpos' ) && 
                     function_exists( 'substr' ) && 
                     function_exists( 'strrpos' ) && 

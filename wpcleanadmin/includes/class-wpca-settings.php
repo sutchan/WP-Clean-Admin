@@ -3,11 +3,8 @@
 
 // defined是PHP语言结构，不需要function_exists检查
 if (! defined( 'ABSPATH' ) ) {
-    if (function_exists('exit')) {
-        exit;
-    } else {
-        return;
-    }
+    // exit是PHP语言结构，不需要function_exists检查
+    exit;
 }
 
 /**

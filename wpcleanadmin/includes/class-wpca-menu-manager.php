@@ -587,7 +587,8 @@ class WPCA_Menu_Manager {
             $this->validate_ajax_request();
             
             // 获取参数
-            $slug = function_exists('sanitize_text_field') ? sanitize_text_field($_POST['slug']) : (isset($_POST['slug']) ? filter_input(INPUT_POST, 'slug', FILTER_SANITIZE_STRING) : '');
+              // isset是PHP语言结构，不需要function_exists检查
+              $slug = function_exists('sanitize_text_field') ? sanitize_text_field($_POST['slug']) : (isset($_POST['slug']) ? filter_input(INPUT_POST, 'slug', FILTER_SANITIZE_STRING) : '');
             $state = isset($_POST['state']) ? intval($_POST['state']) : 0;
             
             // 执行切换操作
@@ -724,6 +725,7 @@ class WPCA_Menu_Manager {
      */
     private function validate_ajax_request() {
         // 检查是否是AJAX请求
+        // defined是PHP语言结构，不需要function_exists检查
         $is_ajax = function_exists('wp_doing_ajax') ? wp_doing_ajax() : (defined('DOING_AJAX') && DOING_AJAX);
         if (!$is_ajax) {
             throw new Exception((function_exists('__') ? __('Invalid request type', 'wp-clean-admin') : 'Invalid request type'), 400);
