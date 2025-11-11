@@ -1,6 +1,12 @@
 # WP Clean Admin Changelog
 
-## 1.7.1 - 2024-01-30
+## 1.7.3 - 2024-05-15
+
+### Fixed
+- 修复wp-clean-admin.php文件中的花括号不匹配问题
+- 为class-wpca-i18n.php添加缺失函数和常量的备用实现
+- 为translation-debug.php添加缺失函数和常量的备用实现
+- 修复字符串转义语法错误
 
 ### Fixed
 - 增强了所有核心文件的安全检查，添加了函数存在性检查和变量访问保护

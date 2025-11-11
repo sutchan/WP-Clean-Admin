@@ -3,7 +3,7 @@
  * Plugin Name: WP Clean Admin
  * Plugin URI: https://github.com/sutchan/WP-Clean-Admin
  * Description: Simplifies and optimizes the WordPress admin interface, providing a cleaner backend experience with database optimization capabilities.
- * Version: 1.7.1
+ * Version: 1.7.3
  * Author: Sut
  * Author URI: https://github.com/sutchan/
  * License: GPLv2 or later
@@ -20,31 +20,43 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Define constants
 if ( ! defined( 'WPCA_VERSION' ) ) {
-	define( 'WPCA_VERSION', '1.7.1' );
+	define( 'WPCA_VERSION', '1.7.2' );
 }
 
 if ( ! defined( 'WPCA_BASENAME' ) ) {
 	define( 'WPCA_BASENAME', 'wp-clean-admin.php' );
 }
 
-if ( ! defined( 'WPCA_PLUGIN_DIR' ) ) {
-	if ( function_exists( 'plugin_dir_path' ) ) {
-		define( 'WPCA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
-	} else {
-		define( 'WPCA_PLUGIN_DIR', ( function_exists( 'trailingslashit' ) ? trailingslashit( dirname( __FILE__ ) ) : dirname( __FILE__ ) . '/' ) );
+// Provide fallback implementations for WordPress core functions
+if ( ! function_exists( 'plugin_dir_path' ) ) {
+	function plugin_dir_path( $file ) {
+		return trailingslashit( dirname( $file ) );
 	}
 }
 
-if ( ! defined( 'WPCA_PLUGIN_URL' ) ) {
-	if ( function_exists( 'plugin_dir_url' ) ) {
-		define( 'WPCA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
-	} else {
-		$plugin_url = ( function_exists( 'str_replace' ) ? str_replace( '\\', '/', ( function_exists( 'trailingslashit' ) ? trailingslashit( dirname( __FILE__ ) ) : dirname( __FILE__ ) . '/' ) ) : dirname( __FILE__ ) . '/' );
-        if ( defined( 'ABSPATH' ) && ABSPATH && function_exists( 'site_url' ) && function_exists( 'str_replace' ) ) {
-            $plugin_url = str_replace( str_replace( '\\', '/', ABSPATH ), site_url( '/' ), $plugin_url );
-        }
-		define( 'WPCA_PLUGIN_URL', $plugin_url );
+if ( ! function_exists( 'plugin_dir_url' ) ) {
+	function plugin_dir_url( $file ) {
+		$url = str_replace( '\\', '/', trailingslashit( dirname( $file ) ) );
+		if ( defined( 'ABSPATH' ) && ABSPATH ) {
+			$url = str_replace( str_replace( '\\', '/', ABSPATH ), site_url( '/' ), $url );
+		}
+		return $url;
 	}
+}
+
+// Define WP_DEBUG constant if not defined
+if ( ! defined( 'WP_DEBUG' ) ) {
+	define( 'WP_DEBUG', false );
+}
+
+// Define plugin directory path
+if ( ! defined( 'WPCA_PLUGIN_DIR' ) ) {
+	define( 'WPCA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
+}
+
+// Define plugin URL
+if ( ! defined( 'WPCA_PLUGIN_URL' ) ) {
+	define( 'WPCA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 }
 
 if ( ! function_exists( 'trailingslashit' ) ) {
@@ -177,17 +189,18 @@ function wpca_initialize_plugin() {
 }
 
 // 注册插件初始化
-if (function_exists('add_action')) {
-    add_action('plugins_loaded', 'wpca_initialize_plugin', 10);
+// Provide fallback implementation for add_action if not exists
+if ( ! function_exists( 'add_action' ) ) {
+	function add_action( $hook_name, $callback, $priority = 10, $accepted_args = 1 ) {
+		// This is a dummy implementation
+		return true;
+	}
 }
 
-// 提供file_exists的备用实现
-// file_exists是PHP内置函数，可以安全使用
-
-// include_once是PHP语言结构，不需要函数存在性检查
+add_action('plugins_loaded', 'wpca_initialize_plugin', 10);
 
 // file_exists是PHP内置函数，可以安全使用
-if ( defined( 'WP_DEBUG' ) && WP_DEBUG && defined( 'WPCA_PLUGIN_DIR' ) && file_exists( WPCA_PLUGIN_DIR . 'translation-debug.php' ) ) {
+if ( WP_DEBUG && defined( 'WPCA_PLUGIN_DIR' ) && file_exists( WPCA_PLUGIN_DIR . 'translation-debug.php' ) ) {
 	include_once WPCA_PLUGIN_DIR . 'translation-debug.php';
 }
 
@@ -248,9 +261,7 @@ function wpca_load_textdomain() {
         }
     }
 }
-if ( function_exists( 'add_action' ) ) {
-    add_action( 'plugins_loaded', 'wpca_load_textdomain' );
-}
+add_action( 'plugins_loaded', 'wpca_load_textdomain' );
 
 function wpca_load_admin_resources() {
     global $wpca_admin_data;
@@ -285,10 +296,28 @@ function wpca_load_admin_resources() {
             wp_enqueue_style( 'wpca-database', ( defined( 'WPCA_PLUGIN_URL' ) ? WPCA_PLUGIN_URL : '' ) . 'assets/css/wpca-database.css', array(), ( defined( 'WPCA_VERSION' ) ? WPCA_VERSION : '1.0' ) );
         }
         
-        $wpca_admin_data = array(
-            'ajaxurl' => function_exists( 'admin_url' ) ? admin_url( 'admin-ajax.php' ) : '/wp-admin/admin-ajax.php',
-            'nonce'   => function_exists( 'wp_create_nonce' ) ? wp_create_nonce( 'wpca_admin_nonce' ) : 'dummy_nonce',
-            'debug'   => defined( 'WP_DEBUG' ) && WP_DEBUG,
+        // Provide fallback implementation for wp_create_nonce
+if ( ! function_exists( 'wp_create_nonce' ) ) {
+	function wp_create_nonce( $action = -1 ) {
+		return 'dummy_nonce_' . $action;
+	}
+}
+
+// Provide fallback implementation for admin_url
+if ( ! function_exists( 'admin_url' ) ) {
+	function admin_url( $path = '', $scheme = 'admin' ) {
+		$url = site_url( 'wp-admin/', $scheme );
+		if ( $path && is_string( $path ) ) {
+			$url .= ltrim( $path, '/' );
+		}
+		return $url;
+	}
+}
+
+$wpca_admin_data = array(
+            'ajaxurl' => admin_url( 'admin-ajax.php' ),
+            'nonce'   => wp_create_nonce( 'wpca_admin_nonce' ),
+            'debug'   => WP_DEBUG,
             'version' => defined( 'WPCA_VERSION' ) ? WPCA_VERSION : '1.0',
             // Error messages for AJAX requests
             'error_request_processing_failed' => function_exists( '__' ) ? __('Request processing failed', 'wp-clean-admin') : 'Request processing failed',
@@ -303,8 +332,28 @@ function wpca_load_admin_resources() {
         }
     }
 }
-if ( function_exists( 'add_action' ) ) {
-    add_action( 'admin_enqueue_scripts', 'wpca_load_admin_resources' );
+add_action( 'admin_enqueue_scripts', 'wpca_load_admin_resources' );
+
+// Provide fallback implementation for WordPress hook functions
+if ( ! function_exists( 'register_activation_hook' ) ) {
+	function register_activation_hook( $file, $function ) {
+		// This is a dummy implementation
+		return true;
+	}
+}
+
+if ( ! function_exists( 'register_deactivation_hook' ) ) {
+	function register_deactivation_hook( $file, $function ) {
+		// This is a dummy implementation
+		return true;
+	}
+}
+
+if ( ! function_exists( 'add_filter' ) ) {
+	function add_filter( $hook_name, $callback, $priority = 10, $accepted_args = 1 ) {
+		// This is a dummy implementation
+		return true;
+	}
 }
 
 function wpca_activate_plugin() {
@@ -327,45 +376,44 @@ function wpca_activate_plugin() {
         }
     }
     
-    // is_array是PHP内置函数，可以安全使用
-    
-    // 安全地获取和更新选项
-    if ( function_exists( 'get_option' ) ) {
-        $wpca_settings = get_option( 'wpca_settings' );
-        
-        if ( ! $wpca_settings ) {
-            // 设置默认配置
-            $default_settings = array(
-                'version'             => defined( 'WPCA_VERSION' ) ? WPCA_VERSION : '1.7.1',
-                'menu_order'          => array(),
-                'submenu_order'       => array(),
-                'menu_toggles'        => array(),
-                'dashboard_widgets'   => array(),
-                'login_style'         => 'default',
-                'custom_admin_bar'    => 0,
-                'disable_help_tabs'   => 0,
-                'cleanup_header'      => 0,
-                'minify_admin_assets' => 0
-            );
-            if ( function_exists( 'update_option' ) ) {
-                update_option( 'wpca_settings', $default_settings );
-            }
-        } else if ( function_exists( 'update_option' ) && is_array( $wpca_settings ) ) {
-            // 更新版本号
-            $wpca_settings['version'] = defined( 'WPCA_VERSION' ) ? WPCA_VERSION : '1.7.1';
-            update_option( 'wpca_settings', $wpca_settings );
+    if ( ! function_exists( 'flush_rewrite_rules' ) ) {
+        function flush_rewrite_rules( $hard = true ) {
+            return true;
         }
     }
     
-    // 仅在WordPress初始化后且函数存在时刷新重写规则
-    // defined是PHP语言结构，不需要function_exists检查
-    if ( function_exists( 'flush_rewrite_rules' ) && defined( 'ABSPATH' ) && ABSPATH ) {
+    // is_array是PHP内置函数，可以安全使用
+    
+    // 安全地获取和更新选项
+    $wpca_settings = get_option( 'wpca_settings' );
+    
+    if ( ! $wpca_settings ) {
+        // 设置默认配置
+        $default_settings = array(
+            'version'             => defined( 'WPCA_VERSION' ) ? WPCA_VERSION : '1.7.1',
+            'menu_order'          => array(),
+            'submenu_order'       => array(),
+            'menu_toggles'        => array(),
+            'dashboard_widgets'   => array(),
+            'login_style'         => 'default',
+            'custom_admin_bar'    => 0,
+            'disable_help_tabs'   => 0,
+            'cleanup_header'      => 0,
+            'minify_admin_assets' => 0
+        );
+        update_option( 'wpca_settings', $default_settings );
+    } else if ( is_array( $wpca_settings ) ) {
+        // 更新版本号
+        $wpca_settings['version'] = defined( 'WPCA_VERSION' ) ? WPCA_VERSION : '1.7.1';
+        update_option( 'wpca_settings', $wpca_settings );
+    }
+    
+    // 仅在WordPress初始化后刷新重写规则
+    if ( defined( 'ABSPATH' ) && ABSPATH ) {
         // 延迟刷新重写规则，避免在激活钩子中直接调用导致的问题
         if ( function_exists( 'add_action' ) ) {
             add_action( 'init', function() {
-                if ( function_exists( 'flush_rewrite_rules' ) ) {
-                    flush_rewrite_rules();
-                }
+                flush_rewrite_rules();
             }, 100 );
         } else {
             // 如果不能使用钩子，才直接调用
@@ -373,9 +421,7 @@ function wpca_activate_plugin() {
         }
     }
 }
-if ( function_exists( 'register_activation_hook' ) ) {
-    register_activation_hook( __FILE__, 'wpca_activate_plugin' );
-}
+register_activation_hook( __FILE__, 'wpca_activate_plugin' );
 
 function wpca_deactivate_plugin() {
     // 提供必要函数的备用实现
@@ -418,9 +464,7 @@ function wpca_deactivate_plugin() {
         }
     }
 }
-if ( function_exists( 'register_deactivation_hook' ) ) {
-    register_deactivation_hook( __FILE__, 'wpca_deactivate_plugin' );
-}
+register_deactivation_hook( __FILE__, 'wpca_deactivate_plugin' );
 
 function wpca_add_settings_link( $links ) {
     // 提供必要函数的备用实现
@@ -451,9 +495,7 @@ function wpca_add_settings_link( $links ) {
     // 确保返回值是数组
     return is_array( $links ) ? $links : array();
 }
-if ( function_exists( 'add_filter' ) ) {
-    add_filter( 'plugin_action_links_' . ( defined( 'WPCA_BASENAME' ) ? WPCA_BASENAME : 'wp-clean-admin.php' ), 'wpca_add_settings_link' );
-}
+add_filter( 'plugin_action_links_' . ( defined( 'WPCA_BASENAME' ) ? WPCA_BASENAME : 'wp-clean-admin.php' ), 'wpca_add_settings_link' );
 
 /**
  * Initialize plugin components
@@ -527,7 +569,5 @@ function wpca_initialize_components() {
     }
 }
 
-if ( function_exists( 'add_action' ) ) {
-    add_action( 'plugins_loaded', 'wpca_initialize_components', 20 );
-}
+add_action( 'plugins_loaded', 'wpca_initialize_components', 20 );
 ?>

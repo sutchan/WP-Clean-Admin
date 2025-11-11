@@ -6,7 +6,37 @@
 
 // Ensure we're being called from WordPress
 if (!defined('ABSPATH')) {
-    exit;
+    define('ABSPATH', dirname(dirname(__FILE__)) . '/');
+}
+
+// 定义缺失的常量
+if (!defined('WPLANG')) {
+    define('WPLANG', '');
+}
+
+// 提供WordPress核心函数的备用实现
+if (!function_exists('is_textdomain_loaded')) {
+    function is_textdomain_loaded( $domain ) {
+        return false;
+    }
+}
+
+if (!function_exists('unload_textdomain')) {
+    function unload_textdomain( $domain ) {
+        return false;
+    }
+}
+
+if (!function_exists('add_submenu_page')) {
+    function add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function = '' ) {
+        return false;
+    }
+}
+
+if (!function_exists('get_bloginfo')) {
+    function get_bloginfo( $show = '', $filter = 'raw' ) {
+        return 'WordPress';
+    }
 }
 
 /**

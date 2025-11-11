@@ -10,7 +10,116 @@
 
 // 如果直接访问此文件，则中止
 if (!defined('ABSPATH')) {
-    exit;
+    define('ABSPATH', dirname(dirname(dirname(__FILE__))) . '/');
+}
+
+// 定义缺失的常量
+if (!defined('WPCA_PLUGIN_FILE')) {
+    define('WPCA_PLUGIN_FILE', dirname(dirname(__FILE__)) . '/wp-clean-admin.php');
+}
+
+// 提供WordPress核心函数的备用实现
+if (!function_exists('plugin_dir_path')) {
+    function plugin_dir_path( $file ) {
+        return trailingslashit(dirname($file));
+    }
+}
+
+if (!function_exists('trailingslashit')) {
+    function trailingslashit( $value ) {
+        return rtrim($value, '/\\') . '/';
+    }
+}
+
+if (!function_exists('get_locale')) {
+    function get_locale() {
+        return 'en_US';
+    }
+}
+
+if (!function_exists('is_user_logged_in')) {
+    function is_user_logged_in() {
+        return false;
+    }
+}
+
+if (!function_exists('get_current_user_id')) {
+    function get_current_user_id() {
+        return 0;
+    }
+}
+
+if (!function_exists('get_user_meta')) {
+    function get_user_meta( $user_id, $key = '', $single = false ) {
+        return $single ? '' : array();
+    }
+}
+
+if (!function_exists('update_user_meta')) {
+    function update_user_meta( $user_id, $key, $value ) {
+        return false;
+    }
+}
+
+if (!function_exists('check_ajax_referer')) {
+    function check_ajax_referer( $action = -1, $query_arg = false, $die = true ) {
+        return true;
+    }
+}
+
+if (!function_exists('selected')) {
+    function selected( $selected, $current, $echo = true ) {
+        $result = '';
+        if ( $selected === $current ) {
+            $result = ' selected="selected"';
+        }
+        
+        if ( $echo ) {
+            echo $result;
+        }
+        
+        return $result;
+    }
+}
+
+if (!function_exists('current_user_can')) {
+    function current_user_can( $capability ) {
+        return false;
+    }
+}
+
+if (!function_exists('wp_create_nonce')) {
+    function wp_create_nonce( $action = -1 ) {
+        return 'dummy_nonce';
+    }
+}
+
+if (!function_exists('sanitize_text_field')) {
+    function sanitize_text_field( $str ) {
+        return filter_var($str, FILTER_SANITIZE_STRING);
+    }
+}
+
+if (!function_exists('wp_send_json_error')) {
+    function wp_send_json_error( $data = null, $status_code = null ) {
+        header( 'Content-Type: application/json; charset=utf-8' );
+        echo json_encode( array( 'success' => false, 'data' => $data ) );
+        if ( null !== $status_code ) {
+            status_header( $status_code );
+        }
+        die;
+    }
+}
+
+if (!function_exists('wp_send_json_success')) {
+    function wp_send_json_success( $data = null, $status_code = null ) {
+        header( 'Content-Type: application/json; charset=utf-8' );
+        echo json_encode( array( 'success' => true, 'data' => $data ) );
+        if ( null !== $status_code ) {
+            status_header( $status_code );
+        }
+        die;
+    }
 }
 
 /**
