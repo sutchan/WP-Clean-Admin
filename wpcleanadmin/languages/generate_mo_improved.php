@@ -310,7 +310,7 @@ function generate_mo_file($po_file) {
                     function_exists( 'str_replace' ) && 
                     function_exists( 'file_get_contents' ) && 
                     function_exists( 'parse_po_file' ) && 
-                    function_exists( 'empty' ) && 
+                    // empty是PHP语言结构，不需要function_exists检查 
                     // is_array是PHP内置函数，不需要function_exists检查
                     // isset是PHP语言结构，不需要function_exists检查
                     function_exists( 'generate_mo_content' ) && 

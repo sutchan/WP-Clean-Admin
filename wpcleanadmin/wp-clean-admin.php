@@ -96,68 +96,67 @@ function wpca_initialize_plugin() {
     
     // 检查是否有class_exists函数可用
     // class_exists是PHP内置函数，可以安全使用
-        // 创建必要的类实例，确保类存在才实例化
-        if (class_exists('WPCA_Permissions')) {
-            $wpca_permissions = new WPCA_Permissions();
+    // 创建必要的类实例，确保类存在才实例化
+    if (class_exists('WPCA_Permissions')) {
+        $wpca_permissions = new WPCA_Permissions();
+    }
+    
+    // class_exists是PHP内置函数，可以安全使用
+    
+    if (class_exists('WPCA_Settings')) {
+        try {
+            $wpca_settings = new WPCA_Settings();
+        } catch ( Exception $e ) {
+            // 静默捕获异常，避免插件崩溃
         }
-        
-        // class_exists是PHP内置函数，可以安全使用
-        
-        if (class_exists('WPCA_Settings')) {
-            try {
-                $wpca_settings = new WPCA_Settings();
-            } catch ( Exception $e ) {
-                // 静默捕获异常，避免插件崩溃
-            }
+    }
+    
+    if (class_exists('WPCA_Menu_Customizer')) {
+        try {
+            $wpca_menu_customizer = new WPCA_Menu_Customizer();
+        } catch ( Exception $e ) {
+            // 静默捕获异常，避免插件崩溃
         }
-        
-        if (class_exists('WPCA_Menu_Customizer')) {
-            try {
-                $wpca_menu_customizer = new WPCA_Menu_Customizer();
-            } catch ( Exception $e ) {
-                // 静默捕获异常，避免插件崩溃
-            }
+    }
+    
+    // 初始化附加组件
+    if (class_exists('WPCA_AJAX')) {
+        try {
+            $wpca_ajax = new WPCA_AJAX();
+        } catch ( Exception $e ) {
+            // 静默捕获异常，避免插件崩溃
         }
-        
-        // 初始化附加组件
-        if (class_exists('WPCA_AJAX')) {
-            try {
-                $wpca_ajax = new WPCA_AJAX();
-            } catch ( Exception $e ) {
-                // 静默捕获异常，避免插件崩溃
-            }
+    }
+    
+    if (class_exists('WPCA_Cleanup')) {
+        try {
+            $wpca_cleanup = new WPCA_Cleanup();
+        } catch ( Exception $e ) {
+            // 静默捕获异常，避免插件崩溃
         }
-        
-        if (class_exists('WPCA_Cleanup')) {
-            try {
-                $wpca_cleanup = new WPCA_Cleanup();
-            } catch ( Exception $e ) {
-                // 静默捕获异常，避免插件崩溃
-            }
+    }
+    
+    if (class_exists('WPCA_Dashboard')) {
+        try {
+            $wpca_dashboard = new WPCA_Dashboard();
+        } catch ( Exception $e ) {
+            // 静默捕获异常，避免插件崩溃
         }
-        
-        if (class_exists('WPCA_Dashboard')) {
-            try {
-                $wpca_dashboard = new WPCA_Dashboard();
-            } catch ( Exception $e ) {
-                // 静默捕获异常，避免插件崩溃
-            }
+    }
+    
+    if (class_exists('WPCA_Login')) {
+        try {
+            $wpca_login = new WPCA_Login();
+        } catch ( Exception $e ) {
+            // 静默捕获异常，避免插件崩溃
         }
-        
-        if (class_exists('WPCA_Login')) {
-            try {
-                $wpca_login = new WPCA_Login();
-            } catch ( Exception $e ) {
-                // 静默捕获异常，避免插件崩溃
-            }
-        }
-        
-        if (class_exists('WPCA_User_Roles')) {
-            try {
-                $wpca_user_roles = new WPCA_User_Roles();
-            } catch ( Exception $e ) {
-                // 静默捕获异常，避免插件崩溃
-            }
+    }
+    
+    if (class_exists('WPCA_User_Roles')) {
+        try {
+            $wpca_user_roles = new WPCA_User_Roles();
+        } catch ( Exception $e ) {
+            // 静默捕获异常，避免插件崩溃
         }
     }
     
@@ -445,7 +444,7 @@ function wpca_add_settings_link( $links ) {
             $links = array();
         }
         
-        $settings_link = '<a href="' . admin_url( 'admin.php?page=wp-clean-admin' ) . '">Settings</a>';
+        $settings_link = '<a href="' . admin_url( 'admin.php?page=wp-clean-admin' ) . '">' . __( 'Settings', 'wp-clean-admin' ) . '</a>';
         array_unshift( $links, $settings_link );
     }
     
@@ -468,63 +467,62 @@ function wpca_initialize_components() {
     
     // 检查是否有class_exists函数可用
     // class_exists是PHP内置函数，可以安全使用
-        // 安全地实例化各个组件类
-        if ( class_exists( 'WPCA_Settings' ) ) {
-            new WPCA_Settings();
-        }
-        
-        if ( class_exists( 'WPCA_Menu_Customizer' ) ) {
-            new WPCA_Menu_Customizer();
-        }
-        
-        if ( class_exists( 'WPCA_Permissions' ) ) {
-            new WPCA_Permissions();
-        }
-        
-        // 处理单例模式和普通实例化
-        if ( class_exists( 'WPCA_Performance' ) ) {
-            try {
-                if ( method_exists('WPCA_Performance', 'get_instance') ) {
-                    WPCA_Performance::get_instance();
-                } else {
-                    new WPCA_Performance();
-                }
-            } catch ( Exception $e ) {
-                // 静默捕获异常，避免插件崩溃
+    // 安全地实例化各个组件类
+    if ( class_exists( 'WPCA_Settings' ) ) {
+        new WPCA_Settings();
+    }
+    
+    if ( class_exists( 'WPCA_Menu_Customizer' ) ) {
+        new WPCA_Menu_Customizer();
+    }
+    
+    if ( class_exists( 'WPCA_Permissions' ) ) {
+        new WPCA_Permissions();
+    }
+    
+    // 处理单例模式和普通实例化
+    if ( class_exists( 'WPCA_Performance' ) ) {
+        try {
+            if ( method_exists('WPCA_Performance', 'get_instance') ) {
+                WPCA_Performance::get_instance();
+            } else {
+                new WPCA_Performance();
             }
+        } catch ( Exception $e ) {
+            // 静默捕获异常，避免插件崩溃
         }
-        
-        if ( class_exists( 'WPCA_Resources' ) ) {
-            try {
-                new WPCA_Resources();
-            } catch ( Exception $e ) {
-                // 静默捕获异常，避免插件崩溃
-            }
+    }
+    
+    if ( class_exists( 'WPCA_Resources' ) ) {
+        try {
+            new WPCA_Resources();
+        } catch ( Exception $e ) {
+            // 静默捕获异常，避免插件崩溃
         }
-        
-        if ( class_exists( 'WPCA_Database' ) ) {
-            try {
-                new WPCA_Database();
-            } catch ( Exception $e ) {
-                // 静默捕获异常，避免插件崩溃
-            }
+    }
+    
+    if ( class_exists( 'WPCA_Database' ) ) {
+        try {
+            new WPCA_Database();
+        } catch ( Exception $e ) {
+            // 静默捕获异常，避免插件崩溃
         }
-        
-        // 安全地调用单例方法
-        if ( class_exists( 'WPCA_Database_Settings' ) && method_exists('WPCA_Database_Settings', 'get_instance') ) {
-            try {
-                WPCA_Database_Settings::get_instance();
-            } catch ( Exception $e ) {
-                // 静默捕获异常，避免插件崩溃
-            }
+    }
+    
+    // 安全地调用单例方法
+    if ( class_exists( 'WPCA_Database_Settings' ) && method_exists('WPCA_Database_Settings', 'get_instance') ) {
+        try {
+            WPCA_Database_Settings::get_instance();
+        } catch ( Exception $e ) {
+            // 静默捕获异常，避免插件崩溃
         }
-        
-        if ( class_exists( 'WPCA_Performance_Settings' ) && method_exists('WPCA_Performance_Settings', 'get_instance') ) {
-            try {
-                WPCA_Performance_Settings::get_instance();
-            } catch ( Exception $e ) {
-                // 静默捕获异常，避免插件崩溃
-            }
+    }
+    
+    if ( class_exists( 'WPCA_Performance_Settings' ) && method_exists('WPCA_Performance_Settings', 'get_instance') ) {
+        try {
+            WPCA_Performance_Settings::get_instance();
+        } catch ( Exception $e ) {
+            // 静默捕获异常，避免插件崩溃
         }
     }
 }

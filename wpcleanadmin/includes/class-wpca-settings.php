@@ -100,7 +100,8 @@ class WPCA_Settings {
         $tab = 'tab-general'; // 默认值
         
         // isset是PHP语言结构，不需要function_exists检查
-        if (isset($_POST['tab']) && function_exists('is_string') && is_string($_POST['tab']) && function_exists('in_array') && in_array($_POST['tab'], $allowed_tabs)) {
+        // isset和is_string是PHP语言结构/内置函数，不需要function_exists检查
+        if (isset($_POST['tab']) && is_string($_POST['tab']) && function_exists('in_array') && in_array($_POST['tab'], $allowed_tabs)) {
             $tab = sanitize_text_field($_POST['tab']);
         }
         
