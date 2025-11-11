@@ -118,14 +118,9 @@ function wpca_apply_custom_styles() {
 
     // Start with values from settings (for 'custom' theme).
     // isset是PHP语言结构，不需要function_exists检查
-        $primary_color    = isset($options['primary_color']) ? $options['primary_color'] : '#0073aa';
-        $background_color = isset($options['background_color']) ? $options['background_color'] : '#ffffff';
-        $text_color       = isset($options['text_color']) ? $options['text_color'] : '#333333';
-    } else {
-        $primary_color    = '#0073aa';
-        $background_color = '#ffffff';
-        $text_color       = '#333333';
-    }
+    $primary_color    = isset($options['primary_color']) ? $options['primary_color'] : '#0073aa';
+    $background_color = isset($options['background_color']) ? $options['background_color'] : '#ffffff';
+    $text_color       = isset($options['text_color']) ? $options['text_color'] : '#333333';
     
     // Override colors for predefined themes.
     if (isset($options['theme_style'])) {
