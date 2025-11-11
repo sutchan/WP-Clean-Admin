@@ -95,7 +95,6 @@ function wpca_admin_body_class($classes) {
 if (function_exists('add_filter')) {
     add_filter('admin_body_class', 'wpca_admin_body_class');
 }
-}
 
 
 /**
