@@ -5,6 +5,7 @@
  * 负责插件的国际化和本地化功能，加载语言文件和管理翻译
  *
  * @package WP_Clean_Admin
+ * @version 1.7.11
  * @since 1.4.2
  */
 
@@ -14,8 +15,8 @@ if (!defined('ABSPATH')) {
 }
 
 // 定义缺失的常量
-if (!defined('WPCA_PLUGIN_FILE')) {
-    define('WPCA_PLUGIN_FILE', dirname(dirname(__FILE__)) . '/wp-clean-admin.php');
+if (!defined('WPCA_MAIN_FILE')) {
+    define('WPCA_MAIN_FILE', dirname(dirname(__FILE__)) . '/wp-clean-admin.php');
 }
 
 // 提供WordPress核心函数的备用实现
@@ -187,7 +188,7 @@ class WPCA_i18n {
         }
         
         // 定义语言目录
-        $languages_dir = plugin_dir_path(WPCA_PLUGIN_FILE) . 'wpcleanadmin/languages/';
+        $languages_dir = plugin_dir_path(WPCA_MAIN_FILE) . 'wpcleanadmin/languages/';
         
         // 获取用户选择的语言（如果有）
         $user_language = $this->get_user_language();

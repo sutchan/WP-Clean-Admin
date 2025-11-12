@@ -5,6 +5,7 @@
  * Handles role-based permissions and settings filtering for non-administrator users.
  *
  * @package WPCleanAdmin
+ * @version 1.7.11
  */
 
 if (!defined('ABSPATH')) {

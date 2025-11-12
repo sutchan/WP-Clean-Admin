@@ -3,6 +3,9 @@
  * WP Clean Admin Dashboard Class
  *
  * Handles all dashboard-related modifications and settings.
+ *
+ * @package WP_Clean_Admin
+ * @version 1.7.11
  */
 
 if (!defined('ABSPATH')) {

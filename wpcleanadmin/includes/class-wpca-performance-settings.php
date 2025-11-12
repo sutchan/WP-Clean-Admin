@@ -7,6 +7,7 @@
  * 
  * @package WP_Clean_Admin
  * @since 1.3.0
+ * @version 1.7.11
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

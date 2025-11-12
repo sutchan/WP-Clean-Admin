@@ -1,5 +1,41 @@
 # WP Clean Admin Changelog
 
+## 1.7.11 - 2024-06-12
+
+### Fixed
+- 修复class-wpca-ajax.php文件中的语法错误
+- 移除不必要的function_exists('array')检查和多余分号
+- 移除文件末尾的闭合PHP标签以符合WordPress编码规范
+- 添加缺失的类闭合大括号，修复"Unclosed '{' on line 18"错误
+- 检查并确认所有PHP文件闭合标签
+- 验证了主插件文件和所有includes目录下的PHP文件都有正确的闭合标签
+- 确保代码符合项目编码规范
+
+## 1.7.9 - 2024-06-12
+
+### Fixed
+- 为wpca-core-functions.php中的remove_meta_box、sanitize_key、sanitize_hex_color、wp_add_inline_style和is_admin函数添加了function_exists检查
+- 优化了function_exists检查的实现逻辑，移除了冗余注释
+- 修复了代码缩进问题，保持一致性
+- 为wp_add_inline_style函数添加了错误处理和日志记录
+- 增强了代码健壮性，确保在各种WordPress环境中都能正常工作
+- 对includes目录下的所有文件进行了全面检查和修复，确保符合编码规范
+
+## 1.7.8 - 2024-01-18
+
+### Fixed
+- 修复了wpcleanadmin/wp-clean-admin.php文件中wp_create_nonce和admin_url函数实现的缩进问题
+- 删除了重复的wpca_initialize_components函数，避免组件被重复初始化
+- 更新了默认设置中的硬编码版本号
+- 清理了代码中的冗余注释
+- 统一更新了文件版本号为1.7.8
+
+## 1.7.7 - 2024-01-17
+
+### Fixed
+- 修复wpca-core-functions.php文件中的另一个语法错误（删除wpca_remove_admin_bar_items函数中多余的else语句块）
+- 统一更新所有文件版本号确保一致性
+
 ## 1.7.6 - 2024-01-16
 
 ### Fixed

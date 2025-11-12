@@ -5,6 +5,7 @@
  * @package WPCleanAdmin
  * @subpackage MenuCustomizer
  * @since 1.0.0
+ * @version 1.7.11
  */
 
 defined('ABSPATH') || exit;
@@ -78,7 +79,7 @@ class WPCA_Menu_Customizer {
         if (function_exists('add_action')) {
             add_action('admin_menu', array($this, 'initialize_menu_customization'));
             
-            // 添加错误日志钩子
+            // Add error logging hook
             add_action('wpca_menu_customization_error', array($this, 'log_customization_error'), 10, 3);
         }
         // AJAX钩子已移至WPCA_Ajax类统一管理，避免重复注册
@@ -392,9 +393,9 @@ class WPCA_Menu_Customizer {
                 return '';
             }
             
-            // 定义安全的键名清理函数
-            $safe_sanitize_key = function_exists('sanitize_key') ? 'sanitize_key' : function($key) {
-                // 简单的键名清理实现
+            // Define safe key sanitization function
+                $safe_sanitize_key = function_exists('sanitize_key') ? 'sanitize_key' : function($key) {
+                // Simple key sanitization implementation
                 $key = strtolower($key);
                 $key = preg_replace('/[^a-z0-9_\-]/', '', $key);
                 return $key;
@@ -529,7 +530,7 @@ class WPCA_Menu_Customizer {
     private function extract_top_level_menus($menu) {
         $menu_items = array();
         
-        // 定义安全的标签清理函数
+        // Define safe tag stripping function
         $safe_wp_strip_all_tags = function_exists('wp_strip_all_tags') ? 'wp_strip_all_tags' : function($text) {
             return strip_tags($text);
         };
@@ -560,7 +561,7 @@ class WPCA_Menu_Customizer {
     private function extract_submenus($submenu) {
         $menu_items = array();
         
-        // 定义安全的标签清理函数
+        // Define safe tag stripping function
         $safe_wp_strip_all_tags = function_exists('wp_strip_all_tags') ? 'wp_strip_all_tags' : function($text) {
             return strip_tags($text);
         };
@@ -593,17 +594,17 @@ class WPCA_Menu_Customizer {
     }
     
     /**
-     * 处理菜单项可见性
+     * Handle menu item visibility
      * 
-     * 委托给Menu_Manager处理菜单隐藏功能
+     * Delegated to Menu_Manager for menu hiding functionality
      */
     public function handle_menu_item_visibility() {
         // 已委托给WPCA_Menu_Manager处理，此方法保留以保持兼容性
         // Menu_Manager会通过自己注册的hooks处理菜单隐藏
     }
     
-    // 菜单项显示/隐藏相关方法已移至WPCA_Menu_Manager类
-    // 以下方法不再需要，但为了兼容性，保留空实现
+    // Menu item show/hide related methods have been moved to WPCA_Menu_Manager class
+    // The following methods are no longer needed but kept for compatibility
     
     /**
      * Handle AJAX menu toggle
@@ -635,7 +636,7 @@ class WPCA_Menu_Customizer {
                     throw new Exception($result['message'], $result['code']);
                 }
             } else {
-                // 降级处理，保持原有逻辑以确保兼容性
+                // Fallback processing, keeping original logic for compatibility
                 // Enhanced input validation
                 if (empty($slug)) {
                     throw new Exception(__('Invalid menu slug', 'wp-clean-admin'), 400);
@@ -700,7 +701,7 @@ class WPCA_Menu_Customizer {
                         )
                     ));
                 } else {
-                echo json_encode(array('success' => true, 'data' => array('slug' => $slug, 'state' => $state)));
+                echo wp_json_encode(array('success' => true, 'data' => array('slug' => $slug, 'state' => $state)));
                 wp_die();
             }
             
@@ -790,7 +791,7 @@ class WPCA_Menu_Customizer {
             if (function_exists('sanitize_key')) {
                 $reset_types = array_map('sanitize_key', $reset_types);
             } else {
-                // 定义安全的文本清理函数
+                // Define safe text sanitization function
                 $safe_sanitize_text_field = function_exists('sanitize_text_field') ? 'sanitize_text_field' : function($text) {
                     return filter_var($text, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
                 };

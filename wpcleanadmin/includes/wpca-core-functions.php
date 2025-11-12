@@ -4,6 +4,9 @@
  *
  * This file contains core functions that modify the WordPress admin area based on plugin settings.
  * It handles non-settings-page related functionality.
+ *
+ * @package WP_Clean_Admin
+ * @version 1.7.11
  */
 
 // Exit if accessed directly
@@ -36,14 +39,12 @@ function wpca_remove_dashboard_widgets() {
         'dashboard_site_health' => ['dashboard', 'normal'],
     ];
 
-    // isset是PHP语言结构，不需要function_exists检查
-     if (function_exists('is_string')) {
+    // 对所有使用的函数进行存在性检查，确保代码健壮性
+    if (function_exists('is_string') && function_exists('remove_meta_box') && function_exists('sanitize_key')) {
         foreach ($widgets_to_hide as $widget_id) {
             // 添加额外的安全检查
             if (isset($widget_map[$widget_id]) && is_string($widget_id)) {
-                if (function_exists('remove_meta_box') && function_exists('sanitize_key')) {
-                    remove_meta_box(sanitize_key($widget_id), $widget_map[$widget_id][0], $widget_map[$widget_id][1]);
-                }
+                remove_meta_box(sanitize_key($widget_id), $widget_map[$widget_id][0], $widget_map[$widget_id][1]);
             }
         }
     }
@@ -142,7 +143,7 @@ function wpca_apply_custom_styles() {
     } else {
         // 自定义的十六进制颜色验证函数
         $safe_sanitize_hex_color = function($color) {
-            if (preg_match('/^#[0-9a-fA-F]{6}$/', $color)) {
+            if (function_exists('preg_match') && preg_match('/^#[0-9a-fA-F]{6}$/', $color)) {
                 return $color;
             }
             return false;
@@ -166,6 +167,11 @@ function wpca_apply_custom_styles() {
     // This is safer and better for dependency management.
     if (function_exists('wp_add_inline_style')) {
         wp_add_inline_style('wpca-admin-style', $custom_css);
+    } else {
+        // 记录日志，说明wp_add_inline_style函数不可用
+        if (function_exists('error_log')) {
+            error_log('WPCleanAdmin: wp_add_inline_style function not available, custom styles cannot be applied.');
+        }
     }
 }
 if (function_exists('add_action')) {
@@ -188,10 +194,7 @@ function wpca_remove_admin_bar_items($wp_admin_bar) {
     
     $options = WPCA_Settings::get_options();
     // isset是PHP语言结构，不需要function_exists检查
-        $items_to_hide = isset($options['hide_admin_bar_items']) ? $options['hide_admin_bar_items'] : [];
-    } else {
-        $items_to_hide = [];
-    }
+    $items_to_hide = isset($options['hide_admin_bar_items']) ? $options['hide_admin_bar_items'] : [];
 
     // isset是PHP语言结构，不需要function_exists检查
      if (function_exists('is_string') && function_exists('sanitize_key') && function_exists('method_exists')) {
@@ -233,22 +236,21 @@ function wpca_remove_wordpress_from_title($title_parts) {
     $options = WPCA_Settings::get_options();
     
     // Check if we're in the admin area and if the setting is enabled
-    // isset是PHP语言结构，不需要function_exists检查
-     if (function_exists('is_admin') && is_admin() && 
+    if (function_exists('is_admin') && is_admin() && 
         isset($options['hide_wordpress_title']) && $options['hide_wordpress_title']) {
         // WordPress typically appends "WordPress" to the site name in admin titles
         // We'll check each part and remove any that contains "WordPress"
         if (function_exists('stripos')) {
-        foreach ($title_parts as $key => $part) {
-            if (stripos($part, 'WordPress') !== false) {
-                unset($title_parts[$key]);
+            foreach ($title_parts as $key => $part) {
+                if (stripos($part, 'WordPress') !== false) {
+                    unset($title_parts[$key]);
+                }
             }
         }
     }
-        
-        // Re-index the array to avoid gaps
-        $title_parts = array_values($title_parts);
-    }
+    
+    // Re-index the array to avoid gaps
+    $title_parts = array_values($title_parts);
     
     return $title_parts;
 }
@@ -281,8 +283,7 @@ function wpca_remove_wordpress_from_wp_title($title, $sep, $seplocation) {
     $options = WPCA_Settings::get_options();
     
     // Check if we're in the admin area and if the setting is enabled
-    // isset是PHP语言结构，不需要function_exists检查
-if (function_exists('is_admin') && is_admin() && 
+    if (function_exists('is_admin') && is_admin() && 
         isset($options['hide_wordpress_title']) && $options['hide_wordpress_title']) {
         // Remove any instance of "WordPress" from the title
         if (function_exists('str_ireplace')) {

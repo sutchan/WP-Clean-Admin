@@ -16,6 +16,8 @@ if (!defined('ABSPATH')) {
 /**
  * 资源管理类
  * 提供CSS/JS资源控制、加载优化和资源清理功能
+ * @since 1.3.0
+ * @version 1.7.11
  */
 class WPCA_Resources {
     /**

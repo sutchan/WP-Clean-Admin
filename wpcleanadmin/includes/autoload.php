@@ -7,6 +7,7 @@
  * 
  * @package WPCleanAdmin
  * @since 1.4.1
+ * @version 1.7.11
  */
 
 // Exit if accessed directly

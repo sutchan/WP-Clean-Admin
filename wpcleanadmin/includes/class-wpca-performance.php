@@ -6,6 +6,7 @@
  *
  * @package WP_Clean_Admin
  * @since 1.6.0
+ * @version 1.7.11
  */
 
 if (!defined('ABSPATH')) {
@@ -303,7 +304,7 @@ class WPCA_Performance {
                             sanitize_text_field($this->stats['page']) : 
                             (function_exists('substr') ? substr($this->stats['page'], 0, 255) : '')) : 
                         '') : 
-                    ''
+                    '',
                 'load_time' => floatval($load_time),
                 'memory_usage' => intval($memory_usage),
                 'query_count' => isset($this->query_count) ? intval($this->query_count) : 0,

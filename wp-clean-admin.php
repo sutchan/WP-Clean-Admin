@@ -3,7 +3,7 @@
  * Plugin Name: WP Clean Admin
  * Plugin URI: https://github.com/sutchan/WP-Clean-Admin
  * Description: Simplifies and optimizes the WordPress admin interface, providing a cleaner backend experience.
- * Version: 1.7.6
+ * Version: 1.7.11
  * Author: Sut
  * Author URI: https://github.com/sutchan/
  * License: GPLv2 or later
@@ -24,7 +24,11 @@ if ( ! defined( 'ABSPATH' ) && ! function_exists( 'add_action' ) ) {
 
 // 安全地定义插件常量
 if ( ! defined( 'WPCA_VERSION' ) ) {
-    define( 'WPCA_VERSION', '1.7.6' );
+	define( 'WPCA_VERSION', '1.7.11' );
+}
+
+if ( ! defined( 'WPCA_MAIN_FILE' ) ) {
+	define( 'WPCA_MAIN_FILE', __FILE__ );
 }
 
 // 安全地包含主插件文件

@@ -3,7 +3,7 @@
  * Plugin Name: WP Clean Admin
  * Plugin URI: https://github.com/sutchan/WP-Clean-Admin
  * Description: Simplifies and optimizes the WordPress admin interface, providing a cleaner backend experience with database optimization capabilities.
- * Version: 1.7.6
+ * Version: 1.7.11
  * Author: Sut
  * Author URI: https://github.com/sutchan/
  * License: GPLv2 or later
@@ -18,13 +18,17 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Define constants
+// 安全地定义插件常量
 if ( ! defined( 'WPCA_VERSION' ) ) {
-	define( 'WPCA_VERSION', '1.7.6' );
+	define( 'WPCA_VERSION', '1.7.11' );
 }
 
 if ( ! defined( 'WPCA_BASENAME' ) ) {
 	define( 'WPCA_BASENAME', 'wp-clean-admin.php' );
+}
+
+if ( ! defined( 'WPCA_MAIN_FILE' ) ) {
+	define( 'WPCA_MAIN_FILE', __FILE__ );
 }
 
 // Provide fallback implementations for WordPress core functions
@@ -113,8 +117,6 @@ function wpca_initialize_plugin() {
         $wpca_permissions = new WPCA_Permissions();
     }
     
-    // class_exists是PHP内置函数，可以安全使用
-    
     if (class_exists('WPCA_Settings')) {
         try {
             $wpca_settings = new WPCA_Settings();
@@ -173,11 +175,7 @@ function wpca_initialize_plugin() {
     }
     
     // 设置默认权限，确保对象存在和方法存在
-    // isset是PHP语言结构，不需要function_exists检查
     if (isset($wpca_permissions)) {
-        // 提供method_exists的备用实现
-        // method_exists是PHP内置函数，可以安全使用
-        
         if (method_exists($wpca_permissions, 'set_default_permissions')) {
             try {
                 $wpca_permissions->set_default_permissions();
@@ -297,22 +295,22 @@ function wpca_load_admin_resources() {
         }
         
         // Provide fallback implementation for wp_create_nonce
-if ( ! function_exists( 'wp_create_nonce' ) ) {
-	function wp_create_nonce( $action = -1 ) {
-		return 'dummy_nonce_' . $action;
-	}
-}
+        if ( ! function_exists( 'wp_create_nonce' ) ) {
+            function wp_create_nonce( $action = -1 ) {
+                return 'dummy_nonce_' . $action;
+            }
+        }
 
-// Provide fallback implementation for admin_url
-if ( ! function_exists( 'admin_url' ) ) {
-	function admin_url( $path = '', $scheme = 'admin' ) {
-		$url = site_url( 'wp-admin/', $scheme );
-		if ( $path && is_string( $path ) ) {
-			$url .= ltrim( $path, '/' );
-		}
-		return $url;
-	}
-}
+        // Provide fallback implementation for admin_url
+        if ( ! function_exists( 'admin_url' ) ) {
+            function admin_url( $path = '', $scheme = 'admin' ) {
+                $url = site_url( 'wp-admin/', $scheme );
+                if ( $path && is_string( $path ) ) {
+                    $url .= ltrim( $path, '/' );
+                }
+                return $url;
+            }
+        }
 
 $wpca_admin_data = array(
             'ajaxurl' => admin_url( 'admin-ajax.php' ),
@@ -390,7 +388,7 @@ function wpca_activate_plugin() {
     if ( ! $wpca_settings ) {
         // 设置默认配置
         $default_settings = array(
-            'version'             => defined( 'WPCA_VERSION' ) ? WPCA_VERSION : '1.7.1',
+            'version'             => defined( 'WPCA_VERSION' ) ? WPCA_VERSION : '1.7.11',
             'menu_order'          => array(),
             'submenu_order'       => array(),
             'menu_toggles'        => array(),
@@ -404,7 +402,7 @@ function wpca_activate_plugin() {
         update_option( 'wpca_settings', $default_settings );
     } else if ( is_array( $wpca_settings ) ) {
         // 更新版本号
-        $wpca_settings['version'] = defined( 'WPCA_VERSION' ) ? WPCA_VERSION : '1.7.1';
+        $wpca_settings['version'] = defined( 'WPCA_VERSION' ) ? WPCA_VERSION : '1.7.11';
         update_option( 'wpca_settings', $wpca_settings );
     }
     
@@ -425,10 +423,6 @@ register_activation_hook( __FILE__, 'wpca_activate_plugin' );
 
 function wpca_deactivate_plugin() {
     // 提供必要函数的备用实现
-    // class_exists是PHP内置函数，可以安全使用
-    
-    // method_exists是PHP内置函数，可以安全使用
-    
     if ( ! function_exists( 'add_action' ) ) {
         function add_action( $hook_name, $callback, $priority = 10, $accepted_args = 1 ) {
             return true;
@@ -497,77 +491,6 @@ function wpca_add_settings_link( $links ) {
 }
 add_filter( 'plugin_action_links_' . ( defined( 'WPCA_BASENAME' ) ? WPCA_BASENAME : 'wp-clean-admin.php' ), 'wpca_add_settings_link' );
 
-/**
- * Initialize plugin components
- * 初始化插件组件
- */
-function wpca_initialize_components() {
-    // 提供必要函数的备用实现
-    // class_exists是PHP内置函数，可以安全使用
-    
-    // method_exists是PHP内置函数，可以安全使用
-    
-    // 检查是否有class_exists函数可用
-    // class_exists是PHP内置函数，可以安全使用
-    // 安全地实例化各个组件类
-    if ( class_exists( 'WPCA_Settings' ) ) {
-        new WPCA_Settings();
-    }
-    
-    if ( class_exists( 'WPCA_Menu_Customizer' ) ) {
-        new WPCA_Menu_Customizer();
-    }
-    
-    if ( class_exists( 'WPCA_Permissions' ) ) {
-        new WPCA_Permissions();
-    }
-    
-    // 处理单例模式和普通实例化
-    if ( class_exists( 'WPCA_Performance' ) ) {
-        try {
-            if ( method_exists('WPCA_Performance', 'get_instance') ) {
-                WPCA_Performance::get_instance();
-            } else {
-                new WPCA_Performance();
-            }
-        } catch ( Exception $e ) {
-            // 静默捕获异常，避免插件崩溃
-        }
-    }
-    
-    if ( class_exists( 'WPCA_Resources' ) ) {
-        try {
-            new WPCA_Resources();
-        } catch ( Exception $e ) {
-            // 静默捕获异常，避免插件崩溃
-        }
-    }
-    
-    if ( class_exists( 'WPCA_Database' ) ) {
-        try {
-            new WPCA_Database();
-        } catch ( Exception $e ) {
-            // 静默捕获异常，避免插件崩溃
-        }
-    }
-    
-    // 安全地调用单例方法
-    if ( class_exists( 'WPCA_Database_Settings' ) && method_exists('WPCA_Database_Settings', 'get_instance') ) {
-        try {
-            WPCA_Database_Settings::get_instance();
-        } catch ( Exception $e ) {
-            // 静默捕获异常，避免插件崩溃
-        }
-    }
-    
-    if ( class_exists( 'WPCA_Performance_Settings' ) && method_exists('WPCA_Performance_Settings', 'get_instance') ) {
-        try {
-            WPCA_Performance_Settings::get_instance();
-        } catch ( Exception $e ) {
-            // 静默捕获异常，避免插件崩溃
-        }
-    }
-}
-
-add_action( 'plugins_loaded', 'wpca_initialize_components', 20 );
+// 注意：wpca_initialize_components函数已被wpca_initialize_plugin函数替代
+// 保留此注释以避免混淆，但不再执行重复的初始化操作
 ?>

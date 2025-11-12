@@ -3,19 +3,22 @@
  * WP Clean Admin Login Class
  *
  * Handles all login page-related modifications and settings.
+ *
+ * @package WP_Clean_Admin
+ * @version 1.7.11
  */
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
-// 初始化登录页面自定义功能
-if (class_exists('WPCA_Login')) {
+// Initialize login page customization functionality
+if (!class_exists('WPCA_Login')) {
     function wpca_init_login_module() {
         return new WPCA_Login();
     }
     
-    // 延迟初始化直到WordPress环境完全加载
+    // Delay initialization until WordPress environment is fully loaded
     if (function_exists('add_action')) {
         add_action('init', 'wpca_init_login_module');
     }
@@ -23,18 +26,18 @@ if (class_exists('WPCA_Login')) {
 
 /**
  * Class WPCA_Login
- * 管理WordPress登录页面的自定义功能
+ * Manages WordPress login page customization functionality
  */
 class WPCA_Login {
     /**
-     * 插件设置
+     * Plugin settings
      * @var array
      */
     private $options;
 
     /**
      * WPCA_Login constructor.
-     * 初始化登录页面功能，注册必要的钩子
+     * Initializes login page functionality and registers necessary hooks
      */
     public function __construct() {
         // 获取插件设置
@@ -56,71 +59,79 @@ class WPCA_Login {
     }
 
     /**
-     * 加载登录页面必要的脚本和样式
+     * Loads necessary scripts and styles for the login page
      */
     public function enqueue_login_scripts() {
-        // 只在登录页面加载资源
-        if (is_admin()) {
+        // Only load resources on the login page
+        if (function_exists('is_admin') && is_admin()) {
             return;
         }
         
-        // 定义插件目录URL
-        $plugin_url = plugins_url('', WPCA_PLUGIN_FILE);
+        // Define plugin directory URL
+        $plugin_url = function_exists('plugins_url') ? plugins_url('', WPCA_MAIN_FILE) : '';
         $assets_url = $plugin_url . '/wpcleanadmin/assets';
         
-        // 加载登录页面样式
-        wp_enqueue_style('wpca-login-styles', $assets_url . '/css/wpca-login-styles.css', array(), WPCA_VERSION);
+        // Load login page styles
+        if (function_exists('wp_enqueue_style')) {
+            wp_enqueue_style('wpca-login-styles', $assets_url . '/css/wpca-login-styles.css', array(), WPCA_VERSION);
+        }
         
-        // 加载登录页面JavaScript
-        wp_enqueue_script('wpca-login-js', $assets_url . '/js/wpca-login.js', array('jquery'), WPCA_VERSION, true);
+        // Load login page JavaScript
+        if (function_exists('wp_enqueue_script')) {
+            wp_enqueue_script('wpca-login-js', $assets_url . '/js/wpca-login.js', array('jquery'), WPCA_VERSION, true);
+        }
         
-        // 本地化JavaScript配置
+        // Localize JavaScript configuration
         $login_config = $this->get_login_frontend_config();
-        wp_localize_script('wpca-login-js', 'wpca_login_frontend', $login_config);
+        if (function_exists('wp_localize_script')) {
+            wp_localize_script('wpca-login-js', 'wpca_login_frontend', $login_config);
+        }
     }
 
     /**
-     * 获取登录前端配置
-     * @return array 前端配置参数
+     * Get login frontend configuration
+     * @return array Frontend configuration parameters
      */
     private function get_login_frontend_config() {
-        // 默认配置
+        // Default configuration
         $config = array(
+            'ajaxurl' => function_exists('admin_url') ? admin_url('admin-ajax.php') : '',
+            'nonce' => function_exists('wp_create_nonce') ? wp_create_nonce('wpca_login_nonce') : '',
             'custom_styles' => '',
             'auto_hide_form' => false,
             'auto_hide_delay' => 3000,
             'debug' => defined('WP_DEBUG') && WP_DEBUG
         );
         
-        // 从设置中获取自定义样式
-        $login_style = $this->options['login_style'] ?? 'default';
+        // Get custom style from settings
+        $login_style = isset($this->options['login_style']) && !empty($this->options['login_style']) ? $this->options['login_style'] : 'default';
         $custom_styles = $this->generate_custom_styles($login_style);
         
         if (!empty($custom_styles)) {
             $config['custom_styles'] = $custom_styles;
         }
         
-        // 自动隐藏表单设置
+        // Auto-hide form settings
         $config['auto_hide_form'] = isset($this->options['login_auto_hide_form']) && $this->options['login_auto_hide_form'];
         $config['auto_hide_delay'] = isset($this->options['login_auto_hide_delay']) && is_numeric($this->options['login_auto_hide_delay']) 
-            ? intval($this->options['login_auto_hide_delay']) * 1000 // 转换为毫秒
+            ? intval($this->options['login_auto_hide_delay']) * 1000 // Convert to milliseconds
             : 3000;
         
         return $config;
     }
 
     /**
-     * 生成自定义登录页面样式
-     * @param string $login_style 登录样式名称
-     * @return string 自定义CSS样式
+     * Generate custom login page styles
+     * @param string $login_style Login style name
+     * @return string Custom CSS styles
      */
     private function generate_custom_styles($login_style) {
         $custom_css = '';
         
-        // 基础样式
+        // Base styles
         $custom_css .= $this->get_base_login_styles();
         
-        // 应用所选样式预设
+        // Apply selected style preset
         switch ($login_style) {
             case 'modern':
                 $custom_css .= $this->get_modern_style();
@@ -149,15 +160,15 @@ class WPCA_Login {
                 break;
         }
         
-        // 添加自定义背景
+        // Add custom background
         if (isset($this->options['login_background_url']) && !empty($this->options['login_background_url'])) {
-            $background_url = esc_url($this->options['login_background_url']);
+            $background_url = function_exists('esc_url') ? esc_url($this->options['login_background_url']) : filter_var($this->options['login_background_url'], FILTER_SANITIZE_URL);
             $custom_css .= "body.login { background-image: url('{$background_url}'); background-size: cover; background-repeat: no-repeat; }";
         }
         
-        // 添加自定义Logo
+        // Add custom logo
         if (isset($this->options['login_logo_url']) && !empty($this->options['login_logo_url'])) {
-            $logo_url = esc_url($this->options['login_logo_url']);
+            $logo_url = function_exists('esc_url') ? esc_url($this->options['login_logo_url']) : filter_var($this->options['login_logo_url'], FILTER_SANITIZE_URL);
             $custom_css .= ".login h1 a { background-image: url('{$logo_url}') !important; }";
         }
         
@@ -165,8 +176,8 @@ class WPCA_Login {
     }
 
     /**
-     * 获取基础登录样式
-     * @return string CSS样式
+     * Get base login styles
+     * @return string CSS styles
      */
     private function get_base_login_styles() {
         return "
@@ -179,8 +190,8 @@ class WPCA_Login {
     }
 
     /**
-     * 获取现代样式
-     * @return string CSS样式
+     * Get modern style
+     * @return string CSS styles
      */
     private function get_modern_style() {
         return "
@@ -192,8 +203,8 @@ class WPCA_Login {
     }
 
     /**
-     * 获取极简样式
-     * @return string CSS样式
+     * Get minimal style
+     * @return string CSS styles
      */
     private function get_minimal_style() {
         return "
@@ -205,8 +216,8 @@ class WPCA_Login {
     }
 
     /**
-     * 获取暗黑样式
-     * @return string CSS样式
+     * Get dark style
+     * @return string CSS styles
      */
     private function get_dark_style() {
         return "
@@ -223,8 +234,8 @@ class WPCA_Login {
     }
 
     /**
-     * 获取渐变样式
-     * @return string CSS样式
+     * Get gradient style
+     * @return string CSS styles
      */
     private function get_gradient_style() {
         return "
@@ -237,8 +248,8 @@ class WPCA_Login {
     }
 
     /**
-     * 获取玻璃拟态样式
-     * @return string CSS样式
+     * Get glassmorphism style
+     * @return string CSS styles
      */
     private function get_glassmorphism_style() {
         return "
@@ -251,8 +262,8 @@ class WPCA_Login {
     }
 
     /**
-     * 获取新拟态样式
-     * @return string CSS样式
+     * Get neumorphism style
+     * @return string CSS styles
      */
     private function get_neumorphism_style() {
         return "
@@ -290,76 +301,95 @@ class WPCA_Login {
     }
 
     /**
-     * 自定义登录Logo URL
-     * @param string $url 默认URL
-     * @return string 自定义URL
+     * Custom login logo URL
+     * @param string $url Default URL
+     * @return string Custom URL
      */
     public function custom_login_logo_url($url) {
-        return home_url();
+        return function_exists('home_url') ? home_url() : $url;
     }
 
     /**
-     * 自定义登录Logo标题
-     * @param string $title 默认标题
-     * @return string 自定义标题
+     * Custom login logo title
+     * @param string $title Default title
+     * @return string Custom title
      */
     public function custom_login_logo_title($title) {
-        return get_bloginfo('name');
+        return function_exists('get_bloginfo') ? get_bloginfo('name') : $title;
     }
 
     /**
-     * 输出自定义样式到登录页面头部
+     * Output custom styles to the login page header
      */
     public function output_custom_styles() {
-        $login_style = $this->options['login_style'] ?? 'default';
+        $login_style = isset($this->options['login_style']) && !empty($this->options['login_style']) ? $this->options['login_style'] : 'default';
         $custom_css = $this->generate_custom_styles($login_style);
         
-        // 添加自定义CSS
+        // Add custom CSS
         if (isset($this->options['login_custom_css']) && !empty($this->options['login_custom_css'])) {
-            $custom_css .= $this->options['login_custom_css'];
+            // Sanitize custom CSS input
+            $sanitized_css = $this->sanitize_css($this->options['login_custom_css']);
+            $custom_css .= $sanitized_css;
         }
         
         if (!empty($custom_css)) {
             echo "<style type=\"text/css\">{$custom_css}</style>\n";
         }
     }
+    
+    /**
+     * Sanitize CSS input to prevent injection attacks
+     * @param string $css CSS to sanitize
+     * @return string Sanitized CSS
+     */
+    private function sanitize_css($css) {
+        // Remove potential JavaScript injections
+        $css = preg_replace('/javascript:|data:text\/html/i', '', $css);
+        // Remove potential XSS vectors
+        $css = preg_replace('/expression\(|eval\(|on\w+\s*=/i', '', $css);
+        return $css;
+    }
 
     /**
-     * 自定义登录页面元素显示/隐藏
+     * Customize login page elements display/hide
      */
     public function customize_login_elements() {
-        // 获取登录元素设置
-        $login_elements = $this->options['login_elements'] ?? array(
+        // Get login elements settings
+        $login_elements = isset($this->options['login_elements']) && is_array($this->options['login_elements']) ? $this->options['login_elements'] : array(
             'language_switcher' => 1,
             'home_link' => 1,
             'register_link' => 1,
             'remember_me' => 1
         );
         
-        // 如果需要隐藏语言切换器
-        if (isset($login_elements['language_switcher']) && !$login_elements['language_switcher']) {
+        // If language switcher needs to be hidden
+        if (isset($login_elements['language_switcher']) && !$login_elements['language_switcher'] && function_exists('add_action')) {
             add_action('login_head', function() {
                 echo "<style type=\"text/css\">#login .language-switcher { display: none; }</style>\n";
             });
         }
         
-        // 如果需要隐藏返回首页链接
-        if (isset($login_elements['home_link']) && !$login_elements['home_link']) {
+        // If home link needs to be hidden
+        if (isset($login_elements['home_link']) && !$login_elements['home_link'] && function_exists('add_action')) {
             add_action('login_head', function() {
                 echo "<style type=\"text/css\">#backtoblog { display: none; }</style>\n";
             });
         }
         
-        // 如果需要隐藏注册链接
+        // If register link needs to be hidden
         if (isset($login_elements['register_link']) && !$login_elements['register_link']) {
-            add_filter('register', '__return_false');
-            add_action('login_head', function() {
-                echo "<style type=\"text/css\">#nav { display: none; }</style>\n";
-            });
+            if (function_exists('add_filter')) {
+                add_filter('register', '__return_false');
+            }
+            if (function_exists('add_action')) {
+                add_action('login_head', function() {
+                    echo "<style type=\"text/css\">#nav { display: none; }</style>\n";
+                });
+            }
         }
         
-        // 如果需要隐藏记住我复选框
-        if (isset($login_elements['remember_me']) && !$login_elements['remember_me']) {
+        // If remember me checkbox needs to be hidden
+        if (isset($login_elements['remember_me']) && !$login_elements['remember_me'] && function_exists('add_action')) {
             add_action('login_head', function() {
                 echo "<style type=\"text/css\">.login .forgetmenot { display: none; }</style>\n";
             });
@@ -367,25 +397,13 @@ class WPCA_Login {
     }
     
     /**
-     * 向登录表单添加自定义元素
+     * Add custom elements to the login form
      */
     public function add_login_form_elements() {
-        // 可以在这里添加任何自定义的登录表单元素
-        // 例如欢迎消息、公司信息等
+        // Custom login form elements can be added here
+        // For example: welcome messages, company information, etc.
     }
     
-    /**
-     * 获取登录页面前端配置
-     * @return array 配置数组
-     */
-    public function get_login_frontend_config() {
-        return array(
-            'ajaxurl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('wpca_login_frontend'),
-            'login_style' => $this->options['login_style'] ?? 'default',
-            'has_logo' => !empty($this->options['login_logo_url']),
-            'has_background' => !empty($this->options['login_background_url'])
-        );
-    }
+
 }
 ?>

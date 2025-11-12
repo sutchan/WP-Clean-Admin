@@ -3,6 +3,9 @@
  * WP Clean Admin Cleanup Class
  *
  * Handles various cleanup tasks in the WordPress admin area.
+ *
+ * @package WP_Clean_Admin
+ * @version 1.7.11
  */
 
 if (!defined('ABSPATH')) {
@@ -130,19 +133,23 @@ class WPCA_Cleanup {
             }
 
             // Remove comments link from admin menu
-            add_action('admin_menu', function () {
-                if (function_exists('remove_menu_page')) {
-                    remove_menu_page('edit-comments.php');
-                }
-            });
+            if (function_exists('add_action')) {
+                add_action('admin_menu', function () {
+                    if (function_exists('remove_menu_page')) {
+                        remove_menu_page('edit-comments.php');
+                    }
+                });
+            }
 
             // Remove comments link from admin bar
-            add_action('wp_before_admin_bar_render', function () {
-                global $wp_admin_bar;
-                if (isset($wp_admin_bar) && method_exists($wp_admin_bar, 'remove_menu')) {
-                    $wp_admin_bar->remove_menu('comments');
-                }
-            });
+            if (function_exists('add_action')) {
+                add_action('wp_before_admin_bar_render', function () {
+                    global $wp_admin_bar;
+                    if (isset($wp_admin_bar) && method_exists($wp_admin_bar, 'remove_menu')) {
+                        $wp_admin_bar->remove_menu('comments');
+                    }
+                });
+            }
         }
     }
 
@@ -165,6 +172,12 @@ class WPCA_Cleanup {
     public function hide_update_notices_for_non_admins() {
         if (function_exists('current_user_can') && !current_user_can('update_core') && function_exists('remove_action')) {
             remove_action('admin_notices', 'update_nag', 3);
+            
+            // Remove the WordPress SEO update notices if Yoast SEO is active
+            if (function_exists('remove_action')) {
+                remove_action('admin_notices', array('Yoast_Notification_Center', 'display_notifications'));
+                remove_action('all_admin_notices', array('Yoast_Notification_Center', 'display_notifications'));
+            }
         }
     }
     

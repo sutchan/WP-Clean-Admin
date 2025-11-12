@@ -2,15 +2,15 @@
 /**
  * WPCA Menu Manager
  * 
- * 管理WordPress管理菜单的显示、隐藏和权限控制
+ * Manages the display, hiding, and permission control of WordPress admin menus
  * 
  * @package WPCleanAdmin
- * @version 1.0.0
+ * @version 1.7.11
  */
 
-// 确保在 WordPress 环境中加载
+// Ensure file is loaded within WordPress environment
 if ( ! defined( 'ABSPATH' ) ) {
-    exit; // 直接访问禁止
+    exit; // Exit if accessed directly
 }
 
 // 定义必要的WordPress函数模拟，确保在非WordPress环境中也能加载类定义
@@ -44,18 +44,26 @@ if ( ! function_exists( 'sanitize_text_field' ) ) {
 
 if ( ! function_exists( 'wp_send_json_success' ) ) {
     function wp_send_json_success( $data = null, $status_code = null ) {
-        wp_die( json_encode( array( 'success' => true, 'data' => $data ) ) );
+        if ( function_exists( 'wp_json_encode' ) ) {
+            wp_die( wp_json_encode( array( 'success' => true, 'data' => $data ) ) );
+        } else {
+            wp_die( json_encode( array( 'success' => true, 'data' => $data ) ) );
+        }
     }
 }
 
 if ( ! function_exists( 'wp_send_json_error' ) ) {
     function wp_send_json_error( $data = null, $status_code = null ) {
-        wp_die( json_encode( array( 'success' => false, 'data' => $data ) ) );
+        if ( function_exists( 'wp_json_encode' ) ) {
+            wp_die( wp_json_encode( array( 'success' => false, 'data' => $data ) ) );
+        } else {
+            wp_die( json_encode( array( 'success' => false, 'data' => $data ) ) );
+        }
     }
 }
 
 if ( ! function_exists( 'wp_die' ) ) {
-    function wp_die( $message = 'WordPress不再响应', $title = '', $args = array() ) {
+    function wp_die( $message = 'WordPress no longer responding', $title = '', $args = array() ) {
         die( $message );
     }
 }
@@ -73,14 +81,14 @@ if ( ! function_exists( '__' ) ) {
 }
 
 /**
- * WPCA_Menu_Manager 类
+ * WPCA_Menu_Manager class
  * 
- * 负责菜单项显示/隐藏功能的核心实现
+ * Core implementation for menu item show/hide functionality
  */
 class WPCA_Menu_Manager {
     
     /**
-     * 受保护的菜单项，不能被隐藏
+     * Protected menu items that cannot be hidden
      */
     const PROTECTED_MENUS = array(
         'index.php',      // Dashboard
@@ -167,8 +175,8 @@ class WPCA_Menu_Manager {
     public function initialize_menu_management() {
         // 确保 WordPress 函数可用并检查用户权限
         if ( function_exists( 'current_user_can' ) && current_user_can('manage_options') ) {
-            // 确保菜单选项数组存在
-            $this->ensure_menu_options_exist();
+            // Initialize menu management functionality
+                $this->ensure_menu_options_exist();
         }
     }
     
@@ -598,14 +606,14 @@ class WPCA_Menu_Manager {
                 if (function_exists('wp_send_json_success')) {
                     wp_send_json_success($result);
                 } else if (function_exists('wp_die')) {
-                    wp_die(json_encode(array('success' => true, 'data' => $result)));
+                    wp_die(wp_json_encode(array('success' => true, 'data' => $result)));
                 }
             } else {
                 $code = isset($result['code']) ? $result['code'] : 500;
                 if (function_exists('wp_send_json_error')) {
                     wp_send_json_error($result, $code);
                 } else if (function_exists('wp_die')) {
-                    wp_die(json_encode(array('success' => false, 'data' => $result)), $code);
+                    wp_die(wp_json_encode(array('success' => false, 'data' => $result)), $code);
                 }
             }
             
@@ -617,7 +625,7 @@ class WPCA_Menu_Manager {
                     'code' => $code
                 ), $code);
             } else if (function_exists('wp_die')) {
-                wp_die(json_encode(array('success' => false, 'data' => array('message' => $e->getMessage(), 'code' => $code))), $code);
+                wp_die(wp_json_encode(array('success' => false, 'data' => array('message' => $e->getMessage(), 'code' => $code))), $code);
             }
         }
     }
@@ -655,7 +663,7 @@ class WPCA_Menu_Manager {
             if (function_exists('wp_send_json_success')) {
                 wp_send_json_success($response);
             } else if (function_exists('wp_die')) {
-                wp_die(json_encode(array('success' => true, 'data' => $response)));
+                wp_die(wp_json_encode(array('success' => true, 'data' => $response)));
             }
             
         } catch (Exception $e) {
@@ -666,7 +674,7 @@ class WPCA_Menu_Manager {
                     'code' => $code
                 ), $code);
             } else if (function_exists('wp_die')) {
-                wp_die(json_encode(array('success' => false, 'data' => array('message' => $e->getMessage(), 'code' => $code))), $code);
+                wp_die(wp_json_encode(array('success' => false, 'data' => array('message' => $e->getMessage(), 'code' => $code))), $code);
             }
         }
     }
@@ -702,7 +710,7 @@ class WPCA_Menu_Manager {
             if (function_exists('wp_send_json_success')) {
                 wp_send_json_success($response);
             } else if (function_exists('wp_die')) {
-                wp_die(json_encode(array('success' => true, 'data' => $response)));
+                wp_die(wp_json_encode(array('success' => true, 'data' => $response)));
             }
             
         } catch (Exception $e) {
@@ -713,7 +721,7 @@ class WPCA_Menu_Manager {
                     'code' => $code
                 ), $code);
             } else if (function_exists('wp_die')) {
-                wp_die(json_encode(array('success' => false, 'data' => array('message' => $e->getMessage(), 'code' => $code))), $code);
+                wp_die(wp_json_encode(array('success' => false, 'data' => array('message' => $e->getMessage(), 'code' => $code))), $code);
             }
         }
     }

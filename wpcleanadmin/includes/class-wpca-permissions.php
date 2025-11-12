@@ -6,6 +6,7 @@
  *
  * @package WP_Clean_Admin
  * @since 1.1.0
+ * @version 1.7.11
  */
 
 // 如果直接访问此文件，则中止

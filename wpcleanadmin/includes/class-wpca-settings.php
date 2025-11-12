@@ -1,5 +1,13 @@
 <?php
-// includes/class-wpca-settings.php
+/**
+ * WP Clean Admin Settings Class
+ *
+ * Handles the plugin settings page and manages all settings-related functionality.
+ *
+ * @package WP_Clean_Admin
+ * @since 1.0.0
+ * @version 1.7.11
+ */
 
 // defined是PHP语言结构，不需要function_exists检查
 if (! defined( 'ABSPATH' ) ) {

@@ -2,7 +2,15 @@
 /**
  * WP Clean Admin - AJAX Handler Class
  * Handles AJAX requests for the plugin
+ *
+ * @package WPCleanAdmin
+ * @version 1.7.11
  */
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
 
 /**
  * AJAX handler class for WP Clean Admin
@@ -10,7 +18,10 @@
 class WPCA_Ajax {
     
     /**
-     * 保存登录页面设置
+     * Save login page settings
+     * 
+     * Handles AJAX request to save login page customization settings
+     * and sanitizes all input data for security.
      */
     public function save_login_settings() {
         // 验证请求
@@ -24,7 +35,12 @@ class WPCA_Ajax {
             return;
         }
         
-        $login_settings = $_POST['login_settings'];
+        // 确保使用isset检查并在访问$_POST数据前进行过滤
+            if ( function_exists( 'sanitize_text_field' ) ) {
+                $login_settings = isset( $_POST['login_settings'] ) ? $_POST['login_settings'] : array();
+            } else {
+                $login_settings = array();
+            }
         $sanitized_settings = array();
         
         // 清理设置数据
@@ -69,7 +85,10 @@ class WPCA_Ajax {
     }
     
     /**
-     * 获取登录页面设置
+     * Get login page settings
+     * 
+     * Retrieves login page customization settings via AJAX
+     * and ensures proper error handling.
      */
     public function get_login_settings() {
         // 验证请求
@@ -102,7 +121,10 @@ class WPCA_Ajax {
     }
     
     /**
-     * 重置登录页面设置
+     * Reset login page settings
+     * 
+     * Handles AJAX request to reset login page customization
+     * settings to default values.
      */
     public function reset_login_settings() {
         // 验证请求
@@ -146,6 +168,8 @@ class WPCA_Ajax {
     
     /**
      * Constructor
+     * 
+     * Initializes the AJAX handler and sets up hooks
      */
     public function __construct() {
         // Initialize hooks
@@ -182,8 +206,8 @@ class WPCA_Ajax {
      * @return bool - True if valid, false otherwise
      */
     protected function validate_ajax_request( $action ) {
-        // 确保action参数有效
-        if ( ! is_string( $action ) || empty( $action ) ) {
+        // 确保action参数有效并检查is_string函数存在
+        if ( ( function_exists( 'is_string' ) && ( ! is_string( $action ) || empty( $action ) ) ) || empty( $action ) ) {
             if ( function_exists( 'wp_send_json_error' ) ) {
                 wp_send_json_error( array( 'message' => 'Invalid validation action' ), 400 );
             }
@@ -242,7 +266,7 @@ class WPCA_Ajax {
     public function toggle_menu() {
         try {
             // 增强的AJAX请求验证
-            if ( ! $this->validate_ajax_request( 'wpca_admin_nonce' ) ) {
+            if ( ! method_exists( $this, 'validate_ajax_request' ) || ! $this->validate_ajax_request( 'wpca_admin_nonce' ) ) {
                 // 如果验证失败，确保结束请求
                 if ( function_exists( 'wp_die' ) ) {
                     wp_die();
@@ -1009,4 +1033,4 @@ public function get_public_data() {
         wp_die();
     }
 }
-?>
+}

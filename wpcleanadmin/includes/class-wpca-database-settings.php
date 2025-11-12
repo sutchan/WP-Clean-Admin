@@ -7,6 +7,7 @@
  * 
  * @package WP_Clean_Admin
  * @since 1.6.0
+ * @version 1.7.11
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -67,69 +68,76 @@ class WPCA_Database_Settings {
         // Initialize tabs
         $this->init_tabs();
 
-        // Register hooks
-        add_action( 'admin_menu', array( $this, 'add_settings_page' ) );
-        add_action( 'admin_init', array( $this, 'register_settings' ) );
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+        // Register hooks with function_exists checks
+        if ( function_exists( 'add_action' ) ) {
+            add_action( 'admin_menu', array( $this, 'add_settings_page' ) );
+            add_action( 'admin_init', array( $this, 'register_settings' ) );
+            add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+        }
     }
 
     /**
      * Initialize tabs.
      */
     public function init_tabs() {
-        $this->tabs = array(
-            'optimization' => array(
-                'title'    => esc_html__( 'Table Optimization', 'wp-clean-admin' ),
-                'callback' => array( $this, 'render_optimization_tab' ),
-                'icon'     => 'dashicons-database',
-            ),
-            'cleanup' => array(
-                'title'    => esc_html__( 'Database Cleanup', 'wp-clean-admin' ),
-                'callback' => array( $this, 'render_cleanup_tab' ),
-                'icon'     => 'dashicons-trash',
-            ),
-            'schedule' => array(
-                'title'    => esc_html__( 'Scheduled Tasks', 'wp-clean-admin' ),
-                'callback' => array( $this, 'render_schedule_tab' ),
-                'icon'     => 'dashicons-clock',
-            ),
-            'info' => array(
-                'title'    => esc_html__( 'Database Info', 'wp-clean-admin' ),
-                'callback' => array( $this, 'render_info_tab' ),
-                'icon'     => 'dashicons-info',
-            ),
+        if ( function_exists( 'esc_html__' ) ) {
+            $this->tabs = array(
+                'optimization' => array(
+                    'title'    => esc_html__( 'Table Optimization', 'wp-clean-admin' ),
+                    'callback' => method_exists( $this, 'render_optimization_tab' ) ? array( $this, 'render_optimization_tab' ) : null,
+                    'icon'     => 'dashicons-database',
+                ),
+                'cleanup' => array(
+                    'title'    => esc_html__( 'Database Cleanup', 'wp-clean-admin' ),
+                    'callback' => method_exists( $this, 'render_cleanup_tab' ) ? array( $this, 'render_cleanup_tab' ) : null,
+                    'icon'     => 'dashicons-trash',
+                ),
+                'schedule' => array(
+                    'title'    => esc_html__( 'Scheduled Tasks', 'wp-clean-admin' ),
+                    'callback' => method_exists( $this, 'render_schedule_tab' ) ? array( $this, 'render_schedule_tab' ) : null,
+                    'icon'     => 'dashicons-clock',
+                ),
+                'info' => array(
+                    'title'    => esc_html__( 'Database Info', 'wp-clean-admin' ),
+                    'callback' => method_exists( $this, 'render_info_tab' ) ? array( $this, 'render_info_tab' ) : null,
+                    'icon'     => 'dashicons-info',
+                ),
         );
+        }
     }
 
     /**
      * Add the settings page.
      */
     public function add_settings_page() {
-        add_submenu_page(
-            'wpca-settings',
-            esc_html__( 'Database Optimization', 'wp-clean-admin' ),
-            esc_html__( 'Database', 'wp-clean-admin' ),
-            'manage_options',
-            $this->page_slug,
-            array( $this, 'render_settings_page' ),
-            20
-        );
+        if ( function_exists( 'add_submenu_page' ) && function_exists( 'esc_html__' ) ) {
+            add_submenu_page(
+                'wpca-settings',
+                esc_html__( 'Database Optimization', 'wp-clean-admin' ),
+                esc_html__( 'Database', 'wp-clean-admin' ),
+                'manage_options',
+                $this->page_slug,
+                array( $this, 'render_settings_page' ),
+                20
+            );
+        }
     }
 
     /**
      * Register settings.
      */
     public function register_settings() {
-        // Database optimization settings
-        register_setting(
-            'wpca-database-optimization',
-            'wpca_auto_optimize_tables',
-            array(
-                'type'              => 'boolean',
-                'sanitize_callback' => 'absint',
-                'default'           => false,
-            )
-        );
+        // Database optimization settings with function_exists checks
+        if ( function_exists( 'register_setting' ) ) {
+            register_setting(
+                'wpca-database-optimization',
+                'wpca_auto_optimize_tables',
+                array(
+                    'type'              => 'boolean',
+                    'sanitize_callback' => function_exists( 'absint' ) ? 'absint' : null,
+                    'default'           => false,
+                )
+            );
 
         register_setting(
             'wpca-database-optimization',
@@ -157,7 +165,7 @@ class WPCA_Database_Settings {
             'wpca_enable_auto_cleanup',
             array(
                 'type'              => 'boolean',
-                'sanitize_callback' => 'absint',
+                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',
                 'default'           => false,
             )
         );
@@ -177,7 +185,7 @@ class WPCA_Database_Settings {
             'wpca_cleanup_revisions',
             array(
                 'type'              => 'boolean',
-                'sanitize_callback' => 'absint',
+                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',
                 'default'           => false,
             )
         );
@@ -187,7 +195,7 @@ class WPCA_Database_Settings {
             'wpca_revision_days',
             array(
                 'type'              => 'integer',
-                'sanitize_callback' => 'absint',
+                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',
                 'default'           => 30,
             )
         );
@@ -197,7 +205,7 @@ class WPCA_Database_Settings {
             'wpca_cleanup_auto_drafts',
             array(
                 'type'              => 'boolean',
-                'sanitize_callback' => 'absint',
+                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',
                 'default'           => false,
             )
         );
@@ -207,7 +215,7 @@ class WPCA_Database_Settings {
             'wpca_cleanup_trashed_posts',
             array(
                 'type'              => 'boolean',
-                'sanitize_callback' => 'absint',
+                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',
                 'default'           => false,
             )
         );
@@ -217,7 +225,7 @@ class WPCA_Database_Settings {
             'wpca_cleanup_spam_comments',
             array(
                 'type'              => 'boolean',
-                'sanitize_callback' => 'absint',
+                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',
                 'default'           => false,
             )
         );
@@ -227,7 +235,7 @@ class WPCA_Database_Settings {
             'wpca_cleanup_trashed_comments',
             array(
                 'type'              => 'boolean',
-                'sanitize_callback' => 'absint',
+                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',
                 'default'           => false,
             )
         );
@@ -237,7 +245,7 @@ class WPCA_Database_Settings {
             'wpca_cleanup_pingbacks_trackbacks',
             array(
                 'type'              => 'boolean',
-                'sanitize_callback' => 'absint',
+                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',
                 'default'           => false,
             )
         );
@@ -247,7 +255,7 @@ class WPCA_Database_Settings {
             'wpca_cleanup_orphaned_postmeta',
             array(
                 'type'              => 'boolean',
-                'sanitize_callback' => 'absint',
+                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',
                 'default'           => false,
             )
         );
@@ -257,7 +265,7 @@ class WPCA_Database_Settings {
             'wpca_cleanup_orphaned_commentmeta',
             array(
                 'type'              => 'boolean',
-                'sanitize_callback' => 'absint',
+                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',
                 'default'           => false,
             )
         );
@@ -267,7 +275,7 @@ class WPCA_Database_Settings {
             'wpca_cleanup_orphaned_relationships',
             array(
                 'type'              => 'boolean',
-                'sanitize_callback' => 'absint',
+                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',
                 'default'           => false,
             )
         );
@@ -277,7 +285,7 @@ class WPCA_Database_Settings {
             'wpca_cleanup_orphaned_usermeta',
             array(
                 'type'              => 'boolean',
-                'sanitize_callback' => 'absint',
+                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',
                 'default'           => false,
             )
         );
@@ -287,7 +295,7 @@ class WPCA_Database_Settings {
             'wpca_cleanup_expired_transients',
             array(
                 'type'              => 'boolean',
-                'sanitize_callback' => 'absint',
+                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',
                 'default'           => false,
             )
         );
@@ -297,7 +305,7 @@ class WPCA_Database_Settings {
             'wpca_cleanup_all_transients',
             array(
                 'type'              => 'boolean',
-                'sanitize_callback' => 'absint',
+                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',
                 'default'           => false,
             )
         );
@@ -307,10 +315,11 @@ class WPCA_Database_Settings {
             'wpca_cleanup_oembed_caches',
             array(
                 'type'              => 'boolean',
-                'sanitize_callback' => 'absint',
+                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',
                 'default'           => false,
             )
         );
+    }
     }
 
     /**
@@ -330,7 +339,6 @@ class WPCA_Database_Settings {
             if ( ! empty( $safe_table ) ) {
                 $sanitized[] = $safe_table;
             }
-        }
 
         return $sanitized;
     }
@@ -366,23 +374,29 @@ class WPCA_Database_Settings {
             return;
         }
 
-        wp_enqueue_script( 'wpca-database', WPCA_URL . 'assets/js/wpca-database.js', array( 'jquery' ), WPCA_VERSION, true );
+        // Enqueue script with function_exists checks
+        if ( function_exists( 'wp_enqueue_script' ) && defined( 'WPCA_URL' ) && defined( 'WPCA_VERSION' ) ) {
+            wp_enqueue_script( 'wpca-database', WPCA_URL . 'assets/js/wpca-database.js', array( 'jquery' ), WPCA_VERSION, true );
+        }
 
-        wp_localize_script( 'wpca-database', 'wpca_database', array(
-            'ajax_url'                   => admin_url( 'admin-ajax.php' ),
-            'nonce'                      => wp_create_nonce( 'wpca-database' ),
-            'optimizeTables'             => esc_html__( 'Optimize Tables', 'wp-clean-admin' ),
-            'cleanupDatabase'            => esc_html__( 'Cleanup Database', 'wp-clean-admin' ),
-            'loading'                    => esc_html__( 'Loading...', 'wp-clean-admin' ),
-            'optimizing'                 => esc_html__( 'Optimizing tables...', 'wp-clean-admin' ),
-            'cleaning'                   => esc_html__( 'Cleaning database...', 'wp-clean-admin' ),
-            'optimizeSuccess'            => esc_html__( 'Successfully optimized %d of %d tables.', 'wp-clean-admin' ),
-            'optimizeFailed'             => esc_html__( 'Table optimization failed.', 'wp-clean-admin' ),
-            'selectCleanupItemsFirst'    => esc_html__( 'Please select at least one cleanup item.', 'wp-clean-admin' ),
-            'confirmCleanup'             => esc_html__( 'Are you sure you want to run the selected cleanup tasks? This cannot be undone.', 'wp-clean-admin' ),
-            'cleanupSuccess'             => esc_html__( 'Successfully removed %d items from the database.', 'wp-clean-admin' ),
-            'cleanupFailed'              => esc_html__( 'Database cleanup failed.', 'wp-clean-admin' ),
-        ));
+        // Localize script with function_exists checks
+        if ( function_exists( 'wp_localize_script' ) && function_exists( 'admin_url' ) && function_exists( 'wp_create_nonce' ) && function_exists( 'esc_html__' ) ) {
+            wp_localize_script( 'wpca-database', 'wpca_database', array(
+                'ajax_url'                   => admin_url( 'admin-ajax.php' ),
+                'nonce'                      => wp_create_nonce( 'wpca-database' ),
+                'optimizeTables'             => esc_html__( 'Optimize Tables', 'wp-clean-admin' ),
+                'cleanupDatabase'            => esc_html__( 'Cleanup Database', 'wp-clean-admin' ),
+                'loading'                    => esc_html__( 'Loading...', 'wp-clean-admin' ),
+                'optimizing'                 => esc_html__( 'Optimizing tables...', 'wp-clean-admin' ),
+                'cleaning'                   => esc_html__( 'Cleaning database...', 'wp-clean-admin' ),
+                'optimizeSuccess'            => esc_html__( 'Successfully optimized %d of %d tables.', 'wp-clean-admin' ),
+                'optimizeFailed'             => esc_html__( 'Table optimization failed.', 'wp-clean-admin' ),
+                'selectCleanupItemsFirst'    => esc_html__( 'Please select at least one cleanup item.', 'wp-clean-admin' ),
+                'confirmCleanup'             => esc_html__( 'Are you sure you want to run the selected cleanup tasks? This cannot be undone.', 'wp-clean-admin' ),
+                'cleanupSuccess'             => esc_html__( 'Successfully removed %d items from the database.', 'wp-clean-admin' ),
+                'cleanupFailed'              => esc_html__( 'Database cleanup failed.', 'wp-clean-admin' ),
+            ));
+        }
     }
 
     /**
