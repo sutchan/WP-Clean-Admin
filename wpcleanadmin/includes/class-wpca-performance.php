@@ -6,7 +6,7 @@
  *
  * @package WP_Clean_Admin
  * @since 1.6.0
- * @version 1.7.11
+ * @version 1.7.12
  */
 
 if (!defined('ABSPATH')) {
@@ -14,62 +14,59 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * 性能优化类
- * 提供数据库优化、查询监控和性能统计功能
+ * 性能优化类 * 提供数据库优化、查询监控和性能统计功能
  */
 class WPCA_Performance {
     /**
-     * 类实例
-     * @var WPCA_Performance
+     * 绫诲疄渚?     * @var WPCA_Performance
      */
     private static $instance = null;
     
     /**
-     * 插件设置
+     * 鎻掍欢璁剧疆
      * @var array
      */
     private $options = array();
 
     /**
-     * 性能统计数据
+     * 鎬ц兘缁熻鏁版嵁
      * @var array
      */
     private $stats = array();
 
     /**
-     * 数据库查询计数
-     * @var int
+     * 鏁版嵁搴撴煡璇㈣鏁?     * @var int
      */
     private $query_count = 0;
     
     /**
-     * 原始统计数据
+     * 鍘熷缁熻鏁版嵁
      * @var array
      */
     private $raw_stats = array();
 
     /**
      * WPCA_Performance constructor.
-     * 初始化性能优化功能，注册必要的钩子
+     * 鍒濆鍖栨€ц兘浼樺寲鍔熻兘锛屾敞鍐屽繀瑕佺殑閽╁瓙
      */
     private function __construct() {
-        // 获取插件设置
+        // 鑾峰彇鎻掍欢璁剧疆
         if (class_exists('WPCA_Settings') && method_exists('WPCA_Settings', 'get_options')) {
             $this->options = WPCA_Settings::get_options();
         } else {
             $this->options = array();
         }
         
-        // 注册性能相关钩子
+        // 娉ㄥ唽鎬ц兘鐩稿叧閽╁瓙
         if (method_exists($this, 'register_hooks')) {
             $this->register_hooks();
         }
     }
     
     /**
-     * 获取类的单例实例
+     * 鑾峰彇绫荤殑鍗曚緥瀹炰緥
      * 
-     * @return WPCA_Performance|null 类的单例实例或null
+     * @return WPCA_Performance|null 绫荤殑鍗曚緥瀹炰緥鎴杗ull
      */
     public static function get_instance() {
         try {
@@ -79,7 +76,7 @@ class WPCA_Performance {
             
             return self::$instance;
         } catch (Exception $e) {
-            // 安全记录异常但不泄露敏感信息
+            // 瀹夊叏璁板綍寮傚父浣嗕笉娉勯湶鏁忔劅淇℃伅
             if (function_exists('error_log')) {
                 error_log('WPCA: Error creating performance instance');
             }
@@ -88,40 +85,37 @@ class WPCA_Performance {
     }
 
     /**
-     * 注册性能优化相关的钩子
-     */
+     * 娉ㄥ唽鎬ц兘浼樺寲鐩稿叧鐨勯挬瀛?     */
     private function register_hooks() {
         try {
-            // 只在管理区域加载性能优化
+            // 鍙湪绠＄悊鍖哄煙鍔犺浇鎬ц兘浼樺寲
             $is_admin_area = false;
             if (function_exists('is_admin')) {
                 $is_admin_area = is_admin();
             }
             
             if ($is_admin_area) {
-                // 数据库优化钩子
-                if (isset($this->options['enable_db_optimization']) && $this->options['enable_db_optimization']) {
+                // 鏁版嵁搴撲紭鍖栭挬瀛?                if (isset($this->options['enable_db_optimization']) && $this->options['enable_db_optimization']) {
                     if (function_exists('add_action')) {
                         add_action('admin_init', array($this, 'optimize_database_on_init'));
                     }
                 }
                 
-                // 性能监控钩子
+                // 鎬ц兘鐩戞帶閽╁瓙
                 if (isset($this->options['enable_performance_monitoring']) && $this->options['enable_performance_monitoring']) {
                     if (function_exists('add_action')) {
-                        // 初始化性能监控
+                        // 鍒濆鍖栨€ц兘鐩戞帶
                         add_action('admin_init', array($this, 'init_performance_monitoring'));
-                        // 保存性能数据
+                        // 淇濆瓨鎬ц兘鏁版嵁
                         add_action('shutdown', array($this, 'save_performance_data'));
                     }
                     
-                    // 监控数据库查询
-                    if (function_exists('add_filter')) {
+                    // 鐩戞帶鏁版嵁搴撴煡璇?                    if (function_exists('add_filter')) {
                         add_filter('query', array($this, 'track_db_queries'));
                     }
                 }
                 
-                // AJAX钩子
+                // AJAX閽╁瓙
                 if (function_exists('add_action')) {
                     add_action('wp_ajax_wpca_toggle_performance_monitoring', array($this, 'ajax_toggle_performance_monitoring'));
                     add_action('wp_ajax_wpca_get_performance_report', array($this, 'ajax_get_performance_report'));
@@ -129,7 +123,7 @@ class WPCA_Performance {
                 }
             }
         } catch (Exception $e) {
-            // 安全记录异常但不泄露敏感信息
+            // 瀹夊叏璁板綍寮傚父浣嗕笉娉勯湶鏁忔劅淇℃伅
             if (function_exists('error_log')) {
                 error_log('WPCA: Error registering performance hooks');
             }
@@ -137,22 +131,19 @@ class WPCA_Performance {
     }
 
     /**
-     * 初始化性能监控
+     * 鍒濆鍖栨€ц兘鐩戞帶
      */
     public function init_performance_monitoring() {
         try {
-            // 初始化统计数据数组
-            $this->stats = array();
+            // 鍒濆鍖栫粺璁℃暟鎹暟缁?            $this->stats = array();
             
-            // 获取采样率设置
-            $sampling_rate = 100; // 默认采样率为100%
+            // 鑾峰彇閲囨牱鐜囪缃?            $sampling_rate = 100; // 榛樿閲囨牱鐜囦负100%
             if (isset($this->options['performance_monitoring_sampling_rate'])) {
                 $sampling_rate = max(1, min(100, intval($this->options['performance_monitoring_sampling_rate'])));
             }
             
-            // 根据采样率决定是否进行监控
-            if (function_exists('rand') && rand(1, 100) <= $sampling_rate) {
-                // 记录开始时间和内存使用
+            // 鏍规嵁閲囨牱鐜囧喅瀹氭槸鍚﹁繘琛岀洃鎺?            if (function_exists('rand') && rand(1, 100) <= $sampling_rate) {
+                // 璁板綍寮€濮嬫椂闂村拰鍐呭瓨浣跨敤
                 if (function_exists('microtime')) {
                     $this->stats['start_time'] = microtime(true);
                 }
@@ -160,30 +151,28 @@ class WPCA_Performance {
                     $this->stats['start_memory'] = memory_get_usage(true);
                 }
                 
-                // 记录页面信息
+                // 璁板綍椤甸潰淇℃伅
                 if (isset($_SERVER['REQUEST_URI'])) {
-                    // 安全处理URI
+                    // 瀹夊叏澶勭悊URI
                     $uri = $_SERVER['REQUEST_URI'];
-                    // 过滤掉敏感信息
-                    if (function_exists('strpos') && strpos($uri, '?') !== false) {
+                    // 杩囨护鎺夋晱鎰熶俊鎭?                    if (function_exists('strpos') && strpos($uri, '?') !== false) {
                         if (function_exists('explode')) {
                             list($path, $query) = explode('?', $uri, 2);
-                            // 保留路径，只取查询参数的前100个字符
-                            $uri = $path . '?' . (function_exists('substr') ? substr($query, 0, 100) : '');
+                            // 淇濈暀璺緞锛屽彧鍙栨煡璇㈠弬鏁扮殑鍓?00涓瓧绗?                            $uri = $path . '?' . (function_exists('substr') ? substr($query, 0, 100) : '');
                         }
                     }
-                    // 限制URI长度
+                    // 闄愬埗URI闀垮害
                     $uri = function_exists('substr') ? substr($uri, 0, 255) : $uri;
                     $this->stats['page'] = $uri;
                 } else {
                     $this->stats['page'] = 'Unknown';
                 }
                 
-                // 重置查询计数
+                // 閲嶇疆鏌ヨ璁℃暟
                 $this->query_count = 0;
             }
         } catch (Exception $e) {
-            // 安全记录异常但不泄露敏感信息
+            // 瀹夊叏璁板綍寮傚父浣嗕笉娉勯湶鏁忔劅淇℃伅
             if (function_exists('error_log')) {
                 error_log('WPCA: Error initializing performance monitoring');
             }
@@ -191,34 +180,28 @@ class WPCA_Performance {
     }
 
     /**
-     * 跟踪数据库查询
-     * @param string $query 数据库查询字符串
-     * @return string 原始查询字符串
-     */
+     * 璺熻釜鏁版嵁搴撴煡璇?     * @param string $query 鏁版嵁搴撴煡璇㈠瓧绗︿覆
+     * @return string 鍘熷鏌ヨ瀛楃涓?     */
     public function track_db_queries($query) {
         try {
-            // 只在初始化了性能数据后才跟踪查询
+            // 鍙湪鍒濆鍖栦簡鎬ц兘鏁版嵁鍚庢墠璺熻釜鏌ヨ
             if (!empty($this->stats) && isset($this->stats['start_time'])) {
-                // 增加查询计数
+                // 澧炲姞鏌ヨ璁℃暟
                 $this->query_count++;
                 
-                // 可选：记录查询详情（仅在调试模式下）
-                if (defined('WP_DEBUG') && WP_DEBUG && $this->query_count <= 100) {
-                    // 确保stats数组存在且可以存储查询
-                    if (!isset($this->stats['queries'])) {
+                // 鍙€夛細璁板綍鏌ヨ璇︽儏锛堜粎鍦ㄨ皟璇曟ā寮忎笅锛?                if (defined('WP_DEBUG') && WP_DEBUG && $this->query_count <= 100) {
+                    // 纭繚stats鏁扮粍瀛樺湪涓斿彲浠ュ瓨鍌ㄦ煡璇?                    if (!isset($this->stats['queries'])) {
                         $this->stats['queries'] = array();
                     }
                     
-                    // 只记录非空查询
-                    if (!empty($query)) {
-                        // 安全处理查询字符串，移除可能的敏感信息
-                        $safe_query = is_string($query) ? substr($query, 0, 500) : '';
+                    // 鍙褰曢潪绌烘煡璇?                    if (!empty($query)) {
+                        // 瀹夊叏澶勭悊鏌ヨ瀛楃涓诧紝绉婚櫎鍙兘鐨勬晱鎰熶俊鎭?                        $safe_query = is_string($query) ? substr($query, 0, 500) : '';
                         $this->stats['queries'][] = $safe_query;
                     }
                 }
             }
         } catch (Exception $e) {
-            // 安全记录异常但不泄露敏感信息
+            // 瀹夊叏璁板綍寮傚父浣嗕笉娉勯湶鏁忔劅淇℃伅
             if (function_exists('error_log')) {
                 error_log('WPCA: Error tracking database queries');
             }
@@ -228,37 +211,35 @@ class WPCA_Performance {
     }
 
     /**
-     * 显示查询统计信息（仅在调试模式下）
-     */
+     * 显示查询统计信息（仅在调试模式下）     */
     public function display_query_stats() {
         try {
-            // 只在调试模式下显示
-            if (defined('WP_DEBUG') && WP_DEBUG && !empty($this->stats)) {
-                // 安全获取性能数据
+            // 鍙湪璋冭瘯妯″紡涓嬫樉绀?            if (defined('WP_DEBUG') && WP_DEBUG && !empty($this->stats)) {
+                // 瀹夊叏获取性能数据
                 $query_count = isset($this->query_count) ? max(0, intval($this->query_count)) : 0;
                 $load_time = 0;
                 $memory_usage = 0;
                 
-                // 计算加载时间
+                // 璁＄畻鍔犺浇鏃堕棿
                 if (isset($this->stats['start_time']) && function_exists('microtime')) {
                     $load_time = microtime(true) - $this->stats['start_time'];
                 }
                 
-                // 计算内存使用
+                // 璁＄畻鍐呭瓨浣跨敤
                 if (isset($this->stats['start_memory']) && function_exists('memory_get_usage')) {
                     $memory_usage = memory_get_usage(true) - $this->stats['start_memory'];
                 }
                 
-                // 安全构建日志消息
+                // 瀹夊叏鏋勫缓鏃ュ織娑堟伅
                 $log_message = 'WPCA: ' . number_format($load_time, 4) . 's | ' . $query_count . ' queries | ' . number_format($memory_usage / 1024 / 1024, 2) . 'MB';
                 
-                // 安全记录日志
+                // 瀹夊叏璁板綍鏃ュ織
                 if (function_exists('error_log')) {
                     error_log($log_message);
                 }
             }
         } catch (Exception $e) {
-            // 安全记录异常但不泄露敏感信息
+            // 瀹夊叏璁板綍寮傚父浣嗕笉娉勯湶鏁忔劅淇℃伅
             if (function_exists('error_log')) {
                 error_log('WPCA: Error displaying query stats');
             }
@@ -266,34 +247,31 @@ class WPCA_Performance {
     }
 
     /**
-     * 保存性能数据
+     * 淇濆瓨鎬ц兘鏁版嵁
      */
     public function save_performance_data() {
         try {
-            // 检查是否有初始化的性能数据
+            // 妫€鏌ユ槸鍚︽湁鍒濆鍖栫殑鎬ц兘鏁版嵁
             if (!isset($this->stats['start_time']) || !is_array($this->stats)) {
                 return;
             }
             
-            // 计算最终性能数据，增加函数存在性检查和类型安全
+            // 璁＄畻鏈€缁堟€ц兘鏁版嵁锛屽鍔犲嚱鏁板瓨鍦ㄦ€ф鏌ュ拰绫诲瀷瀹夊叏
             $timestamp = function_exists('current_time') ? 
                 current_time('timestamp') : 
                 (function_exists('time') ? time() : 0);
             $user_id = function_exists('get_current_user_id') ? get_current_user_id() : 0;
             
-            // 安全计算加载时间
+            // 瀹夊叏璁＄畻鍔犺浇鏃堕棿
               $load_time = 0;
-              // isset是PHP语言结构，不需要function_exists检查
-              if (function_exists('microtime') && isset($this->stats['start_time'])) {
+              // isset鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?              if (function_exists('microtime') && isset($this->stats['start_time'])) {
                 $load_time = microtime(true) - $this->stats['start_time'];
             }
             
-            // 安全计算内存使用量
-              $memory_usage = 0;
-              // isset是PHP语言结构，不需要function_exists检查
-              if (function_exists('memory_get_peak_usage') && isset($this->stats['start_memory'])) {
+            // 瀹夊叏璁＄畻鍐呭瓨浣跨敤閲?              $memory_usage = 0;
+              // isset鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?              if (function_exists('memory_get_peak_usage') && isset($this->stats['start_memory'])) {
                 $memory_usage = memory_get_peak_usage(true) - $this->stats['start_memory'];
-                // 确保内存值为正数
+                // 纭繚鍐呭瓨鍊间负姝ｆ暟
                 $memory_usage = max(0, $memory_usage);
             }
             
@@ -312,38 +290,35 @@ class WPCA_Performance {
                 'user_id' => intval($user_id),
             );
             
-            // 获取现有性能数据
+            // 鑾峰彇鐜版湁鎬ц兘鏁版嵁
             $performance_log = array();
             if (function_exists('get_option')) {
                 $existing_log = get_option('wpca_performance_log', array());
-                // 确保$performance_log是数组
-                if (is_array($existing_log)) {
+                // 确保$performance_log是数组                if (is_array($existing_log)) {
                     $performance_log = $existing_log;
                 }
             }
             
-            // 添加新数据
-            $performance_log[] = $performance_data;
+            // 娣诲姞鏂版暟鎹?            $performance_log[] = $performance_data;
             
-            // 限制数据量，只保留最近的1000条记录
-            $max_entries = 1000;
+            // 闄愬埗鏁版嵁閲忥紝鍙繚鐣欐渶杩戠殑1000鏉¤褰?            $max_entries = 1000;
             if (function_exists('count') && count($performance_log) > $max_entries) {
                 if (function_exists('array_slice')) {
                     $performance_log = array_slice($performance_log, -$max_entries);
                 }
             }
             
-            // 保存数据
+            // 淇濆瓨鏁版嵁
             if (function_exists('update_option')) {
                 update_option('wpca_performance_log', $performance_log);
             }
             
-            // 安全调用清理方法
+            // 瀹夊叏璋冪敤娓呯悊鏂规硶
             if (method_exists($this, 'cleanup_old_performance_data')) {
                 $this->cleanup_old_performance_data();
             }
         } catch (Exception $e) {
-            // 安全记录异常但不泄露敏感信息
+            // 瀹夊叏璁板綍寮傚父浣嗕笉娉勯湶鏁忔劅淇℃伅
             if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
                 error_log('WPCA: Error saving performance data');
             }
@@ -351,55 +326,48 @@ class WPCA_Performance {
     }
 
     /**
-     * 清理过期的性能数据
+     * 娓呯悊杩囨湡鐨勬€ц兘鏁版嵁
      */
     private function cleanup_old_performance_data() {
         try {
-            // 获取保留天数设置，增加类型安全
-            $retention_days = 7; // 默认值
-            if (function_exists('get_option')) {
+            // 鑾峰彇淇濈暀澶╂暟璁剧疆锛屽鍔犵被鍨嬪畨鍏?            $retention_days = 7; // 榛樿鍊?            if (function_exists('get_option')) {
                 $saved_retention = get_option('wpca_monitoring_data_retention', 7);
                 $retention_days = intval($saved_retention);
-                // 确保保留天数在合理范围内（1-365天）
+                // 纭繚淇濈暀澶╂暟鍦ㄥ悎鐞嗚寖鍥村唴锛?-365澶╋級
                 $retention_days = max(1, min(365, $retention_days));
             }
             
-            // 安全计算截止时间
+            // 瀹夊叏璁＄畻鎴鏃堕棿
             $current_timestamp = function_exists('current_time') ? 
                 current_time('timestamp') : 
                 (function_exists('time') ? time() : 0);
             
-            // 安全使用DAY_IN_SECONDS常量或定义
-            $day_in_seconds = defined('DAY_IN_SECONDS') ? DAY_IN_SECONDS : (24 * 60 * 60);
+            // 瀹夊叏浣跨敤DAY_IN_SECONDS甯搁噺鎴栧畾涔?            $day_in_seconds = defined('DAY_IN_SECONDS') ? DAY_IN_SECONDS : (24 * 60 * 60);
             $cutoff_timestamp = $current_timestamp - ($retention_days * $day_in_seconds);
             
-            // 获取现有性能数据
+            // 鑾峰彇鐜版湁鎬ц兘鏁版嵁
             $performance_log = array();
             if (function_exists('get_option')) {
                 $existing_log = get_option('wpca_performance_log', array());
-                // 确保$performance_log是数组
-                if (is_array($existing_log)) {
+                // 纭繚$performance_log鏄暟缁?                if (is_array($existing_log)) {
                     $performance_log = $existing_log;
                 }
             }
             
-            // 过滤掉过期数据
-            $filtered_log = array();
+            // 杩囨护鎺夎繃鏈熸暟鎹?            $filtered_log = array();
             foreach ($performance_log as $entry) {
-                // 安全检查条目是否有效
-                if (is_array($entry) && isset($entry['timestamp']) && intval($entry['timestamp']) > $cutoff_timestamp) {
+                // 瀹夊叏妫€鏌ユ潯鐩槸鍚︽湁鏁?                if (is_array($entry) && isset($entry['timestamp']) && intval($entry['timestamp']) > $cutoff_timestamp) {
                     $filtered_log[] = $entry;
                 }
             }
             
-            // 只有在数据发生变化时才更新
-            if (count($filtered_log) !== count($performance_log)) {
+            // 鍙湁鍦ㄦ暟鎹彂鐢熷彉鍖栨椂鎵嶆洿鏂?            if (count($filtered_log) !== count($performance_log)) {
                 if (function_exists('update_option')) {
                     update_option('wpca_performance_log', $filtered_log);
                 }
             }
         } catch (Exception $e) {
-            // 安全记录异常但不泄露敏感信息
+            // 瀹夊叏璁板綍寮傚父浣嗕笉娉勯湶鏁忔劅淇℃伅
             if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
                 error_log('WPCA: Error cleaning up old performance data');
             }
@@ -407,23 +375,21 @@ class WPCA_Performance {
     }
 
     /**
-     * 获取历史性能统计
-     * @return array 性能统计数据
+     * 鑾峰彇鍘嗗彶鎬ц兘缁熻
+     * @return array 鎬ц兘缁熻鏁版嵁
      */
     public function get_historical_performance_stats() {
         try {
-            // 获取性能日志数据
+            // 鑾峰彇鎬ц兘鏃ュ織鏁版嵁
             $performance_log = array();
             if (function_exists('get_option')) {
                 $existing_log = get_option('wpca_performance_log', array());
-                // 确保$performance_log是数组
-                if (is_array($existing_log)) {
+                // 纭繚$performance_log鏄暟缁?                if (is_array($existing_log)) {
                     $performance_log = $existing_log;
                 }
             }
             
-            // 初始化统计数据
-            $stats = array(
+            // 鍒濆鍖栫粺璁℃暟鎹?            $stats = array(
                 'total_samples' => 0,
                 'total_load_time' => 0,
                 'total_queries' => 0,
@@ -442,7 +408,7 @@ class WPCA_Performance {
             
             return $stats;
         } catch (Exception $e) {
-            // 安全记录异常并返回空统计
+            // 瀹夊叏璁板綍寮傚父骞惰繑鍥炵┖缁熻
             if (function_exists('error_log')) {
                 error_log('WPCA: Error getting historical performance stats');
             }
@@ -467,12 +433,12 @@ class WPCA_Performance {
     }
 
     /**
-     * 获取性能统计数据
-     * @return array 性能统计数据
+     * 鑾峰彇鎬ц兘缁熻鏁版嵁
+     * @return array 鎬ц兘缁熻鏁版嵁
      */
     public function get_performance_stats() {
         try {
-            // 基础统计数据
+            // 鍩虹缁熻鏁版嵁
             $stats = array(
                 'total_samples' => 0,
                 'total_load_time' => 0,
@@ -486,26 +452,24 @@ class WPCA_Performance {
                 'slow_queries_count' => 0
             );
             
-            // 获取性能日志数据
+            // 鑾峰彇鎬ц兘鏃ュ織鏁版嵁
             $performance_log = array();
             if (function_exists('get_option')) {
                 $existing_log = get_option('wpca_performance_log', array());
-                // 确保$performance_log是数组
-                if (is_array($existing_log)) {
+                // 纭繚$performance_log鏄暟缁?                if (is_array($existing_log)) {
                     $performance_log = $existing_log;
                 }
             }
             
-            // 如果有历史统计数据，则合并
-            if (method_exists($this, 'get_historical_performance_stats')) {
+            // 濡傛灉鏈夊巻鍙茬粺璁℃暟鎹紝鍒欏悎骞?            if (method_exists($this, 'get_historical_performance_stats')) {
                 $historical_stats = $this->get_historical_performance_stats();
-                // 安全合并数据
+                // 瀹夊叏鍚堝苟鏁版嵁
                 if (is_array($historical_stats)) {
-                    // 确保安全合并数组
+                    // 纭繚瀹夊叏鍚堝苟鏁扮粍
                     if (function_exists('array_merge')) {
                         $stats = array_merge($stats, $historical_stats);
                     } else {
-                        // 手动合并关键统计数据
+                        // 鎵嬪姩鍚堝苟鍏抽敭缁熻鏁版嵁
                         foreach (array_keys($stats) as $key) {
                             if (isset($historical_stats[$key])) {
                                 $stats[$key] = $historical_stats[$key];
@@ -515,60 +479,52 @@ class WPCA_Performance {
                 }
             }
             
-            // 安全处理峰值内存
-              // isset是PHP语言结构，不需要function_exists检查
-              $stats['peak_memory'] = function_exists('max') && isset($stats['peak_memory']) ? max(0, $stats['peak_memory']) : 0;
+            // 瀹夊叏澶勭悊宄板€煎唴瀛?              // isset鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?              $stats['peak_memory'] = function_exists('max') && isset($stats['peak_memory']) ? max(0, $stats['peak_memory']) : 0;
             
-            // 安全处理慢查询计数
-            $stats['slow_queries_count'] = isset($stats['slow_queries_count']) ? max(0, intval($stats['slow_queries_count'])) : 0;
+            // 瀹夊叏澶勭悊鎱㈡煡璇㈣鏁?            $stats['slow_queries_count'] = isset($stats['slow_queries_count']) ? max(0, intval($stats['slow_queries_count'])) : 0;
             
-            // 安全处理总样本数
+            // 瀹夊叏澶勭悊鎬绘牱鏈暟
             $stats['total_samples'] = isset($stats['total_samples']) ? max(0, intval($stats['total_samples'])) : 0;
             
-            // 安全处理总加载时间
-            $stats['total_load_time'] = isset($stats['total_load_time']) ? max(0, floatval($stats['total_load_time'])) : 0;
+            // 瀹夊叏澶勭悊鎬诲姞杞芥椂闂?            $stats['total_load_time'] = isset($stats['total_load_time']) ? max(0, floatval($stats['total_load_time'])) : 0;
             
-            // 安全处理总查询数
+            // 瀹夊叏澶勭悊鎬绘煡璇㈡暟
             $stats['total_queries'] = isset($stats['total_queries']) ? max(0, intval($stats['total_queries'])) : 0;
             
-            // 安全处理总内存
-            $stats['total_memory'] = isset($stats['total_memory']) ? max(0, intval($stats['total_memory'])) : 0;
+            // 瀹夊叏澶勭悊鎬诲唴瀛?            $stats['total_memory'] = isset($stats['total_memory']) ? max(0, intval($stats['total_memory'])) : 0;
             
-            // 安全计算平均值，避免除零错误
+            // 瀹夊叏璁＄畻骞冲潎鍊硷紝閬垮厤闄ら浂閿欒
             if ($stats['total_samples'] > 0) {
                 $stats['avg_load_time'] = floatval($stats['total_load_time']) / $stats['total_samples'];
                 $stats['avg_queries'] = floatval($stats['total_queries']) / $stats['total_samples'];
                 $stats['avg_memory'] = floatval($stats['total_memory']) / $stats['total_samples'];
             }
             
-            // 安全处理慢页面计数
-            $stats['slow_pages_count'] = isset($stats['slow_pages_count']) ? max(0, intval($stats['slow_pages_count'])) : 0;
+            // 瀹夊叏澶勭悊鎱㈤〉闈㈣鏁?            $stats['slow_pages_count'] = isset($stats['slow_pages_count']) ? max(0, intval($stats['slow_pages_count'])) : 0;
             
-            // 安全添加WordPress版本信息
+            // 瀹夊叏娣诲姞WordPress鐗堟湰淇℃伅
             $wp_version = defined('WP_VERSION') ? WP_VERSION : 'Unknown';
             if (function_exists('sanitize_text_field')) {
                 $wp_version = sanitize_text_field($wp_version);
             }
-            // 限制版本字符串长度
-            $wp_version = function_exists('substr') ? substr($wp_version, 0, 50) : $wp_version;
+            // 闄愬埗鐗堟湰瀛楃涓查暱搴?            $wp_version = function_exists('substr') ? substr($wp_version, 0, 50) : $wp_version;
             $stats['wp_version'] = $wp_version;
             
-            // 安全添加PHP版本信息
+            // 瀹夊叏娣诲姞PHP鐗堟湰淇℃伅
             $php_version = function_exists('phpversion') ? phpversion() : (PHP_VERSION ?? 'Unknown');
             if (function_exists('sanitize_text_field')) {
                 $php_version = sanitize_text_field($php_version);
             }
-            // 限制版本字符串长度
-            $php_version = function_exists('substr') ? substr($php_version, 0, 50) : $php_version;
+            // 闄愬埗鐗堟湰瀛楃涓查暱搴?            $php_version = function_exists('substr') ? substr($php_version, 0, 50) : $php_version;
             $stats['php_version'] = $php_version;
             
-            // 安全处理原始统计数据
+            // 瀹夊叏澶勭悊鍘熷缁熻鏁版嵁
             $raw_stats = isset($this->raw_stats) && is_array($this->raw_stats) ? $this->raw_stats : array();
             $stats['raw_data'] = $raw_stats;
             
             return $stats;
         } catch (Exception $e) {
-            // 安全记录异常并返回空统计
+            // 瀹夊叏璁板綍寮傚父骞惰繑鍥炵┖缁熻
             if (function_exists('error_log')) {
                 $error_msg = 'WPCA: Error getting performance stats: ';
                 if ($e instanceof Exception && method_exists($e, 'getMessage')) {
@@ -598,14 +554,13 @@ class WPCA_Performance {
     }
 
     /**
-     * 生成性能报告
+     * 鐢熸垚鎬ц兘鎶ュ憡
      * 
-     * @param array $performance_log 性能日志数据
-     * @return array 生成的报告
-     */
+     * @param array $performance_log 鎬ц兘鏃ュ織鏁版嵁
+     * @return array 鐢熸垚鐨勬姤鍛?     */
     private function generate_performance_report($performance_log) {
         try {
-            // 参数类型验证
+            // 鍙傛暟绫诲瀷楠岃瘉
             if (!is_array($performance_log)) {
                 $no_data_text = function_exists('__') ? __('No performance data available.', 'wp-clean-admin') : 'No performance data available.';
                 return array(
@@ -622,20 +577,17 @@ class WPCA_Performance {
                 );
             }
             
-            // 按页面分组统计
-            $page_stats = array();
+            // 鎸夐〉闈㈠垎缁勭粺璁?            $page_stats = array();
             foreach ($performance_log as $entry) {
                 if (!is_array($entry)) {
-                    continue; // 跳过非数组条目
-                }
+                    continue; // 璺宠繃闈炴暟缁勬潯鐩?                }
                 
-                // 安全获取并过滤页面路径
-                $page = isset($entry['page']) ? $entry['page'] : 'Unknown';
-                // 安全过滤页面路径
+                // 瀹夊叏鑾峰彇骞惰繃婊ら〉闈㈣矾寰?                $page = isset($entry['page']) ? $entry['page'] : 'Unknown';
+                // 瀹夊叏杩囨护椤甸潰璺緞
                 if (function_exists('sanitize_text_field')) {
                     $page = sanitize_text_field($page);
                 }
-                // 限制页面名称长度
+                // 闄愬埗椤甸潰鍚嶇О闀垮害
                 $page = substr($page, 0, 255);
                 
                 if (!isset($page_stats[$page])) {
@@ -649,8 +601,7 @@ class WPCA_Performance {
                     );
                 }
                 
-                // 类型安全处理和非负确保
-                $page_stats[$page]['count']++;
+                // 类型安全处理和非负确保                $page_stats[$page]['count']++;
                 $load_time = isset($entry['load_time']) ? floatval($entry['load_time']) : 0;
                 $page_stats[$page]['total_load_time'] += max(0, $load_time);
                 
@@ -673,7 +624,7 @@ class WPCA_Performance {
             // 计算平均值并排序
             $detailed = array();
             foreach ($page_stats as $page => $stats) {
-                $safe_count = max(1, intval($stats['count'])); // 避免除零错误
+                $safe_count = max(1, intval($stats['count'])); // 閬垮厤闄ら浂閿欒
                 $detailed[] = array(
                     'page' => $page,
                     'avg_load_time' => floatval($stats['total_load_time']) / $safe_count,
@@ -685,8 +636,7 @@ class WPCA_Performance {
                 );
             }
             
-            // 按平均加载时间排序（最慢的在前）
-            if (function_exists('usort')) {
+            // 按平均加载时间排序（最慢的在前）            if (function_exists('usort')) {
                 usort($detailed, function($a, $b) {
                     $a_time = isset($a['avg_load_time']) ? floatval($a['avg_load_time']) : 0;
                     $b_time = isset($b['avg_load_time']) ? floatval($b['avg_load_time']) : 0;
@@ -703,11 +653,9 @@ class WPCA_Performance {
             $total_pages = function_exists('count') ? count($detailed) : 0;
             $slow_pages_count = 0;
             
-            // 安全计算慢页面数量
-            if (function_exists('count') && function_exists('array_filter')) {
+            // 安全计算慢页面数量            if (function_exists('count') && function_exists('array_filter')) {
                 $slow_pages = array_filter($detailed, function($page) {
-                    return isset($page['avg_load_time']) && floatval($page['avg_load_time']) > 1; // 超过1秒的页面视为慢页面
-                });
+                    return isset($page['avg_load_time']) && floatval($page['avg_load_time']) > 1; // 瓒呰繃1绉掔殑椤甸潰瑙嗕负鎱㈤〉闈?                });
                 $slow_pages_count = count($slow_pages);
             }
             
@@ -750,8 +698,7 @@ class WPCA_Performance {
     }
 
     /**
-     * AJAX切换性能监控状态
-     */
+     * AJAX切换性能监控状态     */
     public function ajax_toggle_performance_monitoring() {
         try {
             // 检查是否为AJAX请求
@@ -775,8 +722,7 @@ class WPCA_Performance {
                 return;
             }
             
-            // 检查用户权限
-            $has_permission = false;
+            // 检查用户权限            $has_permission = false;
             if (function_exists('current_user_can')) {
                 $has_permission = current_user_can('manage_options');
             }
@@ -794,14 +740,12 @@ class WPCA_Performance {
                 return;
             }
             
-            // 获取新的监控状态
-            $new_status = false;
+            // 获取新的监控状态            $new_status = false;
             if (isset($_POST['enabled'])) {
                 $new_status = (bool)$_POST['enabled'];
             }
             
-            // 更新监控状态
-            $updated = function_exists('update_option') ? update_option('wpca_monitoring_enabled', $new_status) : false;
+            // 更新监控状态            $updated = function_exists('update_option') ? update_option('wpca_monitoring_enabled', $new_status) : false;
             
             // 如果开启监控，初始化性能监控
             if ($new_status) {
@@ -850,7 +794,7 @@ class WPCA_Performance {
      */
     public function ajax_get_performance_report() {
         try {
-            // 检查是否为AJAX请求
+            // 妫€鏌ユ槸鍚︿负AJAX璇锋眰
             $is_ajax_request = false;
             if (function_exists('wp_doing_ajax')) {
                 $is_ajax_request = wp_doing_ajax();
@@ -875,7 +819,7 @@ class WPCA_Performance {
             $security_valid = true;
             if (function_exists('check_ajax_referer')) {
                 $security_param = isset($_POST['security']) ? $_POST['security'] : '';
-                $security_valid = check_ajax_referer('wpca-get-performance-report', 'security', false); // 不自动die，由我们控制错误处理
+                $security_valid = check_ajax_referer('wpca-get-performance-report', 'security', false); // 涓嶈嚜鍔╠ie锛岀敱鎴戜滑鎺у埗閿欒澶勭悊
             }
             
             if (!$security_valid) {
@@ -891,8 +835,7 @@ class WPCA_Performance {
                 return;
             }
             
-            // 检查用户权限
-            $has_permission = false;
+            // 妫€鏌ョ敤鎴锋潈闄?            $has_permission = false;
             if (function_exists('current_user_can')) {
                 $has_permission = current_user_can('manage_options');
             }
@@ -910,12 +853,11 @@ class WPCA_Performance {
                 return;
             }
             
-            // 获取性能数据
+            // 鑾峰彇鎬ц兘鏁版嵁
             $performance_log = array();
             if (function_exists('get_option')) {
                 $existing_log = get_option('wpca_performance_log', array());
-                // 确保$performance_log是数组
-                if (is_array($existing_log)) {
+                // 纭繚$performance_log鏄暟缁?                if (is_array($existing_log)) {
                     $performance_log = $existing_log;
                 }
             }
@@ -937,8 +879,7 @@ class WPCA_Performance {
                 echo json_encode(array('success' => true, 'data' => $report));
             }
         } catch (Exception $e) {
-            // 安全记录异常并返回错误
-            $error_message = function_exists('__') ? __('Error generating performance report.', 'wp-clean-admin') : 'Error generating performance report.';
+            // 安全记录异常并返回错误            $error_message = function_exists('__') ? __('Error generating performance report.', 'wp-clean-admin') : 'Error generating performance report.';
             
             if (function_exists('error_log')) {
                 error_log('WPCA: ' . $error_message . ' - ' . ($e instanceof Exception ? $e->getMessage() : 'Unknown error'));
@@ -962,8 +903,7 @@ class WPCA_Performance {
      * AJAX清理性能数据
      */
     public function ajax_clear_performance_data() {
-        // 检查是否为AJAX请求（兼容WordPress不同版本）
-        $is_ajax_request = false;
+        // 检查是否为AJAX请求（兼容WordPress不同版本）        $is_ajax_request = false;
         if (function_exists('wp_doing_ajax')) {
             $is_ajax_request = wp_doing_ajax();
         } elseif (defined('DOING_AJAX') && DOING_AJAX) {
@@ -984,8 +924,7 @@ class WPCA_Performance {
         }
         
         try {
-            // 检查用户权限
-            $has_permission = false;
+            // 妫€鏌ョ敤鎴锋潈闄?            $has_permission = false;
             if (function_exists('current_user_can')) {
                 $has_permission = current_user_can('manage_options');
             }
@@ -1003,11 +942,11 @@ class WPCA_Performance {
                 return;
             }
             
-            // 检查nonce安全验证
+            // 妫€鏌once瀹夊叏楠岃瘉
             $security_valid = true;
             if (function_exists('check_ajax_referer')) {
                 $security_param = isset($_POST['security']) ? $_POST['security'] : '';
-                $security_valid = check_ajax_referer('wpca-clear-performance-data', 'security', false); // 不自动die，由我们控制错误处理
+                $security_valid = check_ajax_referer('wpca-clear-performance-data', 'security', false); // 涓嶈嚜鍔╠ie锛岀敱鎴戜滑鎺у埗閿欒澶勭悊
             }
             
             if (!$security_valid) {

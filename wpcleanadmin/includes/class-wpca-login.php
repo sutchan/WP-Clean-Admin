@@ -1,11 +1,12 @@
-<?php
+﻿<?php
 /**
- * WP Clean Admin Login Class
- *
- * Handles all login page-related modifications and settings.
- *
- * @package WP_Clean_Admin
- * @version 1.7.11
+ * WordPress Clean Admin - Login Manager
+ * 
+ * 自定义WordPress登录页面样式和行为的功能
+ * 
+ * @package WPCleanAdmin
+ * @since 1.0.0
+ * @version 1.7.12
  */
 
 if (!defined('ABSPATH')) {
@@ -54,7 +55,7 @@ class WPCA_Login {
         add_action('login_head', array($this, 'output_custom_styles'));
         add_action('login_init', array($this, 'customize_login_elements'));
         
-        // 添加登录表单自定义钩子
+        // 娣诲姞鐧诲綍琛ㄥ崟鑷畾涔夐挬瀛?
         add_action('login_form_top', array($this, 'add_login_form_elements'));
     }
 
@@ -333,7 +334,8 @@ class WPCA_Login {
         }
         
         if (!empty($custom_css)) {
-            echo "<style type=\"text/css\">{$custom_css}</style>\n";
+            echo "<style type=\"text/css\">{$custom_css}</style>
+";
         }
     }
     
@@ -365,14 +367,16 @@ class WPCA_Login {
         // If language switcher needs to be hidden
         if (isset($login_elements['language_switcher']) && !$login_elements['language_switcher'] && function_exists('add_action')) {
             add_action('login_head', function() {
-                echo "<style type=\"text/css\">#login .language-switcher { display: none; }</style>\n";
+                echo "<style type=\"text/css\">#login .language-switcher { display: none; }</style>
+";
             });
         }
         
         // If home link needs to be hidden
         if (isset($login_elements['home_link']) && !$login_elements['home_link'] && function_exists('add_action')) {
             add_action('login_head', function() {
-                echo "<style type=\"text/css\">#backtoblog { display: none; }</style>\n";
+                echo "<style type=\"text/css\">#backtoblog { display: none; }</style>
+";
             });
         }
         
@@ -383,7 +387,8 @@ class WPCA_Login {
             }
             if (function_exists('add_action')) {
                 add_action('login_head', function() {
-                    echo "<style type=\"text/css\">#nav { display: none; }</style>\n";
+                    echo "<style type=\"text/css\">#nav { display: none; }</style>
+";
                 });
             }
         }
@@ -391,7 +396,8 @@ class WPCA_Login {
         // If remember me checkbox needs to be hidden
         if (isset($login_elements['remember_me']) && !$login_elements['remember_me'] && function_exists('add_action')) {
             add_action('login_head', function() {
-                echo "<style type=\"text/css\">.login .forgetmenot { display: none; }</style>\n";
+                echo "<style type=\"text/css\">.login .forgetmenot { display: none; }</style>
+";
             });
         }
     }

@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /**
  * WP Clean Admin Cleanup Class
  *
  * Handles various cleanup tasks in the WordPress admin area.
  *
  * @package WP_Clean_Admin
- * @version 1.7.11
+ * @version 1.7.12
  */
 
 if (!defined('ABSPATH')) {

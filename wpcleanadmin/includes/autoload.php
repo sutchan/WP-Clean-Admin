@@ -1,19 +1,16 @@
-<?php
+﻿<?php
 /**
- * WPCleanAdmin PSR-4 Autoloader
+ * WordPress Clean Admin - Autoloader
  * 
- * Implements a PSR-4 compliant autoloader for the WPCleanAdmin plugin.
- * This allows for automatic class loading without requiring manual includes.
+ * PSR-4 自动加载器实现
  * 
  * @package WPCleanAdmin
  * @since 1.4.1
- * @version 1.7.11
+ * @version 1.7.12
  */
 
 // Exit if accessed directly
-// defined是PHP语言结构，不需要function_exists检查
   if ( ! defined( 'ABSPATH' ) ) {
-     // exit是PHP语言结构，不需要function_exists检查
      exit;
   }
 
@@ -53,8 +50,8 @@ function wpca_autoloader($class_name) {
                 $file_path = $base_dir . $class_file;
                 
                 // Check if the file exists and include it
-                // file_exists是PHP内置函数，可以安全使用
-                // require_once是PHP语言结构，不需要function_exists检查
+                // file_exists 是 PHP 内置函数，可以安全使用
+                // require_once 是 PHP 语言结构，不需要 function_exists 检查
                 if ( file_exists($file_path) ) {
                     require_once $file_path;
                 }
@@ -70,3 +67,4 @@ if (function_exists('wpca_register_autoloader')) {
     wpca_register_autoloader();
 }
 ?>
+

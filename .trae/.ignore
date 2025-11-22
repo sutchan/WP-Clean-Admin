@@ -1,0 +1,57 @@
+# 编辑器和IDE文件
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# 编译输出和缓存
+*.class
+*.log
+*.cache
+
+# 版本控制
+.git/
+.svn/
+.hg/
+
+# 操作系统生成的文件
+.DS_Store
+Thumbs.db
+
+# 临时文件
+*.tmp
+*.temp
+*.bak
+*.old
+*.~*
+
+# 备份文件
+*/backup/*
+*/backups/*
+
+# 日志文件
+*.log
+
+# Node.js依赖
+node_modules/
+npm-debug.log
+
+# 构建目录
+dist/
+build/
+
+# 测试报告
+coverage/
+.nyc_output/
+
+# 环境变量文件
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

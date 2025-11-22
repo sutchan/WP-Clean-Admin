@@ -6,7 +6,7 @@
  * 并将换行符统一为 Unix LF。默认执行写入，可通过命令行参数启用 dry-run。
  *
  * @package WPCleanAdmin
- * @version 1.7.11
+ * @version 1.7.12
  */
 
 /**

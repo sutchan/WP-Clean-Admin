@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * WP Clean Admin Database Settings
  * 
@@ -7,7 +7,7 @@
  * 
  * @package WP_Clean_Admin
  * @since 1.6.0
- * @version 1.7.11
+ * @version 1.7.12
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -892,3 +892,4 @@ function wpca_init_database_settings() {
     return WPCA_Database_Settings::get_instance();
 }
 ?>
+

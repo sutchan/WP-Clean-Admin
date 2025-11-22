@@ -1,9 +1,9 @@
-<?php
+﻿<?php
 /**
  * Plugin Name: WP Clean Admin
  * Plugin URI: https://github.com/sutchan/WP-Clean-Admin
  * Description: Simplifies and optimizes the WordPress admin interface, providing a cleaner backend experience with database optimization capabilities.
- * Version: 1.7.11
+ * Version: 1.7.12
  * Author: Sut
  * Author URI: https://github.com/sutchan/
  * License: GPLv2 or later
@@ -12,15 +12,15 @@
  */
 
 // Exit if accessed directly
-// defined是PHP语言结构，不需要function_exists检查
+// defined鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?
 if ( ! defined( 'ABSPATH' ) ) {
-    // exit是PHP语言结构，不需要function_exists检查
+    // exit鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?
     exit;
 }
 
-// 安全地定义插件常量
+// 瀹夊叏鍦板畾涔夋彃浠跺父閲?
 if ( ! defined( 'WPCA_VERSION' ) ) {
-	define( 'WPCA_VERSION', '1.7.11' );
+	define( 'WPCA_VERSION', '1.7.12' );
 }
 
 if ( ! defined( 'WPCA_BASENAME' ) ) {
@@ -81,13 +81,13 @@ if ( ! function_exists( 'site_url' ) ) {
 }
 
 // Include core functions
-// file_exists是PHP内置函数，可以安全使用
+// file_exists鏄疨HP鍐呯疆鍑芥暟锛屽彲浠ュ畨鍏ㄤ娇鐢?
 if ( defined( 'WPCA_PLUGIN_DIR' ) && file_exists( WPCA_PLUGIN_DIR . 'includes/wpca-core-functions.php' ) ) {
 	require_once WPCA_PLUGIN_DIR . 'includes/wpca-core-functions.php';
 }
 
 // Include the autoloader
-// file_exists是PHP内置函数，可以安全使用
+// file_exists鏄疨HP鍐呯疆鍑芥暟锛屽彲浠ュ畨鍏ㄤ娇鐢?
 if ( defined( 'WPCA_PLUGIN_DIR' ) && file_exists( WPCA_PLUGIN_DIR . 'includes/autoload.php' ) ) {
 	require_once WPCA_PLUGIN_DIR . 'includes/autoload.php';
 }
@@ -97,7 +97,7 @@ if ( defined( 'WPCA_PLUGIN_DIR' ) && file_exists( WPCA_PLUGIN_DIR . 'includes/au
 // Performance Settings will be loaded automatically by the autoloader when needed
 
 // Include Performance Tests (only in development environment)
-// file_exists是PHP内置函数，可以安全使用
+// file_exists鏄疨HP鍐呯疆鍑芥暟锛屽彲浠ュ畨鍏ㄤ娇鐢?
 if ( ( defined( 'WP_DEBUG' ) && WP_DEBUG ) && defined( 'WPCA_PLUGIN_DIR' ) && file_exists( WPCA_PLUGIN_DIR . 'includes/tests/test-wpca-performance.php' ) ) {
 	require_once( WPCA_PLUGIN_DIR . 'includes/tests/test-wpca-performance.php' );
 }
@@ -106,13 +106,13 @@ if ( ( defined( 'WP_DEBUG' ) && WP_DEBUG ) && defined( 'WPCA_PLUGIN_DIR' ) && fi
  * Initialize the plugin components
  */
 function wpca_initialize_plugin() {
-    // 初始化插件组件
+    // 鍒濆鍖栨彃浠剁粍浠?
     global $wpca_settings, $wpca_menu_customizer, $wpca_permissions, 
            $wpca_ajax, $wpca_cleanup, $wpca_dashboard, $wpca_login, $wpca_user_roles;
     
-    // 检查是否有class_exists函数可用
-    // class_exists是PHP内置函数，可以安全使用
-    // 创建必要的类实例，确保类存在才实例化
+    // 妫€鏌ユ槸鍚︽湁class_exists鍑芥暟鍙敤
+    // class_exists鏄疨HP鍐呯疆鍑芥暟锛屽彲浠ュ畨鍏ㄤ娇鐢?
+    // 鍒涘缓蹇呰鐨勭被瀹炰緥锛岀‘淇濈被瀛樺湪鎵嶅疄渚嬪寲
     if (class_exists('WPCA_Permissions')) {
         $wpca_permissions = new WPCA_Permissions();
     }
@@ -121,7 +121,7 @@ function wpca_initialize_plugin() {
         try {
             $wpca_settings = new WPCA_Settings();
         } catch ( Exception $e ) {
-            // 静默捕获异常，避免插件崩溃
+            // 闈欓粯鎹曡幏寮傚父锛岄伩鍏嶆彃浠跺穿婧?
         }
     }
     
@@ -129,16 +129,16 @@ function wpca_initialize_plugin() {
         try {
             $wpca_menu_customizer = new WPCA_Menu_Customizer();
         } catch ( Exception $e ) {
-            // 静默捕获异常，避免插件崩溃
+            // 闈欓粯鎹曡幏寮傚父锛岄伩鍏嶆彃浠跺穿婧?
         }
     }
     
-    // 初始化附加组件
+    // 鍒濆鍖栭檮鍔犵粍浠?
     if (class_exists('WPCA_AJAX')) {
         try {
             $wpca_ajax = new WPCA_AJAX();
         } catch ( Exception $e ) {
-            // 静默捕获异常，避免插件崩溃
+            // 闈欓粯鎹曡幏寮傚父锛岄伩鍏嶆彃浠跺穿婧?
         }
     }
     
@@ -146,7 +146,7 @@ function wpca_initialize_plugin() {
         try {
             $wpca_cleanup = new WPCA_Cleanup();
         } catch ( Exception $e ) {
-            // 静默捕获异常，避免插件崩溃
+            // 闈欓粯鎹曡幏寮傚父锛岄伩鍏嶆彃浠跺穿婧?
         }
     }
     
@@ -154,7 +154,7 @@ function wpca_initialize_plugin() {
         try {
             $wpca_dashboard = new WPCA_Dashboard();
         } catch ( Exception $e ) {
-            // 静默捕获异常，避免插件崩溃
+            // 闈欓粯鎹曡幏寮傚父锛岄伩鍏嶆彃浠跺穿婧?
         }
     }
     
@@ -162,7 +162,7 @@ function wpca_initialize_plugin() {
         try {
             $wpca_login = new WPCA_Login();
         } catch ( Exception $e ) {
-            // 静默捕获异常，避免插件崩溃
+            // 闈欓粯鎹曡幏寮傚父锛岄伩鍏嶆彃浠跺穿婧?
         }
     }
     
@@ -170,23 +170,23 @@ function wpca_initialize_plugin() {
         try {
             $wpca_user_roles = new WPCA_User_Roles();
         } catch ( Exception $e ) {
-            // 静默捕获异常，避免插件崩溃
+            // 闈欓粯鎹曡幏寮傚父锛岄伩鍏嶆彃浠跺穿婧?
         }
     }
     
-    // 设置默认权限，确保对象存在和方法存在
+    // 璁剧疆榛樿鏉冮檺锛岀‘淇濆璞″瓨鍦ㄥ拰鏂规硶瀛樺湪
     if (isset($wpca_permissions)) {
         if (method_exists($wpca_permissions, 'set_default_permissions')) {
             try {
                 $wpca_permissions->set_default_permissions();
             } catch ( Exception $e ) {
-                // 静默捕获异常，避免插件崩溃
+                // 闈欓粯鎹曡幏寮傚父锛岄伩鍏嶆彃浠跺穿婧?
             }
         }
     }
 }
 
-// 注册插件初始化
+// 娉ㄥ唽鎻掍欢鍒濆鍖?
 // Provide fallback implementation for add_action if not exists
 if ( ! function_exists( 'add_action' ) ) {
 	function add_action( $hook_name, $callback, $priority = 10, $accepted_args = 1 ) {
@@ -197,29 +197,29 @@ if ( ! function_exists( 'add_action' ) ) {
 
 add_action('plugins_loaded', 'wpca_initialize_plugin', 10);
 
-// file_exists是PHP内置函数，可以安全使用
+// file_exists鏄疨HP鍐呯疆鍑芥暟锛屽彲浠ュ畨鍏ㄤ娇鐢?
 if ( WP_DEBUG && defined( 'WPCA_PLUGIN_DIR' ) && file_exists( WPCA_PLUGIN_DIR . 'translation-debug.php' ) ) {
 	include_once WPCA_PLUGIN_DIR . 'translation-debug.php';
 }
 
-// 加载多语言支持类
-// require_once是PHP语言结构，不需要函数存在性检查
+// 鍔犺浇澶氳瑷€鏀寔绫?
+// require_once鏄疨HP璇█缁撴瀯锛屼笉闇€瑕佸嚱鏁板瓨鍦ㄦ€ф鏌?
 
-// file_exists是PHP内置函数，可以安全使用
+// file_exists鏄疨HP鍐呯疆鍑芥暟锛屽彲浠ュ畨鍏ㄤ娇鐢?
 if (defined('WPCA_PLUGIN_DIR') && file_exists(WPCA_PLUGIN_DIR . 'includes/class-wpca-i18n.php')) {
     require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-i18n.php';
-    // 初始化多语言支持
+    // 鍒濆鍖栧璇█鏀寔
     if (class_exists('WPCA_i18n') && method_exists('WPCA_i18n', 'get_instance')) {
         try {
             WPCA_i18n::get_instance();
         } catch ( Exception $e ) {
-            // 静默捕获异常，避免插件崩溃
+            // 闈欓粯鎹曡幏寮傚父锛岄伩鍏嶆彃浠跺穿婧?
         }
     }
 }
 
 function wpca_load_textdomain() {
-    // 提供必要函数的备用实现
+    // 鎻愪緵蹇呰鍑芥暟鐨勫鐢ㄥ疄鐜?
     if ( ! function_exists( 'load_plugin_textdomain' ) ) {
         function load_plugin_textdomain( $domain, $mu_plugin = false, $plugin_rel_path = '' ) {
             return true;
@@ -243,18 +243,18 @@ function wpca_load_textdomain() {
             try {
                 load_plugin_textdomain( 'wp-clean-admin', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
             } catch ( Exception $e ) {
-                // 静默捕获异常，使用备用路径
+                // 闈欓粯鎹曡幏寮傚父锛屼娇鐢ㄥ鐢ㄨ矾寰?
                 try {
                     load_plugin_textdomain( 'wp-clean-admin', false, 'wpcleanadmin/languages/' );
                 } catch ( Exception $e ) {
-                    // 静默捕获异常，避免插件崩溃
+                    // 闈欓粯鎹曡幏寮傚父锛岄伩鍏嶆彃浠跺穿婧?
                 }
             }
         } else {
             try {
                 load_plugin_textdomain( 'wp-clean-admin', false, 'wpcleanadmin/languages/' );
             } catch ( Exception $e ) {
-                // 静默捕获异常，避免插件崩溃
+                // 闈欓粯鎹曡幏寮傚父锛岄伩鍏嶆彃浠跺穿婧?
             }
         }
     }
@@ -264,7 +264,7 @@ add_action( 'plugins_loaded', 'wpca_load_textdomain' );
 function wpca_load_admin_resources() {
     global $wpca_admin_data;
     
-    // 提供必要函数的备用实现
+    // 鎻愪緵蹇呰鍑芥暟鐨勫鐢ㄥ疄鐜?
     if ( ! function_exists( 'wp_enqueue_script' ) ) {
         function wp_enqueue_script( $handle, $src = '', $deps = array(), $ver = false, $in_footer = false ) {
             return true;
@@ -355,7 +355,7 @@ if ( ! function_exists( 'add_filter' ) ) {
 }
 
 function wpca_activate_plugin() {
-    // 提供必要函数的备用实现
+    // 鎻愪緵蹇呰鍑芥暟鐨勫鐢ㄥ疄鐜?
     if ( ! function_exists( 'get_option' ) ) {
         function get_option( $option, $default = false ) {
             return $default;
@@ -380,15 +380,15 @@ function wpca_activate_plugin() {
         }
     }
     
-    // is_array是PHP内置函数，可以安全使用
+    // is_array鏄疨HP鍐呯疆鍑芥暟锛屽彲浠ュ畨鍏ㄤ娇鐢?
     
-    // 安全地获取和更新选项
+    // 瀹夊叏鍦拌幏鍙栧拰鏇存柊閫夐」
     $wpca_settings = get_option( 'wpca_settings' );
     
     if ( ! $wpca_settings ) {
-        // 设置默认配置
+        // 璁剧疆榛樿閰嶇疆
         $default_settings = array(
-            'version'             => defined( 'WPCA_VERSION' ) ? WPCA_VERSION : '1.7.11',
+            'version'             => defined( 'WPCA_VERSION' ) ? WPCA_VERSION : '1.7.12',
             'menu_order'          => array(),
             'submenu_order'       => array(),
             'menu_toggles'        => array(),
@@ -401,20 +401,20 @@ function wpca_activate_plugin() {
         );
         update_option( 'wpca_settings', $default_settings );
     } else if ( is_array( $wpca_settings ) ) {
-        // 更新版本号
-        $wpca_settings['version'] = defined( 'WPCA_VERSION' ) ? WPCA_VERSION : '1.7.11';
+        // 鏇存柊鐗堟湰鍙?
+        $wpca_settings['version'] = defined( 'WPCA_VERSION' ) ? WPCA_VERSION : '1.7.12';
         update_option( 'wpca_settings', $wpca_settings );
     }
     
-    // 仅在WordPress初始化后刷新重写规则
+    // 浠呭湪WordPress鍒濆鍖栧悗鍒锋柊閲嶅啓瑙勫垯
     if ( defined( 'ABSPATH' ) && ABSPATH ) {
-        // 延迟刷新重写规则，避免在激活钩子中直接调用导致的问题
+        // 寤惰繜鍒锋柊閲嶅啓瑙勫垯锛岄伩鍏嶅湪婵€娲婚挬瀛愪腑鐩存帴璋冪敤瀵艰嚧鐨勯棶棰?
         if ( function_exists( 'add_action' ) ) {
             add_action( 'init', function() {
                 flush_rewrite_rules();
             }, 100 );
         } else {
-            // 如果不能使用钩子，才直接调用
+            // 濡傛灉涓嶈兘浣跨敤閽╁瓙锛屾墠鐩存帴璋冪敤
             flush_rewrite_rules();
         }
     }
@@ -422,7 +422,7 @@ function wpca_activate_plugin() {
 register_activation_hook( __FILE__, 'wpca_activate_plugin' );
 
 function wpca_deactivate_plugin() {
-    // 提供必要函数的备用实现
+    // 鎻愪緵蹇呰鍑芥暟鐨勫鐢ㄥ疄鐜?
     if ( ! function_exists( 'add_action' ) ) {
         function add_action( $hook_name, $callback, $priority = 10, $accepted_args = 1 ) {
             return true;
@@ -435,7 +435,7 @@ function wpca_deactivate_plugin() {
         }
     }
     
-    // 清理权限
+    // 娓呯悊鏉冮檺
     if ( class_exists( 'WPCA_Permissions' ) ) {
         $permissions = new WPCA_Permissions();
         if ( method_exists( $permissions, 'cleanup_capabilities' ) ) {
@@ -443,9 +443,9 @@ function wpca_deactivate_plugin() {
         }
     }
     
-    // 仅在WordPress初始化后且函数存在时刷新重写规则
+    // 浠呭湪WordPress鍒濆鍖栧悗涓斿嚱鏁板瓨鍦ㄦ椂鍒锋柊閲嶅啓瑙勫垯
     if ( function_exists( 'flush_rewrite_rules' ) && defined( 'ABSPATH' ) && ABSPATH ) {
-        // 延迟刷新重写规则，避免在停用钩子中直接调用导致的问题
+        // 寤惰繜鍒锋柊閲嶅啓瑙勫垯锛岄伩鍏嶅湪鍋滅敤閽╁瓙涓洿鎺ヨ皟鐢ㄥ鑷寸殑闂
         if ( function_exists( 'add_action' ) ) {
             add_action( 'init', function() {
                 if ( function_exists( 'flush_rewrite_rules' ) ) {
@@ -453,7 +453,7 @@ function wpca_deactivate_plugin() {
                 }
             }, 100 );
         } else {
-            // 如果不能使用钩子，才直接调用
+            // 濡傛灉涓嶈兘浣跨敤閽╁瓙锛屾墠鐩存帴璋冪敤
             flush_rewrite_rules();
         }
     }
@@ -461,7 +461,7 @@ function wpca_deactivate_plugin() {
 register_deactivation_hook( __FILE__, 'wpca_deactivate_plugin' );
 
 function wpca_add_settings_link( $links ) {
-    // 提供必要函数的备用实现
+    // 鎻愪緵蹇呰鍑芥暟鐨勫鐢ㄥ疄鐜?
     if ( ! function_exists( 'array_unshift' ) ) {
         function array_unshift( &$array, ...$values ) {
             array_splice( $array, 0, 0, $values );
@@ -475,9 +475,9 @@ function wpca_add_settings_link( $links ) {
         }
     }
     
-    // 确保在WordPress环境中安全运行
+    // 纭繚鍦╓ordPress鐜涓畨鍏ㄨ繍琛?
     if ( function_exists( 'admin_url' ) && function_exists( 'array_unshift' ) ) {
-        // 安全地处理$links参数
+        // 瀹夊叏鍦板鐞?links鍙傛暟
         if ( ! is_array( $links ) ) {
             $links = array();
         }
@@ -486,11 +486,11 @@ function wpca_add_settings_link( $links ) {
         array_unshift( $links, $settings_link );
     }
     
-    // 确保返回值是数组
+    // 纭繚杩斿洖鍊兼槸鏁扮粍
     return is_array( $links ) ? $links : array();
 }
 add_filter( 'plugin_action_links_' . ( defined( 'WPCA_BASENAME' ) ? WPCA_BASENAME : 'wp-clean-admin.php' ), 'wpca_add_settings_link' );
 
-// 注意：wpca_initialize_components函数已被wpca_initialize_plugin函数替代
-// 保留此注释以避免混淆，但不再执行重复的初始化操作
+// 娉ㄦ剰锛歸pca_initialize_components鍑芥暟宸茶wpca_initialize_plugin鍑芥暟鏇夸唬
+// 淇濈暀姝ゆ敞閲婁互閬垮厤娣锋穯锛屼絾涓嶅啀鎵ц閲嶅鐨勫垵濮嬪寲鎿嶄綔
 ?>

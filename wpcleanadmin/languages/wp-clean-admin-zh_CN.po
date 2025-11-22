@@ -1,6 +1,6 @@
-msgid ""
+﻿msgid ""
 msgstr ""
-msgid "Project-Id-Version: WP Clean Admin 1.7.0\n"
+msgid "Project-Id-Version: WP Clean Admin 1.7.12\n"
 "Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"
 "POT-Creation-Date: 2025-09-24 15:00+0800\n"
 "PO-Revision-Date: 2025-09-24 15:00+0800\n"
@@ -23,826 +23,826 @@ msgid "WP Clean Admin"
 msgstr "WP Clean Admin"
 
 msgid "WP Clean Admin Settings"
-msgstr "WP Clean Admin 设置"
+msgstr "WP Clean Admin 璁剧疆"
 
 msgid "Settings"
-msgstr "设置"
+msgstr "璁剧疆"
 
 # ===========================================================
 # Database Optimization Module
 # ===========================================================
 msgid "Database Optimization"
-msgstr "数据库优化"
+msgstr "鏁版嵁搴撲紭鍖?
 
 msgid "Database Settings"
-msgstr "数据库设置"
+msgstr "鏁版嵁搴撹缃?
 
 msgid "Database Optimization Settings"
-msgstr "数据库优化设置"
+msgstr "鏁版嵁搴撲紭鍖栬缃?
 
 msgid "Table Optimization"
-msgstr "表优化"
+msgstr "琛ㄤ紭鍖?
 
 msgid "Database Cleanup"
-msgstr "数据库清理"
+msgstr "鏁版嵁搴撴竻鐞?
 
 msgid "Scheduled Tasks"
-msgstr "计划任务"
+msgstr "璁″垝浠诲姟"
 
 msgid "Database Info"
-msgstr "数据库信息"
+msgstr "鏁版嵁搴撲俊鎭?
 
 msgid "Select tables to optimize:"
-msgstr "选择要优化的表："
+msgstr "閫夋嫨瑕佷紭鍖栫殑琛細"
 
 msgid "Optimize Selected Tables"
-msgstr "优化所选表"
+msgstr "浼樺寲鎵€閫夎〃"
 
 msgid "Optimize All Tables"
-msgstr "优化所有表"
+msgstr "浼樺寲鎵€鏈夎〃"
 
 msgid "Cleanup Database"
-msgstr "清理数据库"
+msgstr "娓呯悊鏁版嵁搴?
 
 msgid "Enable scheduled database cleanup"
-msgstr "启用计划数据库清理"
+msgstr "鍚敤璁″垝鏁版嵁搴撴竻鐞?
 
 msgid "Cleanup frequency"
-msgstr "清理频率"
+msgstr "娓呯悊棰戠巼"
 
 msgid "Daily"
-msgstr "每天"
+msgstr "姣忓ぉ"
 
 msgid "Weekly"
-msgstr "每周"
+msgstr "姣忓懆"
 
 msgid "Monthly"
-msgstr "每月"
+msgstr "姣忔湀"
 
 msgid "Quarterly"
-msgstr "每季度"
+msgstr "姣忓搴?
 
 msgid "Database cleanup scheduled tasks"
-msgstr "数据库清理计划任务"
+msgstr "鏁版嵁搴撴竻鐞嗚鍒掍换鍔?
 
 msgid "Scheduled cleanup enabled:"
-msgstr "计划清理已启用："
+msgstr "璁″垝娓呯悊宸插惎鐢細"
 
 msgid "Last cleanup:"
-msgstr "上次清理："
+msgstr "涓婃娓呯悊锛?
 
 msgid "Next scheduled cleanup:"
-msgstr "下次计划清理："
+msgstr "涓嬫璁″垝娓呯悊锛?
 
 msgid "Database size:"
-msgstr "数据库大小："
+msgstr "鏁版嵁搴撳ぇ灏忥細"
 
 msgid "Number of tables:"
-msgstr "表数量："
+msgstr "琛ㄦ暟閲忥細"
 
 msgid "Database server version:"
-msgstr "数据库服务器版本："
+msgstr "鏁版嵁搴撴湇鍔″櫒鐗堟湰锛?
 
 msgid "Database type:"
-msgstr "数据库类型："
+msgstr "鏁版嵁搴撶被鍨嬶細"
 
 msgid "Optimization in progress..."
-msgstr "优化中..."
+msgstr "浼樺寲涓?.."
 
 msgid "Cleanup in progress..."
-msgstr "清理中..."
+msgstr "娓呯悊涓?.."
 
 msgid "Optimization completed successfully!"
-msgstr "优化成功完成！"
+msgstr "浼樺寲鎴愬姛瀹屾垚锛?
 
 msgid "Cleanup completed successfully!"
-msgstr "清理成功完成！"
+msgstr "娓呯悊鎴愬姛瀹屾垚锛?
 
 msgid "Tables optimized: %d"
-msgstr "优化表数量：%d"
+msgstr "浼樺寲琛ㄦ暟閲忥細%d"
 
 msgid "Space saved: %s"
-msgstr "节省空间：%s"
+msgstr "鑺傜渷绌洪棿锛?s"
 
 msgid "Items cleaned: %d"
-msgstr "清理项目数量：%d"
+msgstr "娓呯悊椤圭洰鏁伴噺锛?d"
 
 msgid "Revisions"
-msgstr "修订版本"
+msgstr "淇鐗堟湰"
 
 msgid "Auto Drafts"
-msgstr "自动草稿"
+msgstr "鑷姩鑽夌"
 
 msgid "Trashed Posts"
-msgstr "回收站文章"
+msgstr "鍥炴敹绔欐枃绔?
 
 msgid "Spam Comments"
-msgstr "垃圾评论"
+msgstr "鍨冨溇璇勮"
 
 msgid "Trashed Comments"
-msgstr "回收站评论"
+msgstr "鍥炴敹绔欒瘎璁?
 
 msgid "Pingbacks/Trackbacks"
-msgstr "引用/引用通告"
+msgstr "寮曠敤/寮曠敤閫氬憡"
 
 msgid "Orphaned Post Meta"
-msgstr "孤立的文章元数据"
+msgstr "瀛ょ珛鐨勬枃绔犲厓鏁版嵁"
 
 msgid "Orphaned Comment Meta"
-msgstr "孤立的评论元数据"
+msgstr "瀛ょ珛鐨勮瘎璁哄厓鏁版嵁"
 
 msgid "Orphaned Term Relationships"
-msgstr "孤立的分类关系"
+msgstr "瀛ょ珛鐨勫垎绫诲叧绯?
 
 msgid "Orphaned User Meta"
-msgstr "孤立的用户元数据"
+msgstr "瀛ょ珛鐨勭敤鎴峰厓鏁版嵁"
 
 msgid "Expired Transients"
-msgstr "过期的临时数据"
+msgstr "杩囨湡鐨勪复鏃舵暟鎹?
 
 msgid "All Transients"
-msgstr "所有临时数据"
+msgstr "鎵€鏈変复鏃舵暟鎹?
 
 msgid "oEmbed Cache"
-msgstr "oEmbed缓存"
+msgstr "oEmbed缂撳瓨"
 
 msgid "Select cleanup items:"
-msgstr "选择清理项目："
+msgstr "閫夋嫨娓呯悊椤圭洰锛?
 
 msgid "Days to keep"
-msgstr "保留天数"
+msgstr "淇濈暀澶╂暟"
 
 msgid "Cleanup"
-msgstr "清理"
+msgstr "娓呯悊"
 
 msgid "Get Database Info"
-msgstr "获取数据库信息"
+msgstr "鑾峰彇鏁版嵁搴撲俊鎭?
 
 msgid "Get Cleanup Stats"
-msgstr "获取清理统计"
+msgstr "鑾峰彇娓呯悊缁熻"
 
 msgid "Database optimization options"
-msgstr "数据库优化选项"
+msgstr "鏁版嵁搴撲紭鍖栭€夐」"
 
 msgid "Database cleanup options"
-msgstr "数据库清理选项"
+msgstr "鏁版嵁搴撴竻鐞嗛€夐」"
 
 msgid "Database optimization scheduled tasks"
-msgstr "数据库优化计划任务"
+msgstr "鏁版嵁搴撲紭鍖栬鍒掍换鍔?
 
 msgid "Database information"
-msgstr "数据库信息"
+msgstr "鏁版嵁搴撲俊鎭?
 
 msgid "Cleanup statistics"
-msgstr "清理统计"
+msgstr "娓呯悊缁熻"
 
 msgid "Database optimization results"
-msgstr "数据库优化结果"
+msgstr "鏁版嵁搴撲紭鍖栫粨鏋?
 
 msgid "Database cleanup results"
-msgstr "数据库清理结果"
+msgstr "鏁版嵁搴撴竻鐞嗙粨鏋?
 
 msgid "Error: Invalid table name"
-msgstr "错误：无效的表名"
+msgstr "閿欒锛氭棤鏁堢殑琛ㄥ悕"
 
 msgid "Error: Table does not exist"
-msgstr "错误：表不存在"
+msgstr "閿欒锛氳〃涓嶅瓨鍦?
 
 msgid "Error: Failed to optimize table"
-msgstr "错误：表优化失败"
+msgstr "閿欒锛氳〃浼樺寲澶辫触"
 
 msgid "Error: Failed to clean up database"
-msgstr "错误：数据库清理失败"
+msgstr "閿欒锛氭暟鎹簱娓呯悊澶辫触"
 
 msgid "Error: Invalid cleanup items"
-msgstr "错误：无效的清理项目"
+msgstr "閿欒锛氭棤鏁堢殑娓呯悊椤圭洰"
 
 msgid "Error: Failed to get database info"
-msgstr "错误：获取数据库信息失败"
+msgstr "閿欒锛氳幏鍙栨暟鎹簱淇℃伅澶辫触"
 
 msgid "Error: Failed to get cleanup stats"
-msgstr "错误：获取清理统计失败"
+msgstr "閿欒锛氳幏鍙栨竻鐞嗙粺璁″け璐?
 
 msgid "Database optimization task"
-msgstr "数据库优化任务"
+msgstr "鏁版嵁搴撲紭鍖栦换鍔?
 
 msgid "Scheduled database cleanup"
-msgstr "计划数据库清理"
+msgstr "璁″垝鏁版嵁搴撴竻鐞?
 
 msgid "Database optimization completed"
-msgstr "数据库优化完成"
+msgstr "鏁版嵁搴撲紭鍖栧畬鎴?
 
 msgid "Cleanup summary"
-msgstr "清理摘要"
+msgstr "娓呯悊鎽樿"
 
 # ===========================================================
 # Error Messages
 # ===========================================================
 msgid "Invalid request"
-msgstr "无效请求"
+msgstr "鏃犳晥璇锋眰"
 
 msgid "Invalid AJAX request"
-msgstr "无效的 AJAX 请求"
+msgstr "鏃犳晥鐨?AJAX 璇锋眰"
 
 msgid "Security verification failed"
-msgstr "安全验证失败"
+msgstr "瀹夊叏楠岃瘉澶辫触"
 
 msgid "Invalid security nonce"
-msgstr "无效的安全码"
+msgstr "鏃犳晥鐨勫畨鍏ㄧ爜"
 
 msgid "Insufficient permissions"
-msgstr "权限不足"
+msgstr "鏉冮檺涓嶈冻"
 
 # ===========================================================
 # Performance Monitoring Additional Strings
 # ===========================================================
 
 msgid "Performance statistics retrieved successfully."
-msgstr "性能统计数据获取成功。"
+msgstr "鎬ц兘缁熻鏁版嵁鑾峰彇鎴愬姛銆?
 
 msgid "Performance statistics retrieved successfully. Found %d metrics including %d samples."
-msgstr "性能统计数据获取成功。发现%d个指标，包括%d个样本。"
+msgstr "鎬ц兘缁熻鏁版嵁鑾峰彇鎴愬姛銆傚彂鐜?d涓寚鏍囷紝鍖呮嫭%d涓牱鏈€?
 
 msgid "Performance statistics missing required metrics: %s"
-msgstr "性能统计缺少必要指标：%s"
+msgstr "鎬ц兘缁熻缂哄皯蹇呰鎸囨爣锛?s"
 
 msgid "Performance statistics method exists but returned empty data."
-msgstr "性能统计方法存在但返回空数据。"
+msgstr "鎬ц兘缁熻鏂规硶瀛樺湪浣嗚繑鍥炵┖鏁版嵁銆?
 
 msgid "Performance class exists but get_performance_stats method is not available."
-msgstr "性能类存在但get_performance_stats方法不可用。"
+msgstr "鎬ц兘绫诲瓨鍦ㄤ絾get_performance_stats鏂规硶涓嶅彲鐢ㄣ€?
 
 msgid "Performance class not available."
-msgstr "性能类不可用。"
+msgstr "鎬ц兘绫讳笉鍙敤銆?
 
 msgid "Exception during test: "
-msgstr "测试期间发生异常："
+msgstr "娴嬭瘯鏈熼棿鍙戠敓寮傚父锛?
 msgid "Performance Monitoring"
-msgstr "性能监控"
+msgstr "鎬ц兘鐩戞帶"
 
 msgid "Performance Stats"
-msgstr "性能统计"
+msgstr "鎬ц兘缁熻"
 
 msgid "Page Load Time"
-msgstr "页面加载时间"
+msgstr "椤甸潰鍔犺浇鏃堕棿"
 
 msgid "Memory Usage"
-msgstr "内存使用"
+msgstr "鍐呭瓨浣跨敤"
 
 msgid "Database Queries"
-msgstr "数据库查询"
+msgstr "鏁版嵁搴撴煡璇?
 
 msgid "Slow Queries"
-msgstr "慢查询"
+msgstr "鎱㈡煡璇?
 
 msgid "Total Time"
-msgstr "总时间"
+msgstr "鎬绘椂闂?
 
 msgid "Average Time"
-msgstr "平均时间"
+msgstr "骞冲潎鏃堕棿"
 
 msgid "Peak Memory"
-msgstr "峰值内存"
+msgstr "宄板€煎唴瀛?
 
 msgid "Query Count"
-msgstr "查询数量"
+msgstr "鏌ヨ鏁伴噺"
 
 msgid "Slow Query Count"
-msgstr "慢查询数量"
+msgstr "鎱㈡煡璇㈡暟閲?
 
 msgid "Page URL"
-msgstr "页面URL"
+msgstr "椤甸潰URL"
 
 msgid "Loading Time"
-msgstr "加载时间"
+msgstr "鍔犺浇鏃堕棿"
 
 msgid "Slow Pages"
-msgstr "慢页面"
+msgstr "鎱㈤〉闈?
 
 msgid "Pages"
-msgstr "页面"
+msgstr "椤甸潰"
 
 msgid "Samples"
-msgstr "样本"
+msgstr "鏍锋湰"
 
 msgid "Monitoring Status"
-msgstr "监控状态"
+msgstr "鐩戞帶鐘舵€?
 
 msgid "Monitoring is currently active"
-msgstr "监控当前处于激活状态"
+msgstr "鐩戞帶褰撳墠澶勪簬婵€娲荤姸鎬?
 
 msgid "Monitoring is currently inactive"
-msgstr "监控当前处于非激活状态"
+msgstr "鐩戞帶褰撳墠澶勪簬闈炴縺娲荤姸鎬?
 
 msgid "Start Monitoring"
-msgstr "开始监控"
+msgstr "寮€濮嬬洃鎺?
 
 msgid "Stop Monitoring"
-msgstr "停止监控"
+msgstr "鍋滄鐩戞帶"
 
 msgid "Toggle Monitoring"
-msgstr "切换监控"
+msgstr "鍒囨崲鐩戞帶"
 
 msgid "Performance Report"
-msgstr "性能报告"
+msgstr "鎬ц兘鎶ュ憡"
 
 msgid "View Report"
-msgstr "查看报告"
+msgstr "鏌ョ湅鎶ュ憡"
 
 msgid "Clear Data"
-msgstr "清除数据"
+msgstr "娓呴櫎鏁版嵁"
 
 msgid "Clear all performance monitoring data"
-msgstr "清除所有性能监控数据"
+msgstr "娓呴櫎鎵€鏈夋€ц兘鐩戞帶鏁版嵁"
 
 msgid "Performance data has been cleared."
-msgstr "性能数据已清除。"
+msgstr "鎬ц兘鏁版嵁宸叉竻闄ゃ€?
 
 msgid "Failed to clear performance data."
-msgstr "清除性能数据失败。"
+msgstr "娓呴櫎鎬ц兘鏁版嵁澶辫触銆?
 
 msgid "Performance Report for"
-msgstr "性能报告："
+msgstr "鎬ц兘鎶ュ憡锛?
 
 msgid "Last 24 Hours"
-msgstr "最近24小时"
+msgstr "鏈€杩?4灏忔椂"
 
 msgid "Last 7 Days"
-msgstr "最近7天"
+msgstr "鏈€杩?澶?
 
 msgid "Last 30 Days"
-msgstr "最近30天"
+msgstr "鏈€杩?0澶?
 
 msgid "All Time"
-msgstr "所有时间"
+msgstr "鎵€鏈夋椂闂?
 
 msgid "No data available for the selected period"
-msgstr "所选时间段没有可用数据"
+msgstr "鎵€閫夋椂闂存娌℃湁鍙敤鏁版嵁"
 
 msgid "Processing..."
-msgstr "处理中..."
+msgstr "澶勭悊涓?.."
 
 msgid "Dismiss"
-msgstr "关闭"
+msgstr "鍏抽棴"
 
 msgid "Close"
-msgstr "关闭"
+msgstr "鍏抽棴"
 
 msgid "optimization"
-msgstr "优化"
+msgstr "浼樺寲"
 
 msgid "Optimize database tables"
-msgstr "优化数据库表"
+msgstr "浼樺寲鏁版嵁搴撹〃"
 
 msgid "Cleanup database"
-msgstr "清理数据库"
+msgstr "娓呯悊鏁版嵁搴?
 
 msgid "Optimize Success: %d of %d tables optimized successfully"
-msgstr "优化成功：%d/%d个表已成功优化"
+msgstr "浼樺寲鎴愬姛锛?d/%d涓〃宸叉垚鍔熶紭鍖?
 
 msgid "Cleanup Success: Removed %d items"
-msgstr "清理成功：已移除%d个项目"
+msgstr "娓呯悊鎴愬姛锛氬凡绉婚櫎%d涓」鐩?
 
 msgid "Cleanup Summary: %d of %d items selected for cleanup"
-msgstr "清理摘要：已选择%d/%d个项目进行清理"
+msgstr "娓呯悊鎽樿锛氬凡閫夋嫨%d/%d涓」鐩繘琛屾竻鐞?
 
 msgid "Critical CSS"
-msgstr "关键CSS"
+msgstr "鍏抽敭CSS"
 
 msgid "Generate Critical CSS"
-msgstr "生成关键CSS"
+msgstr "鐢熸垚鍏抽敭CSS"
 
 msgid "Test Resource Removal"
-msgstr "测试资源移除"
+msgstr "娴嬭瘯璧勬簮绉婚櫎"
 
 msgid "Resource Management"
-msgstr "资源管理"
+msgstr "璧勬簮绠＄悊"
 
 msgid "Database Optimization"
-msgstr "数据库优化"
+msgstr "鏁版嵁搴撲紭鍖?
 
 msgid "Settings"
-msgstr "设置"
+msgstr "璁剧疆"
 
 msgid "Performance Sampling Rate"
-msgstr "性能采样率"
+msgstr "鎬ц兘閲囨牱鐜?
 
 msgid "Data Retention Period"
-msgstr "数据保留期"
+msgstr "鏁版嵁淇濈暀鏈?
 
 msgid "days"
-msgstr "天"
+msgstr "澶?
 
 msgid "Enable Performance Monitoring"
-msgstr "启用性能监控"
+msgstr "鍚敤鎬ц兘鐩戞帶"
 
 msgid "Select percentage of requests to monitor"
-msgstr "选择要监控的请求百分比"
+msgstr "閫夋嫨瑕佺洃鎺х殑璇锋眰鐧惧垎姣?
 
 msgid "Select how long to keep performance data"
-msgstr "选择保留性能数据的时间"
+msgstr "閫夋嫨淇濈暀鎬ц兘鏁版嵁鐨勬椂闂?
 
 msgid "Performance Tips"
-msgstr "性能提示"
+msgstr "鎬ц兘鎻愮ず"
 
 msgid "Optimize your database regularly"
-msgstr "定期优化数据库"
+msgstr "瀹氭湡浼樺寲鏁版嵁搴?
 
 msgid "Clean up unnecessary data to improve performance"
-msgstr "清理不必要的数据以提高性能"
+msgstr "娓呯悊涓嶅繀瑕佺殑鏁版嵁浠ユ彁楂樻€ц兘"
 
 msgid "Remove unused CSS and JavaScript resources"
-msgstr "移除未使用的CSS和JavaScript资源"
+msgstr "绉婚櫎鏈娇鐢ㄧ殑CSS鍜孞avaScript璧勬簮"
 
 msgid "Consider using a caching plugin for better performance"
-msgstr "考虑使用缓存插件以提高性能"
+msgstr "鑰冭檻浣跨敤缂撳瓨鎻掍欢浠ユ彁楂樻€ц兘"
 
 msgid "Optimize images and media files"
-msgstr "优化图像和媒体文件"
+msgstr "浼樺寲鍥惧儚鍜屽獟浣撴枃浠?
 
 msgid "Limit the number of active plugins"
-msgstr "限制活动插件的数量"
+msgstr "闄愬埗娲诲姩鎻掍欢鐨勬暟閲?
 
 msgid "Invalid data structure"
-msgstr "无效的数据结构"
+msgstr "鏃犳晥鐨勬暟鎹粨鏋?
 
 msgid "Invalid settings data"
-msgstr "无效的设置数据"
+msgstr "鏃犳晥鐨勮缃暟鎹?
 
 msgid "Invalid menu slug"
-msgstr "无效的菜单标识符"
+msgstr "鏃犳晥鐨勮彍鍗曟爣璇嗙"
 
 msgid "User not logged in"
-msgstr "用户未登录"
+msgstr "鐢ㄦ埛鏈櫥褰?
 
 msgid "Missing permission parameter"
-msgstr "缺少权限参数"
+msgstr "缂哄皯鏉冮檺鍙傛暟"
 
 msgid "Invalid permission name"
-msgstr "无效的权限名称"
+msgstr "鏃犳晥鐨勬潈闄愬悕绉?
 
 msgid "An error occurred"
-msgstr "发生错误"
+msgstr "鍙戠敓閿欒"
 
 msgid "Unknown error"
-msgstr "未知错误"
+msgstr "鏈煡閿欒"
 
 msgid "Failed to save settings"
-msgstr "设置保存失败"
+msgstr "璁剧疆淇濆瓨澶辫触"
 
 msgid "Error occurred while saving settings"
-msgstr "保存设置时发生错误"
+msgstr "淇濆瓨璁剧疆鏃跺彂鐢熼敊璇?
 
 msgid "An error occurred while saving settings."
-msgstr "保存设置时发生错误。"
+msgstr "淇濆瓨璁剧疆鏃跺彂鐢熼敊璇€?
 
 msgid "Failed to reset settings"
-msgstr "重置设置失败"
+msgstr "閲嶇疆璁剧疆澶辫触"
 
 msgid "Error occurred while resetting settings"
-msgstr "重置设置时发生错误"
+msgstr "閲嶇疆璁剧疆鏃跺彂鐢熼敊璇?
 
 msgid "Error occurred while retrieving settings"
-msgstr "获取设置时发生错误"
+msgstr "鑾峰彇璁剧疆鏃跺彂鐢熼敊璇?
 
 msgid "Failed to reset menu order"
-msgstr "重置菜单顺序失败"
+msgstr "閲嶇疆鑿滃崟椤哄簭澶辫触"
 
 msgid "Menu order reset successfully"
-msgstr "菜单顺序重置成功"
+msgstr "鑿滃崟椤哄簭閲嶇疆鎴愬姛"
 
 msgid "An error occurred while resetting menu order"
-msgstr "重置菜单顺序时发生错误"
+msgstr "閲嶇疆鑿滃崟椤哄簭鏃跺彂鐢熼敊璇?
 
 msgid "Reset failed. Please try again."
-msgstr "重置失败，请重试。"
+msgstr "閲嶇疆澶辫触锛岃閲嶈瘯銆?
 
 msgid "Menu settings format is invalid, has been reset"
-msgstr "菜单设置格式无效，已重置"
+msgstr "鑿滃崟璁剧疆鏍煎紡鏃犳晥锛屽凡閲嶇疆"
 
 msgid "Menu item \"%s\" does not exist"
-msgstr "菜单项 \"%s\" 不存在"
+msgstr "鑿滃崟椤?\"%s\" 涓嶅瓨鍦?
 
 msgid "WordPress media uploader not available"
-msgstr "WordPress 媒体上传器不可用"
+msgstr "WordPress 濯掍綋涓婁紶鍣ㄤ笉鍙敤"
 
 msgid "WordPress media uploader not available."
-msgstr "WordPress 媒体上传器不可用。"
+msgstr "WordPress 濯掍綋涓婁紶鍣ㄤ笉鍙敤銆?
 
 # ===========================================================
 # Success Messages
 # ===========================================================
 msgid "Settings saved"
-msgstr "设置已保存"
+msgstr "璁剧疆宸蹭繚瀛?
 
 msgid "Settings saved successfully!"
-msgstr "设置保存成功！"
+msgstr "璁剧疆淇濆瓨鎴愬姛锛?
 
 msgid "Menu settings updated successfully"
-msgstr "菜单设置更新成功"
+msgstr "鑿滃崟璁剧疆鏇存柊鎴愬姛"
 
 msgid "Settings reset to default"
-msgstr "设置已重置为默认值"
+msgstr "璁剧疆宸查噸缃负榛樿鍊?
 
 msgid "Settings reset successfully!"
-msgstr "设置重置成功！"
+msgstr "璁剧疆閲嶇疆鎴愬姛锛?
 
 msgid "Menu settings reset successfully"
-msgstr "菜单设置重置成功"
+msgstr "鑿滃崟璁剧疆閲嶇疆鎴愬姛"
 
 msgid "Menu order has been reset to default"
-msgstr "菜单顺序已重置为默认值"
+msgstr "鑿滃崟椤哄簭宸查噸缃负榛樿鍊?
 
 msgid "successful"
-msgstr "成功"
+msgstr "鎴愬姛"
 
 # ===========================================================
 # Action Messages
 # ===========================================================
 msgid "Resetting..."
-msgstr "重置中..."
+msgstr "閲嶇疆涓?.."
 
 msgid "Saving..."
-msgstr "保存中..."
+msgstr "淇濆瓨涓?.."
 
 msgid "Select or Upload Media"
-msgstr "选择或上传媒体"
+msgstr "閫夋嫨鎴栦笂浼犲獟浣?
 
 msgid "Use this media"
-msgstr "使用此媒体"
+msgstr "浣跨敤姝ゅ獟浣?
 
 # ===========================================================
 # Confirmation Messages
 # ===========================================================
 msgid "Are you sure you want to reset all menu settings to default?"
-msgstr "确定要将所有菜单设置重置为默认值吗？"
+msgstr "纭畾瑕佸皢鎵€鏈夎彍鍗曡缃噸缃负榛樿鍊煎悧锛?
 
 msgid "Are you sure you want to reset all menu settings?"
-msgstr "确定要重置所有菜单设置吗？"
+msgstr "纭畾瑕侀噸缃墍鏈夎彍鍗曡缃悧锛?
 
 msgid "Are you sure you want to reset all settings to default?"
-msgstr "确定要将所有设置重置为默认值吗？"
+msgstr "纭畾瑕佸皢鎵€鏈夎缃噸缃负榛樿鍊煎悧锛?
 
 msgid "Please select at least one valid setting type to reset"
-msgstr "请选择至少一个有效的设置类型进行重置"
+msgstr "璇烽€夋嫨鑷冲皯涓€涓湁鏁堢殑璁剧疆绫诲瀷杩涜閲嶇疆"
 
 # ===========================================================
 # Settings Page Strings
 # ===========================================================
 msgid "General"
-msgstr "常规"
+msgstr "甯歌"
 
 msgid "General Settings"
-msgstr "常规设置"
+msgstr "甯歌璁剧疆"
 
 msgid "Visual Style"
-msgstr "视觉样式"
+msgstr "瑙嗚鏍峰紡"
 
 msgid "Theme Style"
-msgstr "主题样式"
+msgstr "涓婚鏍峰紡"
 
 msgid "Primary Color"
-msgstr "主色调"
+msgstr "涓昏壊璋?
 
 msgid "Background Color"
-msgstr "背景色"
+msgstr "鑳屾櫙鑹?
 
 msgid "Text Color"
-msgstr "文本颜色"
+msgstr "鏂囨湰棰滆壊"
 
 msgid "Shadow Style"
-msgstr "阴影样式"
+msgstr "闃村奖鏍峰紡"
 
 msgid "Layout Density"
-msgstr "布局密度"
+msgstr "甯冨眬瀵嗗害"
 
 msgid "Border Radius"
-msgstr "圆角半径"
+msgstr "鍦嗚鍗婂緞"
 
 msgid "Font Stack"
-msgstr "字体堆栈"
+msgstr "瀛椾綋鍫嗘爤"
 
 msgid "Font Size"
-msgstr "字体大小"
+msgstr "瀛椾綋澶у皬"
 
 msgid "Icon Style"
-msgstr "图标样式"
+msgstr "鍥炬爣鏍峰紡"
 
 msgid "Menu Customization"
-msgstr "菜单自定义"
+msgstr "鑿滃崟鑷畾涔?
 
 msgid "Menu Order"
-msgstr "菜单顺序"
+msgstr "鑿滃崟椤哄簭"
 
 msgid "Hide Dashboard Widgets"
-msgstr "隐藏仪表盘小部件"
+msgstr "闅愯棌浠〃鐩樺皬閮ㄤ欢"
 
 msgid "Hide WordPress Title"
-msgstr "隐藏 WordPress 标题"
+msgstr "闅愯棌 WordPress 鏍囬"
 
 msgid "Hide Admin Bar Items"
-msgstr "隐藏管理栏项目"
+msgstr "闅愯棌绠＄悊鏍忛」鐩?
 
 msgid "Login Page"
-msgstr "登录页面"
+msgstr "鐧诲綍椤甸潰"
 
 msgid "Login Page Elements"
-msgstr "登录页面元素"
+msgstr "鐧诲綍椤甸潰鍏冪礌"
 
 msgid "Show/Hide Elements"
-msgstr "显示/隐藏元素"
+msgstr "鏄剧ず/闅愯棌鍏冪礌"
 
 msgid "Login Style"
-msgstr "登录样式"
+msgstr "鐧诲綍鏍峰紡"
 
 msgid "About"
-msgstr "关于"
+msgstr "鍏充簬"
 
 msgid "About WP Clean Admin"
-msgstr "关于 WP Clean Admin"
+msgstr "鍏充簬 WP Clean Admin"
 
 # ===========================================================
 # Settings Descriptions
 # ===========================================================
 msgid "Configure the appearance and behavior of your admin dashboard."
-msgstr "配置管理仪表盘的外观和行为。"
+msgstr "閰嶇疆绠＄悊浠〃鐩樼殑澶栬鍜岃涓恒€?
 
 msgid "Customize the overall visual theme, colors, layout and typography."
-msgstr "自定义整体视觉主题、颜色、布局和排版。"
+msgstr "鑷畾涔夋暣浣撹瑙変富棰樸€侀鑹层€佸竷灞€鍜屾帓鐗堛€?
 
 msgid "Menu Order Customization"
-msgstr "菜单顺序自定义"
+msgstr "鑿滃崟椤哄簭鑷畾涔?
 
 msgid "Drag and drop menu items to reorder them. Use the toggle switches to show/hide items."
-msgstr "拖放菜单项以重新排序。使用切换开关显示/隐藏项目。"
+msgstr "鎷栨斁鑿滃崟椤逛互閲嶆柊鎺掑簭銆備娇鐢ㄥ垏鎹㈠紑鍏虫樉绀?闅愯棌椤圭洰銆?
 
 msgid "Reset to Default Order"
-msgstr "重置为默认顺序"
+msgstr "閲嶇疆涓洪粯璁ら『搴?
 
 msgid "Select which admin menu items to hide and reorder them."
-msgstr "选择要隐藏的管理菜单项并重新排序。"
+msgstr "閫夋嫨瑕侀殣钘忕殑绠＄悊鑿滃崟椤瑰苟閲嶆柊鎺掑簭銆?
 
 msgid "Enable Menu Customization"
-msgstr "启用菜单自定义"
+msgstr "鍚敤鑿滃崟鑷畾涔?
 
 msgid "Toggle to show/hide and reorder admin menu items"
-msgstr "切换以显示/隐藏和重新排序管理菜单项"
+msgstr "鍒囨崲浠ユ樉绀?闅愯棌鍜岄噸鏂版帓搴忕鐞嗚彍鍗曢」"
 
 msgid "Hide \"WordPress\" in page titles"
-msgstr "在页面标题中隐藏 \"WordPress\""
+msgstr "鍦ㄩ〉闈㈡爣棰樹腑闅愯棌 \"WordPress\""
 
 msgid "When enabled, removes \"WordPress\" from admin page titles."
-msgstr "启用后，从管理页面标题中移除 \"WordPress\"。"
+msgstr "鍚敤鍚庯紝浠庣鐞嗛〉闈㈡爣棰樹腑绉婚櫎 \"WordPress\"銆?
 
 msgid "Custom Login Options"
-msgstr "自定义登录选项"
+msgstr "鑷畾涔夌櫥褰曢€夐」"
 
 msgid "Choose from predefined login styles or create your own custom style."
-msgstr "从预定义登录样式中选择或创建自己的自定义样式。"
+msgstr "浠庨瀹氫箟鐧诲綍鏍峰紡涓€夋嫨鎴栧垱寤鸿嚜宸辩殑鑷畾涔夋牱寮忋€?
 
 msgid "Custom Logo"
-msgstr "自定义徽标"
+msgstr "鑷畾涔夊窘鏍?
 
-msgid "Upload a custom logo for the login page. Recommended size: 320×80px."
-msgstr "上传自定义登录页面徽标。推荐尺寸：320×80px。"
+msgid "Upload a custom logo for the login page. Recommended size: 320脳80px."
+msgstr "涓婁紶鑷畾涔夌櫥褰曢〉闈㈠窘鏍囥€傛帹鑽愬昂瀵革細320脳80px銆?
 
 msgid "Background Image"
-msgstr "背景图片"
+msgstr "鑳屾櫙鍥剧墖"
 
 msgid "Upload a custom background image for the login page."
-msgstr "上传自定义登录页面背景图片。"
+msgstr "涓婁紶鑷畾涔夌櫥褰曢〉闈㈣儗鏅浘鐗囥€?
 
 msgid "Custom CSS"
-msgstr "自定义 CSS"
+msgstr "鑷畾涔?CSS"
 
 msgid "Add custom CSS to further customize the login page."
-msgstr "添加自定义 CSS 以进一步自定义登录页面。"
+msgstr "娣诲姞鑷畾涔?CSS 浠ヨ繘涓€姝ヨ嚜瀹氫箟鐧诲綍椤甸潰銆?
 
 msgid "Live Preview"
-msgstr "实时预览"
+msgstr "瀹炴椂棰勮"
 
 msgid "Preview how your login page will look with the current settings."
-msgstr "预览当前设置下登录页面的外观。"
+msgstr "棰勮褰撳墠璁剧疆涓嬬櫥褰曢〉闈㈢殑澶栬銆?
 
 msgid "This is a preview of how your login page will look."
-msgstr "这是您的登录页面外观的预览。"
+msgstr "杩欐槸鎮ㄧ殑鐧诲綍椤甸潰澶栬鐨勯瑙堛€?
 
 # ===========================================================
 # Theme & Style Options
 # ===========================================================
 msgid "Default"
-msgstr "默认"
+msgstr "榛樿"
 
 msgid "Default (Flat & Clean)"
-msgstr "默认（扁平 & 简洁）"
+msgstr "榛樿锛堟墎骞?& 绠€娲侊級"
 
 msgid "Modern"
-msgstr "现代"
+msgstr "鐜颁唬"
 
 msgid "Minimal"
-msgstr "极简"
+msgstr "鏋佺畝"
 
 msgid "Dark"
-msgstr "暗色"
+msgstr "鏆楄壊"
 
 msgid "Dark Mode"
-msgstr "暗色模式"
+msgstr "鏆楄壊妯″紡"
 
 msgid "Gradient"
-msgstr "渐变"
+msgstr "娓愬彉"
 
 msgid "Custom"
-msgstr "自定义"
+msgstr "鑷畾涔?
 
 msgid "Custom Colors"
-msgstr "自定义颜色"
+msgstr "鑷畾涔夐鑹?
 
 msgid "Light Blue Gray"
-msgstr "浅蓝色灰色"
+msgstr "娴呰摑鑹茬伆鑹?
 
 msgid "Mint Green"
-msgstr "薄荷绿"
+msgstr "钖勮嵎缁?
 
 msgid "None"
-msgstr "无"
+msgstr "鏃?
 
 msgid "Subtle (Default)"
-msgstr "柔和（默认）"
+msgstr "鏌斿拰锛堥粯璁わ級"
 
 msgid "Medium"
-msgstr "中等"
+msgstr "涓瓑"
 
 msgid "Strong"
-msgstr "强烈"
+msgstr "寮虹儓"
 
 msgid "Choose the shadow style for elements like post boxes and buttons."
-msgstr "选择帖子框和按钮等元素的阴影样式。"
+msgstr "閫夋嫨甯栧瓙妗嗗拰鎸夐挳绛夊厓绱犵殑闃村奖鏍峰紡銆?
 
 msgid "Compact"
-msgstr "紧凑"
+msgstr "绱у噾"
 
 msgid "Standard (Default)"
-msgstr "标准（默认）"
+msgstr "鏍囧噯锛堥粯璁わ級"
 
 msgid "Spacious"
-msgstr "宽敞"
+msgstr "瀹芥暈"
 
 msgid "Adjust the spacing and padding of elements in the admin interface."
-msgstr "调整管理界面中元素的间距和内边距。"
+msgstr "璋冩暣绠＄悊鐣岄潰涓厓绱犵殑闂磋窛鍜屽唴杈硅窛銆?
 
 msgid "None (Sharp Corners)"
-msgstr "无（尖角）"
+msgstr "鏃狅紙灏栬锛?
 
 msgid "Small (4px, Default)"
-msgstr "小（4px，默认）"
+msgstr "灏忥紙4px锛岄粯璁わ級"
 
 msgid "Large (8px, Rounded)"
-msgstr "大（8px，圆角）"
+msgstr "澶э紙8px锛屽渾瑙掞級"
 
 msgid "Choose the border-radius style for various elements."
-msgstr "选择各种元素的圆角半径样式。"
+msgstr "閫夋嫨鍚勭鍏冪礌鐨勫渾瑙掑崐寰勬牱寮忋€?
 
 msgid "System Default"
-msgstr "系统默认"
+msgstr "绯荤粺榛樿"
 
 msgid "Google Fonts"
-msgstr "Google 字体"
+msgstr "Google 瀛椾綋"
 
 msgid "Select the font stack to be used in the admin area."
-msgstr "选择在管理区域中使用的字体堆栈。"
+msgstr "閫夋嫨鍦ㄧ鐞嗗尯鍩熶腑浣跨敤鐨勫瓧浣撳爢鏍堛€?
 
 msgid "Small"
-msgstr "小"
+msgstr "灏?
 
 msgid "Medium (Default)"
-msgstr "中等（默认）"
+msgstr "涓瓑锛堥粯璁わ級"
 
 msgid "Large"
-msgstr "大"
+msgstr "澶?
 
 msgid "Adjust the base font size for the admin interface."
-msgstr "调整管理界面的基本字体大小。"
+msgstr "璋冩暣绠＄悊鐣岄潰鐨勫熀鏈瓧浣撳ぇ灏忋€?
 
 msgid "WordPress Dashicons"
-msgstr "WordPress Dashicons 图标"
+msgstr "WordPress Dashicons 鍥炬爣"
 
 msgid "Linear Icons"
-msgstr "线性图标"
+msgstr "绾挎€у浘鏍?
 
 msgid "Choose the icon set for the admin interface."
-msgstr "选择管理界面的图标集。"
+msgstr "閫夋嫨绠＄悊鐣岄潰鐨勫浘鏍囬泦銆?
 
 msgid "Choose a predefined theme or select \"Custom Colors\" to define your own."
-msgstr "选择预定义主题或选择 \"自定义颜色\" 定义自己的主题。"
+msgstr "閫夋嫨棰勫畾涔変富棰樻垨閫夋嫨 \"鑷畾涔夐鑹瞈" 瀹氫箟鑷繁鐨勪富棰樸€?
 
 msgid "Choose the primary accent color for links, buttons, and active states."
-msgstr "选择链接、按钮和活动状态的主强调色。"
+msgstr "閫夋嫨閾炬帴銆佹寜閽拰娲诲姩鐘舵€佺殑涓诲己璋冭壊銆?
 
 msgid "Choose the main background color of the admin area."
-msgstr "选择管理区域的主背景色。"
+msgstr "閫夋嫨绠＄悊鍖哄煙鐨勪富鑳屾櫙鑹层€?
 
 msgid "Choose the default text color."
-msgstr "选择默认文本颜色。"
+msgstr "閫夋嫨榛樿鏂囨湰棰滆壊銆?
 
 # ===========================================================
 # WordPress Menu & Dashboard Items
@@ -851,415 +851,415 @@ msgid "WordPress"
 msgstr "WordPress"
 
 msgid "Dashboard"
-msgstr "仪表盘"
+msgstr "浠〃鐩?
 
 msgid "Posts"
-msgstr "文章"
+msgstr "鏂囩珷"
 
 msgid "Media"
-msgstr "媒体"
+msgstr "濯掍綋"
 
 msgid "Pages"
-msgstr "页面"
+msgstr "椤甸潰"
 
 msgid "Comments"
-msgstr "评论"
+msgstr "璇勮"
 
 msgid "Appearance"
-msgstr "外观"
+msgstr "澶栬"
 
 msgid "Plugins"
-msgstr "插件"
+msgstr "鎻掍欢"
 
 msgid "Users"
-msgstr "用户"
+msgstr "鐢ㄦ埛"
 
 msgid "Tools"
-msgstr "工具"
+msgstr "宸ュ叿"
 
 msgid "Submenu"
-msgstr "子菜单"
+msgstr "瀛愯彍鍗?
 
 msgid "Right Now"
-msgstr "当前状态"
+msgstr "褰撳墠鐘舵€?
 
 msgid "Activity"
-msgstr "活动"
+msgstr "娲诲姩"
 
 msgid "Quick Draft"
-msgstr "快速草稿"
+msgstr "蹇€熻崏绋?
 
 msgid "WordPress Events and News"
-msgstr "WordPress 事件和新闻"
+msgstr "WordPress 浜嬩欢鍜屾柊闂?
 
 msgid "Site Health Status"
-msgstr "站点健康状态"
+msgstr "绔欑偣鍋ュ悍鐘舵€?
 
 msgid "At a Glance"
-msgstr "概览"
+msgstr "姒傝"
 
 msgid "WordPress Logo"
-msgstr "WordPress 标志"
+msgstr "WordPress 鏍囧織"
 
 msgid "Site Name"
-msgstr "站点名称"
+msgstr "绔欑偣鍚嶇О"
 
 msgid "Updates"
-msgstr "更新"
+msgstr "鏇存柊"
 
 msgid "New Content"
-msgstr "新建内容"
+msgstr "鏂板缓鍐呭"
 
 msgid "My Account"
-msgstr "我的账户"
+msgstr "鎴戠殑璐︽埛"
 
 # ===========================================================
 # Login Page Elements
 # ===========================================================
 msgid "Language Switcher"
-msgstr "语言切换器"
+msgstr "璇█鍒囨崲鍣?
 
 msgid "Back to Home Link"
-msgstr "返回首页链接"
+msgstr "杩斿洖棣栭〉閾炬帴"
 
 msgid "Register Link"
-msgstr "注册链接"
+msgstr "娉ㄥ唽閾炬帴"
 
 msgid "Remember Me Checkbox"
-msgstr "记住我复选框"
+msgstr "璁颁綇鎴戝閫夋"
 
 msgid "Choose Image"
-msgstr "选择图片"
+msgstr "閫夋嫨鍥剧墖"
 
 msgid "Remove"
-msgstr "移除"
+msgstr "绉婚櫎"
 
 msgid "Login Logo Preview"
-msgstr "登录徽标预览"
+msgstr "鐧诲綍寰芥爣棰勮"
 
 msgid "Background Preview"
-msgstr "背景预览"
+msgstr "鑳屾櫙棰勮"
 
 # ===========================================================
 # About Page Strings
 # ===========================================================
 msgid "Version %s"
-msgstr "版本 %s"
+msgstr "鐗堟湰 %s"
 
 msgid "Plugin Description"
-msgstr "插件描述"
+msgstr "鎻掍欢鎻忚堪"
 
 msgid "WP Clean Admin is a powerful WordPress plugin designed to streamline and customize your WordPress admin experience. It provides a cleaner, more efficient interface by allowing you to hide unnecessary elements, customize the visual appearance, and reorganize the admin menu to better suit your workflow."
-msgstr "WP Clean Admin 是一个功能强大的 WordPress 插件，旨在简化和自定义您的 WordPress 管理体验。它通过允许您隐藏不必要的元素、自定义视觉外观和重新组织管理菜单来提供更清洁、更高效的界面，以更好地适应您的工作流程。"
+msgstr "WP Clean Admin 鏄竴涓姛鑳藉己澶х殑 WordPress 鎻掍欢锛屾棬鍦ㄧ畝鍖栧拰鑷畾涔夋偍鐨?WordPress 绠＄悊浣撻獙銆傚畠閫氳繃鍏佽鎮ㄩ殣钘忎笉蹇呰鐨勫厓绱犮€佽嚜瀹氫箟瑙嗚澶栬鍜岄噸鏂扮粍缁囩鐞嗚彍鍗曟潵鎻愪緵鏇存竻娲併€佹洿楂樻晥鐨勭晫闈紝浠ユ洿濂藉湴閫傚簲鎮ㄧ殑宸ヤ綔娴佺▼銆?
 
 msgid "Key Features"
-msgstr "主要功能"
+msgstr "涓昏鍔熻兘"
 
 msgid "Hide unnecessary dashboard widgets"
-msgstr "隐藏不必要的仪表盘小部件"
+msgstr "闅愯棌涓嶅繀瑕佺殑浠〃鐩樺皬閮ㄤ欢"
 
 msgid "Customize admin menu by hiding or reordering items"
-msgstr "通过隐藏或重新排序项目来自定义管理菜单"
+msgstr "閫氳繃闅愯棌鎴栭噸鏂版帓搴忛」鐩潵鑷畾涔夌鐞嗚彍鍗?
 
 msgid "Hide admin bar items for a cleaner top bar"
-msgstr "隐藏管理栏项目以获得更清洁的顶栏"
+msgstr "闅愯棌绠＄悊鏍忛」鐩互鑾峰緱鏇存竻娲佺殑椤舵爮"
 
 msgid "Choose from multiple visual themes or create your own"
-msgstr "从多个视觉主题中选择或创建自己的主题"
+msgstr "浠庡涓瑙変富棰樹腑閫夋嫨鎴栧垱寤鸿嚜宸辩殑涓婚"
 
 msgid "Adjust layout density and typography settings"
-msgstr "调整布局密度和排版设置"
+msgstr "璋冩暣甯冨眬瀵嗗害鍜屾帓鐗堣缃?
 
 msgid "Customize colors, shadows, and border styles"
-msgstr "自定义颜色、阴影和边框样式"
+msgstr "鑷畾涔夐鑹层€侀槾褰卞拰杈规鏍峰紡"
 
 msgid "Author"
-msgstr "作者"
+msgstr "浣滆€?
 
 msgid "Created by WordPress Admin UI Specialists"
-msgstr "由 WordPress 管理界面专家创建"
+msgstr "鐢?WordPress 绠＄悊鐣岄潰涓撳鍒涘缓"
 
 msgid "Visit Plugin Website"
-msgstr "访问插件网站"
+msgstr "璁块棶鎻掍欢缃戠珯"
 
 msgid "Documentation"
-msgstr "文档"
+msgstr "鏂囨。"
 
 msgid "Support"
-msgstr "支持"
+msgstr "鏀寔"
 
 msgid "Rate & Review"
-msgstr "评分与评价"
+msgstr "璇勫垎涓庤瘎浠?
 
 msgid "If you find this plugin useful, please consider leaving a review on WordPress.org. Your feedback helps improve the plugin and reach more users."
-msgstr "如果您觉得这个插件有用，请考虑在 WordPress.org 上留下评价。您的反馈有助于改进插件并触达更多用户。"
+msgstr "濡傛灉鎮ㄨ寰楄繖涓彃浠舵湁鐢紝璇疯€冭檻鍦?WordPress.org 涓婄暀涓嬭瘎浠枫€傛偍鐨勫弽棣堟湁鍔╀簬鏀硅繘鎻掍欢骞惰Е杈炬洿澶氱敤鎴枫€?
 
 msgid "Rate on WordPress.org"
-msgstr "在 WordPress.org 上评分"
+msgstr "鍦?WordPress.org 涓婅瘎鍒?
 
 # ===========================================================
 # Error Messages (Extended)
 # ===========================================================
 msgid "Menu management configuration failed to load"
-msgstr "菜单管理功能配置加载失败"
+msgstr "鑿滃崟绠＄悊鍔熻兘閰嶇疆鍔犺浇澶辫触"
 
 msgid "Menu management requires jQuery UI Sortable, please ensure it is loaded"
-msgstr "菜单管理功能依赖 jQuery UI Sortable，请确保已加载"
+msgstr "鑿滃崟绠＄悊鍔熻兘渚濊禆 jQuery UI Sortable锛岃纭繚宸插姞杞?
 
 msgid "Menu slug is missing, please refresh the page and try again"
-msgstr "菜单 slug 缺失，请刷新页面重试"
+msgstr "鑿滃崟 slug 缂哄け锛岃鍒锋柊椤甸潰閲嶈瘯"
 
 msgid "An unknown error occurred"
-msgstr "发生未知错误"
+msgstr "鍙戠敓鏈煡閿欒"
 
 msgid "Insufficient permissions or security verification failed. The page will refresh in 2 seconds."
-msgstr "权限不足或安全验证失败。页面将在2秒后刷新。"
+msgstr "鏉冮檺涓嶈冻鎴栧畨鍏ㄩ獙璇佸け璐ャ€傞〉闈㈠皢鍦?绉掑悗鍒锋柊銆?
 
 msgid "Network connection error, please check your network and try again."
-msgstr "网络连接错误，请检查网络后重试。"
+msgstr "缃戠粶杩炴帴閿欒锛岃妫€鏌ョ綉缁滃悗閲嶈瘯銆?
 
 msgid "Request failed, server returned error code: ${xhr.status}"
-msgstr "请求失败，服务器返回错误码: ${xhr.status}"
+msgstr "璇锋眰澶辫触锛屾湇鍔″櫒杩斿洖閿欒鐮? ${xhr.status}"
 
 msgid "Menu management initialization failed"
-msgstr "菜单管理功能初始化失败"
+msgstr "鑿滃崟绠＄悊鍔熻兘鍒濆鍖栧け璐?
 
 msgid "Login management module initialization failed: "
-msgstr "登录管理模块初始化失败: "
+msgstr "鐧诲綍绠＄悊妯″潡鍒濆鍖栧け璐? "
 
 msgid "Main module initialization failed: "
-msgstr "主模块初始化失败: "
+msgstr "涓绘ā鍧楀垵濮嬪寲澶辫触: "
 
 # ===========================================================
 # Permission Related Strings
 # ===========================================================
 msgid "WPCA Permissions: Missing required configuration"
-msgstr "WPCA 权限: 缺少必要的配置"
+msgstr "WPCA 鏉冮檺: 缂哄皯蹇呰鐨勯厤缃?
 
 msgid "WPCA Permissions: Permission check failed -"
-msgstr "WPCA 权限: 权限检查失败 -"
+msgstr "WPCA 鏉冮檺: 鏉冮檺妫€鏌ュけ璐?-"
 
 msgid "WPCA Permissions: AJAX error -"
-msgstr "WPCA 权限: AJAX 错误 -"
+msgstr "WPCA 鏉冮檺: AJAX 閿欒 -"
 
 # ===========================================================
 # Additional Error Messages
 # ===========================================================
 msgid "Core already initialized"
-msgstr "核心已经初始化"
+msgstr "鏍稿績宸茬粡鍒濆鍖?
 
 msgid "Missing AJAX URL setting"
-msgstr "缺少 AJAX URL 设置"
+msgstr "缂哄皯 AJAX URL 璁剧疆"
 
 msgid "Unable to load necessary JavaScript settings. Please refresh the page and try again."
-msgstr "无法加载必要的 JavaScript 设置。请刷新页面重试。"
+msgstr "鏃犳硶鍔犺浇蹇呰鐨?JavaScript 璁剧疆銆傝鍒锋柊椤甸潰閲嶈瘯銆?
 
 msgid "Core initialization failed"
-msgstr "核心初始化失败"
+msgstr "鏍稿績鍒濆鍖栧け璐?
 
 msgid "Using fallback nonce value"
-msgstr "使用备用 nonce 值"
+msgstr "浣跨敤澶囩敤 nonce 鍊?
 
 msgid "Request processing failed"
-msgstr "请求处理失败"
+msgstr "璇锋眰澶勭悊澶辫触"
 
 msgid "You do not have permission to perform this action"
-msgstr "您没有执行此操作的权限"
+msgstr "鎮ㄦ病鏈夋墽琛屾鎿嶄綔鐨勬潈闄?
 
 msgid "Invalid request parameters"
-msgstr "请求参数错误"
+msgstr "璇锋眰鍙傛暟閿欒"
 
 msgid "Please log in first"
-msgstr "请先登录"
+msgstr "璇峰厛鐧诲綍"
 
 msgid "Internal server error"
-msgstr "服务器内部错误"
+msgstr "鏈嶅姟鍣ㄥ唴閮ㄩ敊璇?
 
 msgid "Module already registered"
-msgstr "模块已注册"
+msgstr "妯″潡宸叉敞鍐?
 
 msgid "Module name already exists"
-msgstr "模块名称已存在"
+msgstr "妯″潡鍚嶇О宸插瓨鍦?
 
 msgid "WP Clean Admin initialization failed"
-msgstr "WP Clean Admin 初始化失败"
+msgstr "WP Clean Admin 鍒濆鍖栧け璐?
 
 msgid "WPCA Error: The configuration object \"wpca_admin\" is missing."
-msgstr "WPCA 错误: 缺少配置对象 \"wpca_admin\"。"
+msgstr "WPCA 閿欒: 缂哄皯閰嶇疆瀵硅薄 \"wpca_admin\"銆?
 
 # ===========================================================
 # Login Page Strings
 # ===========================================================
 msgid "WPCA Login Management: Initializing..."
-msgstr "WPCA 登录管理：初始化中..."
+msgstr "WPCA 鐧诲綍绠＄悊锛氬垵濮嬪寲涓?.."
 
 msgid "WPCA Login Management: Initialized successfully."
-msgstr "WPCA 登录管理：初始化成功。"
+msgstr "WPCA 鐧诲綍绠＄悊锛氬垵濮嬪寲鎴愬姛銆?
 
 msgid "No logo selected"
-msgstr "未选择Logo"
+msgstr "鏈€夋嫨Logo"
 
 msgid "No background selected"
-msgstr "未选择背景"
+msgstr "鏈€夋嫨鑳屾櫙"
 
 msgid "Show Login Form"
-msgstr "显示登录表单"
+msgstr "鏄剧ず鐧诲綍琛ㄥ崟"
 
 msgid "Login Style"
-msgstr "登录样式"
+msgstr "鐧诲綍鏍峰紡"
 
 msgid "Select a login style for your WordPress site"
-msgstr "为您的WordPress网站选择登录样式"
+msgstr "涓烘偍鐨刉ordPress缃戠珯閫夋嫨鐧诲綍鏍峰紡"
 
 msgid "Default"
-msgstr "默认"
+msgstr "榛樿"
 
 msgid "Modern"
-msgstr "现代"
+msgstr "鐜颁唬"
 
 msgid "Minimal"
-msgstr "极简"
+msgstr "鏋佺畝"
 
 msgid "Dark"
-msgstr "深色"
+msgstr "娣辫壊"
 
 msgid "Gradient"
-msgstr "渐变"
+msgstr "娓愬彉"
 
 msgid "Custom"
-msgstr "自定义"
+msgstr "鑷畾涔?
 
 msgid "Glassmorphism"
-msgstr "玻璃拟态"
+msgstr "鐜荤拑鎷熸€?
 
 msgid "Neumorphism"
-msgstr "新拟态"
+msgstr "鏂版嫙鎬?
 
 msgid "Custom Login Options"
-msgstr "自定义登录选项"
+msgstr "鑷畾涔夌櫥褰曢€夐」"
 
 msgid "Login Logo"
-msgstr "登录Logo"
+msgstr "鐧诲綍Logo"
 
 msgid "Upload or select an image for the login logo"
-msgstr "上传或选择登录Logo图片"
+msgstr "涓婁紶鎴栭€夋嫨鐧诲綍Logo鍥剧墖"
 
 msgid "Login Background"
-msgstr "登录背景"
+msgstr "鐧诲綍鑳屾櫙"
 
 msgid "Upload or select an image for the login background"
-msgstr "上传或选择登录背景图片"
+msgstr "涓婁紶鎴栭€夋嫨鐧诲綍鑳屾櫙鍥剧墖"
 
 msgid "Custom CSS"
-msgstr "自定义CSS"
+msgstr "鑷畾涔塁SS"
 
 msgid "Add custom CSS to further customize the login page"
-msgstr "添加自定义CSS以进一步自定义登录页面"
+msgstr "娣诲姞鑷畾涔塁SS浠ヨ繘涓€姝ヨ嚜瀹氫箟鐧诲綍椤甸潰"
 
 msgid "Remove Logo"
-msgstr "移除Logo"
+msgstr "绉婚櫎Logo"
 
 msgid "Remove Background"
-msgstr "移除背景"
+msgstr "绉婚櫎鑳屾櫙"
 
 msgid "Upload Logo"
-msgstr "上传Logo"
+msgstr "涓婁紶Logo"
 
 msgid "Upload Background"
-msgstr "上传背景"
+msgstr "涓婁紶鑳屾櫙"
 
 # ===========================================================
 # Reset Messages
 # ===========================================================
 msgid "Are you sure you want to reset login settings to default? This will remove your custom logo, background, and CSS."
-msgstr "确定要将登录设置重置为默认值吗？这将删除您的自定义徽标、背景和 CSS。"
+msgstr "纭畾瑕佸皢鐧诲綍璁剧疆閲嶇疆涓洪粯璁ゅ€煎悧锛熻繖灏嗗垹闄ゆ偍鐨勮嚜瀹氫箟寰芥爣銆佽儗鏅拰 CSS銆?
 
 # ===========================================================
 # Login Page Customization Additional Strings
 # ===========================================================
 msgid "Login Page Elements"
-msgstr "登录页面元素"
+msgstr "鐧诲綍椤甸潰鍏冪礌"
 
 msgid "Language Switcher"
-msgstr "语言切换器"
+msgstr "璇█鍒囨崲鍣?
 
 msgid "Back to Home Link"
-msgstr "返回首页链接"
+msgstr "杩斿洖棣栭〉閾炬帴"
 
 msgid "Register Link"
-msgstr "注册链接"
+msgstr "娉ㄥ唽閾炬帴"
 
 msgid "Remember Me Checkbox"
-msgstr "记住我复选框"
+msgstr "璁颁綇鎴戝閫夋"
 
 msgid "Choose Image"
-msgstr "选择图片"
+msgstr "閫夋嫨鍥剧墖"
 
 msgid "Remove"
-msgstr "移除"
+msgstr "绉婚櫎"
 
 msgid "Login Logo Preview"
-msgstr "登录Logo预览"
+msgstr "鐧诲綍Logo棰勮"
 
 msgid "Background Preview"
-msgstr "背景预览"
+msgstr "鑳屾櫙棰勮"
 
 msgid "Custom Login Options"
-msgstr "自定义登录选项"
+msgstr "鑷畾涔夌櫥褰曢€夐」"
 
 msgid "Choose from predefined login styles or create your own custom style."
-msgstr "选择预定义的登录样式或创建自己的自定义样式。"
+msgstr "閫夋嫨棰勫畾涔夌殑鐧诲綍鏍峰紡鎴栧垱寤鸿嚜宸辩殑鑷畾涔夋牱寮忋€?
 
 msgid "Custom Logo"
-msgstr "自定义Logo"
+msgstr "鑷畾涔塋ogo"
 
-msgid "Upload a custom logo for the login page. Recommended size: 320×80px."
-msgstr "上传登录页面的自定义Logo。推荐尺寸：320×80px。"
+msgid "Upload a custom logo for the login page. Recommended size: 320脳80px."
+msgstr "涓婁紶鐧诲綍椤甸潰鐨勮嚜瀹氫箟Logo銆傛帹鑽愬昂瀵革細320脳80px銆?
 
 msgid "Background Image"
-msgstr "背景图片"
+msgstr "鑳屾櫙鍥剧墖"
 
 msgid "Upload a custom background image for the login page."
-msgstr "上传登录页面的自定义背景图片。"
+msgstr "涓婁紶鐧诲綍椤甸潰鐨勮嚜瀹氫箟鑳屾櫙鍥剧墖銆?
 
 msgid "Custom CSS"
-msgstr "自定义CSS"
+msgstr "鑷畾涔塁SS"
 
 msgid "Add custom CSS to further customize the login page."
-msgstr "添加自定义CSS以进一步自定义登录页面。"
+msgstr "娣诲姞鑷畾涔塁SS浠ヨ繘涓€姝ヨ嚜瀹氫箟鐧诲綍椤甸潰銆?
 
 msgid "Live Preview"
-msgstr "实时预览"
+msgstr "瀹炴椂棰勮"
 
 msgid "Preview how your login page will look with the current settings."
-msgstr "预览当前设置下登录页面的外观。"
+msgstr "棰勮褰撳墠璁剧疆涓嬬櫥褰曢〉闈㈢殑澶栬銆?
 
 msgid "This is a preview of how your login page will look."
-msgstr "这是您的登录页面外观预览。"
+msgstr "杩欐槸鎮ㄧ殑鐧诲綍椤甸潰澶栬棰勮銆?
 
 msgid "Reset login settings to default"
-msgstr "重置登录设置为默认值"
+msgstr "閲嶇疆鐧诲綍璁剧疆涓洪粯璁ゅ€?
 
 msgid "Login settings have been reset to default"
-msgstr "登录设置已重置为默认值"
+msgstr "鐧诲綍璁剧疆宸查噸缃负榛樿鍊?
 
 msgid "Failed to reset login settings"
-msgstr "重置登录设置失败"
+msgstr "閲嶇疆鐧诲綍璁剧疆澶辫触"
 
 msgid "Login settings saved successfully"
-msgstr "登录设置保存成功"
+msgstr "鐧诲綍璁剧疆淇濆瓨鎴愬姛"
 
 msgid "Failed to save login settings"
-msgstr "保存登录设置失败"
+msgstr "淇濆瓨鐧诲綍璁剧疆澶辫触"
 
 msgid "Reset successful"
-msgstr "重置成功"
+msgstr "閲嶇疆鎴愬姛"
 
 msgid "Reset in progress..."
-msgstr "重置进行中..."
+msgstr "閲嶇疆杩涜涓?.."
 
 # ===========================================================
 # Permissions UI
 # ===========================================================
 msgid "Insufficient permissions"
-msgstr "权限不足"
+msgstr "鏉冮檺涓嶈冻"

@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /**
  * WPCA Menu Manager
  * 
  * Manages the display, hiding, and permission control of WordPress admin menus
  * 
  * @package WPCleanAdmin
- * @version 1.7.11
+ * @version 1.7.12
  */
 
 // Ensure file is loaded within WordPress environment
@@ -94,32 +94,32 @@ class WPCA_Menu_Manager {
         'index.php',      // Dashboard
         'users.php',      // Users
         'profile.php',    // Profile
-        'wp-clean-admin'  // WPCleanAdmin 插件自身的菜单项
+        'wp-clean-admin'  // WPCleanAdmin 鎻掍欢鑷韩鐨勮彍鍗曢」
     );
     
     /**
-     * 单例实例
+     * 鍗曚緥瀹炰緥
      * 
      * @var WPCA_Menu_Manager
      */
     private static $instance;
     
     /**
-     * 插件选项缓存
+     * 鎻掍欢閫夐」缂撳瓨
      * 
      * @var array
      */
     private $options_cache = null;
     
     /**
-     * 隐藏的菜单项缓存
+     * 闅愯棌鐨勮彍鍗曢」缂撳瓨
      * 
      * @var array
      */
     private $hidden_items_cache = null;
     
     /**
-     * 获取单例实例
+     * 鑾峰彇鍗曚緥瀹炰緥
      * 
      * @return WPCA_Menu_Manager
      */
@@ -131,7 +131,7 @@ class WPCA_Menu_Manager {
     }
     
     /**
-     * 构造函数
+     * 鏋勯€犲嚱鏁?
      * 
      * 注册必要的钩子和初始化菜单管理功能
      */
@@ -141,26 +141,26 @@ class WPCA_Menu_Manager {
     }
     
     /**
-     * 注册钩子
+     * 娉ㄥ唽閽╁瓙
      * 
-     * 注册所有与菜单管理相关的WordPress钩子
+     * 娉ㄥ唽鎵€鏈変笌鑿滃崟绠＄悊鐩稿叧鐨刉ordPress閽╁瓙
      */
     private function register_hooks() {
-        // 确保 WordPress 函数可用
+        // 纭繚 WordPress 鍑芥暟鍙敤
         if ( function_exists( 'add_action' ) ) {
             // 初始化菜单管理功能
             add_action('admin_init', array($this, 'initialize_menu_management'));
             
-            // 添加菜单过滤钩子
+            // 娣诲姞鑿滃崟杩囨护閽╁瓙
             add_action('admin_menu', array($this, 'filter_menu_items'), 999);
             
             // 添加管理栏过滤钩子
             add_action('admin_bar_menu', array($this, 'filter_admin_bar_items'), 999);
             
-            // 输出菜单隐藏的CSS
+            // 杈撳嚭鑿滃崟闅愯棌鐨凜SS
             add_action('admin_head', array($this, 'output_menu_css'));
             
-            // 注册AJAX钩子
+            // 娉ㄥ唽AJAX閽╁瓙
             add_action('wp_ajax_wpca_toggle_menu', array($this, 'handle_ajax_toggle_menu'));
             add_action('wp_ajax_wpca_get_hidden_menus', array($this, 'handle_ajax_get_hidden_menus'));
             add_action('wp_ajax_wpca_validate_menu_item', array($this, 'handle_ajax_validate_menu_item'));
@@ -181,17 +181,17 @@ class WPCA_Menu_Manager {
     }
     
     /**
-     * 确保菜单选项数组存在
+     * 纭繚鑿滃崟閫夐」鏁扮粍瀛樺湪
      * 
-     * 检查并初始化menu_toggles选项数组
+     * 妫€鏌ュ苟鍒濆鍖杕enu_toggles閫夐」鏁扮粍
      */
     private function ensure_menu_options_exist() {
         $options = $this->get_plugin_options();
         
-        // 确保menu_toggles数组存在
+        // 纭繚menu_toggles鏁扮粍瀛樺湪
         if (!isset($options['menu_toggles']) || !is_array($options['menu_toggles'])) {
             $options['menu_toggles'] = array();
-            // 确保 WordPress 函数可用
+            // 纭繚 WordPress 鍑芥暟鍙敤
             if ( function_exists( 'update_option' ) ) {
                 update_option('wpca_settings', $options);
             }
@@ -199,30 +199,30 @@ class WPCA_Menu_Manager {
     }
     
     /**
-     * 获取插件选项
+     * 鑾峰彇鎻掍欢閫夐」
      * 
-     * @return array 插件选项数组
+     * @return array 鎻掍欢閫夐」鏁扮粍
      */
     private function get_plugin_options() {
         if ($this->options_cache === null) {
-            // 确保 WordPress 函数可用
+            // 纭繚 WordPress 鍑芥暟鍙敤
             $this->options_cache = function_exists( 'get_option' ) ? get_option('wpca_settings', array()) : array();
         }
         return $this->options_cache;
     }
     
     /**
-     * 获取所有菜单项
+     * 鑾峰彇鎵€鏈夎彍鍗曢」
      * 
-     * @param bool $force_refresh 是否强制刷新缓存
-     * @return array 所有菜单项数组
+     * @param bool $force_refresh 鏄惁寮哄埗鍒锋柊缂撳瓨
+     * @return array 鎵€鏈夎彍鍗曢」鏁扮粍
      */
     public function get_all_menu_items($force_refresh = false) {
         global $menu, $submenu;
         
         $all_items = array();
         
-        // 获取顶级菜单
+        // 鑾峰彇椤剁骇鑿滃崟
         if (is_array($menu)) {
             foreach ($menu as $item) {
                 if (!empty($item) && isset($item[2])) {
@@ -257,9 +257,9 @@ class WPCA_Menu_Manager {
     }
     
     /**
-     * 获取隐藏的菜单项
+     * 鑾峰彇闅愯棌鐨勮彍鍗曢」
      * 
-     * @return array 隐藏的菜单项数组
+     * @return array 闅愯棌鐨勮彍鍗曢」鏁扮粍
      */
     public function get_hidden_menu_items() {
         if ($this->hidden_items_cache === null) {
@@ -271,29 +271,29 @@ class WPCA_Menu_Manager {
     }
     
     /**
-     * 计算隐藏的菜单项
+     * 璁＄畻闅愯棌鐨勮彍鍗曢」
      * 
-     * @param array $options 插件选项
-     * @param array $all_items 所有菜单项
-     * @return array 隐藏的菜单项数组
+     * @param array $options 鎻掍欢閫夐」
+     * @param array $all_items 鎵€鏈夎彍鍗曢」
+     * @return array 闅愯棌鐨勮彍鍗曢」鏁扮粍
      */
     private function calculate_hidden_items($options, $all_items) {
         $hidden_items = array();
         
-        // 检查是否有menu_toggles数组
+        // 妫€鏌ユ槸鍚︽湁menu_toggles鏁扮粍
         if (!isset($options['menu_toggles']) || !is_array($options['menu_toggles'])) {
             return $hidden_items;
         }
         
         foreach ($options['menu_toggles'] as $slug => $state) {
-            // 验证slug
+            // 楠岃瘉slug
             if (!is_string($slug) || empty($slug)) {
                 continue;
             }
             
-            // 检查菜单是否需要隐藏并且是有效的菜单项
+            // 妫€鏌ヨ彍鍗曟槸鍚﹂渶瑕侀殣钘忓苟涓旀槸鏈夋晥鐨勮彍鍗曢」
             if ($state === 0 && isset($all_items[$slug])) {
-                // 检查是否是受保护的菜单
+                // 妫€鏌ユ槸鍚︽槸鍙椾繚鎶ょ殑鑿滃崟
                 $slug_parts = explode('|', $slug);
                 $main_slug = $slug_parts[0];
                 
@@ -307,21 +307,9 @@ class WPCA_Menu_Manager {
     }
     
     /**
-     * 过滤菜单项
+     * 杩囨护鑿滃崟椤?
      * 
      * 从管理菜单中移除隐藏的菜单项
-     */
-    public function filter_menu_items() {
-        global $menu, $submenu;
-        
-        $hidden_items = $this->get_hidden_menu_items();
-        
-        if (empty($hidden_items)) {
-            return;
-        }
-        
-        foreach ($hidden_items as $slug) {
-            // 处理子菜单
             if (strpos($slug, '|') !== false) {
                 list($parent, $child) = explode('|', $slug);
                 if (isset($submenu[$parent])) {
@@ -331,13 +319,13 @@ class WPCA_Menu_Manager {
                         }
                     }
                     
-                    // 如果子菜单数组为空，从数组中移除
+                    // 濡傛灉瀛愯彍鍗曟暟缁勪负绌猴紝浠庢暟缁勪腑绉婚櫎
                     if (empty($submenu[$parent])) {
                         unset($submenu[$parent]);
                     }
                 }
             } 
-            // 处理顶级菜单
+            // 澶勭悊椤剁骇鑿滃崟
             else {
                 foreach ($menu as $key => $item) {
                     if (isset($item[2]) && $item[2] === $slug) {
@@ -357,7 +345,7 @@ class WPCA_Menu_Manager {
      * @return WP_Admin_Bar 修改后的管理栏对象
      */
     public function filter_admin_bar_items($wp_admin_bar) {
-        // 检查 $wp_admin_bar 是否是有效的对象
+        // 妫€鏌?$wp_admin_bar 鏄惁鏄湁鏁堢殑瀵硅薄
         if (!is_object($wp_admin_bar) || !method_exists($wp_admin_bar, 'get_nodes')) {
             return $wp_admin_bar;
         }
@@ -368,7 +356,7 @@ class WPCA_Menu_Manager {
             return $wp_admin_bar;
         }
         
-        // 获取所有管理栏节点
+        // 鑾峰彇鎵€鏈夌鐞嗘爮鑺傜偣
         $nodes = $wp_admin_bar->get_nodes();
         
         if (empty($nodes)) {
@@ -376,7 +364,7 @@ class WPCA_Menu_Manager {
         }
         
         foreach ($hidden_items as $slug) {
-            // 生成对应的管理栏ID
+            // 鐢熸垚瀵瑰簲鐨勭鐞嗘爮ID
             $admin_bar_ids = $this->generate_admin_bar_ids($slug);
             
             foreach ($admin_bar_ids as $id) {
@@ -390,12 +378,12 @@ class WPCA_Menu_Manager {
     }
     
     /**
-     * 生成管理栏ID
+     * 鐢熸垚绠＄悊鏍廔D
      * 
-     * 根据菜单项slug生成可能的管理栏ID
+     * 鏍规嵁鑿滃崟椤箂lug鐢熸垚鍙兘鐨勭鐞嗘爮ID
      * 
-     * @param string $slug 菜单项slug
-     * @return array 可能的管理栏ID数组
+     * @param string $slug 鑿滃崟椤箂lug
+     * @return array 鍙兘鐨勭鐞嗘爮ID鏁扮粍
      */
     private function generate_admin_bar_ids($slug) {
         $ids = array();
@@ -403,13 +391,13 @@ class WPCA_Menu_Manager {
         // 处理子菜单
         if (strpos($slug, '|') !== false) {
             list($parent, $child) = explode('|', $slug);
-            // 生成可能的子菜单管理栏ID
+            // 鐢熸垚鍙兘鐨勫瓙鑿滃崟绠＄悊鏍廔D
             $ids[] = 'edit-' . $parent . '-' . $child;
             $ids[] = $parent . '-' . $child;
         } 
-        // 处理顶级菜单
+        // 澶勭悊椤剁骇鑿滃崟
         else {
-            // 生成可能的顶级菜单管理栏ID
+            // 鐢熸垚鍙兘鐨勯《绾ц彍鍗曠鐞嗘爮ID
             $base_id = str_replace('.php', '', $slug);
             $ids[] = 'toplevel_page_' . $base_id;
             $ids[] = 'menu-' . $base_id;
@@ -420,13 +408,13 @@ class WPCA_Menu_Manager {
     }
     
     /**
-     * 检查菜单是否受保护
+     * 妫€鏌ヨ彍鍗曟槸鍚﹀彈淇濇姢
      * 
      * @param string $slug 菜单项slug
      * @return bool 是否受保护
      */
     public function is_menu_protected($slug) {
-        // 提取主菜单slug
+        // 鎻愬彇涓昏彍鍗晄lug
         $slug_parts = explode('|', $slug);
         $main_slug = $slug_parts[0];
         
@@ -439,25 +427,16 @@ class WPCA_Menu_Manager {
      * @param string $slug 菜单项slug
      * @param int $state 状态 (0=隐藏, 1=显示)
      * @return array 操作结果
-     */
-    public function toggle_menu_item($slug, $state) {
-        try {
-            // 验证参数
-            if (empty($slug) || !is_string($slug)) {
-                throw new Exception((function_exists('__') ? __('Invalid menu slug', 'wp-clean-admin') : 'Invalid menu slug'), 400);
-            }
-            
-            // 验证状态
             if (!in_array($state, array(0, 1))) {
                 throw new Exception((function_exists('__') ? __('Invalid menu state', 'wp-clean-admin') : 'Invalid menu state'), 400);
             }
             
-            // 检查菜单是否受保护
+            // 妫€鏌ヨ彍鍗曟槸鍚﹀彈淇濇姢
             if ($state === 0 && $this->is_menu_protected($slug)) {
                 throw new Exception((function_exists('__') ? __('This menu item cannot be hidden', 'wp-clean-admin') : 'This menu item cannot be hidden'), 403);
             }
             
-            // 获取并更新选项
+            // 鑾峰彇骞舵洿鏂伴€夐」
             $options = $this->get_plugin_options();
             
             if (!isset($options['menu_toggles']) || !is_array($options['menu_toggles'])) {
@@ -466,14 +445,14 @@ class WPCA_Menu_Manager {
             
             $options['menu_toggles'][$slug] = $state;
             
-            // 保存选项
+            // 淇濆瓨閫夐」
             $updated = function_exists( 'update_option' ) ? update_option('wpca_settings', $options) : false;
             
             if (!$updated) {
                 throw new Exception((function_exists('__') ? __('Failed to save menu settings', 'wp-clean-admin') : 'Failed to save menu settings'), 500);
             }
             
-            // 清除缓存
+            // 娓呴櫎缂撳瓨
             $this->clear_cache();
             
             return array(
@@ -495,7 +474,7 @@ class WPCA_Menu_Manager {
     }
     
     /**
-     * 清除缓存
+     * 娓呴櫎缂撳瓨
      * 
      * 清除内部缓存以确保数据更新
      */
@@ -505,10 +484,10 @@ class WPCA_Menu_Manager {
     }
     
     /**
-     * 生成菜单隐藏CSS
+     * 鐢熸垚鑿滃崟闅愯棌CSS
      * 
-     * @param array $hidden_items 隐藏的菜单项
-     * @return string CSS样式
+     * @param array $hidden_items 闅愯棌鐨勮彍鍗曢」
+     * @return string CSS鏍峰紡
      */
     private function generate_menu_hide_css($hidden_items) {
         if (empty($hidden_items)) {
@@ -521,12 +500,19 @@ class WPCA_Menu_Manager {
             $selectors = $this->generate_css_selectors($slug);
             
             if (!empty($selectors)) {
-                $css .= implode(',\n', $selectors) . ' {\n';
-                $css .= '  display: none !important;\n';
-                $css .= '  width: 0 !important;\n';
-                $css .= '  height: 0 !important;\n';
-                $css .= '  overflow: hidden !important;\n';
-                $css .= '}\n';
+                $css .= implode(',
+', $selectors) . ' {
+';
+                $css .= '  display: none !important;
+';
+                $css .= '  width: 0 !important;
+';
+                $css .= '  height: 0 !important;
+';
+                $css .= '  overflow: hidden !important;
+';
+                $css .= '}
+';
             }
         }
         
@@ -545,7 +531,7 @@ class WPCA_Menu_Manager {
         // 确保 WordPress 函数可用或使用备选函数
         $esc_attr_func = function_exists('esc_attr') ? 'esc_attr' : function($str) { return htmlspecialchars($str, ENT_QUOTES, 'UTF-8'); };
         
-        // 处理子菜单
+        // 澶勭悊瀛愯彍鍗?
         if (strpos($slug, '|') !== false) {
             list($parent, $child) = explode('|', $slug);
             $parent_escaped = $esc_attr_func($parent);
@@ -555,7 +541,7 @@ class WPCA_Menu_Manager {
             $selectors[] = '#adminmenu li.menu-top.menu-icon-' . $parent_escaped . ' .wp-submenu li a[href$="' . $child_escaped . '"]';
             $selectors[] = '#adminmenu li.menu-top#menu-' . $esc_attr_func(str_replace('.php', '', $parent)) . ' .wp-submenu li a[href$="' . $child_escaped . '"]';
         } 
-        // 处理顶级菜单
+        // 澶勭悊椤剁骇鑿滃崟
         else {
             $slug_escaped = $esc_attr_func($slug);
             $selectors[] = '#adminmenu li.menu-top.toplevel_page_' . $slug_escaped;
@@ -567,39 +553,43 @@ class WPCA_Menu_Manager {
     }
     
     /**
-     * 输出菜单CSS
+     * 杈撳嚭鑿滃崟CSS
      * 
-     * 在管理界面头部输出菜单隐藏的CSS样式
+     * 鍦ㄧ鐞嗙晫闈㈠ご閮ㄨ緭鍑鸿彍鍗曢殣钘忕殑CSS鏍峰紡
      */
     public function output_menu_css() {
         $hidden_items = $this->get_hidden_menu_items();
         $css = $this->generate_menu_hide_css($hidden_items);
         
         if (!empty($css)) {
-            echo '<style type="text/css" id="wpca-menu-manager-css">\n';
-            echo "/* WP Clean Admin - Menu Manager CSS */\n";
-            // 确保 WordPress 函数可用或使用备选函数
+            echo '<style type="text/css" id="wpca-menu-manager-css">
+';
+            echo "/* WP Clean Admin - Menu Manager CSS */
+";
+            // 纭繚 WordPress 鍑芥暟鍙敤鎴栦娇鐢ㄥ閫夊嚱鏁?
             echo function_exists('esc_html') ? esc_html($css) : htmlspecialchars($css, ENT_QUOTES, 'UTF-8');
-            echo "\n</style>\n";
+            echo "
+</style>
+";
         }
     }
     
     /**
-     * 处理AJAX切换菜单请求
+     * 澶勭悊AJAX鍒囨崲鑿滃崟璇锋眰
      * 
-     * 处理前端发送的菜单显示/隐藏切换请求
+     * 澶勭悊鍓嶇鍙戦€佺殑鑿滃崟鏄剧ず/闅愯棌鍒囨崲璇锋眰
      */
     public function handle_ajax_toggle_menu() {
         try {
-            // 验证AJAX请求
+            // 楠岃瘉AJAX璇锋眰
             $this->validate_ajax_request();
             
-            // 获取参数
+            // 鑾峰彇鍙傛暟
               // isset是PHP语言结构，不需要function_exists检查
               $slug = function_exists('sanitize_text_field') ? sanitize_text_field($_POST['slug']) : (isset($_POST['slug']) ? filter_input(INPUT_POST, 'slug', FILTER_SANITIZE_STRING) : '');
             $state = isset($_POST['state']) ? intval($_POST['state']) : 0;
             
-            // 执行切换操作
+            // 鎵ц鍒囨崲鎿嶄綔
             $result = $this->toggle_menu_item($slug, $state);
             
             if ($result['success']) {
@@ -631,20 +621,20 @@ class WPCA_Menu_Manager {
     }
     
     /**
-     * 处理AJAX获取隐藏菜单请求
+     * 澶勭悊AJAX鑾峰彇闅愯棌鑿滃崟璇锋眰
      * 
-     * 返回当前隐藏的菜单项列表
+     * 杩斿洖褰撳墠闅愯棌鐨勮彍鍗曢」鍒楄〃
      */
     public function handle_ajax_get_hidden_menus() {
         try {
-            // 验证AJAX请求
+            // 楠岃瘉AJAX璇锋眰
             $this->validate_ajax_request();
             
-            // 获取所有菜单项和隐藏的菜单项
+            // 鑾峰彇鎵€鏈夎彍鍗曢」鍜岄殣钘忕殑鑿滃崟椤?
             $all_items = $this->get_all_menu_items(true);
             $hidden_items = $this->get_hidden_menu_items();
             
-            // 构建菜单状态数组
+            // 鏋勫缓鑿滃崟鐘舵€佹暟缁?
             $menu_states = array();
             foreach ($all_items as $slug => $item) {
                 $menu_states[$slug] = array(
@@ -680,22 +670,22 @@ class WPCA_Menu_Manager {
     }
     
     /**
-     * 处理AJAX验证菜单项请求
+     * 澶勭悊AJAX楠岃瘉鑿滃崟椤硅姹?
      * 
-     * 验证菜单项是否存在且可被隐藏
+     * 楠岃瘉鑿滃崟椤规槸鍚﹀瓨鍦ㄤ笖鍙闅愯棌
      */
     public function handle_ajax_validate_menu_item() {
         try {
-            // 验证AJAX请求
+            // 楠岃瘉AJAX璇锋眰
             $this->validate_ajax_request();
             
-            // 获取参数
+            // 鑾峰彇鍙傛暟
             $slug = function_exists('sanitize_text_field') ? sanitize_text_field($_POST['slug']) : (isset($_POST['slug']) ? filter_input(INPUT_POST, 'slug', FILTER_SANITIZE_STRING) : '');
             
-            // 获取所有菜单项
+            // 鑾峰彇鎵€鏈夎彍鍗曢」
             $all_items = $this->get_all_menu_items(true);
             
-            // 验证菜单项
+            // 楠岃瘉鑿滃崟椤?
             $exists = isset($all_items[$slug]);
             $protected = $exists ? $this->is_menu_protected($slug) : false;
             
@@ -727,25 +717,25 @@ class WPCA_Menu_Manager {
     }
     
     /**
-     * 验证AJAX请求
+     * 楠岃瘉AJAX璇锋眰
      * 
-     * 验证AJAX请求的合法性和权限
+     * 楠岃瘉AJAX璇锋眰鐨勫悎娉曟€у拰鏉冮檺
      */
     private function validate_ajax_request() {
-        // 检查是否是AJAX请求
-        // defined是PHP语言结构，不需要function_exists检查
+        // 妫€鏌ユ槸鍚︽槸AJAX璇锋眰
+        // defined鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?
         $is_ajax = function_exists('wp_doing_ajax') ? wp_doing_ajax() : (defined('DOING_AJAX') && DOING_AJAX);
         if (!$is_ajax) {
             throw new Exception((function_exists('__') ? __('Invalid request type', 'wp-clean-admin') : 'Invalid request type'), 400);
         }
         
-        // 验证nonce
+        // 楠岃瘉nonce
         $nonce_valid = isset($_POST['nonce']) && function_exists('wp_verify_nonce') && wp_verify_nonce($_POST['nonce'], 'wpca_admin_nonce');
         if (!$nonce_valid) {
             throw new Exception((function_exists('__') ? __('Security verification failed', 'wp-clean-admin') : 'Security verification failed'), 403);
         }
         
-        // 检查用户权限
+        // 妫€鏌ョ敤鎴锋潈闄?
         $has_permission = function_exists('current_user_can') && current_user_can('manage_options');
         if (!$has_permission) {
             throw new Exception((function_exists('__') ? __('Insufficient permissions', 'wp-clean-admin') : 'Insufficient permissions'), 403);
@@ -753,15 +743,15 @@ class WPCA_Menu_Manager {
     }
     
     /**
-     * 获取菜单统计信息
+     * 鑾峰彇鑿滃崟缁熻淇℃伅
      * 
-     * @return array 菜单统计信息
+     * @return array 鑿滃崟缁熻淇℃伅
      */
     public function get_menu_statistics() {
         $all_items = $this->get_all_menu_items();
         $hidden_items = $this->get_hidden_menu_items();
         
-        // 统计顶级菜单和子菜单
+        // 缁熻椤剁骇鑿滃崟鍜屽瓙鑿滃崟
         $top_level_count = 0;
         $submenu_count = 0;
         $protected_count = 0;
@@ -799,7 +789,7 @@ class WPCA_Menu_Manager {
     }
 }
 
-// 初始化菜单管理器
+// 鍒濆鍖栬彍鍗曠鐞嗗櫒
 define('WPCA_MENU_MANAGER_LOADED', true);
 
 ?>

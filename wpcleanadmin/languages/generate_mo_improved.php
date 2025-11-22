@@ -1,32 +1,26 @@
-<?php
+﻿<?php
 /**
- * 改进版用于生成和更新 .po/.mo 翻译文件的脚本
- * 无需外部 Gettext 工具，可独立运行
+ * 鏀硅繘鐗堢敤浜庣敓鎴愬拰鏇存柊 .po/.mo 缈昏瘧鏂囦欢鐨勮剼鏈? * 鏃犻渶澶栭儴 Gettext 宸ュ叿锛屽彲鐙珛杩愯
  * 
- * 使用方法：
- * 1. 将此脚本放在 languages 目录中
- * 2. 通过 PHP 运行此脚本：php generate_mo_improved.php
+ * 浣跨敤鏂规硶锛? * 1. 灏嗘鑴氭湰鏀惧湪 languages 鐩綍涓? * 2. 閫氳繃 PHP 杩愯姝よ剼鏈細php generate_mo_improved.php
  */
 
-// 确保函数存在性检查函数存在
-if ( ! function_exists( 'function_exists' ) ) {
+// 纭繚鍑芥暟瀛樺湪鎬ф鏌ュ嚱鏁板瓨鍦?if ( ! function_exists( 'function_exists' ) ) {
     function function_exists( $function_name ) {
-        return true; // 简化的备用实现
+        return true; // 绠€鍖栫殑澶囩敤瀹炵幇
     }
 }
 
-// 直接访问检查
-if ( ! defined( 'ABSPATH' ) && ! defined( 'WP_CLI' ) ) {
+// 鐩存帴璁块棶妫€鏌?if ( ! defined( 'ABSPATH' ) && ! defined( 'WP_CLI' ) ) {
     define( 'ABSPATH', dirname( __FILE__ ) . '/' );
 }
 
-// 设置错误报告（安全地设置）
-if ( function_exists( 'error_reporting' ) && function_exists( 'ini_set' ) ) {
+// 璁剧疆閿欒鎶ュ憡锛堝畨鍏ㄥ湴璁剧疆锛?if ( function_exists( 'error_reporting' ) && function_exists( 'ini_set' ) ) {
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
 }
 
-// 定义文件路径
+// 瀹氫箟鏂囦欢璺緞
 $pot_file = 'wp-clean-admin.pot';
 $po_files = array(
     'wp-clean-admin-en_US.po',
@@ -34,100 +28,92 @@ $po_files = array(
 );
 
 /**
- * 从 POT 文件更新 PO 文件
+ * 浠?POT 鏂囦欢鏇存柊 PO 鏂囦欢
  * 
- * @param string $pot_file POT 文件路径
- * @param string $po_file PO 文件路径
- * @return bool 更新是否成功
+ * @param string $pot_file POT 鏂囦欢璺緞
+ * @param string $po_file PO 鏂囦欢璺緞
+ * @return bool 鏇存柊鏄惁鎴愬姛
  */
 function update_po_file($pot_file, $po_file) {
-    // 检查必要函数是否存在
-    // echo是PHP语言结构，不需要function_exists检查
-      $has_functions = 
-                    // file_exists是PHP内置函数，不需要function_exists检查
-                    function_exists( 'copy' ) && 
+    // 妫€鏌ュ繀瑕佸嚱鏁版槸鍚﹀瓨鍦?    // echo鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?      $has_functions = 
+                    // file_exists鏄疨HP鍐呯疆鍑芥暟锛屼笉闇€瑕乫unction_exists妫€鏌?                    function_exists( 'copy' ) && 
                     function_exists( 'file_get_contents' ) && 
                     function_exists( 'parse_po_file' ) && 
-                    // empty是PHP语言结构，不需要function_exists检查 
+                    // empty鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?
                     function_exists( 'array_merge' ) && 
                     function_exists( 'extract_po_header' ) && 
                     function_exists( 'generate_po_content' ) && 
                     function_exists( 'file_put_contents' );
     
     if ( ! $has_functions ) {
-         // echo是PHP语言结构，不需要function_exists检查
-         echo "错误：缺少必要的函数支持。\n";
+         // echo鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?         echo "閿欒锛氱己灏戝繀瑕佺殑鍑芥暟鏀寔銆俓n";
         return false;
     }
     
-    echo "正在更新 $po_file 文件...\n";
+    echo "姝ｅ湪鏇存柊 $po_file 鏂囦欢...\n";
     
-    // 检查 POT 文件是否存在
+    // 妫€鏌?POT 鏂囦欢鏄惁瀛樺湪
     if (!file_exists($pot_file)) {
-        echo "错误：POT 文件 $pot_file 不存在。\n";
+        echo "閿欒锛歅OT 鏂囦欢 $pot_file 涓嶅瓨鍦ㄣ€俓n";
         return false;
     }
     
-    // 如果 PO 文件不存在，则创建新的
-    if (!file_exists($po_file)) {
-        echo "PO 文件 $po_file 不存在，创建新文件...\n";
+    // 濡傛灉 PO 鏂囦欢涓嶅瓨鍦紝鍒欏垱寤烘柊鐨?    if (!file_exists($po_file)) {
+        echo "PO 鏂囦欢 $po_file 涓嶅瓨鍦紝鍒涘缓鏂版枃浠?..\n";
         if (!copy($pot_file, $po_file)) {
-            echo "错误：无法创建 $po_file 文件。\n";
+            echo "閿欒锛氭棤娉曞垱寤?$po_file 鏂囦欢銆俓n";
             return false;
         }
-        echo "PO 文件 $po_file 创建成功！\n";
+        echo "PO 鏂囦欢 $po_file 鍒涘缓鎴愬姛锛乗n";
         return true;
     }
     
-    // 读取 POT 和 PO 文件内容
+    // 璇诲彇 POT 鍜?PO 鏂囦欢鍐呭
     $pot_content = file_get_contents($pot_file);
     $po_content = file_get_contents($po_file);
     
     if ($pot_content === false || $po_content === false) {
-        echo "错误：无法读取文件内容。\n";
+        echo "閿欒锛氭棤娉曡鍙栨枃浠跺唴瀹广€俓n";
         return false;
     }
     
-    // 解析 POT 和 PO 文件
+    // 瑙ｆ瀽 POT 鍜?PO 鏂囦欢
     $pot_entries = parse_po_file($pot_content);
     $po_entries = parse_po_file($po_content);
     
     if (empty($pot_entries)) {
-        echo "错误：无法解析 $pot_file 文件。\n";
+        echo "閿欒锛氭棤娉曡В鏋?$pot_file 鏂囦欢銆俓n";
         return false;
     }
     
     if (empty($po_entries)) {
-        echo "错误：无法解析 $po_file 文件。\n";
+        echo "閿欒锛氭棤娉曡В鏋?$po_file 鏂囦欢銆俓n";
         return false;
     }
     
-    // 合并新的翻译条目，保留现有翻译
-    $merged_entries = array_merge($pot_entries, $po_entries);
+    // 鍚堝苟鏂扮殑缈昏瘧鏉＄洰锛屼繚鐣欑幇鏈夌炕璇?    $merged_entries = array_merge($pot_entries, $po_entries);
     
-    // 生成更新后的 PO 文件内容
+    // 鐢熸垚鏇存柊鍚庣殑 PO 鏂囦欢鍐呭
     $header = extract_po_header($po_content);
     $new_po_content = generate_po_content($merged_entries, $header);
     
-    // 写入更新后的 PO 文件
+    // 鍐欏叆鏇存柊鍚庣殑 PO 鏂囦欢
     if (file_put_contents($po_file, $new_po_content) === false) {
-        echo "错误：无法写入 $po_file 文件。\n";
+        echo "閿欒锛氭棤娉曞啓鍏?$po_file 鏂囦欢銆俓n";
         return false;
     }
     
-    echo "PO 文件 $po_file 更新成功！\n";
+    echo "PO 鏂囦欢 $po_file 鏇存柊鎴愬姛锛乗n";
     return true;
 }
 
 /**
- * 提取 PO 文件的头部信息
- * 
- * @param string $po_content PO 文件内容
- * @return string 头部信息
+ * 鎻愬彇 PO 鏂囦欢鐨勫ご閮ㄤ俊鎭? * 
+ * @param string $po_content PO 鏂囦欢鍐呭
+ * @return string 澶撮儴淇℃伅
  */
 function extract_po_header($po_content) {
-    // 检查必要函数是否存在
-    $has_functions = function_exists( 'explode' ) && 
+    // 妫€鏌ュ繀瑕佸嚱鏁版槸鍚﹀瓨鍦?    $has_functions = function_exists( 'explode' ) && 
                     function_exists( 'trim' ) && 
                     function_exists( 'strpos' ) && 
                     function_exists( 'array_push' ) && 
@@ -160,23 +146,20 @@ function extract_po_header($po_content) {
 }
 
 /**
- * 解析 PO 文件
+ * 瑙ｆ瀽 PO 鏂囦欢
  * 
- * @param string $po_content PO 文件内容
- * @return array 解析后的翻译条目
+ * @param string $po_content PO 鏂囦欢鍐呭
+ * @return array 瑙ｆ瀽鍚庣殑缈昏瘧鏉＄洰
  */
 function parse_po_file($po_content) {
-    // 检查必要函数是否存在
-    $has_functions = function_exists( 'explode' ) && 
+    // 妫€鏌ュ繀瑕佸嚱鏁版槸鍚﹀瓨鍦?    $has_functions = function_exists( 'explode' ) && 
                     function_exists( 'trim' ) && 
                     function_exists( 'strpos' ) && 
                     function_exists( 'strrpos' ) && 
                     function_exists( 'substr' ) && 
                     function_exists( 'strlen' ) && 
-                    // empty是PHP语言结构，不需要function_exists检查 
-                    // is_array是PHP内置函数，不需要function_exists检查
-                    // isset是PHP语言结构，不需要function_exists检查
-    
+                    // empty鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?
+                    // is_array鏄疨HP鍐呯疆鍑芥暟锛屼笉闇€瑕乫unction_exists妫€鏌?                    // isset鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?    
     if ( ! $has_functions || empty($po_content) || !is_string($po_content) ) {
         return array();
     }
@@ -192,16 +175,15 @@ function parse_po_file($po_content) {
     foreach ($lines as $line) {
         $trimmed_line = trim($line);
         
-        // 处理注释
+        // 澶勭悊娉ㄩ噴
         if (strpos($trimmed_line, '#') === 0) {
             $comments .= $line . "\n";
             continue;
         }
         
-        // 处理 msgid
+        // 澶勭悊 msgid
         if (strpos($trimmed_line, 'msgid') === 0) {
-            // 保存之前的条目
-            if (!empty($current_msgid)) {
+            // 淇濆瓨涔嬪墠鐨勬潯鐩?            if (!empty($current_msgid)) {
                 $entries[$current_msgid] = array(
                     'msgstr' => $current_msgstr,
                     'comments' => $comments
@@ -214,22 +196,21 @@ function parse_po_file($po_content) {
             $in_msgstr = false;
             $comments = '';
         }
-        // 处理 msgstr
+        // 澶勭悊 msgstr
         else if (strpos($trimmed_line, 'msgstr') === 0) {
             $current_msgstr = trim(substr($trimmed_line, 7), '"');
             $in_msgid = false;
             $in_msgstr = true;
         }
-        // 处理多行字符串
-        else if ($in_msgid && strpos($trimmed_line, '"') === 0 && strrpos($trimmed_line, '"') === strlen($trimmed_line) - 1) {
+        // 澶勭悊澶氳瀛楃涓?        else if ($in_msgid && strpos($trimmed_line, '"') === 0 && strrpos($trimmed_line, '"') === strlen($trimmed_line) - 1) {
             $current_msgid .= trim($trimmed_line, '"');
         }
         else if ($in_msgstr && strpos($trimmed_line, '"') === 0 && strrpos($trimmed_line, '"') === strlen($trimmed_line) - 1) {
             $current_msgstr .= trim($trimmed_line, '"');
         }
-        // 处理空行
+        // 澶勭悊绌鸿
         else if (empty($trimmed_line)) {
-            // 保存之前的条目（如果有的话）
+            // 淇濆瓨涔嬪墠鐨勬潯鐩紙濡傛灉鏈夌殑璇濓級
             if (!empty($current_msgid)) {
                 $entries[$current_msgid] = array(
                     'msgstr' => $current_msgstr,
@@ -245,8 +226,7 @@ function parse_po_file($po_content) {
         }
     }
     
-    // 保存最后一个条目
-    if (!empty($current_msgid)) {
+    // 淇濆瓨鏈€鍚庝竴涓潯鐩?    if (!empty($current_msgid)) {
         $entries[$current_msgid] = array(
             'msgstr' => $current_msgstr,
             'comments' => $comments
@@ -257,20 +237,15 @@ function parse_po_file($po_content) {
 }
 
 /**
- * 生成 PO 文件内容
+ * 鐢熸垚 PO 鏂囦欢鍐呭
  * 
- * @param array $entries 翻译条目
- * @param string $header 头部信息
- * @return string PO 文件内容
+ * @param array $entries 缈昏瘧鏉＄洰
+ * @param string $header 澶撮儴淇℃伅
+ * @return string PO 鏂囦欢鍐呭
  */
 function generate_po_content($entries, $header) {
-    // 检查必要函数是否存在
-    // empty是PHP语言结构，不需要function_exists检查
-      $has_functions = 
-                    // is_array是PHP内置函数，不需要function_exists检查
-                    // is_string是PHP内置函数，不需要function_exists检查
-                    // isset是PHP语言结构，不需要function_exists检查
-                    function_exists( 'strlen' );
+    // 妫€鏌ュ繀瑕佸嚱鏁版槸鍚﹀瓨鍦?    // empty鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?      $has_functions = 
+                    // is_array鏄疨HP鍐呯疆鍑芥暟锛屼笉闇€瑕乫unction_exists妫€鏌?                    // is_string鏄疨HP鍐呯疆鍑芥暟锛屼笉闇€瑕乫unction_exists妫€鏌?                    // isset鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?                    function_exists( 'strlen' );
     
     if ( ! $has_functions || !is_array($entries) ) {
         return is_string($header) ? $header : '';
@@ -279,14 +254,14 @@ function generate_po_content($entries, $header) {
     $content = (is_string($header) ? $header : '') . "\n\n";
     
     foreach ($entries as $msgid => $entry) {
-        if ($msgid === '' || !is_array($entry)) continue; // 跳过空的 msgid（通常是头部）
+        if ($msgid === '' || !is_array($entry)) continue; // 璺宠繃绌虹殑 msgid锛堥€氬父鏄ご閮級
         
-        // 添加注释
+        // 娣诲姞娉ㄩ噴
         if (isset($entry['comments']) && !empty($entry['comments'])) {
             $content .= $entry['comments'];
         }
         
-        // 添加 msgid 和 msgstr
+        // 娣诲姞 msgid 鍜?msgstr
         $msgstr = isset($entry['msgstr']) ? $entry['msgstr'] : '';
         $content .= "msgid \"$msgid\"\n";
         $content .= "msgstr \"$msgstr\"\n\n";
@@ -296,65 +271,56 @@ function generate_po_content($entries, $header) {
 }
 
 /**
- * 生成 MO 文件
- * 注意：这是一个简化版实现，仅用于基本功能
+ * 鐢熸垚 MO 鏂囦欢
+ * 娉ㄦ剰锛氳繖鏄竴涓畝鍖栫増瀹炵幇锛屼粎鐢ㄤ簬鍩烘湰鍔熻兘
  * 
- * @param string $po_file PO 文件路径
- * @return bool 生成是否成功
+ * @param string $po_file PO 鏂囦欢璺緞
+ * @return bool 鐢熸垚鏄惁鎴愬姛
  */
 function generate_mo_file($po_file) {
-    // 检查必要函数是否存在
-    // echo是PHP语言结构，不需要function_exists检查
-      $has_functions = 
-                    // file_exists是PHP内置函数，不需要function_exists检查
-                    function_exists( 'str_replace' ) && 
+    // 妫€鏌ュ繀瑕佸嚱鏁版槸鍚﹀瓨鍦?    // echo鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?      $has_functions = 
+                    // file_exists鏄疨HP鍐呯疆鍑芥暟锛屼笉闇€瑕乫unction_exists妫€鏌?                    function_exists( 'str_replace' ) && 
                     function_exists( 'file_get_contents' ) && 
                     function_exists( 'parse_po_file' ) && 
-                    // empty是PHP语言结构，不需要function_exists检查 
-                    // is_array是PHP内置函数，不需要function_exists检查
-                    // isset是PHP语言结构，不需要function_exists检查
-                    function_exists( 'generate_mo_content' ) && 
+                    // empty鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?
+                    // is_array鏄疨HP鍐呯疆鍑芥暟锛屼笉闇€瑕乫unction_exists妫€鏌?                    // isset鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?                    function_exists( 'generate_mo_content' ) && 
                     function_exists( 'file_put_contents' ) &&
-                    // is_string是PHP内置函数，不需要function_exists检查
-    
+                    // is_string鏄疨HP鍐呯疆鍑芥暟锛屼笉闇€瑕乫unction_exists妫€鏌?    
     if ( ! $has_functions ) {
-        // echo是PHP语言结构，不需要function_exists检查
-        echo "错误：缺少必要的函数支持。\n";
+        // echo鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?        echo "閿欒锛氱己灏戝繀瑕佺殑鍑芥暟鏀寔銆俓n";
         return false;
     }
     
-    // 检查参数类型
-    if (!is_string($po_file)) {
-        echo "错误：参数类型错误。\n";
+    // 妫€鏌ュ弬鏁扮被鍨?    if (!is_string($po_file)) {
+        echo "閿欒锛氬弬鏁扮被鍨嬮敊璇€俓n";
         return false;
     }
     
-    // 检查 PO 文件是否存在
+    // 妫€鏌?PO 鏂囦欢鏄惁瀛樺湪
     if (!file_exists($po_file)) {
-        echo "错误：PO 文件 $po_file 不存在。\n";
+        echo "閿欒锛歅O 鏂囦欢 $po_file 涓嶅瓨鍦ㄣ€俓n";
         return false;
     }
     
-    // 构建 MO 文件名
-    $mo_file = str_replace('.po', '.mo', $po_file);
+    // 鏋勫缓 MO 鏂囦欢鍚?    $mo_file = str_replace('.po', '.mo', $po_file);
     
-    // 读取 PO 文件内容
+    // 璇诲彇 PO 鏂囦欢鍐呭
     $po_content = file_get_contents($po_file);
     
     if ($po_content === false) {
-        echo "错误：无法读取 $po_file 文件。\n";
+        echo "閿欒锛氭棤娉曡鍙?$po_file 鏂囦欢銆俓n";
         return false;
     }
     
-    // 解析 PO 文件
+    // 瑙ｆ瀽 PO 鏂囦欢
     $entries = parse_po_file($po_content);
     
     if (empty($entries) || !is_array($entries)) {
-        echo "错误：无法解析 $po_file 文件。\n";
+        echo "閿欒锛氭棤娉曡В鏋?$po_file 鏂囦欢銆俓n";
         return false;
     }
     
-    // 过滤掉空的 msgid（通常是头部）
+    // 杩囨护鎺夌┖鐨?msgid锛堥€氬父鏄ご閮級
     $filtered_entries = array();
     foreach ($entries as $msgid => $entry) {
         if (!empty($msgid) && is_array($entry) && isset($entry['msgstr'])) {
@@ -362,33 +328,30 @@ function generate_mo_file($po_file) {
         }
     }
     
-    // 生成 MO 文件
+    // 鐢熸垚 MO 鏂囦欢
     $mo_content = generate_mo_content($filtered_entries);
     
-    // 写入 MO 文件
+    // 鍐欏叆 MO 鏂囦欢
     if (file_put_contents($mo_file, $mo_content) === false) {
-        echo "错误：无法写入 $mo_file 文件。\n";
+        echo "閿欒锛氭棤娉曞啓鍏?$mo_file 鏂囦欢銆俓n";
         return false;
     }
     
-    echo "MO 文件 $mo_file 生成成功！\n";
+    echo "MO 鏂囦欢 $mo_file 鐢熸垚鎴愬姛锛乗n";
     return true;
 }
 
 /**
- * 生成 MO 文件内容
- * 注意：这是一个简化版实现，支持基本的 MO 文件格式
+ * 鐢熸垚 MO 鏂囦欢鍐呭
+ * 娉ㄦ剰锛氳繖鏄竴涓畝鍖栫増瀹炵幇锛屾敮鎸佸熀鏈殑 MO 鏂囦欢鏍煎紡
  * 
- * @param array $entries 翻译条目
- * @return string MO 文件内容
+ * @param array $entries 缈昏瘧鏉＄洰
+ * @return string MO 鏂囦欢鍐呭
  */
 function generate_mo_content($entries) {
-    // 检查必要函数是否存在
-    $has_functions = function_exists( 'pack' ) && 
+    // 妫€鏌ュ繀瑕佸嚱鏁版槸鍚﹀瓨鍦?    $has_functions = function_exists( 'pack' ) && 
                     function_exists( 'count' ) && 
-                    // is_array是PHP内置函数，不需要function_exists检查
-                    // empty是PHP语言结构，不需要function_exists检查
-                    function_exists( 'strlen' );
+                    // is_array鏄疨HP鍐呯疆鍑芥暟锛屼笉闇€瑕乫unction_exists妫€鏌?                    // empty鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?                    function_exists( 'strlen' );
     
     if ( ! $has_functions || !is_array($entries) ) {
         return '';
@@ -397,10 +360,9 @@ function generate_mo_content($entries) {
     $magic = 0x950412de;
     $version = 0;
     $num_strings = count($entries);
-    $offset_orig = 28; // 头部大小
+    $offset_orig = 28; // 澶撮儴澶у皬
     
-    // 收集原始字符串和翻译后的字符串
-    $orig_strings = array();
+    // 鏀堕泦鍘熷瀛楃涓插拰缈昏瘧鍚庣殑瀛楃涓?    $orig_strings = array();
     $trans_strings = array();
     
     foreach ($entries as $msgid => $msgstr) {
@@ -410,24 +372,22 @@ function generate_mo_content($entries) {
         }
     }
     
-    // 计算哈希表的偏移量
-    $offset_trans = $offset_orig + $num_strings * 8;
+    // 璁＄畻鍝堝笇琛ㄧ殑鍋忕Щ閲?    $offset_trans = $offset_orig + $num_strings * 8;
     
-    // 计算字符串表的偏移量
+    // 璁＄畻瀛楃涓茶〃鐨勫亸绉婚噺
     $hash_table_offset = $offset_trans + $num_strings * 8;
     
-    // 构建头部
+    // 鏋勫缓澶撮儴
     $mo_content = function_exists('pack') ? pack('L', $magic) : '';
     $mo_content .= function_exists('pack') ? pack('L', $version) : '';
     $mo_content .= function_exists('pack') ? pack('L', $num_strings) : '';
     $mo_content .= function_exists('pack') ? pack('L', $offset_orig) : '';
     $mo_content .= function_exists('pack') ? pack('L', $offset_trans) : '';
-    $mo_content .= function_exists('pack') ? pack('L', 0) : ''; // 哈希表大小（简化实现）
+    $mo_content .= function_exists('pack') ? pack('L', 0) : ''; // 鍝堝笇琛ㄥぇ灏忥紙绠€鍖栧疄鐜帮級
     $mo_content .= function_exists('pack') ? pack('L', $hash_table_offset) : '';
     
-    // 构建原始字符串索引表
-    $current_offset = $hash_table_offset + $num_strings * 4; // 简化的哈希表大小
-    
+    // 鏋勫缓鍘熷瀛楃涓茬储寮曡〃
+    $current_offset = $hash_table_offset + $num_strings * 4; // 绠€鍖栫殑鍝堝笇琛ㄥぇ灏?    
     foreach ($orig_strings as $string) {
         if (function_exists('pack') && function_exists('strlen')) {
             $mo_content .= pack('L', strlen($string));
@@ -436,7 +396,7 @@ function generate_mo_content($entries) {
         }
     }
     
-    // 构建翻译后的字符串索引表
+    // 鏋勫缓缈昏瘧鍚庣殑瀛楃涓茬储寮曡〃
     foreach ($trans_strings as $string) {
         if (function_exists('pack') && function_exists('strlen')) {
             $mo_content .= pack('L', strlen($string));
@@ -445,17 +405,17 @@ function generate_mo_content($entries) {
         }
     }
     
-    // 构建原始字符串表
+    // 鏋勫缓鍘熷瀛楃涓茶〃
     foreach ($orig_strings as $string) {
         $mo_content .= $string . "\0";
     }
     
-    // 构建翻译后的字符串表
+    // 鏋勫缓缈昏瘧鍚庣殑瀛楃涓茶〃
     foreach ($trans_strings as $string) {
         $mo_content .= $string . "\0";
     }
     
-    // 添加简化的哈希表（对于基本功能不是必需的）
+    // 娣诲姞绠€鍖栫殑鍝堝笇琛紙瀵逛簬鍩烘湰鍔熻兘涓嶆槸蹇呴渶鐨勶級
     for ($i = 0; $i < $num_strings; $i++) {
         if (function_exists('pack')) {
             $mo_content .= pack('L', 0);
@@ -465,38 +425,37 @@ function generate_mo_content($entries) {
     return $mo_content;
 }
 
-// 显示脚本信息
+// 鏄剧ず鑴氭湰淇℃伅
 function display_script_info() {
     echo "==========================================================\n";
-    echo "WPCleanAdmin 翻译文件生成工具（改进版）\n";
+    echo "WPCleanAdmin 缈昏瘧鏂囦欢鐢熸垚宸ュ叿锛堟敼杩涚増锛塡n";
     echo "==========================================================\n";
 }
 
-// 执行更新和生成操作
-display_script_info();
+// 鎵ц鏇存柊鍜岀敓鎴愭搷浣?display_script_info();
 
 $success = true;
 
-// 更新所有 PO 文件
+// 鏇存柊鎵€鏈?PO 鏂囦欢
 foreach ($po_files as $po_file) {
     $success &= update_po_file($pot_file, $po_file);
     echo "\n";
 }
 
-// 生成所有 MO 文件
+// 鐢熸垚鎵€鏈?MO 鏂囦欢
 foreach ($po_files as $po_file) {
     $success &= generate_mo_file($po_file);
     echo "\n";
 }
 
-// 显示操作结果
+// 鏄剧ず鎿嶄綔缁撴灉
 echo "==========================================================\n";
 if ($success) {
-    echo "所有翻译文件已成功更新和生成！\n";
-    echo "系统将使用新的翻译字符串。\n";
+    echo "鎵€鏈夌炕璇戞枃浠跺凡鎴愬姛鏇存柊鍜岀敓鎴愶紒\n";
+    echo "绯荤粺灏嗕娇鐢ㄦ柊鐨勭炕璇戝瓧绗︿覆銆俓n";
 } else {
-    echo "更新或生成翻译文件时出错。\n";
-    echo "请检查错误信息并手动修复问题。\n";
+    echo "鏇存柊鎴栫敓鎴愮炕璇戞枃浠舵椂鍑洪敊銆俓n";
+    echo "璇锋鏌ラ敊璇俊鎭苟鎵嬪姩淇闂銆俓n";
 }
 echo "==========================================================\n";
 ?>

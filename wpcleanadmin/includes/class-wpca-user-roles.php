@@ -1,11 +1,11 @@
-<?php
+﻿<?php
 /**
  * User Roles Management Class
  *
  * Handles role-based permissions and settings filtering for non-administrator users.
  *
  * @package WPCleanAdmin
- * @version 1.7.11
+ * @version 1.7.12
  */
 
 if (!defined('ABSPATH')) {
@@ -13,9 +13,12 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Class WPCA_User_Roles
- *
- * Manages user roles and capabilities for the WP Clean Admin plugin.
+ * WPCA_User_Roles class
+ * Handles user role management and capabilities
+ * 
+ * @package WPCleanAdmin
+ * @since 1.0.0
+ * @version 1.7.12
  */
 class WPCA_User_Roles {
     
@@ -78,7 +81,7 @@ class WPCA_User_Roles {
         }
         
         // 避免使用 WPCA_Permissions::current_user_can 以防止递归调用
-        // 直接检查用户是否有特定权限
+        // 直接检查用户是否拥有特定权限
         if (function_exists('wp_get_current_user')) {
             $user = wp_get_current_user();
             if ($user && is_object($user) && isset($user->allcaps) && is_array($user->allcaps) && isset($user->allcaps['wpca_manage_all']) && $user->allcaps['wpca_manage_all']) {

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * WP Clean Admin Core Functions
  *
@@ -6,14 +6,12 @@
  * It handles non-settings-page related functionality.
  *
  * @package WP_Clean_Admin
- * @version 1.7.11
+ * @version 1.7.12
  */
 
 // Exit if accessed directly
-// defined是PHP语言结构，不需要function_exists检查
-if (!defined('ABSPATH')) {
-    // exit是PHP语言结构，不需要function_exists检查
-    exit;
+// defined鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?if (!defined('ABSPATH')) {
+    // exit鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?    exit;
 }
 
 
@@ -33,17 +31,14 @@ function wpca_remove_dashboard_widgets() {
 
     $widget_map = [
         'dashboard_activity'    => ['dashboard', 'normal'],
-        'dashboard_at_glance'   => ['dashboard', 'normal'], // 修正 ID，与设置页面保持一致
-        'dashboard_quick_press' => ['dashboard', 'side'],
+        'dashboard_at_glance'   => ['dashboard', 'normal'], // 淇 ID锛屼笌璁剧疆椤甸潰淇濇寔涓€鑷?        'dashboard_quick_press' => ['dashboard', 'side'],
         'dashboard_primary'     => ['dashboard', 'side'],
         'dashboard_site_health' => ['dashboard', 'normal'],
     ];
 
-    // 对所有使用的函数进行存在性检查，确保代码健壮性
-    if (function_exists('is_string') && function_exists('remove_meta_box') && function_exists('sanitize_key')) {
+    // 瀵规墍鏈変娇鐢ㄧ殑鍑芥暟杩涜瀛樺湪鎬ф鏌ワ紝纭繚浠ｇ爜鍋ュ．鎬?    if (function_exists('is_string') && function_exists('remove_meta_box') && function_exists('sanitize_key')) {
         foreach ($widgets_to_hide as $widget_id) {
-            // 添加额外的安全检查
-            if (isset($widget_map[$widget_id]) && is_string($widget_id)) {
+            // 娣诲姞棰濆鐨勫畨鍏ㄦ鏌?            if (isset($widget_map[$widget_id]) && is_string($widget_id)) {
                 remove_meta_box(sanitize_key($widget_id), $widget_map[$widget_id][0], $widget_map[$widget_id][1]);
             }
         }
@@ -74,8 +69,7 @@ function wpca_admin_body_class($classes) {
     $custom_classes = [];
 
     // Add classes based on settings, only if they are not the default.
-    // empty是PHP语言结构，不需要function_exists检查
-    if (function_exists('esc_attr')) {
+    // empty鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?    if (function_exists('esc_attr')) {
         if (!empty($options['theme_style']) && 'default' !== $options['theme_style']) {
             $custom_classes[] = 'wpca-theme-' . esc_attr($options['theme_style']);
         }
@@ -118,8 +112,7 @@ function wpca_apply_custom_styles() {
     $options = WPCA_Settings::get_options();
 
     // Start with values from settings (for 'custom' theme).
-    // isset是PHP语言结构，不需要function_exists检查
-    $primary_color    = isset($options['primary_color']) ? $options['primary_color'] : '#0073aa';
+    // isset鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?    $primary_color    = isset($options['primary_color']) ? $options['primary_color'] : '#0073aa';
     $background_color = isset($options['background_color']) ? $options['background_color'] : '#ffffff';
     $text_color       = isset($options['text_color']) ? $options['text_color'] : '#333333';
     
@@ -141,7 +134,7 @@ function wpca_apply_custom_styles() {
         $background_color = sanitize_hex_color($background_color) ?: '#ffffff';
         $text_color       = sanitize_hex_color($text_color) ?: '#333333';
     } else {
-        // 自定义的十六进制颜色验证函数
+        // 鑷畾涔夌殑鍗佸叚杩涘埗棰滆壊楠岃瘉鍑芥暟
         $safe_sanitize_hex_color = function($color) {
             if (function_exists('preg_match') && preg_match('/^#[0-9a-fA-F]{6}$/', $color)) {
                 return $color;
@@ -168,8 +161,7 @@ function wpca_apply_custom_styles() {
     if (function_exists('wp_add_inline_style')) {
         wp_add_inline_style('wpca-admin-style', $custom_css);
     } else {
-        // 记录日志，说明wp_add_inline_style函数不可用
-        if (function_exists('error_log')) {
+        // 璁板綍鏃ュ織锛岃鏄巜p_add_inline_style鍑芥暟涓嶅彲鐢?        if (function_exists('error_log')) {
             error_log('WPCleanAdmin: wp_add_inline_style function not available, custom styles cannot be applied.');
         }
     }
@@ -193,11 +185,9 @@ function wpca_remove_admin_bar_items($wp_admin_bar) {
     }
     
     $options = WPCA_Settings::get_options();
-    // isset是PHP语言结构，不需要function_exists检查
-    $items_to_hide = isset($options['hide_admin_bar_items']) ? $options['hide_admin_bar_items'] : [];
+    // isset鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?    $items_to_hide = isset($options['hide_admin_bar_items']) ? $options['hide_admin_bar_items'] : [];
 
-    // isset是PHP语言结构，不需要function_exists检查
-     if (function_exists('is_string') && function_exists('sanitize_key') && function_exists('method_exists')) {
+    // isset鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?     if (function_exists('is_string') && function_exists('sanitize_key') && function_exists('method_exists')) {
         foreach ($items_to_hide as $node_id) {
             if (is_string($node_id) && isset($wp_admin_bar) && method_exists($wp_admin_bar, 'remove_node')) {
                 $wp_admin_bar->remove_node(sanitize_key($node_id));
@@ -258,9 +248,10 @@ if (function_exists('add_filter')) {
     add_filter('document_title_parts', 'wpca_remove_wordpress_from_title', 100);
 }
 
-if (function_exists('add_filter')) {
-    add_filter('wp_title', 'wpca_remove_wordpress_from_wp_title', 100, 3);
-}
+// 移除重复的过滤器添加
+// if (function_exists('add_filter')) {
+//     add_filter('wp_title', 'wpca_remove_wordpress_from_wp_title', 100, 3);
+// }
 
 
 /**
@@ -290,7 +281,7 @@ function wpca_remove_wordpress_from_wp_title($title, $sep, $seplocation) {
             $title = str_ireplace('WordPress', '', $title);
         }
         // Remove any多余的分隔符
-        // array()是PHP语言结构，不需要function_exists检查
+        // array()鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?
         if (function_exists('str_replace')) {
             $title = str_replace(array("$sep  ", "  $sep"), '', $title);
         }

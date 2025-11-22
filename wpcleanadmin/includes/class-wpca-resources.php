@@ -1,23 +1,10 @@
-<?php
+﻿<?php
 /**
- * WP Clean Admin Resources Class
- *
- * Handles all resource-related optimizations for the WordPress admin area,
- * including CSS/JS loading control, minification, and defer loading.
- *
- * @package WP_Clean_Admin
- * @since 1.3.0
- */
-
-if (!defined('ABSPATH')) {
-    exit; // Exit if accessed directly.
-}
-
-/**
- * 资源管理类
- * 提供CSS/JS资源控制、加载优化和资源清理功能
- * @since 1.3.0
- * @version 1.7.11
+ * Resources Manager Class for WPCleanAdmin
+ * 
+ * @package WPCleanAdmin
+ * @since 1.0
+ * @version 1.7.12
  */
 class WPCA_Resources {
     /**
@@ -218,7 +205,10 @@ class WPCA_Resources {
         
         // 如果有关键CSS，则内联到页面头部
         if (!empty($critical_css)) {
-            echo "<style id='wpca-critical-css'>\n{$critical_css}\n</style>\n";
+            echo "<style id='wpca-critical-css'>
+{$critical_css}
+</style>
+";
         }
     }
 
@@ -232,7 +222,7 @@ class WPCA_Resources {
             return;
         }
         
-        // 获取当前页面钩子
+        // 鑾峰彇褰撳墠椤甸潰閽╁瓙
         $current_hook = isset($GLOBALS['hook_suffix']) ? $GLOBALS['hook_suffix'] : '';
         
         // 为当前页面创建合并资源的缓存键
@@ -264,11 +254,15 @@ class WPCA_Resources {
                 $sanitize_func = function_exists('sanitize_text_field') ? 'sanitize_text_field' : function($str) { return $str; };
                 
                 foreach ($styles_to_clean as $selector) {
-                    $cleanup_css .= $sanitize_func($selector) . " { display: none !important; }\n";
+                    $cleanup_css .= $sanitize_func($selector) . " { display: none !important; }
+";
                 }
                 
                 if (!empty($cleanup_css)) {
-                    echo "<style id='wpca-cleanup-styles'>\n{$cleanup_css}\n</style>\n";
+                    echo "<style id='wpca-cleanup-styles'>
+{$cleanup_css}
+</style>
+";
                 }
             });
         }
@@ -356,7 +350,7 @@ class WPCA_Resources {
             die('WordPress functions not available');
         }
         
-        // 检查是否为AJAX请求 - 兼容旧版本WordPress
+        // 检查是否为AJAX请求 - 兼容旧版WordPress
         if (function_exists('wp_doing_ajax')) {
             if (!wp_doing_ajax()) {
                 wp_die(__('Invalid request', 'wp-clean-admin'), 400);
@@ -425,7 +419,7 @@ class WPCA_Resources {
             die('WordPress functions not available');
         }
         
-        // 检查是否为AJAX请求 - 兼容旧版本WordPress
+        // 检查是否为AJAX请求 - 兼容旧版WordPress
         if (function_exists('wp_doing_ajax')) {
             if (!wp_doing_ajax()) {
                 wp_die(__('Invalid request', 'wp-clean-admin'), 400);
