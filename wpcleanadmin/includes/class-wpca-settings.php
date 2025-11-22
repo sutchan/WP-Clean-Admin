@@ -341,21 +341,21 @@ class WPCA_Settings {
      * @return array
      */
     public static function get_default_settings() {
-        return [
+        return array(
             // General settings
             'current_tab' => 'tab-general',
             'hide_wordpress_title' => 0,
             'hide_wpfooter' => 0,
             'hide_frontend_adminbar' => 0,
-            'hide_dashboard_widgets' => [],
+            'hide_dashboard_widgets' => array(),
             
             // Menu settings
             'menu_toggle' => 1,
-            'menu_visibility' => [],
-            'hide_admin_menu_items' => [],
-            'menu_order' => [],
-            'submenu_order' => [],
-            'menu_toggles' => [], // Ensure this is initialized
+            'menu_visibility' => array(),
+            'hide_admin_menu_items' => array(),
+            'menu_order' => array(),
+            'submenu_order' => array(),
+            'menu_toggles' => array(), // Ensure this is initialized
             
             // Visual style
             'theme_style' => 'default',
@@ -370,15 +370,15 @@ class WPCA_Settings {
             'icon_style' => 'dashicons',
             
             // Admin bar
-            'hide_admin_bar_items' => [],
+            'hide_admin_bar_items' => array(),
             
             // Login page
-            'login_elements' => [
+            'login_elements' => array(
                 'language_switcher' => 1,
                 'home_link' => 1,
                 'register_link' => 1,
                 'remember_me' => 1
-            ],
+            ),
             'login_style' => 'default',
             'login_logo' => '',
             'login_background' => '',
@@ -393,7 +393,7 @@ class WPCA_Settings {
         // Check if the current user has the necessary permissions
         if (function_exists('add_options_page')) {
             $capability = (class_exists('WPCA_Permissions') && defined('WPCA_Permissions::CAP_VIEW_SETTINGS')) ? 
-                          WPCA_Permissions::CAP_VIEW_SETTINGS : 'manage_options';
+                          (defined('WPCA_Permissions::CAP_VIEW_SETTINGS') ? WPCA_Permissions::CAP_VIEW_SETTINGS : 'manage_options') : 'manage_options';
                            
             add_options_page(
                 __( 'WP Clean Admin Settings', 'wp-clean-admin' ), // Page title

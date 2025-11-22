@@ -55,7 +55,7 @@ class WPCA_Login {
         add_action('login_head', array($this, 'output_custom_styles'));
         add_action('login_init', array($this, 'customize_login_elements'));
         
-        // 娣诲姞鐧诲綍琛ㄥ崟鑷畾涔夐挬瀛?
+        // 添加登录表单自定义钩子
         add_action('login_form_top', array($this, 'add_login_form_elements'));
     }
 

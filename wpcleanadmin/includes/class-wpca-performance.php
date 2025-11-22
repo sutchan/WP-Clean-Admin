@@ -72,11 +72,11 @@ class WPCA_Performance {
         try {
             if (null === self::$instance) {
                 self::$instance = new self;
-            }
+
             
             return self::$instance;
         } catch (Exception $e) {
-            // 瀹夊叏璁板綍寮傚父浣嗕笉娉勯湶鏁忔劅淇℃伅
+            // 安全记录异常但不泄露敏感信息
             if (function_exists('error_log')) {
                 error_log('WPCA: Error creating performance instance');
             }
@@ -123,7 +123,7 @@ class WPCA_Performance {
                 }
             }
         } catch (Exception $e) {
-            // 瀹夊叏璁板綍寮傚父浣嗕笉娉勯湶鏁忔劅淇℃伅
+            // 安全记录异常但不泄露敏感信息
             if (function_exists('error_log')) {
                 error_log('WPCA: Error registering performance hooks');
             }
@@ -131,19 +131,21 @@ class WPCA_Performance {
     }
 
     /**
-     * 鍒濆鍖栨€ц兘鐩戞帶
+     * 初始化性能监控
      */
     public function init_performance_monitoring() {
         try {
-            // 鍒濆鍖栫粺璁℃暟鎹暟缁?            $this->stats = array();
+            // 初始化统计数据数组
+            $this->stats = array();
             
-            // 鑾峰彇閲囨牱鐜囪缃?            $sampling_rate = 100; // 榛樿閲囨牱鐜囦负100%
+            // 获取采样率设置
+            $sampling_rate = 100; // 榛樿閲囨牱鐜囦负100%
             if (isset($this->options['performance_monitoring_sampling_rate'])) {
                 $sampling_rate = max(1, min(100, intval($this->options['performance_monitoring_sampling_rate'])));
             }
             
-            // 鏍规嵁閲囨牱鐜囧喅瀹氭槸鍚﹁繘琛岀洃鎺?            if (function_exists('rand') && rand(1, 100) <= $sampling_rate) {
-                // 璁板綍寮€濮嬫椂闂村拰鍐呭瓨浣跨敤
+            // 根据采样率决定是否进行监控            if (function_exists('rand') && rand(1, 100) <= $sampling_rate) {
+                // 记录开始时间和内存使用
                 if (function_exists('microtime')) {
                     $this->stats['start_time'] = microtime(true);
                 }
@@ -151,28 +153,28 @@ class WPCA_Performance {
                     $this->stats['start_memory'] = memory_get_usage(true);
                 }
                 
-                // 璁板綍椤甸潰淇℃伅
+                // 记录页面信息
                 if (isset($_SERVER['REQUEST_URI'])) {
-                    // 瀹夊叏澶勭悊URI
+                    // 安全处理URI
                     $uri = $_SERVER['REQUEST_URI'];
-                    // 杩囨护鎺夋晱鎰熶俊鎭?                    if (function_exists('strpos') && strpos($uri, '?') !== false) {
+                    // 过滤掉敏感信息                    if (function_exists('strpos') && strpos($uri, '?') !== false) {
                         if (function_exists('explode')) {
                             list($path, $query) = explode('?', $uri, 2);
-                            // 淇濈暀璺緞锛屽彧鍙栨煡璇㈠弬鏁扮殑鍓?00涓瓧绗?                            $uri = $path . '?' . (function_exists('substr') ? substr($query, 0, 100) : '');
+                            // 保留路径，只取查询参数的前100个字符                            $uri = $path . '?' . (function_exists('substr') ? substr($query, 0, 100) : '');
                         }
                     }
-                    // 闄愬埗URI闀垮害
+                    // 限制URI长度
                     $uri = function_exists('substr') ? substr($uri, 0, 255) : $uri;
                     $this->stats['page'] = $uri;
                 } else {
                     $this->stats['page'] = 'Unknown';
                 }
                 
-                // 閲嶇疆鏌ヨ璁℃暟
+                // 重置查询计数
                 $this->query_count = 0;
             }
         } catch (Exception $e) {
-            // 瀹夊叏璁板綍寮傚父浣嗕笉娉勯湶鏁忔劅淇℃伅
+            // 安全记录异常但不泄露敏感信息
             if (function_exists('error_log')) {
                 error_log('WPCA: Error initializing performance monitoring');
             }
@@ -180,28 +182,29 @@ class WPCA_Performance {
     }
 
     /**
-     * 璺熻釜鏁版嵁搴撴煡璇?     * @param string $query 鏁版嵁搴撴煡璇㈠瓧绗︿覆
-     * @return string 鍘熷鏌ヨ瀛楃涓?     */
+     * 跟踪数据库查询
+     * @param string $query 数据库查询字符串
+     * @return string 原始查询字符串     */
     public function track_db_queries($query) {
         try {
-            // 鍙湪鍒濆鍖栦簡鎬ц兘鏁版嵁鍚庢墠璺熻釜鏌ヨ
+            // 只在初始化了性能数据后才跟踪查询
             if (!empty($this->stats) && isset($this->stats['start_time'])) {
-                // 澧炲姞鏌ヨ璁℃暟
+                // 增加查询计数
                 $this->query_count++;
                 
-                // 鍙€夛細璁板綍鏌ヨ璇︽儏锛堜粎鍦ㄨ皟璇曟ā寮忎笅锛?                if (defined('WP_DEBUG') && WP_DEBUG && $this->query_count <= 100) {
-                    // 纭繚stats鏁扮粍瀛樺湪涓斿彲浠ュ瓨鍌ㄦ煡璇?                    if (!isset($this->stats['queries'])) {
+                // 可选：记录查询详情（仅在调试模式下）                if (defined('WP_DEBUG') && WP_DEBUG && $this->query_count <= 100) {
+                    // 确保stats数组存在且可以存储查询                    if (!isset($this->stats['queries'])) {
                         $this->stats['queries'] = array();
                     }
                     
-                    // 鍙褰曢潪绌烘煡璇?                    if (!empty($query)) {
-                        // 瀹夊叏澶勭悊鏌ヨ瀛楃涓诧紝绉婚櫎鍙兘鐨勬晱鎰熶俊鎭?                        $safe_query = is_string($query) ? substr($query, 0, 500) : '';
+                    // 只记录非空查询                    if (!empty($query)) {
+                        // 安全处理查询字符串，移除可能的敏感信息                        $safe_query = is_string($query) ? substr($query, 0, 500) : '';
                         $this->stats['queries'][] = $safe_query;
                     }
                 }
             }
         } catch (Exception $e) {
-            // 瀹夊叏璁板綍寮傚父浣嗕笉娉勯湶鏁忔劅淇℃伅
+            // 安全记录异常但不泄露敏感信息
             if (function_exists('error_log')) {
                 error_log('WPCA: Error tracking database queries');
             }

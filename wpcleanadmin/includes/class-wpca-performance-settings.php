@@ -126,7 +126,7 @@ class WPCA_Performance_Settings {
                 'callback' => array( $this, 'render_settings_tab' ),
                 'icon'     => 'dashicons-admin-settings',
             ),
-        );
+
     }
 
     /**
@@ -504,7 +504,7 @@ class WPCA_Performance_Settings {
             <h3><?php esc_html_e( 'Scheduled Optimization Settings', 'wp-clean-admin' ); ?></h3>
             <p><?php esc_html_e( 'Configure automatic database optimization and cleanup schedules to maintain optimal performance.', 'wp-clean-admin' ); ?></p>
             
-            <form method="post" action="options.php">)
+            <form method="post" action="options.php">
         );
     }
 
@@ -597,161 +597,7 @@ class WPCA_Performance_Settings {
         <?php
     }
 
-    /**
-     * Render the database optimization tab.
-     */
-    public function render_database_tab() {
-        $database_stats = $this->database ? $this->database->get_database_stats() : array();
-        $tables = $this->database ? $this->database->get_all_tables() : array();
-        $cleanup_items = $this->database ? $this->database->get_available_cleanup_items() : array();
-        $optimization_status = $this->database ? $this->database->get_optimization_status() : array();
-        
-        $auto_optimize_enabled = get_option( 'wpca_auto_optimize_tables', false );
-        $optimize_interval = get_option( 'wpca_optimize_interval', 7 );
-        $cleanup_interval = get_option( 'wpca_cleanup_interval', 30 );
-        
-        // Security nonce
-        $optimize_nonce = wp_create_nonce( 'wpca-optimize-tables' );
-        $cleanup_nonce = wp_create_nonce( 'wpca-cleanup-database' );
-        
-        ?>
-        <div class="wpca-performance-section">
-            <h3><?php esc_html_e( 'Database Overview', 'wp-clean-admin' ); ?></h3>
-            <div class="wpca-database-stats">
-                <div class="stat-item">
-                    <span class="stat-value"><?php echo esc_html( $database_stats['table_count'] ?? 0 ); ?></span>
-                    <span class="stat-label"><?php esc_html_e( 'Tables', 'wp-clean-admin' ); ?></span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-value"><?php echo esc_html( size_format( $database_stats['total_size'] ?? 0 ) ); ?></span>
-                    <span class="stat-label"><?php esc_html_e( 'Total Size', 'wp-clean-admin' ); ?></span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-value"><?php echo esc_html( size_format( $database_stats['overhead_size'] ?? 0 ) ); ?></span>
-                    <span class="stat-label"><?php esc_html_e( 'Overhead', 'wp-clean-admin' ); ?></span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-value"><?php echo esc_html( $optimization_status['optimized_tables'] ?? 0 ); ?></span>
-                    <span class="stat-label"><?php esc_html_e( 'Optimized Tables', 'wp-clean-admin' ); ?></span>
-                </div>
-            </div>
-        </div>
 
-        <div class="wpca-performance-section">
-            <h3><?php esc_html_e( 'Table Optimization', 'wp-clean-admin' ); ?></h3>
-            <p><?php esc_html_e( 'Optimizing database tables can improve performance by reclaiming unused space and defragmenting data. This operation is safe and will not delete any data.', 'wp-clean-admin' ); ?></p>
-            
-            <div class="wpca-table-list">
-                <table class="wp-list-table widefat fixed striped">
-                    <thead>
-                        <tr>
-                            <th scope="col" class="manage-column column-cb check-column">
-                                <input type="checkbox" id="wpca-select-all-tables" />
-                            </th>
-                            <th scope="col" class="manage-column"><?php esc_html_e( 'Table Name', 'wp-clean-admin' ); ?></th>
-                            <th scope="col" class="manage-column"><?php esc_html_e( 'Size', 'wp-clean-admin' ); ?></th>
-                            <th scope="col" class="manage-column"><?php esc_html_e( 'Overhead', 'wp-clean-admin' ); ?></th>
-                            <th scope="col" class="manage-column"><?php esc_html_e( 'Status', 'wp-clean-admin' ); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ( $tables as $table ) : ?>
-                            <tr>
-                                <th scope="row" class="check-column">
-                                    <input type="checkbox" class="wpca-table-checkbox" value="<?php echo esc_attr( $table['name'] ); ?>" <?php checked( $table['overhead'] > 0 ); ?> />
-                                </th>
-                                <td><?php echo esc_html( $table['name'] ); ?></td>
-                                <td class="table-size"><?php echo esc_html( size_format( $table['size'] ) ); ?></td>
-                                <td class="table-size"><?php echo esc_html( size_format( $table['overhead'] ) ); ?></td>
-                                <td>
-                                    <span class="table-status <?php echo $table['overhead'] > 0 ? 'table-status-needs-optimization' : 'table-status-optimal'; ?>">
-                                        <?php echo $table['overhead'] > 0 ? esc_html__( 'Needs Optimization', 'wp-clean-admin' ) : esc_html__( 'Optimal', 'wp-clean-admin' ); ?>
-                                    </span>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </div>
-            
-            <button id="wpca-optimize-tables" class="wpca-button wpca-button-primary" data-nonce="<?php echo esc_attr( $optimize_nonce ); ?>">
-                <?php esc_html_e( 'Optimize Selected Tables', 'wp-clean-admin' ); ?>
-            </button>
-        </div>
-
-        <div class="wpca-performance-section">
-            <h3><?php esc_html_e( 'Database Cleanup', 'wp-clean-admin' ); ?></h3>
-            <p><?php esc_html_e( 'Clean up unnecessary data from your database to improve performance and reduce database size. Be careful as this will permanently delete data.', 'wp-clean-admin' ); ?></p>
-            
-            <div class="wpca-cleanup-list">
-                <?php foreach ( $cleanup_items as $key => $item ) : ?>
-                    <div class="wpca-cleanup-item-row">
-                        <label>
-                            <input type="checkbox" class="wpca-cleanup-item" value="<?php echo esc_attr( $key ); ?>" />
-                            <?php echo esc_html( $item['title'] ); ?>
-                            <?php if ( $item['requires_days'] ) : ?>
-                                <input type="number" min="1" max="365" value="30" class="wpca-cleanup-days" id="wpca-<?php echo esc_attr( $key ); ?>-days" />
-                                <?php esc_html_e( 'days old or older', 'wp-clean-admin' ); ?>
-                            <?php endif; ?>
-                        </label>
-                        <span class="wpca-cleanup-description"><?php echo esc_html( $item['description'] ); ?></span>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-            
-            <div class="wpca-cleanup-summary">
-                <span id="wpca-cleanup-summary"><?php esc_html_e( 'Selected 0 of 0 cleanup items.', 'wp-clean-admin' ); ?></span>
-            </div>
-            
-            <button id="wpca-cleanup-database" class="wpca-button wpca-button-warning" data-nonce="<?php echo esc_attr( $cleanup_nonce ); ?>">
-                <?php esc_html_e( 'Run Selected Cleanup Tasks', 'wp-clean-admin' ); ?>
-            </button>
-        </div>
-        
-        <div class="wpca-performance-section">
-            <h3><?php esc_html_e( 'Scheduled Optimization Settings', 'wp-clean-admin' ); ?></h3>
-            <p><?php esc_html_e( 'Configure automatic database optimization and cleanup schedules to maintain optimal performance.', 'wp-clean-admin' ); ?></p>
-            
-            <form method="post" action="options.php">
-                <?php settings_fields( 'wpca-database-optimization' ); ?>
-                
-                <table class="form-table">
-                    <tr valign="top">
-                        <th scope="row">
-                            <label for="wpca_auto_optimize_tables"><?php esc_html_e( 'Automatic Table Optimization', 'wp-clean-admin' ); ?></label>
-                        </th>
-                        <td>
-                            <input type="checkbox" id="wpca_auto_optimize_tables" name="wpca_auto_optimize_tables" value="1" <?php checked( $auto_optimize_enabled ); ?> />
-                            <label for="wpca_auto_optimize_tables"><?php esc_html_e( 'Enable automatic table optimization', 'wp-clean-admin' ); ?></label>
-                        </td>
-                    </tr>
-                    
-                    <tr valign="top">
-                        <th scope="row">
-                            <label for="wpca_optimize_interval"><?php esc_html_e( 'Optimization Interval', 'wp-clean-admin' ); ?></label>
-                        </th>
-                        <td>
-                            <input type="number" min="1" max="90" id="wpca_optimize_interval" name="wpca_optimize_interval" value="<?php echo esc_attr( $optimize_interval ); ?>" />
-                            <span class="description"><?php esc_html_e( 'days', 'wp-clean-admin' ); ?></span>
-                        </td>
-                    </tr>
-                    
-                    <tr valign="top">
-                        <th scope="row">
-                            <label for="wpca_cleanup_interval"><?php esc_html_e( 'Cleanup Interval', 'wp-clean-admin' ); ?></label>
-                        </th>
-                        <td>
-                            <input type="number" min="1" max="90" id="wpca_cleanup_interval" name="wpca_cleanup_interval" value="<?php echo esc_attr( $cleanup_interval ); ?>" />
-                            <span class="description"><?php esc_html_e( 'days', 'wp-clean-admin' ); ?></span>
-                        </td>
-                    </tr>
-                </table>
-                
-                <?php submit_button(); ?>
-            </form>
-        </div>
-        <?php
-    }
 
     /**
      * Render the resource management tab.
