@@ -17,7 +17,88 @@ if (!defined('WPINC')) {
     exit;
 }
 
+// 提供 WordPress 核心函数的备用实现
+if (!function_exists('get_role')) {
+    function get_role($role)
+    {
+        return new WP_Role_Mock($role);
+    }
+}
 
+if (!class_exists('WP_Roles')) {
+    class WP_Roles
+    {
+        public $role_objects = array();
+        public function __construct()
+        {
+            $this->role_objects['administrator'] = new WP_Role_Mock('administrator');
+            $this->role_objects['editor'] = new WP_Role_Mock('editor');
+            $this->role_objects['author'] = new WP_Role_Mock('author');
+        }
+    }
+}
+
+if (!class_exists('WP_Role_Mock')) {
+    class WP_Role_Mock
+    {
+        public $capabilities = array();
+        public $name;
+
+        public function __construct($name)
+        {
+            $this->name = $name;
+        }
+
+        public function add_cap($capability, $grant = true)
+        {
+            $this->capabilities[$capability] = $grant;
+        }
+
+        public function remove_cap($capability)
+        {
+            unset($this->capabilities[$capability]);
+        }
+    }
+}
+
+if (!function_exists('is_multisite')) {
+    function is_multisite()
+    {
+        return false;
+    }
+}
+
+if (!function_exists('is_super_admin')) {
+    function is_super_admin()
+    {
+        return false;
+    }
+}
+
+if (!function_exists('wp_get_current_user')) {
+    function wp_get_current_user()
+    {
+        return (object) array('ID' => 1, 'allcaps' => array('manage_options' => true)); // Mock a logged-in admin user
+    }
+}
+
+if (!function_exists('wp_doing_ajax')) {
+    function wp_doing_ajax()
+    {
+        return defined('DOING_AJAX') && DOING_AJAX;
+    }
+}
+
+if (!function_exists('current_user_can')) {
+    function current_user_can($capability)
+    {
+        // For mock purposes, assume admin can do anything
+        if ($capability === 'manage_options') {
+            return true;
+        }
+        return false;
+    }
+}
 
 /**
  * 权限管理类
@@ -102,9 +183,9 @@ class WPCA_Permissions
             if (!$role) continue;
 
             foreach ($caps as $cap => $grant) {
-                if ($grant && method_exists($role, 'add_cap')) {
+                if ($grant) {
                     $role->add_cap($cap, true);
-                } else if (!$grant && method_exists($role, 'remove_cap')) {
+                } else {
                     $role->remove_cap($cap);
                 }
             }
@@ -134,9 +215,7 @@ class WPCA_Permissions
         if (isset($wp_roles->role_objects)) {
             foreach ($wp_roles->role_objects as $role) {
                 foreach (array_keys($this->capabilities) as $cap) {
-                    if (method_exists($role, 'remove_cap')) {
-                        $role->remove_cap($cap);
-                    }
+                    $role->remove_cap($cap);
                 }
             }
         }

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * WP Clean Admin Settings Class
  *
@@ -1643,28 +1643,24 @@ class WPCA_Settings {
                 break;
         }
         
-        // 淇濆瓨閫夐」骞跺搷搴?        if (function_exists('update_option')) {
-            $update_result = update_option('wpca_settings', $options);
-            
-            if ($update_result) {
-                self::$cached_options = null;
-                wp_send_json_success(array(
-                    'message' => __('Settings reset successfully', 'wp-clean-admin'),
-                    'tab' => $tab
-                ));
-            } else {
-                // 淇濆瓨澶辫触鐨勫鐞?                if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
-                    error_log('WP Clean Admin: Failed to reset settings. Options: ' . print_r($options, true));
-                }
-                
-                wp_send_json_error(array(
-                    'message' => __('Failed to reset settings', 'wp-clean-admin'),
-                    'debug_info' => defined('WP_DEBUG') && WP_DEBUG ? 'Option update failed for wpca_settings' : null
-                ), 500);
-            }
+        // 保存选项并处理结果
+        $update_result = update_option('wpca_settings', $options);
+
+        if ($update_result) {
+            self::$cached_options = null;
+            wp_send_json_success(array(
+                'message' => __('Settings reset successfully', 'wp-clean-admin'),
+                'tab' => $tab
+            ));
         } else {
-            // 濡傛灉update_option鍑芥暟涓嶅瓨鍦?            wp_send_json_error(array(
-                'message' => __('Failed to reset settings', 'wp-clean-admin')
+            // 处理保存失败的情况
+            if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
+                error_log('WP Clean Admin: Failed to reset settings. Options: ' . print_r($options, true));
+            }
+
+            wp_send_json_error(array(
+                'message' => __('Failed to reset settings', 'wp-clean-admin'),
+                'debug_info' => defined('WP_DEBUG') && WP_DEBUG ? 'Option update failed for wpca_settings' : null
             ), 500);
         }
     }
@@ -1673,44 +1669,44 @@ class WPCA_Settings {
      * AJAX handler to reset menu order specifically
      */
     public function ajax_reset_menu_order() {
-        // 楠岃瘉璇锋眰
+        // 验证请求
         if (!$this->validate_ajax_request('wpca_admin_nonce')) {
             return;
         }
-        
-        // 瀹夊叏鍑芥暟妫€鏌?        if (!function_exists('wp_send_json_error') || !function_exists('wp_send_json_success') || !function_exists('update_option')) {
-            return;
-        }
-        
+
         try {
-            // 鑾峰彇褰撳墠閫夐」鍜岄粯璁よ缃?            $options = self::get_options();
+            // 获取当前选项和默认设置
+            $options = self::get_options();
             $defaults = self::get_default_settings();
-            
-            // 浠呴噸缃彍鍗曢『搴忕浉鍏宠缃?            $options['menu_order'] = $defaults['menu_order'];
+
+            // 仅重置菜单顺序相关设置
+            $options['menu_order'] = $defaults['menu_order'];
             $options['submenu_order'] = $defaults['submenu_order'];
-            
-            // 淇濆瓨閫夐」骞跺搷搴?            $update_result = update_option('wpca_settings', $options);
-            
+
+            // 保存选项并处理结果
+            $update_result = update_option('wpca_settings', $options);
+
             if ($update_result) {
                 self::$cached_options = null;
                 wp_send_json_success(array(
                     'message' => __('Menu order reset successfully', 'wp-clean-admin')
                 ));
             } else {
-                // 淇濆瓨澶辫触鐨勫鐞?                if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
+                // 保存失败的处理
+                if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
                     error_log('WP Clean Admin: Failed to reset menu order.');
                 }
-                
+
                 wp_send_json_error(array(
                     'message' => __('Failed to reset menu order', 'wp-clean-admin')
                 ), 500);
             }
         } catch (Exception $e) {
-            // 寮傚父澶勭悊
+            // 异常处理
             if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
                 error_log('WP Clean Admin: Exception when resetting menu order: ' . $e->getMessage());
             }
-            
+
             wp_send_json_error(array(
                 'message' => __('An error occurred while resetting menu order', 'wp-clean-admin')
             ), 500);
