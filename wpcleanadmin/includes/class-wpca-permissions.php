@@ -5,7 +5,7 @@
  * 
  * @package WPCleanAdmin
  * @since 1.0
- * @version 1.7.12
+ * @version 1.7.13
  */
 
 // 如果直接访问此文件，则中止
@@ -117,7 +117,7 @@ class WPCA_Permissions
     const CAP_MANAGE_PERFORMANCE = 'wpca_manage_performance';
     const CAP_VIEW_DATABASE_INFO = 'wpca_view_database_info';
 
-    private $capabilities = array(
+    private static $capabilities = array(
         self::CAP_VIEW_SETTINGS  => '查看设置',
         self::CAP_MANAGE_MENUS   => '管理菜单',
         self::CAP_MANAGE_PERFORMANCE => '管理性能',
@@ -130,7 +130,7 @@ class WPCA_Permissions
      *
      * @var array
      */
-    private $capability_hierarchy = array(
+    private static $capability_hierarchy = array(
         'wpca_manage_all'   => array('wpca_manage_menus', 'wpca_manage_performance', 'wpca_view_database_info', 'wpca_view_settings'),
         'wpca_manage_menus' => array('wpca_view_settings'),
         'wpca_manage_performance' => array('wpca_view_database_info', 'wpca_view_settings'),
@@ -260,9 +260,8 @@ class WPCA_Permissions
             return true;
         }
 
-        // 使用类的私有属性进行权限继承检查
-        $instance = new self();
-        $hierarchy = $instance->get_capability_hierarchy();
+        // 使用类的静态属性进行权限继承检查
+        $hierarchy = self::get_capability_hierarchy();
 
         // 确保hierarchy是有效的数组
         if (is_array($hierarchy)) {
@@ -321,8 +320,7 @@ class WPCA_Permissions
         $capability = sanitize_text_field($_POST['capability']);
 
         // 验证权限名称是否有效
-        $instance = new self();
-        $valid_caps = array_keys($instance->get_capabilities());
+        $valid_caps = array_keys(self::get_capabilities());
         if (!in_array($capability, $valid_caps)) {
             wp_send_json_error(array(
                 'message' => __('Invalid permission name', 'wp-clean-admin')
@@ -330,7 +328,7 @@ class WPCA_Permissions
             return;
         }
 
-        // 妫€鏌ユ潈闄?
+        // 检查权限
         $has_permission = self::current_user_can($capability);
 
         wp_send_json_success(array(
@@ -365,9 +363,9 @@ class WPCA_Permissions
      *
      * @return array 权限列表
      */
-    public function get_capabilities()
+    public static function get_capabilities()
     {
-        return $this->capabilities;
+        return self::$capabilities;
     }
 
     /**
@@ -375,8 +373,8 @@ class WPCA_Permissions
      *
      * @return array 权限继承关系
      */
-    public function get_capability_hierarchy()
+    public static function get_capability_hierarchy()
     {
-        return $this->capability_hierarchy;
+        return self::$capability_hierarchy;
     }
 }

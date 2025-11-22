@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * WP Clean Admin Core Functions
  *
@@ -6,7 +6,7 @@
  * It handles non-settings-page related functionality.
  *
  * @package WP_Clean_Admin
- * @version 1.7.12
+ * @version 1.7.13
  */
 
 // Exit if accessed directly

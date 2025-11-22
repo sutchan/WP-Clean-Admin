@@ -14,7 +14,7 @@ WPCA.tabs = {
         
         // 确保DOM完全就绪
         if (typeof $ === 'undefined') {
-            console.error('jQuery is not loaded for WPCA tabs');
+            console.error(wpca_admin.jquery_not_loaded || 'jQuery is not loaded for WPCA tabs');
             return;
         }
         
@@ -65,7 +65,7 @@ WPCA.tabs = {
             
             // 确保tabId存在
             if (!tabId || !$("#" + tabId).length) {
-                console.warn(`Tab with data-tab="${tabId}" has no corresponding content`);
+                console.warn( (wpca_admin.tab_content_missing || 'Tab with data-tab="%s" has no corresponding content').replace('%s', tabId) );
                 return true; // 继续下一个循环
             }
             

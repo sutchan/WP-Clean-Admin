@@ -6,7 +6,7 @@
  *
  * @package WP_Clean_Admin
  * @since 1.6.0
- * @version 1.7.12
+ * @version 1.7.13
  */
 
 if (!defined('ABSPATH')) {
@@ -18,55 +18,55 @@ if (!defined('ABSPATH')) {
  */
 class WPCA_Performance {
     /**
-     * 绫诲疄渚?     * @var WPCA_Performance
+     * 类实例     * @var WPCA_Performance
      */
     private static $instance = null;
     
     /**
-     * 鎻掍欢璁剧疆
+     * 插件设置
      * @var array
      */
     private $options = array();
 
     /**
-     * 鎬ц兘缁熻鏁版嵁
+     * 性能统计数据
      * @var array
      */
     private $stats = array();
 
     /**
-     * 鏁版嵁搴撴煡璇㈣鏁?     * @var int
+     * 数据库查询计数     * @var int
      */
     private $query_count = 0;
     
     /**
-     * 鍘熷缁熻鏁版嵁
+     * 原始统计数据
      * @var array
      */
     private $raw_stats = array();
 
     /**
      * WPCA_Performance constructor.
-     * 鍒濆鍖栨€ц兘浼樺寲鍔熻兘锛屾敞鍐屽繀瑕佺殑閽╁瓙
+     * 初始化性能优化功能，注册必要的钩子
      */
     private function __construct() {
-        // 鑾峰彇鎻掍欢璁剧疆
+        // 获取插件设置
         if (class_exists('WPCA_Settings') && method_exists('WPCA_Settings', 'get_options')) {
             $this->options = WPCA_Settings::get_options();
         } else {
             $this->options = array();
         }
         
-        // 娉ㄥ唽鎬ц兘鐩稿叧閽╁瓙
+        // 注册性能相关钩子
         if (method_exists($this, 'register_hooks')) {
             $this->register_hooks();
         }
     }
     
     /**
-     * 鑾峰彇绫荤殑鍗曚緥瀹炰緥
+     * 获取类的单例实例
      * 
-     * @return WPCA_Performance|null 绫荤殑鍗曚緥瀹炰緥鎴杗ull
+     * @return WPCA_Performance|null 类的单例实例或null
      */
     public static function get_instance() {
         try {
@@ -85,37 +85,37 @@ class WPCA_Performance {
     }
 
     /**
-     * 娉ㄥ唽鎬ц兘浼樺寲鐩稿叧鐨勯挬瀛?     */
+     * 注册性能优化相关的钩子     */
     private function register_hooks() {
         try {
-            // 鍙湪绠＄悊鍖哄煙鍔犺浇鎬ц兘浼樺寲
+            // 只在管理区域加载性能优化
             $is_admin_area = false;
             if (function_exists('is_admin')) {
                 $is_admin_area = is_admin();
             }
             
             if ($is_admin_area) {
-                // 鏁版嵁搴撲紭鍖栭挬瀛?                if (isset($this->options['enable_db_optimization']) && $this->options['enable_db_optimization']) {
+                // 数据库优化钩子                if (isset($this->options['enable_db_optimization']) && $this->options['enable_db_optimization']) {
                     if (function_exists('add_action')) {
                         add_action('admin_init', array($this, 'optimize_database_on_init'));
                     }
                 }
                 
-                // 鎬ц兘鐩戞帶閽╁瓙
+                // 性能监控钩子
                 if (isset($this->options['enable_performance_monitoring']) && $this->options['enable_performance_monitoring']) {
                     if (function_exists('add_action')) {
-                        // 鍒濆鍖栨€ц兘鐩戞帶
+                        // 初始化性能监控
                         add_action('admin_init', array($this, 'init_performance_monitoring'));
-                        // 淇濆瓨鎬ц兘鏁版嵁
+                        // 保存性能数据
                         add_action('shutdown', array($this, 'save_performance_data'));
                     }
                     
-                    // 鐩戞帶鏁版嵁搴撴煡璇?                    if (function_exists('add_filter')) {
+                    // 监控数据库查询                    if (function_exists('add_filter')) {
                         add_filter('query', array($this, 'track_db_queries'));
                     }
                 }
                 
-                // AJAX閽╁瓙
+                // AJAX钩子
                 if (function_exists('add_action')) {
                     add_action('wp_ajax_wpca_toggle_performance_monitoring', array($this, 'ajax_toggle_performance_monitoring'));
                     add_action('wp_ajax_wpca_get_performance_report', array($this, 'ajax_get_performance_report'));

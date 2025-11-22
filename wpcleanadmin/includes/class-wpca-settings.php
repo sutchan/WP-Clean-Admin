@@ -6,7 +6,7 @@
  *
  * @package WP_Clean_Admin
  * @since 1.0.0
- * @version 1.7.12
+ * @version 1.7.13
  */
 
 // defined是PHP语言结构，不需要function_exists检查if (! defined( 'ABSPATH' ) ) {
@@ -301,7 +301,10 @@ class WPCA_Settings {
                         'error_insufficient_permissions' => __('You do not have permission to perform this action', 'wp-clean-admin'),
                         'error_invalid_parameters' => __('Invalid request parameters', 'wp-clean-admin'),
                         'error_not_logged_in' => __('Please log in first', 'wp-clean-admin'),
-                        'error_server_error' => __('Internal server error', 'wp-clean-admin')
+                        'error_server_error' => __('Internal server error', 'wp-clean-admin'),
+                        'jquery_not_loaded' => __('jQuery is not loaded for WPCA tabs', 'wp-clean-admin'),
+                        'tab_content_missing' => __('Tab with data-tab="%s" has no corresponding content', 'wp-clean-admin'),
+                        'media_unavailable' => __('WordPress media uploader not available.', 'wp-clean-admin')
                     )
                 ));
                 

@@ -1,5 +1,12 @@
 # WP Clean Admin Changelog
 
+## 1.7.13 - 2025-11-22
+
+### Fixed
+- 修复了 `class-wpca-performance-settings.php` 中 `register_settings()` 方法缺失 `sanitize_callback` 的问题，为所有设置项添加了显式的 `sanitize_callback`。
+- 实现了 `class-wpca-performance-settings.php` 中自定义的 `sanitize_cleanup_items` 回调函数，增强了输入验证。
+- 同步了 `wp-clean-admin.php`、`wpcleanadmin/wp-clean-admin.php`、`wpcleanadmin/includes/class-wpca-performance-settings.php`、`wpcleanadmin/includes/class-wpca-database-settings.php`、`wpcleanadmin/includes/class-wpca-settings.php`、`wpcleanadmin/includes/class-wpca-login.php` 和 `wpcleanadmin/includes/wpca-core-functions.php` 的版本号到 `1.7.13`。
+
 ## 1.7.12 - 2024-06-12
 
 ### Fixed

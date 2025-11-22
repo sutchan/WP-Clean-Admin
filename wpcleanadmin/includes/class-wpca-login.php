@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * WordPress Clean Admin - Login Manager
  * 
@@ -6,7 +6,7 @@
  * 
  * @package WPCleanAdmin
  * @since 1.0.0
- * @version 1.7.12
+ * @version 1.7.13
  */
 
 if (!defined('ABSPATH')) {
