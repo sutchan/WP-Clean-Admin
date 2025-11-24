@@ -6,6 +6,8 @@
  * @package WPCleanAdmin
  * @since 1.0
  * @version 1.7.13
+ * @file wpcleanadmin/includes/class-wpca-permissions.php
+ * @updated 2025-06-18
  */
 
 // 如果直接访问此文件，则中止
@@ -310,14 +312,15 @@ class WPCA_Permissions
         }
 
         // 检查参数
-        if (!isset($_POST['capability']) || empty($_POST['capability'])) {
+       315: if (!isset($_POST['capability']) || !is_string($_POST['capability']) || empty(trim($_POST['capability']))) {
             wp_send_json_error(array(
                 'message' => __('Missing permission parameter', 'wp-clean-admin')
             ), 400);
             return;
         }
 
-        $capability = sanitize_text_field($_POST['capability']);
+       322: // 安全处理权限参数
+323: $capability = sanitize_text_field($_POST['capability']);
 
         // 验证权限名称是否有效
         $valid_caps = array_keys(self::get_capabilities());

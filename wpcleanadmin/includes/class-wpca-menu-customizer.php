@@ -5,7 +5,9 @@
  * @package WPCleanAdmin
  * @subpackage MenuCustomizer
  * @since 1.0.0
- * @version 1.7.12
+ * @version 1.7.13
+ * @file wpcleanadmin/includes/class-wpca-menu-customizer.php
+ * @updated 2025-06-18
  */
 
 defined('ABSPATH') || exit;
@@ -134,15 +136,18 @@ class WPCA_Menu_Customizer {
      */
     private function current_user_has_menu_permissions() {
         // Directly check user permissions to avoid recursive calls
-        $user = wp_get_current_user();
+        $user = null;
+        if (function_exists('wp_get_current_user')) {
+            $user = wp_get_current_user();
+        }
         
         // Administrators always have permissions
-        if (current_user_can('manage_options')) {
+        if (function_exists('current_user_can') && current_user_can('manage_options')) {
             return true;
         }
         
         // Check custom permissions
-        if (isset($user->allcaps['wpca_customize_admin']) && $user->allcaps['wpca_customize_admin']) {
+        if ($user && is_object($user) && isset($user->allcaps) && is_array($user->allcaps) && isset($user->allcaps['wpca_customize_admin']) && $user->allcaps['wpca_customize_admin']) {
             return true;
         }
         
@@ -164,7 +169,7 @@ class WPCA_Menu_Customizer {
             if (!defined('WPCA_SETTINGS_KEY')) {
                 define('WPCA_SETTINGS_KEY', 'wpca_settings');
             }
-            $this->options_cache = get_option(WPCA_SETTINGS_KEY, array());
+            $this->options_cache = function_exists('get_option') ? get_option(WPCA_SETTINGS_KEY, array()) : array();
         }
         return $this->options_cache;
     }
@@ -176,7 +181,7 @@ class WPCA_Menu_Customizer {
      */
     private function reset_plugin_options() {
         $this->options_cache = array();
-        return update_option('wpca_settings', $this->options_cache);
+        return function_exists('update_option') ? update_option('wpca_settings', $this->options_cache) : false;
     }
     
     /**
@@ -446,12 +451,17 @@ class WPCA_Menu_Customizer {
      * @param array $context Error context
      */
     public function log_customization_error($code, $message, $context = array()) {
-        // Log to WordPress error log
-        error_log(sprintf('[WPCA Menu Customizer] %s: %s', $code, $message));
-        
-        // Only log to debug.log in debug mode
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log(print_r($context, true));
+        if (class_exists('WPCA_Helpers')) {
+            // 添加错误代码到上下文
+            $context['error_code'] = $code;
+            
+            // 记录详细错误日志
+            WPCA_Helpers::log(
+                $message,
+                $context,
+                'error',
+                (defined('WP_DEBUG') && WP_DEBUG)
+            );
         }
     }
     
@@ -471,13 +481,17 @@ class WPCA_Menu_Customizer {
             $context['trace'] = $error->getTraceAsString();
         }
         
-        // Only log errors in debug mode
-        if (defined('WP_DEBUG') && WP_DEBUG && function_exists('error_log')) {
-            error_log('WP Clean Admin - Menu Customizer Error (' . $code . '): ' . $message);
-            
-            if (defined('WP_DEBUG_LOG') && WP_DEBUG_LOG && isset($context['trace'])) {
-                error_log('WP Clean Admin - Stack Trace: ' . $context['trace']);
-            }
+        // 添加错误代码到上下文
+        $context['error_code'] = $code;
+        
+        // 使用新的日志记录方法
+        if (class_exists('WPCA_Helpers')) {
+            WPCA_Helpers::log(
+                $message,
+                $context,
+                'error',
+                (defined('WP_DEBUG') && WP_DEBUG)
+            );
         }
         
         // Also trigger the error action hook for external handling

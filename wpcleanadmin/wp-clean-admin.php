@@ -10,6 +10,10 @@
  * License: GPLv2 or later
  * Text Domain: wp-clean-admin
  * Domain Path: /languages
+ * 
+ * @file wpcleanadmin/wp-clean-admin.php
+ * @version 1.7.13
+ * @updated 2025-06-18
  */
 
 // Exit if accessed directly
@@ -76,7 +80,9 @@ if (! function_exists('trailingslashit')) {
 if (! function_exists('site_url')) {
     function site_url($path = '', $scheme = null)
     {
-        $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost';
+       83: // 安全处理主机名参数
+84: $host = isset($_SERVER['HTTP_HOST']) && is_string($_SERVER['HTTP_HOST']) ? 
+85:     (function_exists('sanitize_text_field') ? sanitize_text_field($_SERVER['HTTP_HOST']) : filter_var($_SERVER['HTTP_HOST'], FILTER_SANITIZE_STRING)) : 'localhost';
         $url = 'http://' . $host;
         if ($path) {
             $url = trailingslashit($url) . (function_exists('ltrim') ? ltrim($path, '/') : $path);
@@ -89,6 +95,11 @@ if (! function_exists('site_url')) {
 // file_exists是PHP内置函数，可以安全使用
 if (defined('WPCA_PLUGIN_DIR') && file_exists(WPCA_PLUGIN_DIR . 'includes/wpca-core-functions.php')) {
     require_once WPCA_PLUGIN_DIR . 'includes/wpca-core-functions.php';
+}
+
+// Include helper class for logging functionality
+if (defined('WPCA_PLUGIN_DIR') && file_exists(WPCA_PLUGIN_DIR . 'includes/class-wpca-helpers.php')) {
+    require_once WPCA_PLUGIN_DIR . 'includes/class-wpca-helpers.php';
 }
 
 // Include the autoloader

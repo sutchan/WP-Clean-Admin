@@ -1,10 +1,12 @@
-﻿<?php
+<?php
 /**
  * Resources Manager Class for WPCleanAdmin
  * 
  * @package WPCleanAdmin
  * @since 1.0
- * @version 1.7.12
+ * @version 1.7.13
+ * @file wpcleanadmin/includes/class-wpca-resources.php
+ * @updated 2025-06-18
  */
 class WPCA_Resources {
     /**
@@ -222,7 +224,8 @@ class WPCA_Resources {
             return;
         }
         
-        // 鑾峰彇褰撳墠椤甸潰閽╁瓙
+        // 获取当前页面钩子
+        $current_page = function_exists('get_current_screen') ? get_current_screen() : null;
         $current_hook = isset($GLOBALS['hook_suffix']) ? $GLOBALS['hook_suffix'] : '';
         
         // 为当前页面创建合并资源的缓存键
@@ -360,7 +363,7 @@ class WPCA_Resources {
         }
         
         // 检查nonce参数是否存在
-        if (!isset($_POST['security']) || empty($_POST['security'])) {
+       365: if (!isset($_POST['security']) || !is_string($_POST['security']) || empty(trim($_POST['security']))) {
             wp_send_json_error(array('message' => __('Security check failed: nonce missing', 'wp-clean-admin')));
         }
         
@@ -375,13 +378,25 @@ class WPCA_Resources {
         }
         
         // 获取并严格验证请求参数
-        $resource_type = isset($_POST['resource_type']) ? sanitize_text_field($_POST['resource_type']) : '';
-        $resource_handle = isset($_POST['resource_handle']) ? sanitize_key($_POST['resource_handle']) : '';
+       380: // 安全处理资源类型参数
+381: $resource_type = isset($_POST['resource_type']) && is_string($_POST['resource_type']) ? sanitize_text_field($_POST['resource_type']) : '';
+       382: // 安全处理资源句柄参数
+383: $resource_handle = isset($_POST['resource_handle']) && is_string($_POST['resource_handle']) ? sanitize_key($_POST['resource_handle']) : '';
         
         // 严格验证参数
         if (!in_array($resource_type, array('css', 'js')) || empty($resource_handle) || !preg_match('/^[a-zA-Z0-9_-]+$/', $resource_handle)) {
             $error_msg = __('Invalid resource parameters', 'wp-clean-admin');
-            if (function_exists('error_log')) {
+            if (class_exists('WPCA_Helpers')) {
+                WPCA_Helpers::log(
+                    $error_msg,
+                    array(
+                        'resource_type' => $resource_type,
+                        'resource_handle' => $resource_handle
+                    ),
+                    'error',
+                    true
+                );
+            } else if (function_exists('error_log')) {
                 error_log('WPCA AJAX: ' . $error_msg . ' - type: ' . $resource_type . ', handle: ' . $resource_handle);
             }
             wp_send_json_error(array('message' => $error_msg));
@@ -399,7 +414,9 @@ class WPCA_Resources {
             wp_send_json_success($test_results);
         } catch (Exception $e) {
             $error_msg = $e->getMessage();
-            if (function_exists('error_log')) {
+            if (class_exists('WPCA_Helpers')) {
+                WPCA_Helpers::log($error_msg, array(), 'error', true);
+            } else if (function_exists('error_log')) {
                 error_log('WPCA AJAX Error: ' . $error_msg);
             }
             wp_send_json_error(array('message' => $error_msg));
@@ -429,7 +446,7 @@ class WPCA_Resources {
         }
         
         // 检查nonce参数是否存在
-        if (!isset($_POST['security']) || empty($_POST['security'])) {
+       434: if (!isset($_POST['security']) || !is_string($_POST['security']) || empty(trim($_POST['security']))) {
             wp_send_json_error(array('message' => __('Security check failed: nonce missing', 'wp-clean-admin')));
         }
         
@@ -444,12 +461,22 @@ class WPCA_Resources {
         }
         
         // 获取并严格验证请求参数
-        $page_hook = isset($_POST['page_hook']) ? sanitize_key($_POST['page_hook']) : '';
+       449: // 安全处理页面钩子参数
+450: $page_hook = isset($_POST['page_hook']) && is_string($_POST['page_hook']) ? sanitize_key($_POST['page_hook']) : '';
         
         // 严格验证参数
         if (empty($page_hook) || !preg_match('/^[a-zA-Z0-9_-]+$/', $page_hook)) {
             $error_msg = __('Invalid page hook', 'wp-clean-admin');
-            if (function_exists('error_log')) {
+            if (class_exists('WPCA_Helpers')) {
+                WPCA_Helpers::log(
+                    $error_msg,
+                    array(
+                        'page_hook' => $page_hook
+                    ),
+                    'error',
+                    true
+                );
+            } else if (function_exists('error_log')) {
                 error_log('WPCA AJAX: ' . $error_msg . ' - hook: ' . $page_hook);
             }
             wp_send_json_error(array('message' => $error_msg));
@@ -485,7 +512,9 @@ class WPCA_Resources {
             ));
         } catch (Exception $e) {
             $error_msg = $e->getMessage();
-            if (function_exists('error_log')) {
+            if (class_exists('WPCA_Helpers')) {
+                WPCA_Helpers::log($error_msg, array(), 'error', true);
+            } else if (function_exists('error_log')) {
                 error_log('WPCA AJAX Error: ' . $error_msg);
             }
             wp_send_json_error(array('message' => $error_msg));

@@ -8,6 +8,8 @@
  * @package WP_Clean_Admin
  * @since 1.3.0
  * @version 1.7.13
+ * @file wpcleanadmin/includes/class-wpca-performance-settings.php
+ * @updated 2025-06-18
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -95,10 +97,12 @@ class WPCA_Performance_Settings {
      * Hook into WordPress.
      */
     public function hooks() {
-        add_action( 'admin_menu', array( $this, 'register_menu_page' ) );
-        add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-        add_action( 'admin_init', array( $this, 'register_settings' ) );
-        add_action( 'wp_ajax_wpca_get_table_info', array( $this, 'ajax_get_table_info' ) );
+        if ( function_exists( 'add_action' ) ) {
+            add_action( 'admin_menu', array( $this, 'register_menu_page' ) );
+            add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+            add_action( 'admin_init', array( $this, 'register_settings' ) );
+            add_action( 'wp_ajax_wpca_get_table_info', array( $this, 'ajax_get_table_info' ) );
+        }
     }
 
     /**
@@ -273,25 +277,27 @@ class WPCA_Performance_Settings {
         $sanitized_input = array();
         $available_cleanup_items = $this->database ? $this->database->get_available_cleanup_items() : array();
 
-        if ( ! is_array( $input ) || empty( $input ) ) {
-            return $sanitized_input;
-        }
+        // Process all valid cleanup items
+        foreach ( $available_cleanup_items as $key => $item ) {
+            if ( isset( $input[$key] ) ) {
+                $sanitized_item = array(
+                    'enabled' => isset( $input[$key]['enabled'] ) ? (bool) $input[$key]['enabled'] : false,
+                );
 
-        foreach ( $input as $key => $item ) {
-            // Ensure the key is a valid cleanup item
-            if ( ! array_key_exists( $key, $available_cleanup_items ) ) {
-                continue;
-            }
-
-            $sanitized_item = array(
-                'checked' => isset( $item['checked'] ) ? (bool) $item['checked'] : false,
-            );
-
-            // If the item requires days, sanitize it
-            if ( isset( $available_cleanup_items[ $key ] ) && $available_cleanup_items[ $key ]['requires_days'] ) {
-                $sanitized_item['days'] = isset( $item['days'] ) ? absint( $item['days'] ) : 0;
-                if ( $sanitized_item['days'] < 1 ) {
-                    $sanitized_item['days'] = 1; // Ensure a minimum of 1 day
+                // If the item requires days, sanitize it
+                if ( $item['requires_days'] ) {
+                    $sanitized_item['days'] = isset( $input[$key]['days'] ) ? absint( $input[$key]['days'] ) : $item['days'];
+                    if ( $sanitized_item['days'] < 1 ) {
+                        $sanitized_item['days'] = $item['days']; // Use default if invalid
+                    }
+                }
+            } else {
+                // Set default values for items not in input
+                $sanitized_item = array(
+                    'enabled' => false,
+                );
+                if ( $item['requires_days'] ) {
+                    $sanitized_item['days'] = $item['days'];
                 }
             }
             $sanitized_input[ $key ] = $sanitized_item;
@@ -312,53 +318,59 @@ class WPCA_Performance_Settings {
         }
 
         // Enqueue performance module scripts
-        wp_enqueue_script(
-            'wpca-performance',
-            WPCA_PLUGIN_URL . 'assets/js/wpca-performance.js',
-            array( 'jquery' ),
-            WPCA_VERSION,
-            true
-        );
+        if (function_exists('wp_enqueue_script') && defined('WPCA_PLUGIN_URL') && defined('WPCA_VERSION')) {
+            wp_enqueue_script(
+                'wpca-performance',
+                WPCA_PLUGIN_URL . 'assets/js/wpca-performance.js',
+                array( 'jquery' ),
+                WPCA_VERSION,
+                true
+            );
+        }
 
         // Enqueue performance module styles
-        wp_enqueue_style(
-            'wpca-performance',
-            WPCA_PLUGIN_URL . 'assets/css/wpca-performance.css',
-            array(),
-            WPCA_VERSION
-        );
+        if (function_exists('wp_enqueue_style') && defined('WPCA_PLUGIN_URL') && defined('WPCA_VERSION')) {
+            wp_enqueue_style(
+                'wpca-performance',
+                WPCA_PLUGIN_URL . 'assets/css/wpca-performance.css',
+                array(),
+                WPCA_VERSION
+            );
+        }
 
         // Localize script with necessary variables
-        wp_localize_script( 'wpca-performance', 'WPCA', array(
-            'i18n' => array(
-                'processing'                => esc_html__( 'Processing...', 'wp-clean-admin' ),
-                'dismiss'                   => esc_html__( 'Dismiss', 'wp-clean-admin' ),
-                'selectTablesFirst'         => esc_html__( 'Please select at least one table to optimize.', 'wp-clean-admin' ),
-                'confirmOptimizeTables'     => esc_html__( 'Are you sure you want to optimize the selected tables? This may take a few moments.', 'wp-clean-admin' ),
-                'optimizeSuccess'           => esc_html__( 'Successfully optimized %d of %d tables.', 'wp-clean-admin' ),
-                'optimizeFailed'            => esc_html__( 'Table optimization failed.', 'wp-clean-admin' ),
-                'selectCleanupItemsFirst'   => esc_html__( 'Please select at least one cleanup item.', 'wp-clean-admin' ),
-                'confirmCleanup'            => esc_html__( 'Are you sure you want to run the selected cleanup tasks? This cannot be undone.', 'wp-clean-admin' ),
-                'cleanupSuccess'            => esc_html__( 'Successfully removed %d items from the database.', 'wp-clean-admin' ),
-                'cleanupFailed'             => esc_html__( 'Database cleanup failed.', 'wp-clean-admin' ),
-                'confirmTestResourceRemoval'=> esc_html__( 'Are you sure you want to test removing this resource? This will not affect your live site.', 'wp-clean-admin' ),
-                'testResourceFailed'        => esc_html__( 'Resource removal test failed.', 'wp-clean-admin' ),
-                'generateCssFailed'         => esc_html__( 'Critical CSS generation failed.', 'wp-clean-admin' ),
-                'generated'                 => esc_html__( 'Generated', 'wp-clean-admin' ),
-                'startMonitoring'           => esc_html__( 'Start Monitoring', 'wp-clean-admin' ),
-                'stopMonitoring'            => esc_html__( 'Stop Monitoring', 'wp-clean-admin' ),
-                'monitoringStarted'         => esc_html__( 'Performance monitoring has been started.', 'wp-clean-admin' ),
-                'monitoringStopped'         => esc_html__( 'Performance monitoring has been stopped.', 'wp-clean-admin' ),
-                'toggleMonitoringFailed'    => esc_html__( 'Failed to toggle monitoring status.', 'wp-clean-admin' ),
-                'performanceReport'         => esc_html__( 'Performance Report', 'wp-clean-admin' ),
-                'reportFailed'              => esc_html__( 'Failed to generate performance report.', 'wp-clean-admin' ),
-                'confirmClearData'          => esc_html__( 'Are you sure you want to clear all performance monitoring data? This cannot be undone.', 'wp-clean-admin' ),
-                'dataCleared'               => esc_html__( 'Performance data has been cleared.', 'wp-clean-admin' ),
-                'clearDataFailed'           => esc_html__( 'Failed to clear performance data.', 'wp-clean-admin' ),
-                'cleanupSummary'            => esc_html__( 'Selected %d of %d cleanup items.', 'wp-clean-admin' ),
-            ),
-            'ajaxurl' => admin_url( 'admin-ajax.php' ),
-        ));
+        if (function_exists('wp_localize_script') && function_exists('admin_url')) {
+            wp_localize_script( 'wpca-performance', 'WPCA', array(
+                'i18n' => array(
+                    'processing'                => function_exists('esc_html__') ? esc_html__( 'Processing...', 'wp-clean-admin' ) : 'Processing...',
+                    'dismiss'                   => function_exists('esc_html__') ? esc_html__( 'Dismiss', 'wp-clean-admin' ) : 'Dismiss',
+                    'selectTablesFirst'         => function_exists('esc_html__') ? esc_html__( 'Please select at least one table to optimize.', 'wp-clean-admin' ) : 'Please select at least one table to optimize.',
+                    'confirmOptimizeTables'     => function_exists('esc_html__') ? esc_html__( 'Are you sure you want to optimize the selected tables? This may take a few moments.', 'wp-clean-admin' ) : 'Are you sure you want to optimize the selected tables? This may take a few moments.',
+                    'optimizeSuccess'           => function_exists('esc_html__') ? esc_html__( 'Successfully optimized %d of %d tables.', 'wp-clean-admin' ) : 'Successfully optimized %d of %d tables.',
+                    'optimizeFailed'            => function_exists('esc_html__') ? esc_html__( 'Table optimization failed.', 'wp-clean-admin' ) : 'Table optimization failed.',
+                    'selectCleanupItemsFirst'   => function_exists('esc_html__') ? esc_html__( 'Please select at least one cleanup item.', 'wp-clean-admin' ) : 'Please select at least one cleanup item.',
+                    'confirmCleanup'            => function_exists('esc_html__') ? esc_html__( 'Are you sure you want to run the selected cleanup tasks? This cannot be undone.', 'wp-clean-admin' ) : 'Are you sure you want to run the selected cleanup tasks? This cannot be undone.',
+                    'cleanupSuccess'            => function_exists('esc_html__') ? esc_html__( 'Successfully removed %d items from the database.', 'wp-clean-admin' ) : 'Successfully removed %d items from the database.',
+                    'cleanupFailed'             => function_exists('esc_html__') ? esc_html__( 'Database cleanup failed.', 'wp-clean-admin' ) : 'Database cleanup failed.',
+                    'confirmTestResourceRemoval'=> function_exists('esc_html__') ? esc_html__( 'Are you sure you want to test removing this resource? This will not affect your live site.', 'wp-clean-admin' ) : 'Are you sure you want to test removing this resource? This will not affect your live site.',
+                    'testResourceFailed'        => function_exists('esc_html__') ? esc_html__( 'Resource removal test failed.', 'wp-clean-admin' ) : 'Resource removal test failed.',
+                    'generateCssFailed'         => function_exists('esc_html__') ? esc_html__( 'Critical CSS generation failed.', 'wp-clean-admin' ) : 'Critical CSS generation failed.',
+                    'generated'                 => function_exists('esc_html__') ? esc_html__( 'Generated', 'wp-clean-admin' ) : 'Generated',
+                    'startMonitoring'           => function_exists('esc_html__') ? esc_html__( 'Start Monitoring', 'wp-clean-admin' ) : 'Start Monitoring',
+                    'stopMonitoring'            => function_exists('esc_html__') ? esc_html__( 'Stop Monitoring', 'wp-clean-admin' ) : 'Stop Monitoring',
+                    'monitoringStarted'         => function_exists('esc_html__') ? esc_html__( 'Performance monitoring has been started.', 'wp-clean-admin' ) : 'Performance monitoring has been started.',
+                    'monitoringStopped'         => function_exists('esc_html__') ? esc_html__( 'Performance monitoring has been stopped.', 'wp-clean-admin' ) : 'Performance monitoring has been stopped.',
+                    'toggleMonitoringFailed'    => function_exists('esc_html__') ? esc_html__( 'Failed to toggle monitoring status.', 'wp-clean-admin' ) : 'Failed to toggle monitoring status.',
+                    'performanceReport'         => function_exists('esc_html__') ? esc_html__( 'Performance Report', 'wp-clean-admin' ) : 'Performance Report',
+                    'reportFailed'              => function_exists('esc_html__') ? esc_html__( 'Failed to generate performance report.', 'wp-clean-admin' ) : 'Failed to generate performance report.',
+                    'confirmClearData'          => function_exists('esc_html__') ? esc_html__( 'Are you sure you want to clear all performance monitoring data? This cannot be undone.', 'wp-clean-admin' ) : 'Are you sure you want to clear all performance monitoring data? This cannot be undone.',
+                    'dataCleared'               => function_exists('esc_html__') ? esc_html__( 'Performance data has been cleared.', 'wp-clean-admin' ) : 'Performance data has been cleared.',
+                    'clearDataFailed'           => function_exists('esc_html__') ? esc_html__( 'Failed to clear performance data.', 'wp-clean-admin' ) : 'Failed to clear performance data.',
+                    'cleanupSummary'            => function_exists('esc_html__') ? esc_html__( 'Selected %d of %d cleanup items.', 'wp-clean-admin' ) : 'Selected %d of %d cleanup items.',
+                ),
+                'ajaxurl' => admin_url( 'admin-ajax.php' ),
+            ));
+        }
     }
 
     /**
@@ -366,7 +378,8 @@ class WPCA_Performance_Settings {
      */
     public function render_settings_page() {
         // Get current tab
-        $this->current_tab = isset( $_GET['tab'] ) && array_key_exists( $_GET['tab'], $this->tabs ) ? $_GET['tab'] : 'database';
+       381: $this->current_tab = isset( $_GET['tab'] ) && is_string( $_GET['tab'] ) && array_key_exists( $_GET['tab'], $this->tabs ) ? 
+382:     ( function_exists( 'sanitize_text_field' ) ? sanitize_text_field( $_GET['tab'] ) : filter_var( $_GET['tab'], FILTER_SANITIZE_STRING ) ) : 'database';
 
         ?>
         <div class="wrap">
@@ -398,13 +411,13 @@ class WPCA_Performance_Settings {
         $cleanup_items = $this->database ? $this->database->get_available_cleanup_items() : array();
         $optimization_status = $this->database ? $this->database->get_optimization_status() : array();
         
-        $auto_optimize_enabled = get_option( 'wpca_auto_optimize_tables', false );
-        $optimize_interval = get_option( 'wpca_optimize_interval', 7 );
-        $cleanup_interval = get_option( 'wpca_cleanup_interval', 30 );
+        $auto_optimize_enabled = function_exists('get_option') ? get_option( 'wpca_auto_optimize_tables', false ) : false;
+        $optimize_interval = function_exists('get_option') ? get_option( 'wpca_optimize_interval', 7 ) : 7;
+        $cleanup_interval = function_exists('get_option') ? get_option( 'wpca_cleanup_interval', 30 ) : 30;
         
         // Security nonce
-        $optimize_nonce = wp_create_nonce( 'wpca-optimize-tables' );
-        $cleanup_nonce = wp_create_nonce( 'wpca-cleanup-database' );
+        $optimize_nonce = function_exists( 'wp_create_nonce' ) ? wp_create_nonce( 'wpca-optimize-tables' ) : '';
+        $cleanup_nonce = function_exists( 'wp_create_nonce' ) ? wp_create_nonce( 'wpca-cleanup-database' ) : '';
         
         ?>
         <div class="wpca-performance-section">
@@ -476,13 +489,15 @@ class WPCA_Performance_Settings {
             <p><?php esc_html_e( 'Clean up unnecessary data from your database to improve performance and reduce database size. Be careful as this will permanently delete data.', 'wp-clean-admin' ); ?></p>
             
             <div class="wpca-cleanup-list">
-                <?php foreach ( $cleanup_items as $key => $item ) : ?>
+                <?php 
+                $saved_cleanup_items = function_exists('get_option') ? get_option( 'wpca_cleanup_items', array() ) : array();
+                foreach ( $cleanup_items as $key => $item ) : ?>
                     <div class="wpca-cleanup-item-row">
                         <label>
-                            <input type="checkbox" class="wpca-cleanup-item" value="<?php echo esc_attr( $key ); ?>" />
+                            <input type="checkbox" name="wpca_cleanup_items[<?php echo esc_attr( $key ); ?>][enabled]" value="1" <?php checked( isset( $saved_cleanup_items[$key]['enabled'] ) && $saved_cleanup_items[$key]['enabled'] ); ?> />
                             <?php echo esc_html( $item['title'] ); ?>
                             <?php if ( $item['requires_days'] ) : ?>
-                                <input type="number" min="1" max="365" value="30" class="wpca-cleanup-days" id="wpca-<?php echo esc_attr( $key ); ?>-days" />
+                                <input type="number" min="1" max="365" value="<?php echo esc_attr( isset( $saved_cleanup_items[$key]['days'] ) ? $saved_cleanup_items[$key]['days'] : $item['default_days'] ); ?>" class="wpca-cleanup-days" name="wpca_cleanup_items[<?php echo esc_attr( $key ); ?>][days]" id="wpca-<?php echo esc_attr( $key ); ?>-days" />
                                 <?php esc_html_e( 'days old or older', 'wp-clean-admin' ); ?>
                             <?php endif; ?>
                         </label>
@@ -520,21 +535,25 @@ class WPCA_Performance_Settings {
         }
 
         // Enqueue performance module scripts
-        wp_enqueue_script(
-            'wpca-performance',
-            WPCA_PLUGIN_URL . 'assets/js/wpca-performance.js',
-            array( 'jquery' ),
-            WPCA_VERSION,
-            true
-        );
+        if (function_exists('wp_enqueue_script') && defined('WPCA_PLUGIN_URL') && defined('WPCA_VERSION')) {
+            wp_enqueue_script(
+                'wpca-performance',
+                WPCA_PLUGIN_URL . 'assets/js/wpca-performance.js',
+                array( 'jquery' ),
+                WPCA_VERSION,
+                true
+            );
+        }
 
         // Enqueue performance module styles
-        wp_enqueue_style(
-            'wpca-performance',
-            WPCA_PLUGIN_URL . 'assets/css/wpca-performance.css',
-            array(),
-            WPCA_VERSION
-        );
+        if (function_exists('wp_enqueue_style') && defined('WPCA_PLUGIN_URL') && defined('WPCA_VERSION')) {
+            wp_enqueue_style(
+                'wpca-performance',
+                WPCA_PLUGIN_URL . 'assets/css/wpca-performance.css',
+                array(),
+                WPCA_VERSION
+            );
+        }
 
         // Localize script with necessary variables
         wp_localize_script( 'wpca-performance', 'WPCA', array(
@@ -574,7 +593,8 @@ class WPCA_Performance_Settings {
      */
     public function render_settings_page() {
         // Get current tab
-        $this->current_tab = isset( $_GET['tab'] ) && array_key_exists( $_GET['tab'], $this->tabs ) ? $_GET['tab'] : 'database';
+       595: $this->current_tab = isset( $_GET['tab'] ) && is_string( $_GET['tab'] ) && array_key_exists( $_GET['tab'], $this->tabs ) ? 
+596:     ( function_exists( 'sanitize_text_field' ) ? sanitize_text_field( $_GET['tab'] ) : filter_var( $_GET['tab'], FILTER_SANITIZE_STRING ) ) : 'database';
 
         ?>
         <div class="wrap">
@@ -606,14 +626,14 @@ class WPCA_Performance_Settings {
         $css_resources = $this->resources ? $this->resources->get_loaded_styles() : array();
         $js_resources = $this->resources ? $this->resources->get_loaded_scripts() : array();
         
-        $remove_unused_css = get_option( 'wpca_remove_unused_css', false );
-        $delay_non_critical_js = get_option( 'wpca_delay_non_critical_js', false );
-        $enable_critical_css = get_option( 'wpca_enable_critical_css', false );
-        $combine_css = get_option( 'wpca_combine_css', false );
-        $combine_js = get_option( 'wpca_combine_js', false );
+        $remove_unused_css = function_exists('get_option') ? get_option( 'wpca_remove_unused_css', false ) : false;
+        $delay_non_critical_js = function_exists('get_option') ? get_option( 'wpca_delay_non_critical_js', false ) : false;
+        $enable_critical_css = function_exists('get_option') ? get_option( 'wpca_enable_critical_css', false ) : false;
+        $combine_css = function_exists('get_option') ? get_option( 'wpca_combine_css', false ) : false;
+        $combine_js = function_exists('get_option') ? get_option( 'wpca_combine_js', false ) : false;
         
-        $test_resource_nonce = wp_create_nonce( 'wpca-test-resource-removal' );
-        $generate_css_nonce = wp_create_nonce( 'wpca-generate-critical-css' );
+        $test_resource_nonce = function_exists( 'wp_create_nonce' ) ? wp_create_nonce( 'wpca-test-resource-removal' ) : '';
+        $generate_css_nonce = function_exists( 'wp_create_nonce' ) ? wp_create_nonce( 'wpca-generate-critical-css' ) : '';
         
         ?>
         <div class="wpca-performance-section">
@@ -769,12 +789,12 @@ class WPCA_Performance_Settings {
      * Render the performance monitoring tab.
      */
     public function render_monitoring_tab() {
-        $monitoring_enabled = get_option( 'wpca_monitoring_enabled', false );
+        $monitoring_enabled = function_exists('get_option') ? get_option( 'wpca_monitoring_enabled', false ) : false;
         $performance_stats = $this->performance ? $this->performance->get_performance_stats() : array();
         
-        $toggle_monitoring_nonce = wp_create_nonce( 'wpca-toggle-monitoring' );
-        $view_report_nonce = wp_create_nonce( 'wpca-get-performance-report' );
-        $clear_data_nonce = wp_create_nonce( 'wpca-clear-performance-data' );
+        $toggle_monitoring_nonce = function_exists( 'wp_create_nonce' ) ? wp_create_nonce( 'wpca-toggle-monitoring' ) : '';
+        $view_report_nonce = function_exists( 'wp_create_nonce' ) ? wp_create_nonce( 'wpca-get-performance-report' ) : '';
+        $clear_data_nonce = function_exists( 'wp_create_nonce' ) ? wp_create_nonce( 'wpca-clear-performance-data' ) : '';
         
         ?>
         <div class="wpca-performance-section">
@@ -843,9 +863,9 @@ class WPCA_Performance_Settings {
      * Render the settings tab.
      */
     public function render_settings_tab() {
-        $monitoring_enabled = get_option( 'wpca_monitoring_enabled', false );
-        $sample_rate = get_option( 'wpca_monitoring_sample_rate', 10 );
-        $data_retention = get_option( 'wpca_monitoring_data_retention', 7 );
+        $monitoring_enabled = function_exists('get_option') ? get_option( 'wpca_monitoring_enabled', false ) : false;
+        $sample_rate = function_exists('get_option') ? get_option( 'wpca_monitoring_sample_rate', 10 ) : 10;
+        $data_retention = function_exists('get_option') ? get_option( 'wpca_monitoring_data_retention', 7 ) : 7;
         
         ?>
         <div class="wpca-performance-section">

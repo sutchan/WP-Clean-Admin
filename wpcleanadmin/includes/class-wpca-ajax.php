@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * WPCA_Ajax Class
  * 
@@ -7,7 +7,9 @@
  * @package    WPCleanAdmin
  * @subpackage Includes
  * @author     Sut
- * @version    1.7.12
+ * @file       wpcleanadmin/includes/class-wpca-ajax.php
+ * @version    1.7.13
+ * @updated    2025-06-18
  * @license    GPL-2.0+
  */
 
@@ -20,6 +22,56 @@ if ( ! defined( 'ABSPATH' ) ) {
  * AJAX handler class for WP Clean Admin
  */
 class WPCA_Ajax {
+    
+    /**
+     * Validate image file type
+     * 
+     * Checks if the provided URL points to an allowed image file type
+     * for security reasons.
+     * 
+     * @param string $url The URL to validate
+     * @return bool True if valid, false otherwise
+     */
+    private function validate_image_file_type( $url ) {
+        // Allowed image file extensions
+        $allowed_extensions = array( 'jpg', 'jpeg', 'png', 'gif', 'webp' );
+        
+        // Get file extension from URL
+        $file_parts = explode( '.', $url );
+        if ( count( $file_parts ) < 2 ) {
+            return false;
+        }
+        
+        $extension = strtolower( end( $file_parts ) );
+        
+        // Basic extension check
+        if ( ! in_array( $extension, $allowed_extensions ) ) {
+            return false;
+        }
+        
+        // Advanced check: get MIME type if possible (for local files)
+        if ( strpos( $url, site_url() ) === 0 ) {
+            // For local files, try to get the actual file path and check MIME type
+            $relative_path = parse_url( $url, PHP_URL_PATH );
+            $file_path = ABSPATH . ltrim( $relative_path, '/' );
+            
+            if ( file_exists( $file_path ) ) {
+                $finfo = finfo_open( FILEINFO_MIME_TYPE );
+                if ( $finfo ) {
+                    $mime_type = finfo_file( $finfo, $file_path );
+                    finfo_close( $finfo );
+                    
+                    // Check if MIME type matches allowed image types
+                    $allowed_mime_types = array( 'image/jpeg', 'image/png', 'image/gif', 'image/webp' );
+                    if ( ! in_array( $mime_type, $allowed_mime_types ) ) {
+                        return false;
+                    }
+                }
+            }
+        }
+        
+        return true;
+    }
     
     /**
      * Save login page settings
@@ -41,7 +93,11 @@ class WPCA_Ajax {
         
         // 确保使用 isset 检查并在访问 $_POST 数据前进行过滤
             if ( function_exists( 'sanitize_text_field' ) ) {
-                $login_settings = isset( $_POST['login_settings'] ) ? $_POST['login_settings'] : array();
+               46: // 安全处理登录设置参数
+47: $login_settings = isset( $_POST['login_settings'] ) && is_array( $_POST['login_settings'] ) ? 
+48:     array_map( function( $value ) {
+49:         return is_string( $value ) && function_exists( 'sanitize_text_field' ) ? sanitize_text_field( $value ) : $value;
+50:     }, $_POST['login_settings'] ) : array();
             } else {
                 $login_settings = array();
             }
@@ -53,7 +109,15 @@ class WPCA_Ajax {
         }
         
         if ( isset( $login_settings['login_logo_url'] ) ) {
-            $sanitized_settings['login_logo_url'] = esc_url_raw( $login_settings['login_logo_url'] );
+            $logo_url = $login_settings['login_logo_url'];
+            
+            // Validate file type for logo URL
+            if ( ! $this->validate_image_file_type( $logo_url ) ) {
+                wp_send_json_error( array( 'message' => __( 'Invalid image file type. Only JPG, PNG, GIF, and WebP files are allowed.', 'wp-clean-admin' ) ) );
+                return;
+            }
+            
+            $sanitized_settings['login_logo_url'] = esc_url_raw( $logo_url );
         }
         
         if ( isset( $login_settings['login_background_url'] ) ) {

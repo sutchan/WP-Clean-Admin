@@ -1,3 +1,12 @@
+/**
+ * WP Clean Admin - Reset Module
+ * Handles settings reset functionality for different tabs
+ * 
+ * @file       wpcleanadmin/assets/js/wpca-reset.js
+ * @version    1.7.13
+ * @updated    2025-06-18
+ */
+
 (function($) {
     'use strict';
     

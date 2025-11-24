@@ -1,3 +1,12 @@
+/**
+ * WP Clean Admin - Settings Module
+ * Handles settings page functionality including color pickers, media uploaders, and menu ordering
+ * 
+ * @file       wpcleanadmin/assets/js/wpca-settings.js
+ * @version    1.7.13
+ * @updated    2025-06-18
+ */
+
 jQuery(document).ready(function($) {
     // 触发选项卡初始化事件
     $(document).trigger('wpca.init.tabs');
@@ -199,7 +208,7 @@ jQuery(document).ready(function($) {
         } else {
             $('#wpca-custom-login-options').slideUp();
         }
-        // Trigger login preview update (assuming this function exists in wpca-login.js or wpca-core.js)
+        // Trigger login preview update (assuming this function exists in wpca-login.js or wpca-main.js)
         if (typeof WPCA !== 'undefined' && WPCA.loginPage && WPCA.loginPage.updatePreview) {
             WPCA.loginPage.updatePreview();
         }

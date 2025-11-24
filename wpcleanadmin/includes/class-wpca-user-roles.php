@@ -1,11 +1,13 @@
-﻿<?php
+<?php
 /**
  * User Roles Management Class
  *
  * Handles role-based permissions and settings filtering for non-administrator users.
  *
  * @package WPCleanAdmin
- * @version 1.7.12
+ * @version 1.7.13
+ * @file wpcleanadmin/includes/class-wpca-user-roles.php
+ * @updated 2025-06-18
  */
 
 if (!defined('ABSPATH')) {
@@ -18,7 +20,7 @@ if (!defined('ABSPATH')) {
  * 
  * @package WPCleanAdmin
  * @since 1.0.0
- * @version 1.7.12
+ * @version 1.7.13
  */
 class WPCA_User_Roles {
     

@@ -1,6 +1,10 @@
 /**
  * WP Clean Admin - Menu Management Module
  * Combines menu sorting and menu toggle functionality
+ * 
+ * @file       wpcleanadmin/assets/js/wpca-menu.js
+ * @version    1.7.13
+ * @updated    2025-06-18
  */
 
 // Ensure WPCA namespace exists

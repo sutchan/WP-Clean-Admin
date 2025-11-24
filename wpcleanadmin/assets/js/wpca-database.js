@@ -4,6 +4,9 @@
  * Handles frontend interactions for database optimization and cleanup features.
  * Manages AJAX requests, button states, and result display.
  * 
+ * @file       wpcleanadmin/assets/js/wpca-database.js
+ * @version    1.7.13
+ * @updated    2025-06-18
  * @package WP_Clean_Admin
  * @since 1.6.0
  */

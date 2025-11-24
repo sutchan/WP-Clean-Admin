@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * WordPress Clean Admin - Autoloader
  * 
@@ -6,7 +6,9 @@
  * 
  * @package WPCleanAdmin
  * @since 1.4.1
- * @version 1.7.12
+ * @version 1.7.13
+ * @updated 2025-06-18
+ * @file wpcleanadmin/includes/autoload.php
  */
 
 // Exit if accessed directly

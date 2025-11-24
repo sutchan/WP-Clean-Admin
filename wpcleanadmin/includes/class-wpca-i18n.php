@@ -1,10 +1,12 @@
-﻿<?php
+<?php
 
 /**
  * WP Clean Admin - 多语言支持类
  * 负责插件的国际化和本地化功能，加载语言文件和管理翻译
  * @package WP_Clean_Admin
- * @version 1.7.12
+ * @version 1.7.13
+ * @file wpcleanadmin/includes/class-wpca-i18n.php
+ * @updated 2025-06-18
  * @since 1.4.2
  */
 

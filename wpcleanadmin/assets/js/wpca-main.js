@@ -1,6 +1,10 @@
 /**
  * WP Clean Admin - Core Module
  * Contains global variables, notification functions and basic utilities
+ * 
+ * @file       wpcleanadmin/assets/js/wpca-main.js
+ * @version    1.7.13
+ * @updated    2025-06-18
  */
 
 // Ensure jQuery is available

@@ -4,8 +4,11 @@
  * Handles frontend interactions for performance optimization features,
  * including database cleanup, resource management, and performance monitoring.
  * 
- * @package WP_Clean_Admin
- * @since 1.3.0
+ * @file       wpcleanadmin/assets/js/wpca-performance.js
+ * @package    WP_Clean_Admin
+ * @version    1.7.13
+ * @updated    2025-06-18
+ * @since      1.3.0
  */
 
 jQuery(document).ready(function($) {

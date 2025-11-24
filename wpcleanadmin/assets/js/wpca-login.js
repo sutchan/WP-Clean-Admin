@@ -1,6 +1,10 @@
 /**
  * WP Clean Admin - Login Management Module
  * Handles login page customization and media upload
+ * 
+ * @file       wpcleanadmin/assets/js/wpca-login.js
+ * @version    1.7.13
+ * @updated    2025-06-18
  */
 
 // Ensure WPCA namespace exists
@@ -102,7 +106,8 @@ WPCA.login = {
             },
             multiple: false,
             library: {
-                type: type
+                // Allow only specific image types for security reasons
+                type: type === 'image' ? ['image/jpeg', 'image/png', 'image/gif', 'image/webp'] : type
             }
         });
         
@@ -121,6 +126,21 @@ WPCA.login = {
                 jQuery(previewId).html(`<img src="${attachment.url}" style="max-width: 100%; max-height: 200px;" alt="Preview">`);
             } else {
                 jQuery(previewId).html(`<p>Selected: ${attachment.filename}</p>`);
+            }
+        });
+        
+        // Add file type filter to ensure only allowed file types are selected
+        mediaFrame.on('open', function() {
+            var selection = mediaFrame.state().get('selection');
+            
+            // Filter selection to ensure only allowed image types are selected
+            if (type === 'image') {
+                var allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                var attachments = selection.models.filter(function(attachment) {
+                    return allowedTypes.includes(attachment.get('mime'));
+                });
+                
+                selection.reset(attachments);
             }
         });
         

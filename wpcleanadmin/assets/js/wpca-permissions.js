@@ -1,3 +1,12 @@
+/**
+ * WP Clean Admin - Permissions Module
+ * Handles user permissions and capability checks
+ * 
+ * @file       wpcleanadmin/assets/js/wpca-permissions.js
+ * @version    1.7.13
+ * @updated    2025-06-18
+ */
+
 (function($) {
     'use strict';
 

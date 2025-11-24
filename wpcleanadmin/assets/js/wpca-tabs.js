@@ -1,6 +1,10 @@
 /**
  * WP Clean Admin - Tab Navigation Module
  * 处理设置页面选项卡切换功能
+ * 
+ * @file       wpcleanadmin/assets/js/wpca-tabs.js
+ * @version    1.7.13
+ * @updated    2025-06-18
  */
 
 // Ensure WPCA namespace exists

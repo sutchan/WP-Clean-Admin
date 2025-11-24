@@ -7,6 +7,8 @@
  * @package WPCleanAdmin
  * @since 1.0.0
  * @version 1.7.13
+ * @file wpcleanadmin/includes/class-wpca-login.php
+ * @updated 2025-06-18
  */
 
 if (!defined('ABSPATH')) {
@@ -57,6 +59,11 @@ class WPCA_Login {
         
         // 添加登录表单自定义钩子
         add_action('login_form_top', array($this, 'add_login_form_elements'));
+        
+        // 添加登录尝试限制相关钩子
+        add_filter('authenticate', array($this, 'limit_login_attempts'), 30, 3);
+        add_action('wp_login_failed', array($this, 'track_login_failure'));
+        add_action('login_head', array($this, 'check_ip_blocked'));
     }
 
     /**
@@ -73,12 +80,12 @@ class WPCA_Login {
         $assets_url = $plugin_url . '/wpcleanadmin/assets';
         
         // Load login page styles
-        if (function_exists('wp_enqueue_style')) {
+        if (function_exists('wp_enqueue_style') && defined('WPCA_VERSION')) {
             wp_enqueue_style('wpca-login-styles', $assets_url . '/css/wpca-login-styles.css', array(), WPCA_VERSION);
         }
         
         // Load login page JavaScript
-        if (function_exists('wp_enqueue_script')) {
+        if (function_exists('wp_enqueue_script') && defined('WPCA_VERSION')) {
             wp_enqueue_script('wpca-login-js', $assets_url . '/js/wpca-login.js', array('jquery'), WPCA_VERSION, true);
         }
         
@@ -410,6 +417,167 @@ class WPCA_Login {
         // For example: welcome messages, company information, etc.
     }
     
+    /**
+     * Limit login attempts
+     * 
+     * Checks for too many failed login attempts and blocks if necessary
+     * 
+     * @param WP_User|WP_Error $user User object or error
+     * @param string $username Username
+     * @param string $password Password
+     * @return WP_User|WP_Error
+     */
+    public function limit_login_attempts($user, $username, $password) {
+        // If authentication already failed, don't interfere
+        if (is_wp_error($user)) {
+            return $user;
+        }
+        
+        // Get IP address
+        $ip = $this->get_client_ip();
+        
+        // Check if IP is blocked
+        if ($this->is_ip_blocked($ip)) {
+            $blocked_message = $this->get_blocked_message($ip);
+            return new WP_Error('too_many_retries', $blocked_message);
+        }
+        
+        return $user;
+    }
+    
+    /**
+     * Track login failures
+     * 
+     * Records failed login attempts in the database
+     * 
+     * @param string $username Username attempted
+     */
+    public function track_login_failure($username) {
+        // Get IP address
+        $ip = $this->get_client_ip();
+        
+        // Get current failure count and last attempt time
+        $login_failures = get_transient('wpca_login_failures_' . $ip);
+        
+        if ($login_failures === false) {
+            // First failure
+            $login_failures = array(
+                'count' => 1,
+                'last_attempt' => time(),
+                'username' => $username
+            );
+        } else {
+            // Increment failure count
+            $login_failures['count']++;
+            $login_failures['last_attempt'] = time();
+        }
+        
+        // Get max attempts and lockout duration from settings or use defaults
+        $max_attempts = isset($this->options['login_max_attempts']) && is_numeric($this->options['login_max_attempts']) 
+            ? intval($this->options['login_max_attempts']) : 5;
+        $lockout_duration = isset($this->options['login_lockout_duration']) && is_numeric($this->options['login_lockout_duration']) 
+            ? intval($this->options['login_lockout_duration']) : 15; // Default 15 minutes
+        
+        // If max attempts reached, block the IP
+        if ($login_failures['count'] >= $max_attempts) {
+            // Set block transient
+            $lockout_duration_seconds = $lockout_duration * 60; // Convert to seconds
+            set_transient('wpca_blocked_ip_' . $ip, $login_failures, $lockout_duration_seconds);
+            
+            // Log the block event
+            if (class_exists('WPCA_Helpers') && method_exists('WPCA_Helpers', 'audit_log')) {
+                WPCA_Helpers::audit_log(
+                    'login_attempt_blocked',
+                    'blocked',
+                    array(
+                        'ip' => $ip,
+                        'username' => $username,
+                        'attempts' => $login_failures['count'],
+                        'lockout_duration' => $lockout_duration
+                    )
+                );
+            }
+        } else {
+            // Save failure count
+            set_transient('wpca_login_failures_' . $ip, $login_failures, 1800); // Save for 30 minutes
+        }
+    }
+    
+    /**
+     * Check if IP is blocked
+     * 
+     * @param string $ip IP address
+     * @return bool True if blocked, false otherwise
+     */
+    public function is_ip_blocked($ip) {
+        $blocked = get_transient('wpca_blocked_ip_' . $ip);
+        return $blocked !== false;
+    }
+    
+    /**
+     * Check if current IP is blocked and show message
+     */
+    public function check_ip_blocked() {
+        $ip = $this->get_client_ip();
+        
+        if ($this->is_ip_blocked($ip)) {
+            $blocked = get_transient('wpca_blocked_ip_' . $ip);
+            $transient_info = get_transient('wpca_blocked_ip_' . $ip);
+            
+            if ($transient_info !== false) {
+                $time_left = ceil((get_transient_timeout('wpca_blocked_ip_' . $ip) - time()) / 60);
+                $blocked_message = sprintf(
+                    __('Too many failed login attempts. Your IP has been temporarily blocked for %d more minutes.', 'wp-clean-admin'),
+                    $time_left
+                );
+                
+                echo '<div class="login_error">' . esc_html($blocked_message) . '</div>';
+            }
+        }
+    }
+    
+    /**
+     * Get blocked message with remaining time
+     * 
+     * @param string $ip IP address
+     * @return string Blocked message
+     */
+    private function get_blocked_message($ip) {
+        $blocked = get_transient('wpca_blocked_ip_' . $ip);
+        $time_left = ceil((get_transient_timeout('wpca_blocked_ip_' . $ip) - time()) / 60);
+        
+        return sprintf(
+            __('Too many failed login attempts. Your IP has been temporarily blocked for %d more minutes.', 'wp-clean-admin'),
+            $time_left
+        );
+    }
+    
+    /**
+     * Get client IP address
+     * 
+     * @return string IP address
+     */
+    private function get_client_ip() {
+        if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+            return sanitize_text_field($_SERVER['HTTP_CLIENT_IP']);
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            // Get the first IP in the comma-separated list
+            $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+            return sanitize_text_field(trim($ips[0]));
+        } else {
+            return sanitize_text_field($_SERVER['REMOTE_ADDR']);
+        }
+    }
+    
+    /**
+     * Reset login attempts for a specific IP
+     * 
+     * @param string $ip IP address
+     */
+    public function reset_login_attempts($ip) {
+        delete_transient('wpca_login_failures_' . $ip);
+        delete_transient('wpca_blocked_ip_' . $ip);
+    }
 
 }
 ?>

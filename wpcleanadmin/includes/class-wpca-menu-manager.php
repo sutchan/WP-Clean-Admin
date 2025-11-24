@@ -1,11 +1,13 @@
-﻿<?php
+<?php
 /**
  * WPCA Menu Manager
  * 
  * Manages the display, hiding, and permission control of WordPress admin menus
  * 
  * @package WPCleanAdmin
- * @version 1.7.12
+ * @version 1.7.13
+ * @file wpcleanadmin/includes/class-wpca-menu-manager.php
+ * @updated 2025-06-18
  */
 
 // Ensure file is loaded within WordPress environment

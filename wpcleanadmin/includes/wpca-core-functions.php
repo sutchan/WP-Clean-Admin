@@ -1,299 +1,485 @@
 <?php
 /**
- * WP Clean Admin Core Functions
+ * WPCleanAdmin 核心功能函数
  *
- * This file contains core functions that modify the WordPress admin area based on plugin settings.
- * It handles non-settings-page related functionality.
- *
- * @package WP_Clean_Admin
+ * @package WPCleanAdmin
  * @version 1.7.13
+ * @file wpcleanadmin/includes/wpca-core-functions.php
+ * @updated 2025-06-18
  */
 
-// Exit if accessed directly
-// defined是PHP语言结构，不需要function_exists检查if (!defined('ABSPATH')) {
-    // exit是PHP语言结构，不需要function_exists检查    exit;
+// 防止直接访问
+if (!defined('ABSPATH')) {
+    exit;
 }
 
+// 加载WordPress函数存根（仅在非WordPress环境中）
+require_once __DIR__ . '/wpca-wordpress-stubs.php';
 
 /**
- * Remove dashboard widgets based on settings.
- *
- * Action: wp_dashboard_setup
+ * 移除仪表板小部件
  */
 function wpca_remove_dashboard_widgets() {
-    // Check if WPCA_Settings class exists and has get_options method
-    if (!class_exists('WPCA_Settings') || !method_exists('WPCA_Settings', 'get_options')) {
+    // 检查WordPress核心函数是否存在
+    if (!function_exists('remove_meta_box') || !function_exists('is_admin')) {
         return;
     }
     
-    $options = WPCA_Settings::get_options();
-    $widgets_to_hide = $options['hide_dashboard_widgets'] ?? [];
-
-    $widget_map = [
-        'dashboard_activity'    => ['dashboard', 'normal'],
-        'dashboard_at_glance'   => ['dashboard', 'normal'], // 修正 ID，与设置页面保持一致        'dashboard_quick_press' => ['dashboard', 'side'],
-        'dashboard_primary'     => ['dashboard', 'side'],
-        'dashboard_site_health' => ['dashboard', 'normal'],
-    ];
-
-    // 对所有使用的函数进行存在性检查，确保代码健壮性    if (function_exists('is_string') && function_exists('remove_meta_box') && function_exists('sanitize_key')) {
-        foreach ($widgets_to_hide as $widget_id) {
-            // 添加额外的安全检查            if (isset($widget_map[$widget_id]) && is_string($widget_id)) {
-                remove_meta_box(sanitize_key($widget_id), $widget_map[$widget_id][0], $widget_map[$widget_id][1]);
-            }
-        }
-    }
-}
-if (function_exists('add_action')) {
-    add_action('wp_dashboard_setup', 'wpca_remove_dashboard_widgets', 999);
-}
-
-
-/**
- * Add custom CSS classes to the admin body tag for theme styling.
- *
- * Filter: admin_body_class
- *
- * @param string $classes Space-separated string of classes.
- * @return string Modified string of classes.
- */
-function wpca_admin_body_class($classes) {
-    // Check if WPCA_Settings class exists and has get_options method
-    if (!class_exists('WPCA_Settings') || !method_exists('WPCA_Settings', 'get_options')) {
-        return $classes;
-    }
-    
-    $options = WPCA_Settings::get_options();
-    
-    // An array makes it easier to manage classes.
-    $custom_classes = [];
-
-    // Add classes based on settings, only if they are not the default.
-    // empty是PHP语言结构，不需要function_exists检查    if (function_exists('esc_attr')) {
-        if (!empty($options['theme_style']) && 'default' !== $options['theme_style']) {
-            $custom_classes[] = 'wpca-theme-' . esc_attr($options['theme_style']);
-        }
-        if (!empty($options['layout_density']) && 'standard' !== $options['layout_density']) {
-            $custom_classes[] = 'wpca-layout-' . esc_attr($options['layout_density']);
-        }
-        if (!empty($options['border_radius_style']) && 'small' !== $options['border_radius_style']) {
-            $custom_classes[] = 'wpca-radius-' . esc_attr($options['border_radius_style']);
-        }
-    }
-
-    if (!empty($custom_classes)) {
-        $classes .= ' ' . implode(' ', $custom_classes);
-    }
-    
-    return $classes;
-}
-if (function_exists('add_filter')) {
-    add_filter('admin_body_class', 'wpca_admin_body_class');
-}
-
-
-/**
- * Generate and enqueue custom styles based on plugin settings.
- * This uses CSS variables for modern, flexible styling.
- *
- * Action: admin_enqueue_scripts
- */
-function wpca_apply_custom_styles() {
-    // This style needs to be applied on all admin pages, so no page check here.
-    if (function_exists('wp_enqueue_style')) {
-        wp_enqueue_style('wpca-admin-style', WPCA_PLUGIN_URL . 'assets/css/wpca-admin.css', [], WPCA_VERSION);
-    }
-
-    // Check if WPCA_Settings class exists and has get_options method
-    if (!class_exists('WPCA_Settings') || !method_exists('WPCA_Settings', 'get_options')) {
+    // 检查是否在管理界面
+    if (!is_admin()) {
         return;
     }
     
-    $options = WPCA_Settings::get_options();
-
-    // Start with values from settings (for 'custom' theme).
-    // isset是PHP语言结构，不需要function_exists检查    $primary_color    = isset($options['primary_color']) ? $options['primary_color'] : '#0073aa';
-    $background_color = isset($options['background_color']) ? $options['background_color'] : '#ffffff';
-    $text_color       = isset($options['text_color']) ? $options['text_color'] : '#333333';
-    
-    // Override colors for predefined themes.
-    if (isset($options['theme_style'])) {
-        switch ($options['theme_style']) {
-            case 'dark':
-                $primary_color    = '#00a0d2'; // Brighter blue for contrast.
-                $background_color = '#1e1e1e';
-                $text_color       = '#e0e0e0';
-                break;
-            // Add other themes here if needed.
-        }
-    }
-
-    // Sanitize colors before output with fallback values.
-    if (function_exists('sanitize_hex_color')) {
-        $primary_color    = sanitize_hex_color($primary_color) ?: '#0073aa';
-        $background_color = sanitize_hex_color($background_color) ?: '#ffffff';
-        $text_color       = sanitize_hex_color($text_color) ?: '#333333';
-    } else {
-        // 自定义的十六进制颜色验证函数
-        $safe_sanitize_hex_color = function($color) {
-            if (function_exists('preg_match') && preg_match('/^#[0-9a-fA-F]{6}$/', $color)) {
-                return $color;
-            }
-            return false;
-        };
-        
-        $primary_color    = $safe_sanitize_hex_color($primary_color) ?: '#0073aa';
-        $background_color = $safe_sanitize_hex_color($background_color) ?: '#ffffff';
-        $text_color       = $safe_sanitize_hex_color($text_color) ?: '#333333';
-    }
-
-    // Using a HEREDOC for clean multiline CSS.
-    $custom_css = <<<CSS
-    :root {
-        --wpca-primary-color: {$primary_color};
-        --wpca-background-color: {$background_color};
-        --wpca-text-color: {$text_color};
-    }
-    CSS;
-
-    // Use the recommended WordPress function to add inline styles.
-    // This is safer and better for dependency management.
-    if (function_exists('wp_add_inline_style')) {
-        wp_add_inline_style('wpca-admin-style', $custom_css);
-    } else {
-        // 记录日志，说明wp_add_inline_style函数不可用        if (function_exists('error_log')) {
-            error_log('WPCleanAdmin: wp_add_inline_style function not available, custom styles cannot be applied.');
-        }
-    }
-}
-if (function_exists('add_action')) {
-    add_action('admin_enqueue_scripts', 'wpca_apply_custom_styles');
-}
-
-
-/**
- * Remove admin bar items based on settings.
- *
- * Action: admin_bar_menu
- *
- * @param WP_Admin_Bar $wp_admin_bar The admin bar object.
- */
-function wpca_remove_admin_bar_items($wp_admin_bar) {
-    // Check if WPCA_Settings class exists and has get_options method
-    if (!class_exists('WPCA_Settings') || !method_exists('WPCA_Settings', 'get_options')) {
-        return;
-    }
-    
-    $options = WPCA_Settings::get_options();
-    // isset是PHP语言结构，不需要function_exists检查    $items_to_hide = isset($options['hide_admin_bar_items']) ? $options['hide_admin_bar_items'] : [];
-
-    // isset是PHP语言结构，不需要function_exists检查     if (function_exists('is_string') && function_exists('sanitize_key') && function_exists('method_exists')) {
-        foreach ($items_to_hide as $node_id) {
-            if (is_string($node_id) && isset($wp_admin_bar) && method_exists($wp_admin_bar, 'remove_node')) {
-                $wp_admin_bar->remove_node(sanitize_key($node_id));
-            }
-        }
-    }
-}
-if (function_exists('add_action')) {
-    add_action('admin_bar_menu', 'wpca_remove_admin_bar_items', 999);
-}
-
-
-// [REMOVED] The function 'wpca_enqueue_admin_assets' was removed because its functionality
-// has been merged into 'WPCA_Settings::enqueue_admin_scripts' for settings-page-only assets,
-// and 'wpca_apply_custom_styles' for global assets.
-
-// [REMOVED] The function 'wpca_remove_admin_menu_items' was removed to resolve a
-// conflict with the more advanced menu customization feature in the 'WPCA_Menu_Customizer' class.
-// Menu visibility is now handled exclusively by CSS via the Menu Customization tab.
-
-
-/**
- * Remove "WordPress" from admin page titles.
- *
- * Filter: document_title_parts
- *
- * @param array $title_parts The document title parts.
- * @return array Modified document title parts.
- */
-function wpca_remove_wordpress_from_title($title_parts) {
-    // Check if WPCA_Settings class exists and has get_options method
-    if (!class_exists('WPCA_Settings') || !method_exists('WPCA_Settings', 'get_options')) {
-        return $title_parts;
-    }
-    
-    $options = WPCA_Settings::get_options();
-    
-    // Check if we're in the admin area and if the setting is enabled
-    if (function_exists('is_admin') && is_admin() && 
-        isset($options['hide_wordpress_title']) && $options['hide_wordpress_title']) {
-        // WordPress typically appends "WordPress" to the site name in admin titles
-        // We'll check each part and remove any that contains "WordPress"
-        if (function_exists('stripos')) {
-            foreach ($title_parts as $key => $part) {
-                if (stripos($part, 'WordPress') !== false) {
-                    unset($title_parts[$key]);
+    // 检查WPCA_Settings类是否存在
+    if (class_exists('WPCA_Settings')) {
+        // 检查get_options方法是否存在
+        if (method_exists('WPCA_Settings', 'get_options')) {
+            $options = WPCA_Settings::get_options();
+            $hidden_widgets = isset($options['hide_dashboard_widgets']) ? $options['hide_dashboard_widgets'] : array();
+            
+            // 移除选中的仪表板小部件
+            foreach ($hidden_widgets as $widget) {
+                if (function_exists('sanitize_key')) {
+                    $widget_id = sanitize_key($widget);
+                    remove_meta_box($widget_id, 'dashboard', 'normal');
+                    remove_meta_box($widget_id, 'dashboard', 'side');
                 }
             }
         }
     }
-    
-    // Re-index the array to avoid gaps
-    $title_parts = array_values($title_parts);
-    
-    return $title_parts;
-}
-if (function_exists('add_filter')) {
-    add_filter('document_title_parts', 'wpca_remove_wordpress_from_title', 100);
 }
 
-// 移除重复的过滤器添加
-// if (function_exists('add_filter')) {
-//     add_filter('wp_title', 'wpca_remove_wordpress_from_wp_title', 100, 3);
-// }
-
+// 钩子到wp_dashboard_setup
+if (function_exists('add_action')) {
+    add_action('wp_dashboard_setup', 'wpca_remove_dashboard_widgets');
+}
 
 /**
- * Remove "WordPress" from admin page titles for older WordPress versions
- * that still use wp_title filter.
- *
- * Filter: wp_title
- *
- * @param string $title Page title.
- * @param string $sep Title separator.
- * @param string $seplocation Location of the separator (left or right).
- * @return string Modified page title.
+ * 添加自定义CSS类到管理界面body标签
  */
-function wpca_remove_wordpress_from_wp_title($title, $sep, $seplocation) {
-    // Check if WPCA_Settings class exists and has get_options method
-    if (!class_exists('WPCA_Settings') || !method_exists('WPCA_Settings', 'get_options')) {
+function wpca_admin_body_class($classes) {
+    // 检查WPCA_Settings类是否存在
+    if (class_exists('WPCA_Settings')) {
+        // 检查get_options方法是否存在
+        if (method_exists('WPCA_Settings', 'get_options')) {
+            $options = WPCA_Settings::get_options();
+            $theme_style = isset($options['theme_style']) ? $options['theme_style'] : 'default';
+            $layout_density = isset($options['layout_density']) ? $options['layout_density'] : 'standard';
+            
+            // 添加主题样式类
+            if (function_exists('sanitize_html_class')) {
+                $classes .= ' wpca-theme-' . sanitize_html_class($theme_style);
+                $classes .= ' wpca-density-' . sanitize_html_class($layout_density);
+            }
+        }
+    }
+    
+    return $classes;
+}
+
+// 钩子到admin_body_class
+if (function_exists('add_filter')) {
+    add_filter('admin_body_class', 'wpca_admin_body_class');
+}
+
+/**
+ * 应用自定义样式
+ */
+function wpca_apply_custom_styles() {
+    // 检查是否在管理界面
+    if (!function_exists('is_admin') || !is_admin()) {
+        return;
+    }
+    
+    // 检查WPCA_Settings类是否存在
+    if (class_exists('WPCA_Settings')) {
+        // 检查get_options方法是否存在
+        if (method_exists('WPCA_Settings', 'get_options')) {
+            $options = WPCA_Settings::get_options();
+            $primary_color = isset($options['primary_color']) ? $options['primary_color'] : '#4A90E2';
+            $background_color = isset($options['background_color']) ? $options['background_color'] : '#F8F9FA';
+            $text_color = isset($options['text_color']) ? $options['text_color'] : '#2D3748';
+            $border_radius_style = isset($options['border_radius_style']) ? $options['border_radius_style'] : 'small';
+            $shadow_style = isset($options['shadow_style']) ? $options['shadow_style'] : 'subtle';
+            
+            // 定义CSS变量
+            $custom_css = "
+            :root {
+                --wpca-primary-color: {$primary_color};
+                --wpca-background-color: {$background_color};
+                --wpca-text-color: {$text_color};
+            }";
+            
+            // 根据选择的边框半径样式添加CSS
+            $border_radius_values = array(
+                'none' => '0',
+                'small' => '4px',
+                'medium' => '8px',
+                'large' => '12px',
+                'extra_large' => '16px'
+            );
+            
+            $border_radius = isset($border_radius_values[$border_radius_style]) ? $border_radius_values[$border_radius_style] : '4px';
+            
+            $custom_css .= "
+            .wp-admin .wpca-theme-enhanced * {
+                border-radius: {$border_radius} !important;
+            }";
+            
+            // 根据选择的阴影样式添加CSS
+            $shadow_values = array(
+                'none' => 'none',
+                'subtle' => '0 1px 3px rgba(0, 0, 0, 0.1)',
+                'medium' => '0 4px 6px rgba(0, 0, 0, 0.1)',
+                'large' => '0 10px 15px rgba(0, 0, 0, 0.1)'
+            );
+            
+            $shadow = isset($shadow_values[$shadow_style]) ? $shadow_values[$shadow_style] : '0 1px 3px rgba(0, 0, 0, 0.1)';
+            
+            $custom_css .= "
+            .wp-admin .wpca-theme-enhanced .postbox,
+            .wp-admin .wpca-theme-enhanced .card,
+            .wp-admin .wpca-theme-enhanced .wrap > h1,
+            .wp-admin .wpca-theme-enhanced .nav-tab-wrapper {
+                box-shadow: {$shadow} !important;
+            }";
+            
+            // 应用自定义样式
+            if (function_exists('wp_add_inline_style')) {
+                wp_add_inline_style('wp-admin', $custom_css);
+            }
+        }
+    }
+}
+
+// 钩子到admin_enqueue_scripts
+if (function_exists('add_action')) {
+    add_action('admin_enqueue_scripts', 'wpca_apply_custom_styles');
+}
+
+/**
+ * 移除管理栏项目
+ */
+function wpca_remove_admin_bar_items() {
+    // 检查WPCA_Settings类是否存在
+    if (class_exists('WPCA_Settings')) {
+        // 检查get_options方法是否存在
+        if (method_exists('WPCA_Settings', 'get_options')) {
+            $options = WPCA_Settings::get_options();
+            $hidden_items = isset($options['hide_admin_bar_items']) ? $options['hide_admin_bar_items'] : array();
+            
+            // 移除选中的管理栏项目
+            foreach ($hidden_items as $item) {
+                // 使用WordPress全局变量$wp_admin_bar来移除菜单项
+                global $wp_admin_bar;
+                if (is_object($wp_admin_bar)) {
+                    $wp_admin_bar->remove_menu($item);
+                }
+            }
+        }
+    }
+}
+
+// 钩子到wp_before_admin_bar_render
+if (function_exists('add_action')) {
+    add_action('wp_before_admin_bar_render', 'wpca_remove_admin_bar_items');
+}
+
+/**
+ * 从管理页面标题中移除"WordPress"
+ */
+function wpca_remove_wordpress_from_title($admin_title) {
+    // 检查WPCA_Settings类是否存在
+    if (class_exists('WPCA_Settings')) {
+        // 检查get_options方法是否存在
+        if (method_exists('WPCA_Settings', 'get_options')) {
+            $options = WPCA_Settings::get_options();
+            $hide_wordpress_title = isset($options['hide_wordpress_title']) ? $options['hide_wordpress_title'] : 0;
+            
+            if ($hide_wordpress_title) {
+                // 检查WordPress核心函数是否存在
+                if (function_exists('sanitize_key')) {
+                    $admin_title = sanitize_key($admin_title);
+                }
+                return str_replace('WordPress &#8212; ', '', $admin_title);
+            }
+        }
+    }
+    
+    return $admin_title;
+}
+
+// 钩子到admin_title
+if (function_exists('add_filter')) {
+    add_filter('admin_title', 'wpca_remove_wordpress_from_title');
+}
+
+/**
+ * 为旧版WordPress提供的标题修改功能
+ */
+function wpca_remove_wordpress_from_wp_title($title) {
+    // 检查是否在管理界面
+    if (!function_exists('is_admin') || !is_admin()) {
         return $title;
     }
     
-    $options = WPCA_Settings::get_options();
-    
-    // Check if we're in the admin area and if the setting is enabled
-    if (function_exists('is_admin') && is_admin() && 
-        isset($options['hide_wordpress_title']) && $options['hide_wordpress_title']) {
-        // Remove any instance of "WordPress" from the title
-        if (function_exists('str_ireplace')) {
-            $title = str_ireplace('WordPress', '', $title);
-        }
-        // Remove any多余的分隔符
-        // array()鏄疨HP璇█缁撴瀯锛屼笉闇€瑕乫unction_exists妫€鏌?
-        if (function_exists('str_replace')) {
-            $title = str_replace(array("$sep  ", "  $sep"), '', $title);
-        }
-        // Trim whitespace
-        if (function_exists('trim')) {
-            $title = trim($title);
+    // 检查WPCA_Settings类是否存在
+    if (class_exists('WPCA_Settings')) {
+        // 检查get_options方法是否存在
+        if (method_exists('WPCA_Settings', 'get_options')) {
+            $options = WPCA_Settings::get_options();
+            $hide_wordpress_title = isset($options['hide_wordpress_title']) ? $options['hide_wordpress_title'] : 0;
+            
+            if ($hide_wordpress_title) {
+                // 检查WordPress核心函数是否存在
+                if (function_exists('sanitize_key')) {
+                    $title = sanitize_key($title);
+                }
+                return str_replace('WordPress &#8212; ', '', $title);
+            }
         }
     }
     
     return $title;
 }
+
+// 钩子到wp_title
 if (function_exists('add_filter')) {
-    add_filter('wp_title', 'wpca_remove_wordpress_from_wp_title', 100, 3);
+    add_filter('wp_title', 'wpca_remove_wordpress_from_wp_title');
+}
+
+/**
+ * 隐藏WordPress页脚
+ */
+function wpca_hide_wp_footer() {
+    // 检查是否在管理界面
+    if (!function_exists('is_admin') || !is_admin()) {
+        return;
+    }
+    
+    // 检查WPCA_Settings类是否存在
+    if (class_exists('WPCA_Settings')) {
+        // 检查get_options方法是否存在
+        if (method_exists('WPCA_Settings', 'get_options')) {
+            $options = WPCA_Settings::get_options();
+            $hide_wpfooter = isset($options['hide_wpfooter']) ? $options['hide_wpfooter'] : 0;
+            
+            if ($hide_wpfooter) {
+                // 添加自定义CSS隐藏页脚
+                $custom_css = "#wpfooter { display: none !important; }";
+                
+                // 应用自定义样式
+                if (function_exists('wp_add_inline_style')) {
+                    wp_add_inline_style('wp-admin', $custom_css);
+                }
+            }
+        }
+    }
+}
+
+// 钩子到admin_enqueue_scripts
+if (function_exists('add_action')) {
+    add_action('admin_enqueue_scripts', 'wpca_hide_wp_footer');
+}
+
+/**
+ * 隐藏前端管理栏
+ */
+function wpca_hide_frontend_admin_bar() {
+    // 检查WPCA_Settings类是否存在
+    if (class_exists('WPCA_Settings')) {
+        // 检查get_options方法是否存在
+        if (method_exists('WPCA_Settings', 'get_options')) {
+            $options = WPCA_Settings::get_options();
+            $hide_frontend_adminbar = isset($options['hide_frontend_adminbar']) ? $options['hide_frontend_adminbar'] : 0;
+            
+            if ($hide_frontend_adminbar) {
+                // 检查WordPress核心函数是否存在
+                if (function_exists('show_admin_bar')) {
+                    show_admin_bar(false);
+                }
+            }
+        }
+    }
+}
+
+// 钩子到init
+if (function_exists('add_action')) {
+    add_action('init', 'wpca_hide_frontend_admin_bar');
+}
+
+/**
+ * 自定义登录页面样式
+ */
+function wpca_custom_login_styles() {
+    // 检查WPCA_Settings类是否存在
+    if (class_exists('WPCA_Settings')) {
+        // 检查get_options方法是否存在
+        if (method_exists('WPCA_Settings', 'get_options')) {
+            $options = WPCA_Settings::get_options();
+            $login_style = isset($options['login_style']) ? $options['login_style'] : 'default';
+            $login_logo = isset($options['login_logo']) ? $options['login_logo'] : '';
+            $login_background = isset($options['login_background']) ? $options['login_background'] : '';
+            $login_custom_css = isset($options['login_custom_css']) ? $options['login_custom_css'] : '';
+            
+            $custom_css = "";
+            
+            // 应用背景图片
+            if (!empty($login_background)) {
+                $custom_css .= "body.login { background-image: url('{$login_background}') !important; background-size: cover !important; background-position: center !important; }";
+            }
+            
+            // 应用自定义logo
+            if (!empty($login_logo)) {
+                $custom_css .= "#login h1 a { background-image: url('{$login_logo}') !important; background-size: contain !important; width: 100% !important; }";
+            }
+            
+            // 应用自定义CSS
+            if (!empty($login_custom_css)) {
+                $custom_css .= $login_custom_css;
+            }
+            
+            // 应用自定义样式
+            if (function_exists('wp_add_inline_style')) {
+                wp_add_inline_style('login', $custom_css);
+            }
+        }
+    }
+}
+
+// 钩子到login_enqueue_scripts
+if (function_exists('add_action')) {
+    add_action('login_enqueue_scripts', 'wpca_custom_login_styles');
+}
+
+/**
+ * 隐藏登录页面元素
+ */
+function wpca_hide_login_elements() {
+    // 检查WPCA_Settings类是否存在
+    if (class_exists('WPCA_Settings')) {
+        // 检查get_options方法是否存在
+        if (method_exists('WPCA_Settings', 'get_options')) {
+            $options = WPCA_Settings::get_options();
+            $login_elements = isset($options['login_elements']) ? $options['login_elements'] : array();
+        
+            $custom_css = "";
+            
+            // 隐藏语言切换器
+            if (isset($login_elements['language_switcher']) && !$login_elements['language_switcher']) {
+                $custom_css .= ".language-switcher { display: none !important; }";
+            }
+            
+            // 隐藏首页链接
+            if (isset($login_elements['home_link']) && !$login_elements['home_link']) {
+                $custom_css .= "#backtoblog { display: none !important; }";
+            }
+            
+            // 隐藏注册链接
+            if (isset($login_elements['register_link']) && !$login_elements['register_link']) {
+                $custom_css .= "#nav a[href*='wp-login.php?action=register'] { display: none !important; }";
+            }
+            
+            // 隐藏记住我
+            if (isset($login_elements['remember_me']) && !$login_elements['remember_me']) {
+                $custom_css .= ".forgetmenot { display: none !important; }";
+            }
+            
+            // 应用自定义样式
+            if (!empty($custom_css) && function_exists('wp_add_inline_style')) {
+                wp_add_inline_style('login', $custom_css);
+            }
+        }
+    }
+}
+
+// 钩子到login_enqueue_scripts
+if (function_exists('add_action')) {
+    add_action('login_enqueue_scripts', 'wpca_hide_login_elements');
+}
+
+/**
+ * 自定义登录页面标题
+ */
+function wpca_custom_login_title($login_title) {
+    // 检查WPCA_Settings类是否存在
+    if (class_exists('WPCA_Settings')) {
+        // 检查get_options方法是否存在
+        if (method_exists('WPCA_Settings', 'get_options')) {
+            $options = WPCA_Settings::get_options();
+            $hide_wordpress_title = isset($options['hide_wordpress_title']) ? $options['hide_wordpress_title'] : 0;
+            
+            if ($hide_wordpress_title) {
+                // 检查WordPress核心函数是否存在
+                if (function_exists('sanitize_key')) {
+                    $login_title = sanitize_key($login_title);
+                }
+                return str_replace('WordPress &#8212; ', '', $login_title);
+            }
+        }
+    }
+    
+    return $login_title;
+}
+
+// 钩子到login_title
+if (function_exists('add_filter')) {
+    add_filter('login_title', 'wpca_custom_login_title');
+}
+
+/**
+ * 自定义登录页面链接URL
+ */
+function wpca_custom_login_headerurl($url) {
+    // 检查WPCA_Settings类是否存在
+    if (class_exists('WPCA_Settings')) {
+        // 检查get_options方法是否存在
+        if (method_exists('WPCA_Settings', 'get_options')) {
+            $options = WPCA_Settings::get_options();
+            $hide_wordpress_title = isset($options['hide_wordpress_title']) ? $options['hide_wordpress_title'] : 0;
+            
+            if ($hide_wordpress_title) {
+                // 检查WordPress核心函数是否存在
+                if (function_exists('home_url')) {
+                    return home_url();
+                }
+            }
+        }
+    }
+    
+    return $url;
+}
+
+// 钩子到login_headerurl
+if (function_exists('add_filter')) {
+    add_filter('login_headerurl', 'wpca_custom_login_headerurl');
+}
+
+/**
+ * 自定义登录页面链接标题
+ */
+function wpca_custom_login_headertitle($title) {
+    // 检查WPCA_Settings类是否存在
+    if (class_exists('WPCA_Settings')) {
+        // 检查get_options方法是否存在
+        if (method_exists('WPCA_Settings', 'get_options')) {
+            $options = WPCA_Settings::get_options();
+            $hide_wordpress_title = isset($options['hide_wordpress_title']) ? $options['hide_wordpress_title'] : 0;
+            
+            if ($hide_wordpress_title) {
+                // 检查WordPress核心函数是否存在
+                if (function_exists('get_bloginfo')) {
+                    return get_bloginfo('name', 'display');
+                }
+            }
+        }
+    }
+    
+    return $title;
+}
+
+// 钩子到login_headertitle
+if (function_exists('add_filter')) {
+    add_filter('login_headertitle', 'wpca_custom_login_headertitle');
 }
 ?>
