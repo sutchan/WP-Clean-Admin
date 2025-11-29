@@ -1,234 +1,414 @@
 /**
- * WP Clean Admin - Settings Module
- * Handles settings page functionality including color pickers, media uploaders, and menu ordering
+ * Settings functionality for WP Clean Admin
  * 
- * @file       wpcleanadmin/assets/js/wpca-settings.js
- * @version    1.7.13
- * @updated    2025-06-18
+ * @file wpcleanadmin/assets/js/wpca-settings.js
+ * @version 1.7.15
+ * @updated 2025-11-29
  */
 
 jQuery(document).ready(function($) {
-    // 触发选项卡初始化事件
-    $(document).trigger('wpca.init.tabs');
+    'use strict';
     
-    // Initialize color pickers
-    if ($.fn.wpColorPicker) {
-        $('.wpca-color-picker').wpColorPicker();
-    }
-    
-    // Color picker interaction
-    $(document).on('click', '.wpca-color-preset', function() {
-        var color = $(this).data('color');
-        var colorPicker = $(this).closest('.wpca-color-picker-wrap').find('.wpca-color-picker');
-        var colorValue = $(this).closest('.wpca-color-picker-wrap').find('.wpca-color-value');
-        var previewBox = $(this).closest('.wpca-color-picker-wrap').find('.wpca-color-preview');
+    /**
+     * Settings management class
+     */
+    var WPCASettings = {
+        /**
+         * Initialize settings functionality
+         */
+        init: function() {
+            this.bindEvents();
+            this.initSettingsTabs();
+            this.initToggleOptions();
+            this.initFormValidation();
+        },
         
-        // Update color picker value
-        colorPicker.val(color).trigger('input');
+        /**
+         * Bind event handlers
+         */
+        bindEvents: function() {
+            // Save settings form
+            $('#wpca-settings-form').on('submit', this.saveSettings.bind(this));
+            
+            // Import settings form
+            $('#wpca-import-settings-form').on('submit', this.importSettings.bind(this));
+            
+            // Export settings button
+            $('#wpca-export-settings').on('click', this.exportSettings.bind(this));
+            
+            // Reset settings button
+            $('#wpca-reset-settings').on('click', this.resetSettings.bind(this));
+            
+            // Toggle setting groups
+            $('.wpca-setting-group-toggle').on('click', this.toggleSettingGroup.bind(this));
+        },
         
-        // Update color value text
-        colorValue.text(color);
-        
-        // Update preview box
-        previewBox.css('background-color', color);
-        
-        // Update wpColorPicker if initialized
-        if (colorPicker.hasClass('wp-color-picker')) {
-            colorPicker.wpColorPicker('color', color);
-        }
-    });
-    
-    // Update color preview when input changes
-    $(document).on('input', '.wpca-color-picker', function() {
-        var color = $(this).val();
-        var colorValue = $(this).closest('.wpca-color-picker-wrap').find('.wpca-color-value');
-        var previewBox = $(this).closest('.wpca-color-picker-wrap').find('.wpca-color-preview');
-        
-        // Update color value text
-        colorValue.text(color);
-        
-        // Update preview box
-        previewBox.css('background-color', color);
-    });
-    
-    // Initialize color values and previews on page load
-    $('.wpca-color-picker-wrap').each(function() {
-        var colorPicker = $(this).find('.wpca-color-picker');
-        var colorValue = $(this).find('.wpca-color-value');
-        var previewBox = $(this).find('.wpca-color-preview');
-        var color = colorPicker.val();
-        
-        // Set initial color value text
-        colorValue.text(color);
-        
-        // Set initial preview box color
-        previewBox.css('background-color', color);
-    });
-
-    // Media Uploader functionality
-    $(document).on('click', '.wpca-upload-button', function(e) {
-        e.preventDefault();
-        var button = $(this);
-        var targetField = $('#' + button.data('target'));
-        var previewDiv = $('#' + button.data('target') + '-preview');
-
-        if (typeof wp === 'undefined' || !wp.media) {
-            if (typeof WPCA !== 'undefined' && typeof WPCA.core !== 'undefined' && typeof WPCA.core.showNotice === 'function') {
-                WPCA.core.showNotice('error', wpca_admin.media_unavailable || 'WordPress media uploader not available.');
-            } else {
-                alert(wpca_admin.media_unavailable || 'WordPress media uploader not available.');
+        /**
+         * Initialize settings tabs
+         */
+        initSettingsTabs: function() {
+            // If tabs are already initialized, do nothing
+            if (typeof WPCATabs !== 'undefined') {
+                return;
             }
-            return;
-        }
-
-        var customUploader = wp.media({
-            title: wpca_admin.media_title,
-            library: {
-                type: 'image'
-            },
-            button: {
-                text: wpca_admin.media_button
-            },
-            multiple: false
-        }).on('select', function() {
-            var attachment = customUploader.state().get('selection').first().toJSON();
-            targetField.val(attachment.url);
-            previewDiv.html('<img src="' + attachment.url + '" alt="Preview" style="max-width:100%; height:auto;">').show();
-        }).open();
-    });
-
-    $(document).on('click', '.wpca-remove-button', function(e) {
-        e.preventDefault();
-        var button = $(this);
-        var targetField = $('#' + button.data('target'));
-        var previewDiv = $('#' + button.data('target') + '-preview');
-        targetField.val('');
-        previewDiv.hide().html('');
-    });
-
-    // Menu Ordering Sortable
-    $("#wpca-menu-order-list").sortable({
-        axis: "y",
-        handle: ".dashicons-menu",
-        items: "li",
-        placeholder: "ui-state-highlight",
-        forcePlaceholderSize: true,
-        update: function(event, ui) {
-            // Update hidden input fields for menu order
-            $(this).find('input[name="wpca_settings[menu_order][]"]').each(function(index) {
-                $(this).val($(this).closest("li").data("menu-slug"));
+            
+            // Simple tab functionality for settings page
+            $('.wpca-settings-tab-nav a').on('click', function(e) {
+                e.preventDefault();
+                var tabId = $(this).attr('href');
+                
+                // Remove active class from all tabs
+                $('.wpca-settings-tab-nav li').removeClass('active');
+                $('.wpca-settings-tab-content').removeClass('active');
+                
+                // Add active class to the clicked tab and its content
+                $(this).parent('li').addClass('active');
+                $(tabId).addClass('active');
             });
-        }
-    });
-
-    // Initialize menu items with saved visibility states
-    $(".wpca-menu-toggle-switch input[type=checkbox]").each(function() {
-        var isVisible = $(this).is(":checked");
-        $(this).closest(".wpca-menu-toggle-switch").toggleClass("checked", isVisible);
-    });
-
-    // Update menu visibility based on main toggle
-    function updateMenuVisibility(isEnabled) {
-        $(".wpca-menu-sortable, .wpca-menu-order-header").toggle(isEnabled);
-        if (!isEnabled) {
-            // If main toggle is disabled, uncheck all individual toggles
-            $(".wpca-menu-toggle-switch input[type=checkbox]")
-                .prop("checked", false)
-                .trigger("change")
-                .closest(".wpca-menu-toggle-switch")
-                .removeClass("checked");
-        }
-    }
-
-    // Handle main menu toggle
-    $("#wpca-menu-toggle").on("change", function() {
-        var isEnabled = $(this).is(":checked");
-        updateMenuVisibility(isEnabled);
-        $(this).closest(".wpca-toggle-switch").toggleClass("checked", isEnabled);
-    }).trigger("change"); // Initialize on load
-
-    // Handle individual menu item toggles
-    $(document).on("change", ".wpca-menu-toggle-switch input[type=checkbox]", function() {
-        var isChecked = $(this).is(":checked");
-        $(this).closest(".wpca-menu-toggle-switch").toggleClass("checked", isChecked);
-    });
-
-    // Reset Menu Order button functionality
-    $("#wpca-reset-menu-order").on("click", function() {
-        if (confirm(wpca_admin.reset_confirm)) {
-            var $button = $(this);
-            var originalText = $button.html();
+        },
+        
+        /**
+         * Initialize toggle options
+         */
+        initToggleOptions: function() {
+            // Handle toggle switches
+            $('.wpca-toggle-switch').on('change', function() {
+                var toggle = $(this);
+                var target = toggle.attr('data-target');
+                
+                if (toggle.is(':checked')) {
+                    $(target).show();
+                } else {
+                    $(target).hide();
+                }
+            });
+            
+            // Initialize toggle states
+            $('.wpca-toggle-switch').each(function() {
+                var toggle = $(this);
+                var target = toggle.attr('data-target');
+                
+                if (!toggle.is(':checked')) {
+                    $(target).hide();
+                }
+            });
+        },
+        
+        /**
+         * Initialize form validation
+         */
+        initFormValidation: function() {
+            // Add validation rules for specific fields
+            $('#wpca-settings-form').validate({
+                rules: {
+                    'wpca_settings[max_login_attempts]': {
+                        required: true,
+                        number: true,
+                        min: 1,
+                        max: 100
+                    },
+                    'wpca_settings[lockout_duration]': {
+                        required: true,
+                        number: true,
+                        min: 1,
+                        max: 1440
+                    },
+                    'wpca_settings[auto_cleanup_frequency]': {
+                        required: true,
+                        number: true,
+                        min: 0,
+                        max: 30
+                    }
+                },
+                messages: {
+                    'wpca_settings[max_login_attempts]': {
+                        required: wpca_admin.error_required_field,
+                        number: wpca_admin.error_must_be_number,
+                        min: wpca_admin.error_min_value.replace('{min}', '1'),
+                        max: wpca_admin.error_max_value.replace('{max}', '100')
+                    },
+                    'wpca_settings[lockout_duration]': {
+                        required: wpca_admin.error_required_field,
+                        number: wpca_admin.error_must_be_number,
+                        min: wpca_admin.error_min_value.replace('{min}', '1'),
+                        max: wpca_admin.error_max_value.replace('{max}', '1440')
+                    },
+                    'wpca_settings[auto_cleanup_frequency]': {
+                        required: wpca_admin.error_required_field,
+                        number: wpca_admin.error_must_be_number,
+                        min: wpca_admin.error_min_value.replace('{min}', '0'),
+                        max: wpca_admin.error_max_value.replace('{max}', '30')
+                    }
+                },
+                errorElement: 'span',
+                errorClass: 'wpca-error-message',
+                errorPlacement: function(error, element) {
+                    error.insertAfter(element);
+                },
+                submitHandler: function(form) {
+                    WPCASettings.saveSettings(event);
+                }
+            });
+        },
+        
+        /**
+         * Save settings
+         * 
+         * @param {Event} e Submit event
+         */
+        saveSettings: function(e) {
+            e.preventDefault();
+            
+            var form = $('#wpca-settings-form');
+            var submitButton = form.find('input[type="submit"]');
+            var resultsContainer = $('#wpca-settings-results');
             
             // Show loading state
-            $button.html('<span class="dashicons dashicons-update spin" style="vertical-align: middle; margin-right: 5px;"></span> ' + wpca_admin.resetting_text);
+            submitButton.prop('disabled', true).html('<span class="spinner is-active"></span> ' + wpca_admin.saving_settings);
+            resultsContainer.html('');
             
-            // Simulate AJAX reset or perform client-side reset
-            setTimeout(function() {
-                // Reset visibility to default (all enabled)
-                $(".wpca-menu-toggle-switch input[type=checkbox]").prop("checked", true)
-                    .trigger("change")
-                    .closest(".wpca-menu-toggle-switch")
-                    .addClass("checked");
-                
-                // Reset menu order to default WordPress order (alphabetical by slug for simplicity)
-                var $sortable = $("#wpca-menu-order-list");
-                $sortable.find("li").sort(function(a, b) {
-                    return $(a).data("menu-slug").localeCompare($(b).data("menu-slug"));
-                }).appendTo($sortable);
-                
-                // Update the hidden fields with new order
-                $sortable.find("input[name='wpca_settings[menu_order][]']").each(function(index) {
-                    $(this).val($(this).closest("li").data("menu-slug"));
-                });
-                
-                // Also reset the main toggle
-                $("#wpca-menu-toggle").prop("checked", true).trigger("change");
-                
-                // Restore button text
-                $button.html(originalText);
-                
-                // Show success notice
-                if (typeof WPCA !== 'undefined' && typeof WPCA.core !== 'undefined' && typeof WPCA.core.showNotice === 'function') {
-                    WPCA.core.showNotice('success', wpca_admin.reset_text + ' ' + wpca_admin.reset_successful_text);
-                } else {
-                    alert(wpca_admin.reset_text + ' ' + wpca_admin.reset_successful_text);
+            // Get form data
+            var formData = form.serialize();
+            
+            $.ajax({
+                url: wpca_admin.ajaxurl,
+                type: 'POST',
+                data: formData + '&action=wpca_save_settings&nonce=' + wpca_admin.nonce,
+                success: function(response) {
+                    WPCASettings.handleSaveSettingsResponse(response);
+                },
+                error: function() {
+                    resultsContainer.html('<div class="error notice"><p>' + wpca_admin.error_server_error + '</p></div>');
+                    submitButton.prop('disabled', false).html(wpca_admin.save_settings);
                 }
-            }, 500);
-        }
-    });
-
-    // Login Page Style Selector
-    $('input[name="wpca_settings[login_style]"]').on('change', function() {
-        $('.wpca-login-style-item').removeClass('active');
-        $(this).closest('.wpca-login-style-item').addClass('active');
+            });
+        },
         
-        // Show/hide custom options
-        if ($(this).val() === 'custom') {
-            $('#wpca-custom-login-options').slideDown();
-        } else {
-            $('#wpca-custom-login-options').slideUp();
+        /**
+         * Handle save settings response
+         * 
+         * @param {Object} response AJAX response
+         */
+        handleSaveSettingsResponse: function(response) {
+            var submitButton = $('#wpca-settings-form').find('input[type="submit"]');
+            var resultsContainer = $('#wpca-settings-results');
+            
+            submitButton.prop('disabled', false).html(wpca_admin.save_settings);
+            
+            if (response.success) {
+                resultsContainer.html('<div class="success notice"><p>' + response.data.message + '</p></div>');
+                
+                // Auto-dismiss success message after 3 seconds
+                setTimeout(function() {
+                    resultsContainer.fadeOut('slow', function() {
+                        $(this).html('').show();
+                    });
+                }, 3000);
+            } else {
+                resultsContainer.html('<div class="error notice"><p>' + (response.data.message || wpca_admin.error_request_processing_failed) + '</p></div>');
+            }
+        },
+        
+        /**
+         * Import settings
+         * 
+         * @param {Event} e Submit event
+         */
+        importSettings: function(e) {
+            e.preventDefault();
+            
+            var form = $('#wpca-import-settings-form');
+            var submitButton = form.find('input[type="submit"]');
+            var resultsContainer = $('#wpca-import-results');
+            var settingsFile = $('#wpca-settings-file')[0].files[0];
+            
+            if (!settingsFile) {
+                resultsContainer.html('<div class="error notice"><p>' + wpca_admin.error_no_file_selected + '</p></div>');
+                return;
+            }
+            
+            // Show loading state
+            submitButton.prop('disabled', true).html('<span class="spinner is-active"></span> ' + wpca_admin.importing_settings);
+            resultsContainer.html('');
+            
+            // Create FormData object
+            var formData = new FormData();
+            formData.append('action', 'wpca_import_settings');
+            formData.append('nonce', wpca_admin.nonce);
+            formData.append('settings_file', settingsFile);
+            
+            $.ajax({
+                url: wpca_admin.ajaxurl,
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    WPCASettings.handleImportSettingsResponse(response);
+                },
+                error: function() {
+                    resultsContainer.html('<div class="error notice"><p>' + wpca_admin.error_server_error + '</p></div>');
+                    submitButton.prop('disabled', false).html(wpca_admin.import_settings);
+                }
+            });
+        },
+        
+        /**
+         * Handle import settings response
+         * 
+         * @param {Object} response AJAX response
+         */
+        handleImportSettingsResponse: function(response) {
+            var submitButton = $('#wpca-import-settings-form').find('input[type="submit"]');
+            var resultsContainer = $('#wpca-import-results');
+            
+            submitButton.prop('disabled', false).html(wpca_admin.import_settings);
+            
+            if (response.success) {
+                resultsContainer.html('<div class="success notice"><p>' + response.data.message + '</p></div>');
+                
+                // Reload the page after successful import
+                setTimeout(function() {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                resultsContainer.html('<div class="error notice"><p>' + (response.data.message || wpca_admin.error_request_processing_failed) + '</p></div>');
+            }
+        },
+        
+        /**
+         * Export settings
+         */
+        exportSettings: function() {
+            var exportButton = $('#wpca-export-settings');
+            
+            // Show loading state
+            exportButton.prop('disabled', true).html('<span class="spinner is-active"></span> ' + wpca_admin.exporting_settings);
+            
+            $.ajax({
+                url: wpca_admin.ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'wpca_export_settings',
+                    nonce: wpca_admin.nonce
+                },
+                success: function(response) {
+                    WPCASettings.handleExportSettingsResponse(response);
+                },
+                error: function() {
+                    alert(wpca_admin.error_server_error);
+                    exportButton.prop('disabled', false).html(wpca_admin.export_settings);
+                }
+            });
+        },
+        
+        /**
+         * Handle export settings response
+         * 
+         * @param {Object} response AJAX response
+         */
+        handleExportSettingsResponse: function(response) {
+            var exportButton = $('#wpca-export-settings');
+            
+            exportButton.prop('disabled', false).html(wpca_admin.export_settings);
+            
+            if (response.success) {
+                // Create a download link
+                var blob = new Blob([response.data.settings_json], { type: 'application/json' });
+                var url = URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'wp-clean-admin-settings-' + new Date().toISOString().slice(0, 10) + '.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } else {
+                alert(response.data.message || wpca_admin.error_request_processing_failed);
+            }
+        },
+        
+        /**
+         * Reset settings
+         */
+        resetSettings: function() {
+            if (!confirm(wpca_admin.confirm_reset_settings)) {
+                return;
+            }
+            
+            var resetButton = $('#wpca-reset-settings');
+            var resultsContainer = $('#wpca-settings-results');
+            
+            // Show loading state
+            resetButton.prop('disabled', true).html('<span class="spinner is-active"></span> ' + wpca_admin.resetting_settings);
+            resultsContainer.html('');
+            
+            $.ajax({
+                url: wpca_admin.ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'wpca_reset_settings',
+                    nonce: wpca_admin.nonce
+                },
+                success: function(response) {
+                    WPCASettings.handleResetSettingsResponse(response);
+                },
+                error: function() {
+                    resultsContainer.html('<div class="error notice"><p>' + wpca_admin.error_server_error + '</p></div>');
+                    resetButton.prop('disabled', false).html(wpca_admin.reset_settings);
+                }
+            });
+        },
+        
+        /**
+         * Handle reset settings response
+         * 
+         * @param {Object} response AJAX response
+         */
+        handleResetSettingsResponse: function(response) {
+            var resetButton = $('#wpca-reset-settings');
+            var resultsContainer = $('#wpca-settings-results');
+            
+            resetButton.prop('disabled', false).html(wpca_admin.reset_settings);
+            
+            if (response.success) {
+                resultsContainer.html('<div class="success notice"><p>' + response.data.message + '</p></div>');
+                
+                // Reload the page after successful reset
+                setTimeout(function() {
+                    window.location.reload();
+                }, 1500);
+            } else {
+                resultsContainer.html('<div class="error notice"><p>' + (response.data.message || wpca_admin.error_request_processing_failed) + '</p></div>');
+            }
+        },
+        
+        /**
+         * Toggle setting group visibility
+         * 
+         * @param {Event} e Click event
+         */
+        toggleSettingGroup: function(e) {
+            e.preventDefault();
+            var toggle = $(e.currentTarget);
+            var group = toggle.closest('.wpca-setting-group');
+            var content = group.find('.wpca-setting-group-content');
+            
+            // Toggle visibility
+            content.slideToggle();
+            
+            // Toggle active class
+            group.toggleClass('active');
+            
+            // Update toggle text
+            if (group.hasClass('active')) {
+                toggle.html('<span class="dashicons dashicons-arrow-up"></span> ' + wpca_admin.hide_options);
+            } else {
+                toggle.html('<span class="dashicons dashicons-arrow-down"></span> ' + wpca_admin.show_options);
+            }
         }
-        // Trigger login preview update (assuming this function exists in wpca-login.js or wpca-main.js)
-        if (typeof WPCA !== 'undefined' && WPCA.loginPage && WPCA.loginPage.updatePreview) {
-            WPCA.loginPage.updatePreview();
-        }
-    });
-
-    // Initial check for custom login options visibility
-    if ($('input[name="wpca_settings[login_style]"]:checked').val() === 'custom') {
-        $('#wpca-custom-login-options').show();
-    } else {
-        $('#wpca-custom-login-options').hide();
-    }
-
-    // Trigger login preview update on relevant field changes
-    $('#wpca-login-logo, #wpca-login-background, textarea[name="wpca_settings[login_custom_css]"]').on('change keyup', function() {
-        if (typeof WPCA !== 'undefined' && WPCA.loginPage && WPCA.loginPage.updatePreview) {
-            WPCA.loginPage.updatePreview();
-        }
-    });
-    // Initial login preview update
-    if (typeof WPCA !== 'undefined' && WPCA.loginPage && WPCA.loginPage.updatePreview) {
-        WPCA.loginPage.updatePreview();
-    }
+    };
+    
+    // Initialize settings when DOM is ready
+    WPCASettings.init();
 });

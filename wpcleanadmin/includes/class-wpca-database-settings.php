@@ -1,1 +1,413 @@
-<?php\n/**\n * WP Clean Admin Database Settings\n * \n * Provides settings page and UI for database optimization features.\n * Handles database optimization settings, cleanup configuration, and scheduler setup.\n * \n * @package WP_Clean_Admin\n * @since 1.6.0\n * @version 1.7.13\n * @file wpcleanadmin/includes/class-wpca-database-settings.php\n * @updated 2025-06-18\n */\n\nif ( ! defined( 'ABSPATH' ) ) {\n    exit; // Exit if accessed directly.\n}\n\n// 加载 WordPress 函数存根\nif ( file_exists( __DIR__ . '/wpca-core-functions.php' ) ) {\n    require_once __DIR__ . '/wpca-core-functions.php';\n}\n\n/**\n * WPCA_Database_Settings class.\n * \n * Manages database optimization settings page and UI components.\n */\nclass WPCA_Database_Settings {\n\n    /**\n     * Instance of the class.\n     *\n     * @var WPCA_Database_Settings\n     */\n    protected static $instance = null;\n\n    /**\n     * Database component instance.\n     *\n     * @var WPCA_Database\n     */\n    protected $database;\n\n    /**\n     * Settings page slug.\n     *\n     * @var string\n     */\n    protected $page_slug = 'wpca-database';\n\n    /**\n     * Current tab.\n     *\n     * @var string\n     */\n    protected $current_tab = 'optimization';\n\n    /**\n     * Available tabs.\n     *\n     * @var array\n     */\n    protected $tabs = array();\n\n    /**\n     * Initialize the class.\n     */\n    public function __construct() {\n        // Initialize database component\n        if ( class_exists( 'WPCA_Database' ) ) {\n            $this->database = WPCA_Database::get_instance();\n        }\n\n        // Initialize tabs\n        $this->init_tabs();\n\n        // Register hooks with function_exists checks\n        if ( function_exists( 'add_action' ) ) {\n            add_action( 'admin_menu', array( $this, 'add_settings_page' ) );\n            add_action( 'admin_init', array( $this, 'register_settings' ) );\n            add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );\n        }\n    }\n\n    /**\n     * Initialize tabs.\n     */\n    public function init_tabs() {\n        if ( function_exists( 'esc_html__' ) ) {\n            $this->tabs = array(\n                'optimization' => array(\n                    'title'    => esc_html__( 'Table Optimization', 'wp-clean-admin' ),\n                    'callback' => method_exists( $this, 'render_optimization_tab' ) ? array( $this, 'render_optimization_tab' ) : null,\n                    'icon'     => 'dashicons-database',\n                ),\n                'cleanup' => array(\n                    'title'    => esc_html__( 'Database Cleanup', 'wp-clean-admin' ),\n                    'callback' => method_exists( $this, 'render_cleanup_tab' ) ? array( $this, 'render_cleanup_tab' ) : null,\n                    'icon'     => 'dashicons-trash',\n                ),\n                'schedule' => array(\n                    'title'    => esc_html__( 'Scheduled Tasks', 'wp-clean-admin' ),\n                    'callback' => method_exists( $this, 'render_schedule_tab' ) ? array( $this, 'render_schedule_tab' ) : null,\n                    'icon'     => 'dashicons-clock',\n                ),\n                'info' => array(\n                    'title'    => esc_html__( 'Database Info', 'wp-clean-admin' ),\n                    'callback' => method_exists( $this, 'render_info_tab' ) ? array( $this, 'render_info_tab' ) : null,\n                    'icon'     => 'dashicons-info',\n                ),\n            );\n        }\n    }\n\n    /**\n     * Add the settings page.\n     */\n    public function add_settings_page() {\n        if ( function_exists( 'add_submenu_page' ) && function_exists( 'esc_html__' ) ) {\n            add_submenu_page(\n                'wpca-settings',\n                esc_html__( 'Database Optimization', 'wp-clean-admin' ),\n                esc_html__( 'Database', 'wp-clean-admin' ),\n                'manage_options',\n                $this->page_slug,\n                array( $this, 'render_settings_page' ),\n                20\n            );\n        }\n    }\n\n    /**\n     * Register settings.\n     */\n    public function register_settings() {\n        // Database optimization settings with function_exists checks\n        if ( function_exists( 'register_setting' ) ) {\n            register_setting(\n                'wpca-database-optimization',\n                'wpca_auto_optimize_tables',\n                array(\n                    'type'              => 'boolean',\n                    'sanitize_callback' => function_exists( 'absint' ) ? 'absint' : null,\n                    'default'           => false,\n                )\n            );\n\n        register_setting(\n            'wpca-database-optimization',\n            'wpca_optimize_interval',\n            array(\n                'type'              => 'string',\n                'sanitize_callback' => 'sanitize_text_field',\n                'default'           => 'weekly',\n            )\n        );\n\n        register_setting(\n            'wpca-database-optimization',\n            'wpca_tables_to_optimize',\n            array(\n                'type'              => 'array',\n                'sanitize_callback' => array( $this, 'sanitize_table_list' ),\n                'default'           => array(),\n            )\n        );\n\n        // Database cleanup settings\n        register_setting(\n            'wpca-database-cleanup',\n            'wpca_enable_auto_cleanup',\n            array(\n                'type'              => 'boolean',\n                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',\n                'default'           => false,\n            )\n        );\n\n        register_setting(\n            'wpca-database-cleanup',\n            'wpca_cleanup_interval',\n            array(\n                'type'              => 'string',\n                'sanitize_callback' => 'sanitize_text_field',\n                'default'           => 'weekly',\n            )\n        );\n\n        register_setting(\n            'wpca-database-cleanup',\n            'wpca_cleanup_revisions',\n            array(\n                'type'              => 'boolean',\n                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',\n                'default'           => false,\n            )\n        );\n\n        register_setting(\n            'wpca-database-cleanup',\n            'wpca_revision_days',\n            array(\n                'type'              => 'integer',\n                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',\n                'default'           => 30,\n            )\n        );\n\n        register_setting(\n            'wpca-database-cleanup',\n            'wpca_cleanup_auto_drafts',\n            array(\n                'type'              => 'boolean',\n                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',\n                'default'           => false,\n            )\n        );\n\n        register_setting(\n            'wpca-database-cleanup',\n            'wpca_cleanup_trashed_posts',\n            array(\n                'type'              => 'boolean',\n                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',\n                'default'           => false,\n            )\n        );\n\n        register_setting(\n            'wpca-database-cleanup',\n            'wpca_cleanup_spam_comments',\n            array(\n                'type'              => 'boolean',\n                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',\n                'default'           => false,\n            )\n        );\n\n        register_setting(\n            'wpca-database-cleanup',\n            'wpca_cleanup_trashed_comments',\n            array(\n                'type'              => 'boolean',\n                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',\n                'default'           => false,\n            )\n        );\n\n        register_setting(\n            'wpca-database-cleanup',\n            'wpca_cleanup_pingbacks_trackbacks',\n            array(\n                'type'              => 'boolean',\n                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',\n                'default'           => false,\n            )\n        );\n\n        register_setting(\n            'wpca-database-cleanup',\n            'wpca_cleanup_orphaned_postmeta',\n            array(\n                'type'              => 'boolean',\n                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',\n                'default'           => false,\n            )\n        );\n\n        register_setting(\n            'wpca-database-cleanup',\n            'wpca_cleanup_orphaned_commentmeta',\n            array(\n                'type'              => 'boolean',\n                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',\n                'default'           => false,\n            )\n        );\n\n        register_setting(\n            'wpca-database-cleanup',\n            'wpca_cleanup_orphaned_relationships',\n            array(\n                'type'              => 'boolean',\n                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',\n                'default'           => false,\n            )\n        );\n\n        register_setting(\n            'wpca-database-cleanup',\n            'wpca_cleanup_orphaned_usermeta',\n            array(\n                'type'              => 'boolean',\n                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',\n                'default'           => false,\n            )\n        );\n\n        register_setting(\n            'wpca-database-cleanup',\n            'wpca_cleanup_expired_transients',\n            array(\n                'type'              => 'boolean',\n                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',\n                'default'           => false,\n            )\n        );\n\n        register_setting(\n            'wpca-database-cleanup',\n            'wpca_cleanup_all_transients',\n            array(\n                'type'              => 'boolean',\n                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',\n                'default'           => false,\n            )\n        );\n\n        register_setting(\n            'wpca-database-cleanup',\n            'wpca_cleanup_oembed_caches',\n            array(\n                'type'              => 'boolean',\n                'sanitize_callback' => function_exists('absint') ? 'absint' : 'intval',\n                'default'           => false,\n            )\n        );\n    }\n    }\n\n    /**\n     * Sanitize table list.\n     *\n     * @param array $tables Table list to sanitize.\n     * @return array Sanitized table list.\n     */\n    public function sanitize_table_list( $tables ) {\n        if ( ! is_array( $tables ) ) {\n            return array();\n        }\n\n        $sanitized = array();\n        foreach ( $tables as $table ) {\n            $safe_table = $this->sanitize_table_name( $table );\n            if ( ! empty( $safe_table ) ) {\n                $sanitized[] = $safe_table;\n            }\n        }\n\n        return $sanitized;\n    }\n\n    /**\n     * Sanitize table name.\n     *\n     * @param string $table_name Table name to sanitize.\n     * @return string Sanitized table name.\n     */\n    public function sanitize_table_name( $table_name ) {\n        // Only allow alphanumeric characters, underscores, and table prefix\n        global $wpdb;\n        $prefix = $wpdb->prefix;\n        \n        $sanitized = preg_replace( '/[^a-zA-Z0-9_]/', '', $table_name );\n        \n        // Ensure table name starts with the WordPress prefix\n        if ( strpos( $sanitized, $prefix ) === 0 ) {\n            return $sanitized;\n        }\n        \n        return '';\n    }\n\n    /**\n     * Enqueue scripts.\n     *\n     * @param string $hook_suffix Current admin page hook suffix.\n     */\n    public function enqueue_scripts( $hook_suffix ) {\n        if ( 'wpca-settings_page_wpca-database' !== $hook_suffix ) {\n            return;\n        }\n\n        // Enqueue script with function_exists checks\n        if ( function_exists( 'wp_enqueue_script' ) && defined( 'WPCA_URL' ) && defined( 'WPCA_VERSION' ) ) {\n            wp_enqueue_script( 'wpca-database', WPCA_URL . 'assets/js/wpca-database.js', array( 'jquery' ), WPCA_VERSION, true );\n        }\n\n        // Localize script with function_exists checks\n        if ( function_exists( 'wp_localize_script' ) && function_exists( 'admin_url' ) && function_exists( 'wp_create_nonce' ) && function_exists( 'esc_html__' ) ) {\n            wp_localize_script( 'wpca-database', 'wpca_database', array(\n                'ajax_url'                   => admin_url( 'admin-ajax.php' ),\n                'nonce'                      => wp_create_nonce( 'wpca-database' ),\n                'optimizeTables'             => esc_html__( 'Optimize Tables', 'wp-clean-admin' ),\n                'cleanupDatabase'            => esc_html__( 'Cleanup Database', 'wp-clean-admin' ),\n                'loading'                    => esc_html__( 'Loading...', 'wp-clean-admin' ),\n                'optimizing'                 => esc_html__( 'Optimizing tables...', 'wp-clean-admin' ),\n                'cleaning'                   => esc_html__( 'Cleaning database...', 'wp-clean-admin' ),\n                'optimizeSuccess'            => esc_html__( 'Successfully optimized %d of %d tables.', 'wp-clean-admin' ),\n                'optimizeFailed'             => esc_html__( 'Table optimization failed.', 'wp-clean-admin' ),\n                'selectCleanupItemsFirst'    => esc_html__( 'Please select at least one cleanup item.', 'wp-clean-admin' ),\n                'confirmCleanup'             => esc_html__( 'Are you sure you want to run the selected cleanup tasks? This cannot be undone.', 'wp-clean-admin' ),\n                'cleanupSuccess'             => esc_html__( 'Successfully removed %d items from the database.', 'wp-clean-admin' ),\n                'cleanupFailed'              => esc_html__( 'Database cleanup failed.', 'wp-clean-admin' ),\n            ));\n        }\n    }\n\n    /**\n     * Render the settings page.\n     */\n    public function render_settings_page() {\n        $this->current_tab = isset( $_GET['tab'] ) && array_key_exists( $_GET['tab'], $this->tabs ) ? $_GET['tab'] : 'optimization';\n        \n        ?>\n        <div class="wrap">\n            <h1><?php echo function_exists('esc_html_e') ? esc_html_e( 'Database Optimization', 'wp-clean-admin' ) : 'Database Optimization'; ?></h1>\n            \n            <div class="wpca-settings-tabs">\n                <nav class="nav-tab-wrapper">\n                    <?php foreach ( $this->tabs as $tab_id => $tab ) : ?>\n                        <a href="?page=<?php echo function_exists('esc_attr') ? esc_attr( $this->page_slug ) : htmlspecialchars( $this->page_slug ); ?>&tab=<?php echo function_exists('esc_attr') ? esc_attr( $tab_id ) : htmlspecialchars( $tab_id ); ?>" \n                           class="nav-tab<?php echo $this->current_tab === $tab_id ? ' nav-tab-active' : ''; ?>">\n                            <span class="dashicons <?php echo function_exists('esc_attr') ? esc_attr( $tab['icon'] ) : htmlspecialchars( $tab['icon'] ); ?>"></span>\n                            <?php echo function_exists('esc_html') ? esc_html( $tab['title'] ) : htmlspecialchars( $tab['title'] ); ?>\n                        </a>\n                    <?php endforeach; ?>\n                </nav>\n                \n                <div class="wpca-tab-content">\n                    <?php call_user_func( $this->tabs[$this->current_tab]['callback'] ); ?>\n                </div>\n            </div>\n        </div>\n        <?php\n    }\n\n    /**\n     * Render optimization tab.\n     */\n    public function render_optimization_tab() {\n        // Get current settings\n        $auto_optimize_enabled = function_exists('get_option') ? get_option( 'wpca_auto_optimize_tables', false ) : false;\n        $optimize_interval = function_exists('get_option') ? get_option( 'wpca_optimize_interval', 'weekly' ) : 'weekly';\n        $selected_tables = function_exists('get_option') ? get_option( 'wpca_tables_to_optimize', array() ) : array();\n        \n        // Get WordPress tables\n        global $wpdb;\n        $tables = isset($wpdb) && method_exists($wpdb, 'get_col') ? $wpdb->get_col( 'SHOW TABLES' ) : array();\n        \n        ?>\n        <div class="wpca-settings-section">\n            <h2><?php echo function_exists('esc_html_e') ? esc_html_e( 'Table Optimization', 'wp-clean-admin' ) : 'Table Optimization'; ?></h2>\n            <p><?php echo function_exists('esc_html_e') ? esc_html_e( 'Optimize database tables to reclaim unused space and improve performance.', 'wp-clean-admin' ) : 'Optimize database tables to reclaim unused space and improve performance.'; ?></p>\n            \n            <div class="wpca-optimization-actions">\n                <button type="button" id="wpca-optimize-tables" class="button button-primary button-large">\n                    <span class="dashicons dashicons-database"></span>\n                    <?php echo function_exists('esc_html_e') ? esc_html_e( 'Optimize All Tables', 'wp-clean-admin' ) : 'Optimize All Tables'; ?>\n                </button>\n                <div id="wpca-optimization-results" class="wpca-results"></div>\n            </div>\n            \n            <div class="wpca-optimization-tables">\n                <h3><?php echo function_exists('esc_html_e') ? esc_html_e( 'Select Tables to Optimize', 'wp-clean-admin' ) : 'Select Tables to Optimize'; ?></h3>\n                <p><?php echo function_exists('esc_html_e') ? esc_html_e( 'Choose which tables to include in scheduled optimizations:', 'wp-clean-admin' ) : 'Choose which tables to include in scheduled optimizations:'; ?></p>\n                \n                <form method="post" action="options.php">\n                    <?php function_exists('settings_fields') ? settings_fields( 'wpca-database-optimization' ) : ''; ?>\n                    \n                    <table class="widefat fixed">\n                        <thead>\n                            <tr>\n                                <th><?php echo function_exists('esc_html_e') ? esc_html_e( 'Table', 'wp-clean-admin' ) : 'Table'; ?></th>\n                                <th><?php echo function_exists('esc_html_e') ? esc_html_e( 'Include', 'wp-clean-admin' ) : 'Include'; ?></th>\n                            </tr>\n                        </thead>\n                        <tbody>\n                            <?php foreach ( $tables as $table ) : ?>\n                                <tr>\n                                    <td><?php echo function_exists('esc_html') ? esc_html( $table ) : htmlspecialchars( $table ); ?></td>\n                                    <td>\n                                        <input type="checkbox" \n                                               name="wpca_tables_to_optimize[]" \n                                               value="<?php echo function_exists('esc_attr') ? esc_attr( $table ) : htmlspecialchars( $table ); ?>" \n                                               <?php echo function_exists('checked') ? checked( in_array( $table, $selected_tables ) ) : (in_array( $table, $selected_tables ) ? 'checked="checked"' : ''); ?> \n                                        />\n                                    </td>\n                                </tr>\n                            <?php endforeach; ?>\n                        </tbody>\n                    </table>\n                    \n                    <div class="wpca-settings-submit">\n                        <?php echo function_exists('submit_button') ? submit_button( function_exists('esc_html__') ? esc_html__( 'Save Table Selection', 'wp-clean-admin' ) : 'Save Table Selection' ) : '<input type="submit" class="button button-primary" value="' . (function_exists('esc_html__') ? esc_html__( 'Save Table Selection', 'wp-clean-admin' ) : 'Save Table Selection') . '" />'; ?>\n                    </div>\n                </form>\n            </div>\n        </div>\n        <?php\n    }\n\n    /**\n     * Render cleanup tab.\n     */\n    public function render_cleanup_tab() {\n        // Get current settings\n        $cleanup_settings = array(\n            'revisions'              => function_exists('get_option') ? get_option( 'wpca_cleanup_revisions', false ) : false,\n            'revision_days'          => function_exists('get_option') ? get_option( 'wpca_revision_days', 30 ) : 30,\n            'auto_drafts'            => function_exists('get_option') ? get_option( 'wpca_cleanup_auto_drafts', false ) : false,\n            'trashed_posts'          => function_exists('get_option') ? get_option( 'wpca_cleanup_trashed_posts', false ) : false,\n            'spam_comments'          => function_exists('get_option') ? get_option( 'wpca_cleanup_spam_comments', false ) : false,\n            'trashed_comments'       => function_exists('get_option') ? get_option( 'wpca_cleanup_trashed_comments', false ) : false,\n            'pingbacks_trackbacks'   => function_exists('get_option') ? get_option( 'wpca_cleanup_pingbacks_trackbacks', false ) : false,\n            'orphaned_postmeta'      => function_exists('get_option') ? get_option( 'wpca_cleanup_orphaned_postmeta', false ) : false,\n            'orphaned_commentmeta'   => function_exists('get_option') ? get_option( 'wpca_cleanup_orphaned_commentmeta', false ) : false,\n            'orphaned_relationships' => function_exists('get_option') ? get_option( 'wpca_cleanup_orphaned_relationships', false ) : false,\n            'orphaned_usermeta'      => function_exists('get_option') ? get_option( 'wpca_cleanup_orphaned_usermeta', false ) : false,\n            'expired_transients'     => function_exists('get_option') ? get_option( 'wpca_cleanup_expired_transients', false ) : false,\n            'all_transients'         => function_exists('get_option') ? get_option( 'wpca_cleanup_all_transients', false ) : false,\n            'oembed_caches'          => function_exists('get_option') ? get_option( 'wpca_cleanup_oembed_caches', false ) : false,\n        );\n        \n        ?>\n        <div class="wpca-settings-section">\n            <h2><?php echo function_exists('esc_html_e') ? esc_html_e( 'Database Cleanup', 'wp-clean-admin' ) : 'Database Cleanup'; ?></h2>\n            <p><?php echo function_exists('esc_html_e') ? esc_html_e( 'Clean up unnecessary data from your database to reduce size and improve performance.', 'wp-clean-admin' ) : 'Clean up unnecessary data from your database to reduce size and improve performance.'; ?></p>\n            <p class="description"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Warning: Cleanup operations are irreversible. Please backup your database before proceeding.', 'wp-clean-admin' ) : 'Warning: Cleanup operations are irreversible. Please backup your database before proceeding.'; ?></p>\n            \n            <div class="wpca-cleanup-actions">\n                <button type="button" id="wpca-cleanup-database" class="button button-primary button-large">\n                    <span class="dashicons dashicons-trash"></span>\n                    <?php echo function_exists('esc_html_e') ? esc_html_e( 'Run Selected Cleanup Tasks', 'wp-clean-admin' ) : 'Run Selected Cleanup Tasks'; ?>\n                </button>\n                <div id="wpca-cleanup-results" class="wpca-results"></div>\n            </div>\n            \n            <div class="wpca-cleanup-options">\n                <h3><?php echo function_exists('esc_html_e') ? esc_html_e( 'Cleanup Options', 'wp-clean-admin' ) : 'Cleanup Options'; ?></h3>\n                <p><?php echo function_exists('esc_html_e') ? esc_html_e( 'Select which types of data to clean up:', 'wp-clean-admin' ) : 'Select which types of data to clean up:'; ?></p>\n                \n                <form method="post" action="options.php">\n                    <?php function_exists('settings_fields') ? settings_fields( 'wpca-database-cleanup' ) : ''; ?>\n                    \n                    <table class="form-table">\n                        <tr valign="top">\n                            <th scope="row">\n                                <label for="wpca_cleanup_revisions"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Post Revisions', 'wp-clean-admin' ) : 'Post Revisions'; ?></label>\n                            </th>\n                            <td>\n                                <input type="checkbox" id="wpca_cleanup_revisions" name="wpca_cleanup_revisions" value="1" <?php echo function_exists('checked') ? checked( $cleanup_settings['revisions'] ) : ($cleanup_settings['revisions'] ? 'checked="checked"' : ''); ?> />\n                                <label for="wpca_cleanup_revisions"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Remove old post revisions', 'wp-clean-admin' ) : 'Remove old post revisions'; ?></label>\n                                <div class="wpca-cleanup-options-indent">\n                                    <label for="wpca_revision_days"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Keep revisions from the last', 'wp-clean-admin' ) : 'Keep revisions from the last'; ?> </label>\n                                    <input type="number" id="wpca_revision_days" name="wpca_revision_days" min="1" value="<?php echo function_exists('esc_attr') ? esc_attr( $cleanup_settings['revision_days'] ) : htmlspecialchars( $cleanup_settings['revision_days'] ); ?>" />\n                                    <label for="wpca_revision_days"><?php echo function_exists('esc_html_e') ? esc_html_e( 'days', 'wp-clean-admin' ) : 'days'; ?></label>\n                                </div>\n                            </td>\n                        </tr>\n                        \n                        <tr valign="top">\n                            <th scope="row">\n                                <label for="wpca_cleanup_auto_drafts"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Auto Drafts', 'wp-clean-admin' ) : 'Auto Drafts'; ?></label>\n                            </th>\n                            <td>\n                                <input type="checkbox" id="wpca_cleanup_auto_drafts" name="wpca_cleanup_auto_drafts" value="1" <?php echo function_exists('checked') ? checked( $cleanup_settings['auto_drafts'] ) : ($cleanup_settings['auto_drafts'] ? 'checked="checked"' : ''); ?> />\n                                <label for="wpca_cleanup_auto_drafts"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Remove auto-saved drafts', 'wp-clean-admin' ) : 'Remove auto-saved drafts'; ?></label>\n                            </td>\n                        </tr>\n                        \n                        <tr valign="top">\n                            <th scope="row">\n                                <label for="wpca_cleanup_trashed_posts"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Trashed Posts', 'wp-clean-admin' ) : 'Trashed Posts'; ?></label>\n                            </th>\n                            <td>\n                                <input type="checkbox" id="wpca_cleanup_trashed_posts" name="wpca_cleanup_trashed_posts" value="1" <?php echo function_exists('checked') ? checked( $cleanup_settings['trashed_posts'] ) : ($cleanup_settings['trashed_posts'] ? 'checked="checked"' : ''); ?> />\n                                <label for="wpca_cleanup_trashed_posts"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Remove posts in trash', 'wp-clean-admin' ) : 'Remove posts in trash'; ?></label>\n                            </td>\n                        </tr>\n                        \n                        <tr valign="top">\n                            <th scope="row">\n                                <label for="wpca_cleanup_spam_comments"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Spam Comments', 'wp-clean-admin' ) : 'Spam Comments'; ?></label>\n                            </th>\n                            <td>\n                                <input type="checkbox" id="wpca_cleanup_spam_comments" name="wpca_cleanup_spam_comments" value="1" <?php echo function_exists('checked') ? checked( $cleanup_settings['spam_comments'] ) : ($cleanup_settings['spam_comments'] ? 'checked="checked"' : ''); ?> />\n                                <label for="wpca_cleanup_spam_comments"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Remove spam comments', 'wp-clean-admin' ) : 'Remove spam comments'; ?></label>\n                            </td>\n                        </tr>\n                        \n                        <tr valign="top">\n                            <th scope="row">\n                                <label for="wpca_cleanup_trashed_comments"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Trashed Comments', 'wp-clean-admin' ) : 'Trashed Comments'; ?></label>\n                            </th>\n                            <td>\n                                <input type="checkbox" id="wpca_cleanup_trashed_comments" name="wpca_cleanup_trashed_comments" value="1" <?php echo function_exists('checked') ? checked( $cleanup_settings['trashed_comments'] ) : ($cleanup_settings['trashed_comments'] ? 'checked="checked"' : ''); ?> />\n                                <label for="wpca_cleanup_trashed_comments"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Remove comments in trash', 'wp-clean-admin' ) : 'Remove comments in trash'; ?></label>\n                            </td>\n                        </tr>\n                        \n                        <tr valign="top">\n                            <th scope="row">\n                                <label for="wpca_cleanup_pingbacks_trackbacks"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Pingbacks/Trackbacks', 'wp-clean-admin' ) : 'Pingbacks/Trackbacks'; ?></label>\n                            </th>\n                            <td>\n                                <input type="checkbox" id="wpca_cleanup_pingbacks_trackbacks" name="wpca_cleanup_pingbacks_trackbacks" value="1" <?php echo function_exists('checked') ? checked( $cleanup_settings['pingbacks_trackbacks'] ) : ($cleanup_settings['pingbacks_trackbacks'] ? 'checked="checked"' : ''); ?> />\n                                <label for="wpca_cleanup_pingbacks_trackbacks"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Remove pingbacks and trackbacks', 'wp-clean-admin' ) : 'Remove pingbacks and trackbacks'; ?></label>\n                            </td>\n                        </tr>\n                        \n                        <tr valign="top">\n                              <th scope="row">\n                                  <label for="wpca_cleanup_orphaned_postmeta"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Orphaned Post Meta', 'wp-clean-admin' ) : 'Orphaned Post Meta'; ?></label>\n                              </th>\n                            <td>\n                                <input type="checkbox" id="wpca_cleanup_orphaned_postmeta" name="wpca_cleanup_orphaned_postmeta" value="1" <?php echo function_exists('checked') ? checked( $cleanup_settings['orphaned_postmeta'] ) : ($cleanup_settings['orphaned_postmeta'] ? 'checked="checked"' : ''); ?> />\n                                <label for="wpca_cleanup_orphaned_postmeta"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Remove post meta with no associated post', 'wp-clean-admin' ) : 'Remove post meta with no associated post'; ?></label>\n                            </td>\n                        </tr>\n                        \n                        <tr valign="top">\n                            <th scope="row">\n                                  <label for="wpca_cleanup_orphaned_commentmeta"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Orphaned Comment Meta', 'wp-clean-admin' ) : 'Orphaned Comment Meta'; ?></label>\n                              </th>\n                            <td>\n                                <input type="checkbox" id="wpca_cleanup_orphaned_commentmeta" name="wpca_cleanup_orphaned_commentmeta" value="1" <?php echo function_exists('checked') ? checked( $cleanup_settings['orphaned_commentmeta'] ) : ($cleanup_settings['orphaned_commentmeta'] ? 'checked="checked"' : ''); ?> />\n                                <label for="wpca_cleanup_orphaned_commentmeta"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Remove comment meta with no associated comment', 'wp-clean-admin' ) : 'Remove comment meta with no associated comment'; ?></label>\n                            </td>\n                        </tr>\n                        \n                        <tr valign="top">\n                            <th scope="row">\n                                <label for="wpca_cleanup_orphaned_relationships"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Orphaned Relationships', 'wp-clean-admin' ) : 'Orphaned Relationships'; ?></label>\n                            </th>\n                            <td>\n                                <input type="checkbox" id="wpca_cleanup_orphaned_relationships" name="wpca_cleanup_orphaned_relationships" value="1" <?php echo function_exists('checked') ? checked( $cleanup_settings['orphaned_relationships'] ) : ($cleanup_settings['orphaned_relationships'] ? 'checked="checked"' : ''); ?> />\n                                <label for="wpca_cleanup_orphaned_relationships"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Remove term relationships with no associated post', 'wp-clean-admin' ) : 'Remove term relationships with no associated post'; ?></label>\n                            </td>\n                        </tr>\n                        \n                        <tr valign="top">\n                            <th scope="row">\n                                <label for="wpca_cleanup_orphaned_usermeta"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Orphaned User Meta', 'wp-clean-admin' ) : 'Orphaned User Meta'; ?></label>\n                            </th>\n                            <td>\n                                <input type="checkbox" id="wpca_cleanup_orphaned_usermeta" name="wpca_cleanup_orphaned_usermeta" value="1" <?php echo function_exists('checked') ? checked( $cleanup_settings['orphaned_usermeta'] ) : ($cleanup_settings['orphaned_usermeta'] ? 'checked="checked"' : ''); ?> />\n                                <label for="wpca_cleanup_orphaned_usermeta"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Remove user meta with no associated user', 'wp-clean-admin' ) : 'Remove user meta with no associated user'; ?></label>\n                            </td>\n                        </tr>\n                        \n                        <tr valign="top">\n                            <th scope="row">\n                                <label for="wpca_cleanup_expired_transients"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Expired Transients', 'wp-clean-admin' ) : 'Expired Transients'; ?></label>\n                            </th>\n                            <td>\n                                <input type="checkbox" id="wpca_cleanup_expired_transients" name="wpca_cleanup_expired_transients" value="1" <?php echo function_exists('checked') ? checked( $cleanup_settings['expired_transients'] ) : ($cleanup_settings['expired_transients'] ? 'checked="checked"' : ''); ?> />\n                                <label for="wpca_cleanup_expired_transients"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Remove expired transients', 'wp-clean-admin' ) : 'Remove expired transients'; ?></label>\n                            </td>\n                        </tr>\n                        \n                        <tr valign="top">\n                            <th scope="row">\n                                <label for="wpca_cleanup_all_transients"><?php echo function_exists('esc_html_e') ? esc_html_e( 'All Transients', 'wp-clean-admin' ) : 'All Transients'; ?></label>\n                            </th>\n                            <td>\n                                <input type="checkbox" id="wpca_cleanup_all_transients" name="wpca_cleanup_all_transients" value="1" <?php echo function_exists('checked') ? checked( $cleanup_settings['all_transients'] ) : ($cleanup_settings['all_transients'] ? 'checked="checked"' : ''); ?> />\n                                <label for="wpca_cleanup_all_transients"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Remove all transients (use with caution)', 'wp-clean-admin' ) : 'Remove all transients (use with caution)'; ?></label>\n                            </td>\n                        </tr>\n                        \n                        <tr valign="top">\n                            <th scope="row">\n                                <label for="wpca_cleanup_oembed_caches"><?php echo function_exists('esc_html_e') ? esc_html_e( 'oEmbed Caches', 'wp-clean-admin' ) : 'oEmbed Caches'; ?></label>\n                            </th>\n                            <td>\n                                <input type="checkbox" id="wpca_cleanup_oembed_caches" name="wpca_cleanup_oembed_caches" value="1" <?php echo function_exists('checked') ? checked( $cleanup_settings['oembed_caches'] ) : ($cleanup_settings['oembed_caches'] ? 'checked="checked"' : ''); ?> />\n                                <label for="wpca_cleanup_oembed_caches"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Remove oEmbed cache entries', 'wp-clean-admin' ) : 'Remove oEmbed cache entries'; ?></label>\n                            </td>\n                        </tr>\n                    </table>\n                    \n                    <div class="wpca-settings-submit">\n                        <?php echo function_exists('submit_button') ? submit_button( function_exists('esc_html__') ? esc_html__( 'Save Cleanup Options', 'wp-clean-admin' ) : 'Save Cleanup Options' ) : '<input type="submit" class="button button-primary" value="' . (function_exists('esc_html__') ? esc_html__( 'Save Cleanup Options', 'wp-clean-admin' ) : 'Save Cleanup Options') . '" />'; ?>\n                    </div>\n                </form>\n            </div>\n        </div>\n        <?php\n    }\n\n    /**\n     * Render schedule tab.\n     */\n    public function render_schedule_tab() {\n        // Get current settings\n        $auto_optimize_enabled = function_exists('get_option') ? get_option( 'wpca_auto_optimize_tables', false ) : false;\n        $optimize_interval = function_exists('get_option') ? get_option( 'wpca_optimize_interval', 'weekly' ) : 'weekly';\n        $auto_cleanup_enabled = function_exists('get_option') ? get_option( 'wpca_enable_auto_cleanup', false ) : false;\n        $cleanup_interval = function_exists('get_option') ? get_option( 'wpca_cleanup_interval', 'weekly' ) : 'weekly';\n        \n        // Get available intervals\n        $intervals = array(\n            'daily'   => function_exists('esc_html__') ? esc_html__( 'Daily', 'wp-clean-admin' ) : 'Daily',\n            'weekly'  => function_exists('esc_html__') ? esc_html__( 'Weekly', 'wp-clean-admin' ) : 'Weekly',\n            'monthly' => function_exists('esc_html__') ? esc_html__( 'Monthly', 'wp-clean-admin' ) : 'Monthly',\n        );\n        \n        ?>\n        <div class="wpca-settings-section">\n            <h2><?php echo function_exists('esc_html_e') ? esc_html_e( 'Scheduled Tasks', 'wp-clean-admin' ) : 'Scheduled Tasks'; ?></h2>\n            <p><?php echo function_exists('esc_html_e') ? esc_html_e( 'Configure automatic database maintenance tasks to run on a schedule.', 'wp-clean-admin' ) : 'Configure automatic database maintenance tasks to run on a schedule.'; ?></p>\n            \n            <div class="wpca-schedule-options">\n                <h3><?php echo function_exists('esc_html_e') ? esc_html_e( 'Automatic Table Optimization', 'wp-clean-admin' ) : 'Automatic Table Optimization'; ?></h3>\n                \n                <form method="post" action="options.php">\n                    <?php function_exists('settings_fields') ? settings_fields( 'wpca-database-optimization' ) : ''; ?>\n                    \n                    <table class="form-table">\n                        <tr valign="top">\n                            <th scope="row">\n                                <label for="wpca_auto_optimize_tables"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Enable Automatic Optimization', 'wp-clean-admin' ) : 'Enable Automatic Optimization'; ?></label>\n                            </th>\n                            <td>\n                                <input type="checkbox" id="wpca_auto_optimize_tables" name="wpca_auto_optimize_tables" value="1" <?php echo function_exists('checked') ? checked( $auto_optimize_enabled ) : ($auto_optimize_enabled ? 'checked="checked"' : ''); ?> />\n                                <label for="wpca_auto_optimize_tables"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Run table optimization automatically', 'wp-clean-admin' ) : 'Run table optimization automatically'; ?></label>\n                            </td>\n                        </tr>\n                        \n                        <tr valign="top">\n                            <th scope="row">\n                                <label for="wpca_optimize_interval"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Optimization Interval', 'wp-clean-admin' ) : 'Optimization Interval'; ?></label>\n                            </th>\n                            <td>\n                                <select id="wpca_optimize_interval" name="wpca_optimize_interval" <?php echo function_exists('disabled') ? disabled( ! $auto_optimize_enabled ) : (!$auto_optimize_enabled ? 'disabled="disabled"' : ''); ?>>\n                                    <?php foreach ( $intervals as $value => $label ) : ?>\n                                        <option value="<?php echo function_exists('esc_attr') ? esc_attr( $value ) : htmlspecialchars( $value ); ?>" <?php echo function_exists('selected') ? selected( $optimize_interval, $value ) : ($optimize_interval === $value ? 'selected="selected"' : ''); ?>><?php echo function_exists('esc_html') ? esc_html( $label ) : htmlspecialchars( $label ); ?></option>\n                                    <?php endforeach; ?>\n                                </select>\n                            </td>\n                        </tr>\n                    </table>\n                    \n                    <h3><?php echo function_exists('esc_html_e') ? esc_html_e( 'Automatic Database Cleanup', 'wp-clean-admin' ) : 'Automatic Database Cleanup'; ?></h3>\n                    \n                    <table class="form-table">\n                        <tr valign="top">\n                            <th scope="row">\n                                <label for="wpca_enable_auto_cleanup"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Enable Automatic Cleanup', 'wp-clean-admin' ) : 'Enable Automatic Cleanup'; ?></label>\n                            </th>\n                            <td>\n                                <input type="checkbox" id="wpca_enable_auto_cleanup" name="wpca_enable_auto_cleanup" value="1" <?php echo function_exists('checked') ? checked( $auto_cleanup_enabled ) : ($auto_cleanup_enabled ? 'checked="checked"' : ''); ?> />\n                                <label for="wpca_enable_auto_cleanup"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Run database cleanup automatically', 'wp-clean-admin' ) : 'Run database cleanup automatically'; ?></label>\n                                <p class="description"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Cleanup tasks will be performed based on your selected options.', 'wp-clean-admin' ) : 'Cleanup tasks will be performed based on your selected options.'; ?></p>\n                            </td>\n                        </tr>\n                        \n                        <tr valign="top">\n                            <th scope="row">\n                                <label for="wpca_cleanup_interval"><?php echo function_exists('esc_html_e') ? esc_html_e( 'Cleanup Interval', 'wp-clean-admin' ) : 'Cleanup Interval'; ?></label>\n                            </th>\n                            <td>\n                                <select id="wpca_cleanup_interval" name="wpca_cleanup_interval" <?php echo function_exists('disabled') ? disabled( ! $auto_cleanup_enabled ) : (!$auto_cleanup_enabled ? 'disabled="disabled"' : ''); ?>>\n                                    <?php foreach ( $intervals as $value => $label ) : ?>\n                                        <option value="<?php echo function_exists('esc_attr') ? esc_attr( $value ) : htmlspecialchars( $value ); ?>" <?php echo function_exists('selected') ? selected( $cleanup_interval, $value ) : ($cleanup_interval === $value ? 'selected="selected"' : ''); ?>><?php echo function_exists('esc_html') ? esc_html( $label ) : htmlspecialchars( $label ); ?></option>\n                                    <?php endforeach; ?>\n                                </select>\n                            </td>\n                        </tr>\n                    </table>\n                    \n                    <div class="wpca-settings-submit">\n                        <?php echo function_exists('submit_button') ? submit_button( function_exists('esc_html__') ? esc_html__( 'Save Schedule Settings', 'wp-clean-admin' ) : 'Save Schedule Settings' ) : '<input type="submit" class="button button-primary" value="' . (function_exists('esc_html__') ? esc_html__( 'Save Schedule Settings', 'wp-clean-admin' ) : 'Save Schedule Settings') . '" />'; ?>\n                    </div>\n                </form>\n            </div>\n        </div>\n        <?php\n    }\n\n    /**\n     * Render info tab.\n     */\n    public function render_info_tab() {\n        // Get database information\n        $db_info = array();\n        $cleanup_stats = array();\n        \n        if ( $this->database && method_exists( $this->database, 'get_database_info' ) ) {\n            $db_info = $this->database->get_database_info();\n        }\n        \n        if ( $this->database && method_exists( $this->database, 'get_cleanup_stats' ) ) {\n            $cleanup_stats = $this->database->get_cleanup_stats();\n        }\n        \n        ?>\n        <div class="wpca-settings-section">\n            <h2><?php echo function_exists('esc_html_e') ? esc_html_e( 'Database Information', 'wp-clean-admin' ) : 'Database Information'; ?></h2>\n            <p><?php echo function_exists('esc_html_e') ? esc_html_e( 'Current database statistics and information.', 'wp-clean-admin' ) : 'Current database statistics and information.'; ?></p>\n            \n            <div class="wpca-database-info">\n                <h3><?php echo function_exists('esc_html_e') ? esc_html_e( 'General Information', 'wp-clean-admin' ) : 'General Information'; ?></h3>\n                \n                <table class="widefat fixed">\n                    <thead>\n                        <tr>\n                            <th><?php echo function_exists('esc_html_e') ? esc_html_e( 'Property', 'wp-clean-admin' ) : 'Property'; ?></th>\n                            <th><?php echo function_exists('esc_html_e') ? esc_html_e( 'Value', 'wp-clean-admin' ) : 'Value'; ?></th>\n                        </tr>\n                    </thead>\n                    <tbody>\n                        <tr>\n                            <td><?php echo function_exists('esc_html_e') ? esc_html_e( 'Database Version', 'wp-clean-admin' ) : 'Database Version'; ?></td>\n                            <td><?php echo isset( $db_info['version'] ) ? (function_exists('esc_html') ? esc_html( $db_info['version'] ) : htmlspecialchars( $db_info['version'] )) : (function_exists('esc_html__') ? esc_html__( 'Not available', 'wp-clean-admin' ) : 'Not available'); ?></td>\n                        </tr>\n                        <tr>\n                            <td><?php echo function_exists('esc_html_e') ? esc_html_e( 'Table Count', 'wp-clean-admin' ) : 'Table Count'; ?></td>\n                            <td><?php echo isset( $db_info['table_count'] ) ? (function_exists('esc_html') ? esc_html( $db_info['table_count'] ) : htmlspecialchars( $db_info['table_count'] )) : (function_exists('esc_html__') ? esc_html__( 'Not available', 'wp-clean-admin' ) : 'Not available'); ?></td>\n                        </tr>\n                        <tr>\n                            <td><?php echo function_exists('esc_html_e') ? esc_html_e( 'Database Size', 'wp-clean-admin' ) : 'Database Size'; ?></td>\n                            <td><?php echo isset( $db_info['size'] ) ? (function_exists('esc_html') ? esc_html( $db_info['size'] ) : htmlspecialchars( $db_info['size'] )) : (function_exists('esc_html__') ? esc_html__( 'Not available', 'wp-clean-admin' ) : 'Not available'); ?></td>\n                        </tr>\n                        <tr>\n                            <td><?php echo function_exists('esc_html_e') ? esc_html_e( 'Database Charset', 'wp-clean-admin' ) : 'Database Charset'; ?></td>\n                            <td><?php echo isset( $db_info['charset'] ) ? (function_exists('esc_html') ? esc_html( $db_info['charset'] ) : htmlspecialchars( $db_info['charset'] )) : (function_exists('esc_html__') ? esc_html__( 'Not available', 'wp-clean-admin' ) : 'Not available'); ?></td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n            \n            <div class="wpca-cleanup-stats">\n                <h3><?php echo function_exists('esc_html_e') ? esc_html_e( 'Cleanup Statistics', 'wp-clean-admin' ) : 'Cleanup Statistics'; ?></h3>\n                <p><?php echo function_exists('esc_html_e') ? esc_html_e( 'Current counts of cleanup items in your database:', 'wp-clean-admin' ) : 'Current counts of cleanup items in your database:'; ?></p>\n                \n                <table class="widefat fixed">\n                    <thead>\n                        <tr>\n                            <th><?php echo function_exists('esc_html_e') ? esc_html_e( 'Item', 'wp-clean-admin' ) : 'Item'; ?></th>\n                            <th><?php echo function_exists('esc_html_e') ? esc_html_e( 'Count', 'wp-clean-admin' ) : 'Count'; ?></th>\n                        </tr>\n                    </thead>\n                    <tbody>\n                        <tr>\n                            <td><?php echo function_exists('esc_html_e') ? esc_html_e( 'Post Revisions', 'wp-clean-admin' ) : 'Post Revisions'; ?></td>\n                            <td><?php echo isset( $cleanup_stats['revision_posts'] ) ? (function_exists('esc_html') ? esc_html( $cleanup_stats['revision_posts'] ) : htmlspecialchars( $cleanup_stats['revision_posts'] )) : (function_exists('esc_html__') ? esc_html__( 'Not available', 'wp-clean-admin' ) : 'Not available'); ?></td>\n                        </tr>\n                        <tr>\n                            <td><?php echo function_exists('esc_html_e') ? esc_html_e( 'Auto Drafts', 'wp-clean-admin' ) : 'Auto Drafts'; ?></td>\n                            <td><?php echo isset( $cleanup_stats['auto_drafts'] ) ? (function_exists('esc_html') ? esc_html( $cleanup_stats['auto_drafts'] ) : htmlspecialchars( $cleanup_stats['auto_drafts'] )) : (function_exists('esc_html__') ? esc_html__( 'Not available', 'wp-clean-admin' ) : 'Not available'); ?></td>\n                        </tr>\n                        <tr>\n                            <td><?php echo function_exists('esc_html_e') ? esc_html_e( 'Trashed Posts', 'wp-clean-admin' ) : 'Trashed Posts'; ?></td>\n                            <td><?php echo isset( $cleanup_stats['trashed_posts'] ) ? (function_exists('esc_html') ? esc_html( $cleanup_stats['trashed_posts'] ) : htmlspecialchars( $cleanup_stats['trashed_posts'] )) : (function_exists('esc_html__') ? esc_html__( 'Not available', 'wp-clean-admin' ) : 'Not available'); ?></td>\n                        </tr>\n                        <tr>\n                            <td><?php echo function_exists('esc_html_e') ? esc_html_e( 'Spam Comments', 'wp-clean-admin' ) : 'Spam Comments'; ?></td>\n                            <td><?php echo isset( $cleanup_stats['spam_comments'] ) ? (function_exists('esc_html') ? esc_html( $cleanup_stats['spam_comments'] ) : htmlspecialchars( $cleanup_stats['spam_comments'] )) : (function_exists('esc_html__') ? esc_html__( 'Not available', 'wp-clean-admin' ) : 'Not available'); ?></td>\n                        </tr>\n                        <tr>\n                            <td><?php echo function_exists('esc_html_e') ? esc_html_e( 'Trashed Comments', 'wp-clean-admin' ) : 'Trashed Comments'; ?></td>\n                            <td><?php echo isset( $cleanup_stats['trashed_comments'] ) ? (function_exists('esc_html') ? esc_html( $cleanup_stats['trashed_comments'] ) : htmlspecialchars( $cleanup_stats['trashed_comments'] )) : (function_exists('esc_html__') ? esc_html__( 'Not available', 'wp-clean-admin' ) : 'Not available'); ?></td>\n                        </tr>\n                        <tr>\n                            <td><?php echo function_exists('esc_html_e') ? esc_html_e( 'Pingbacks/Trackbacks', 'wp-clean-admin' ) : 'Pingbacks/Trackbacks'; ?></td>\n                            <td><?php echo isset( $cleanup_stats['pingbacks_trackbacks'] ) ? (function_exists('esc_html') ? esc_html( $cleanup_stats['pingbacks_trackbacks'] ) : htmlspecialchars( $cleanup_stats['pingbacks_trackbacks'] )) : (function_exists('esc_html__') ? esc_html__( 'Not available', 'wp-clean-admin' ) : 'Not available'); ?></td>\n                        </tr>\n                        <tr>\n                            <td><?php echo function_exists('esc_html_e') ? esc_html_e( 'Transients', 'wp-clean-admin' ) : 'Transients'; ?></td>\n                            <td><?php echo isset( $cleanup_stats['transients'] ) ? (function_exists('esc_html') ? esc_html( $cleanup_stats['transients'] ) : htmlspecialchars( $cleanup_stats['transients'] )) : (function_exists('esc_html__') ? esc_html__( 'Not available', 'wp-clean-admin' ) : 'Not available'); ?></td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n        <?php\n    }\n\n    /**\n     * Get the singleton instance of the class.\n     *\n     * @return WPCA_Database_Settings The instance of the class.\n     */\n    public static function get_instance() {\n        if ( null === self::$instance ) {\n            self::$instance = new self;\n        }\n        \n        return self::$instance;\n    }\n}\n\n/**\n * Initialize the database settings class.\n */\nfunction wpca_init_database_settings() {\n    return WPCA_Database_Settings::get_instance();\n}\n?>\n\n
+<?php
+
+/**
+ * Database settings functionality for WP Clean Admin
+ * 
+ * @file wpcleanadmin/includes/class-wpca-database-settings.php
+ * @version 1.7.15
+ * @updated 2025-11-29
+ */
+
+if (! defined('ABSPATH')) {
+    exit;
+}
+
+/**
+ * WPCA_Database_Settings class
+ * Manages database optimization settings
+ */
+class WPCA_Database_Settings {
+    
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->init();
+    }
+    
+    /**
+     * Initialize the settings class
+     */
+    private function init() {
+        // Register hooks
+        add_action('admin_menu', array($this, 'add_settings_page'));
+        add_action('admin_init', array($this, 'register_settings'));
+    }
+    
+    /**
+     * Add database settings page to admin menu
+     */
+    public function add_settings_page() {
+        add_submenu_page(
+            'wp-clean-admin',
+            __('Database Settings', 'wp-clean-admin'),
+            __('Database', 'wp-clean-admin'),
+            'manage_options',
+            'wp-clean-admin-database',
+            array($this, 'render_settings_page')
+        );
+    }
+    
+    /**
+     * Register database settings
+     */
+    public function register_settings() {
+        register_setting(
+            'wpca_database_settings_group',
+            'wpca_database_settings',
+            array($this, 'validate_settings')
+        );
+        
+        // Add settings sections
+        add_settings_section(
+            'wpca_database_cleanup_section',
+            __('Database Cleanup Settings', 'wp-clean-admin'),
+            array($this, 'render_cleanup_section'),
+            'wp-clean-admin-database'
+        );
+        
+        add_settings_section(
+            'wpca_database_optimize_section',
+            __('Database Optimization Settings', 'wp-clean-admin'),
+            array($this, 'render_optimize_section'),
+            'wp-clean-admin-database'
+        );
+        
+        add_settings_section(
+            'wpca_database_schedule_section',
+            __('Scheduled Cleanup Settings', 'wp-clean-admin'),
+            array($this, 'render_schedule_section'),
+            'wp-clean-admin-database'
+        );
+        
+        // Add settings fields
+        add_settings_field(
+            'wpca_database_cleanup_revisions',
+            __('Clean up post revisions', 'wp-clean-admin'),
+            array($this, 'render_cleanup_revisions_field'),
+            'wp-clean-admin-database',
+            'wpca_database_cleanup_section'
+        );
+        
+        add_settings_field(
+            'wpca_database_cleanup_auto_drafts',
+            __('Clean up auto drafts', 'wp-clean-admin'),
+            array($this, 'render_cleanup_auto_drafts_field'),
+            'wp-clean-admin-database',
+            'wpca_database_cleanup_section'
+        );
+        
+        add_settings_field(
+            'wpca_database_cleanup_trashed_posts',
+            __('Clean up trashed posts', 'wp-clean-admin'),
+            array($this, 'render_cleanup_trashed_posts_field'),
+            'wp-clean-admin-database',
+            'wpca_database_cleanup_section'
+        );
+        
+        add_settings_field(
+            'wpca_database_cleanup_spam_comments',
+            __('Clean up spam comments', 'wp-clean-admin'),
+            array($this, 'render_cleanup_spam_comments_field'),
+            'wp-clean-admin-database',
+            'wpca_database_cleanup_section'
+        );
+        
+        add_settings_field(
+            'wpca_database_cleanup_trash_comments',
+            __('Clean up trashed comments', 'wp-clean-admin'),
+            array($this, 'render_cleanup_trash_comments_field'),
+            'wp-clean-admin-database',
+            'wpca_database_cleanup_section'
+        );
+        
+        add_settings_field(
+            'wpca_database_cleanup_orphans',
+            __('Clean up orphaned data', 'wp-clean-admin'),
+            array($this, 'render_cleanup_orphans_field'),
+            'wp-clean-admin-database',
+            'wpca_database_cleanup_section'
+        );
+        
+        add_settings_field(
+            'wpca_database_cleanup_expired_transients',
+            __('Clean up expired transients', 'wp-clean-admin'),
+            array($this, 'render_cleanup_expired_transients_field'),
+            'wp-clean-admin-database',
+            'wpca_database_cleanup_section'
+        );
+        
+        add_settings_field(
+            'wpca_database_cleanup_oembed_cache',
+            __('Clean up oEmbed cache', 'wp-clean-admin'),
+            array($this, 'render_cleanup_oembed_cache_field'),
+            'wp-clean-admin-database',
+            'wpca_database_cleanup_section'
+        );
+        
+        add_settings_field(
+            'wpca_database_optimize_tables',
+            __('Optimize database tables', 'wp-clean-admin'),
+            array($this, 'render_optimize_tables_field'),
+            'wp-clean-admin-database',
+            'wpca_database_optimize_section'
+        );
+        
+        add_settings_field(
+            'wpca_database_schedule_frequency',
+            __('Scheduled cleanup frequency', 'wp-clean-admin'),
+            array($this, 'render_schedule_frequency_field'),
+            'wp-clean-admin-database',
+            'wpca_database_schedule_section'
+        );
+    }
+    
+    /**
+     * Validate database settings
+     * 
+     * @param array $input Input settings array
+     * @return array Validated settings array
+     */
+    public function validate_settings($input) {
+        $validated = array();
+        
+        // Cleanup settings
+        $validated['cleanup_revisions'] = isset($input['cleanup_revisions']) ? (int) $input['cleanup_revisions'] : 0;
+        $validated['cleanup_auto_drafts'] = isset($input['cleanup_auto_drafts']) ? (int) $input['cleanup_auto_drafts'] : 0;
+        $validated['cleanup_trashed_posts'] = isset($input['cleanup_trashed_posts']) ? (int) $input['cleanup_trashed_posts'] : 0;
+        $validated['cleanup_spam_comments'] = isset($input['cleanup_spam_comments']) ? (int) $input['cleanup_spam_comments'] : 0;
+        $validated['cleanup_trash_comments'] = isset($input['cleanup_trash_comments']) ? (int) $input['cleanup_trash_comments'] : 0;
+        $validated['cleanup_orphans'] = isset($input['cleanup_orphans']) ? (int) $input['cleanup_orphans'] : 0;
+        $validated['cleanup_expired_transients'] = isset($input['cleanup_expired_transients']) ? (int) $input['cleanup_expired_transients'] : 0;
+        $validated['cleanup_oembed_cache'] = isset($input['cleanup_oembed_cache']) ? (int) $input['cleanup_oembed_cache'] : 0;
+        
+        // Optimization settings
+        $validated['optimize_tables'] = isset($input['optimize_tables']) ? (int) $input['optimize_tables'] : 0;
+        
+        // Schedule settings
+        $validated['schedule_frequency'] = isset($input['schedule_frequency']) && in_array($input['schedule_frequency'], array('daily', 'weekly', 'monthly', 'disabled')) ? $input['schedule_frequency'] : 'disabled';
+        
+        // Update scheduled cleanup based on settings
+        $this->update_scheduled_cleanup($validated['schedule_frequency']);
+        
+        return $validated;
+    }
+    
+    /**
+     * Update scheduled cleanup based on settings
+     * 
+     * @param string $frequency Cleanup frequency
+     */
+    private function update_scheduled_cleanup($frequency) {
+        if (class_exists('WPCA_Database')) {
+            $database = WPCA_Database::get_instance();
+            
+            if ($frequency === 'disabled') {
+                $database->remove_scheduled_cleanup();
+            } else {
+                $database->set_scheduled_cleanup($frequency);
+            }
+        }
+    }
+    
+    /**
+     * Render cleanup section
+     */
+    public function render_cleanup_section() {
+        echo '<p>' . __('Configure which types of data to clean up from your WordPress database.', 'wp-clean-admin') . '</p>';
+    }
+    
+    /**
+     * Render optimize section
+     */
+    public function render_optimize_section() {
+        echo '<p>' . __('Configure database table optimization settings.', 'wp-clean-admin') . '</p>';
+    }
+    
+    /**
+     * Render schedule section
+     */
+    public function render_schedule_section() {
+        echo '<p>' . __('Configure automatic scheduled database cleanup.', 'wp-clean-admin') . '</p>';
+    }
+    
+    /**
+     * Render cleanup revisions field
+     */
+    public function render_cleanup_revisions_field() {
+        $settings = $this->get_settings();
+        $value = isset($settings['cleanup_revisions']) ? $settings['cleanup_revisions'] : 0;
+        echo '<input type="checkbox" name="wpca_database_settings[cleanup_revisions]" value="1" ' . checked(1, $value, false) . ' />';
+        echo '<label for="wpca_database_settings[cleanup_revisions]"> ' . __('Remove old post revisions', 'wp-clean-admin') . '</label>';
+    }
+    
+    /**
+     * Render cleanup auto drafts field
+     */
+    public function render_cleanup_auto_drafts_field() {
+        $settings = $this->get_settings();
+        $value = isset($settings['cleanup_auto_drafts']) ? $settings['cleanup_auto_drafts'] : 0;
+        echo '<input type="checkbox" name="wpca_database_settings[cleanup_auto_drafts]" value="1" ' . checked(1, $value, false) . ' />';
+        echo '<label for="wpca_database_settings[cleanup_auto_drafts]"> ' . __('Remove auto drafts', 'wp-clean-admin') . '</label>';
+    }
+    
+    /**
+     * Render cleanup trashed posts field
+     */
+    public function render_cleanup_trashed_posts_field() {
+        $settings = $this->get_settings();
+        $value = isset($settings['cleanup_trashed_posts']) ? $settings['cleanup_trashed_posts'] : 0;
+        echo '<input type="checkbox" name="wpca_database_settings[cleanup_trashed_posts]" value="1" ' . checked(1, $value, false) . ' />';
+        echo '<label for="wpca_database_settings[cleanup_trashed_posts]"> ' . __('Remove trashed posts', 'wp-clean-admin') . '</label>';
+    }
+    
+    /**
+     * Render cleanup spam comments field
+     */
+    public function render_cleanup_spam_comments_field() {
+        $settings = $this->get_settings();
+        $value = isset($settings['cleanup_spam_comments']) ? $settings['cleanup_spam_comments'] : 0;
+        echo '<input type="checkbox" name="wpca_database_settings[cleanup_spam_comments]" value="1" ' . checked(1, $value, false) . ' />';
+        echo '<label for="wpca_database_settings[cleanup_spam_comments]"> ' . __('Remove spam comments', 'wp-clean-admin') . '</label>';
+    }
+    
+    /**
+     * Render cleanup trash comments field
+     */
+    public function render_cleanup_trash_comments_field() {
+        $settings = $this->get_settings();
+        $value = isset($settings['cleanup_trash_comments']) ? $settings['cleanup_trash_comments'] : 0;
+        echo '<input type="checkbox" name="wpca_database_settings[cleanup_trash_comments]" value="1" ' . checked(1, $value, false) . ' />';
+        echo '<label for="wpca_database_settings[cleanup_trash_comments]"> ' . __('Remove trashed comments', 'wp-clean-admin') . '</label>';
+    }
+    
+    /**
+     * Render cleanup orphans field
+     */
+    public function render_cleanup_orphans_field() {
+        $settings = $this->get_settings();
+        $value = isset($settings['cleanup_orphans']) ? $settings['cleanup_orphans'] : 0;
+        echo '<input type="checkbox" name="wpca_database_settings[cleanup_orphans]" value="1" ' . checked(1, $value, false) . ' />';
+        echo '<label for="wpca_database_settings[cleanup_orphans]"> ' . __('Remove orphaned data (postmeta, commentmeta, etc.)', 'wp-clean-admin') . '</label>';
+    }
+    
+    /**
+     * Render cleanup expired transients field
+     */
+    public function render_cleanup_expired_transients_field() {
+        $settings = $this->get_settings();
+        $value = isset($settings['cleanup_expired_transients']) ? $settings['cleanup_expired_transients'] : 0;
+        echo '<input type="checkbox" name="wpca_database_settings[cleanup_expired_transients]" value="1" ' . checked(1, $value, false) . ' />';
+        echo '<label for="wpca_database_settings[cleanup_expired_transients]"> ' . __('Remove expired transients', 'wp-clean-admin') . '</label>';
+    }
+    
+    /**
+     * Render cleanup oembed cache field
+     */
+    public function render_cleanup_oembed_cache_field() {
+        $settings = $this->get_settings();
+        $value = isset($settings['cleanup_oembed_cache']) ? $settings['cleanup_oembed_cache'] : 0;
+        echo '<input type="checkbox" name="wpca_database_settings[cleanup_oembed_cache]" value="1" ' . checked(1, $value, false) . ' />';
+        echo '<label for="wpca_database_settings[cleanup_oembed_cache]"> ' . __('Remove old oEmbed cache', 'wp-clean-admin') . '</label>';
+    }
+    
+    /**
+     * Render optimize tables field
+     */
+    public function render_optimize_tables_field() {
+        $settings = $this->get_settings();
+        $value = isset($settings['optimize_tables']) ? $settings['optimize_tables'] : 0;
+        echo '<input type="checkbox" name="wpca_database_settings[optimize_tables]" value="1" ' . checked(1, $value, false) . ' />';
+        echo '<label for="wpca_database_settings[optimize_tables]"> ' . __('Automatically optimize database tables after cleanup', 'wp-clean-admin') . '</label>';
+    }
+    
+    /**
+     * Render schedule frequency field
+     */
+    public function render_schedule_frequency_field() {
+        $settings = $this->get_settings();
+        $value = isset($settings['schedule_frequency']) ? $settings['schedule_frequency'] : 'disabled';
+        
+        echo '<select name="wpca_database_settings[schedule_frequency]">';
+        echo '<option value="disabled" ' . selected($value, 'disabled', false) . '>' . __('Disabled', 'wp-clean-admin') . '</option>';
+        echo '<option value="daily" ' . selected($value, 'daily', false) . '>' . __('Daily', 'wp-clean-admin') . '</option>';
+        echo '<option value="weekly" ' . selected($value, 'weekly', false) . '>' . __('Weekly', 'wp-clean-admin') . '</option>';
+        echo '<option value="monthly" ' . selected($value, 'monthly', false) . '>' . __('Monthly', 'wp-clean-admin') . '</option>';
+        echo '</select>';
+    }
+    
+    /**
+     * Get database settings
+     * 
+     * @return array Database settings
+     */
+    public function get_settings() {
+        $settings = get_option('wpca_database_settings', array());
+        
+        // Default settings
+        $defaults = array(
+            'cleanup_revisions' => 1,
+            'cleanup_auto_drafts' => 1,
+            'cleanup_trashed_posts' => 1,
+            'cleanup_spam_comments' => 1,
+            'cleanup_trash_comments' => 1,
+            'cleanup_orphans' => 1,
+            'cleanup_expired_transients' => 1,
+            'cleanup_oembed_cache' => 1,
+            'optimize_tables' => 1,
+            'schedule_frequency' => 'weekly'
+        );
+        
+        return wp_parse_args($settings, $defaults);
+    }
+    
+    /**
+     * Render database settings page
+     */
+    public function render_settings_page() {
+        ?>  
+        <div class="wrap">
+            <h1><?php _e('WP Clean Admin - Database Settings', 'wp-clean-admin'); ?></h1>
+            
+            <!-- Database Info -->
+            <div class="wpca-database-info">
+                <h2><?php _e('Database Information', 'wp-clean-admin'); ?></h2>
+                <div id="wpca-database-info-container">
+                    <p><?php _e('Loading database information...', 'wp-clean-admin'); ?></p>
+                </div>
+            </div>
+            
+            <!-- Cleanup Actions -->
+            <div class="wpca-database-actions">
+                <h2><?php _e('Database Actions', 'wp-clean-admin'); ?></h2>
+                <div class="wpca-action-buttons">
+                    <button id="wpca-run-cleanup" class="button button-primary">
+                        <?php _e('Run Database Cleanup', 'wp-clean-admin'); ?>
+                    </button>
+                    <button id="wpca-optimize-tables" class="button button-secondary">
+                        <?php _e('Optimize Database Tables', 'wp-clean-admin'); ?>
+                    </button>
+                    <div id="wpca-action-results"></div>
+                </div>
+            </div>
+            
+            <!-- Settings Form -->
+            <form method="post" action="options.php">
+                <?php
+                settings_fields('wpca_database_settings_group');
+                do_settings_sections('wp-clean-admin-database');
+                submit_button();
+                ?>
+            </form>
+            
+            <!-- Cleanup Statistics -->
+            <div class="wpca-cleanup-statistics">
+                <h2><?php _e('Cleanup Statistics', 'wp-clean-admin'); ?></h2>
+                <div id="wpca-cleanup-stats-container">
+                    <p><?php _e('Loading cleanup statistics...', 'wp-clean-admin'); ?></p>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+}

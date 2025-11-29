@@ -1,4 +1,4 @@
-# 编辑器和IDE文件
+# 缂栬緫鍣ㄥ拰IDE鏂囦欢
 *.suo
 *.ntvs*
 *.njsproj
@@ -9,47 +9,47 @@
 .DS_Store
 Thumbs.db
 
-# 编译输出和缓存
+# 缂栬瘧杈撳嚭鍜岀紦瀛?
 *.class
 *.log
 *.cache
 
-# 版本控制
+# 鐗堟湰鎺у埗
 .git/
 .svn/
 .hg/
 
-# 操作系统生成的文件
+# 鎿嶄綔绯荤粺鐢熸垚鐨勬枃浠?
 .DS_Store
 Thumbs.db
 
-# 临时文件
+# 涓存椂鏂囦欢
 *.tmp
 *.temp
 *.bak
 *.old
 *.~*
 
-# 备份文件
+# 澶囦唤鏂囦欢
 */backup/*
 */backups/*
 
-# 日志文件
+# 鏃ュ織鏂囦欢
 *.log
 
-# Node.js依赖
+# Node.js渚濊禆
 node_modules/
 npm-debug.log
 
-# 构建目录
+# 鏋勫缓鐩綍
 dist/
 build/
 
-# 测试报告
+# 娴嬭瘯鎶ュ憡
 coverage/
 .nyc_output/
 
-# 环境变量文件
+# 鐜鍙橀噺鏂囦欢
 .env
 .env.local
 .env.development.local

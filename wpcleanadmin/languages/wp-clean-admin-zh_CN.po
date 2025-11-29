@@ -1,4 +1,4 @@
-msgid ""
+sgid ""
 msgstr ""
 "Project-Id-Version: WP Clean Admin 1.7.14\n"
 "Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"
@@ -20,178 +20,178 @@ msgid "WP Clean Admin"
 msgstr "WP Clean Admin"
 
 msgid "WP Clean Admin Settings"
-msgstr "WP Clean Admin 设置"
+msgstr "WP Clean Admin 鐠佸墽鐤?
 
 msgid "Settings"
-msgstr "设置"
+msgstr "鐠佸墽鐤?
 
 # ===========================================================
 # Database Optimization Module
 # ===========================================================
 msgid "Database Optimization"
-msgstr "数据库优化"
+msgstr "閺佺増宓佹惔鎾茬喘閸?
 
 msgid "Database Settings"
-msgstr "数据库设置"
+msgstr "閺佺増宓佹惔鎾诡啎缂?
 
 msgid "Database Optimization Settings"
-msgstr "数据库优化设置"
+msgstr "閺佺増宓佹惔鎾茬喘閸栨牞顔曠純?
 
 msgid "Table Optimization"
-msgstr "表优化"
+msgstr "鐞涖劋绱崠?
 
 msgid "Database Cleanup"
-msgstr "数据库清理"
+msgstr "閺佺増宓佹惔鎾寸閻?
 
 msgid "Scheduled Tasks"
-msgstr "计划任务"
+msgstr "鐠佲€冲灊娴犺濮?
 
 msgid "Database Info"
-msgstr "数据库信息"
+msgstr "閺佺増宓佹惔鎾蹭繆閹?
 
 msgid "Select tables to optimize:"
-msgstr "选择要优化的表："
+msgstr "闁瀚ㄧ憰浣风喘閸栨牜娈戠悰顭掔窗"
 
 msgid "Optimize Selected Tables"
-msgstr "优化所选表"
+msgstr "娴兼ê瀵查幍鈧柅澶庛€?
 
 msgid "Optimize All Tables"
-msgstr "优化所有表"
+msgstr "娴兼ê瀵查幍鈧張澶庛€?
 
 msgid "Cleanup Database"
-msgstr "清理数据库"
+msgstr "濞撳懐鎮婇弫鐗堝祦鎼?
 
 msgid "Enable scheduled database cleanup"
-msgstr "启用计划数据库清理"
+msgstr "閸氼垳鏁ょ拋鈥冲灊閺佺増宓佹惔鎾寸閻?
 
 msgid "Cleanup frequency"
-msgstr "清理频率"
+msgstr "濞撳懐鎮婃０鎴犲芳"
 
 msgid "Daily"
-msgstr "每天"
+msgstr "濮ｅ繐銇?
 
 msgid "Weekly"
-msgstr "每周"
+msgstr "濮ｅ繐鎳?
 
 msgid "Monthly"
-msgstr "每月"
+msgstr "濮ｅ繑婀€"
 
 msgid "Quarterly"
-msgstr "每季度"
+msgstr "濮ｅ繐顒滄惔?
 
 msgid "Database cleanup scheduled tasks"
-msgstr "数据库清理计划任务"
+msgstr "閺佺増宓佹惔鎾寸閻炲棜顓搁崚鎺嶆崲閸?
 
 msgid "Scheduled cleanup enabled:"
-msgstr "计划清理已启用："
+msgstr "鐠佲€冲灊濞撳懐鎮婂鎻掓儙閻㈩煉绱?
 
 msgid "Last cleanup:"
-msgstr "上次清理："
+msgstr "娑撳﹥顐煎〒鍛倞閿?
 
 msgid "Next scheduled cleanup:"
-msgstr "下次计划清理："
+msgstr "娑撳顐肩拋鈥冲灊濞撳懐鎮婇敍?
 
 msgid "Database size:"
-msgstr "数据库大小："
+msgstr "閺佺増宓佹惔鎾炽亣鐏忓骏绱?
 
 msgid "Number of tables:"
-msgstr "表数量："
+msgstr "鐞涖劍鏆熼柌蹇ョ窗"
 
 msgid "Database server version:"
-msgstr "数据库服务器版本："
+msgstr "閺佺増宓佹惔鎾存箛閸斺€虫珤閻楀牊婀伴敍?
 
 msgid "Database type:"
-msgstr "数据库类型："
+msgstr "閺佺増宓佹惔鎾惰閸ㄥ绱?
 
 msgid "Optimization in progress..."
-msgstr "优化中..."
+msgstr "娴兼ê瀵叉稉?.."
 
 msgid "Cleanup in progress..."
-msgstr "清理中..."
+msgstr "濞撳懐鎮婃稉?.."
 
 msgid "Optimization completed successfully!"
-msgstr "优化成功完成！"
+msgstr "娴兼ê瀵查幋鎰鐎瑰本鍨氶敍?
 
 msgid "Cleanup completed successfully!"
-msgstr "清理成功完成！"
+msgstr "濞撳懐鎮婇幋鎰鐎瑰本鍨氶敍?
 
 msgid "Tables optimized: %d"
-msgstr "优化表数量：%d"
+msgstr "娴兼ê瀵茬悰銊︽殶闁插骏绱?d"
 
 msgid "Space saved: %s"
-msgstr "节省空间：%s"
+msgstr "閼哄倻娓风粚娲？閿?s"
 
 msgid "Items cleaned: %d"
-msgstr "清理项目数量：%d"
+msgstr "濞撳懐鎮婃い鍦窗閺佷即鍣洪敍?d"
 
 msgid "Revisions"
-msgstr "修订版本"
+msgstr "娣囶喛顓归悧鍫熸拱"
 
 msgid "Auto Drafts"
-msgstr "自动草稿"
+msgstr "閼奉亜濮╅懡澶岊焾"
 
 msgid "Trashed Posts"
-msgstr "回收站文章"
+msgstr "閸ョ偞鏁圭粩娆愭瀮缁?
 
 msgid "Spam Comments"
-msgstr "垃圾评论"
+msgstr "閸ㄥ啫婧囩拠鍕啈"
 
 msgid "Trashed Comments"
-msgstr "回收站评论"
+msgstr "閸ョ偞鏁圭粩娆掔槑鐠?
 
 msgid "Pingbacks/Trackbacks"
-msgstr "引用/引用通知"
+msgstr "瀵洜鏁?瀵洜鏁ら柅姘辩叀"
 
 msgid "Orphaned Post Meta"
-msgstr "孤立的文章元数据"
+msgstr "鐎涖倗鐝涢惃鍕瀮缁旂姴鍘撻弫鐗堝祦"
 
 msgid "Orphaned Comment Meta"
-msgstr "孤立的评论元数据"
+msgstr "鐎涖倗鐝涢惃鍕槑鐠佸搫鍘撻弫鐗堝祦"
 
 msgid "Orphaned Term Relationships"
-msgstr "孤立的分类关系"
+msgstr "鐎涖倗鐝涢惃鍕瀻缁鍙х化?
 
 msgid "Orphaned User Meta"
-msgstr "孤立的用户元数据"
+msgstr "鐎涖倗鐝涢惃鍕暏閹村嘲鍘撻弫鐗堝祦"
 
 msgid "Expired Transients"
-msgstr "过期的临时数据"
+msgstr "鏉╁洦婀￠惃鍕閺冭埖鏆熼幑?
 
 msgid "All Transients"
-msgstr "所有临时数据"
+msgstr "閹碘偓閺堝澶嶉弮鑸垫殶閹?
 
 msgid "oEmbed Cache"
-msgstr "oEmbed缓存"
+msgstr "oEmbed缂傛挸鐡?
 
 msgid "Select cleanup items:"
-msgstr "选择清理项目："
+msgstr "闁瀚ㄥ〒鍛倞妞ゅ湱娲伴敍?
 
 msgid "Days to keep"
-msgstr "保留天数"
+msgstr "娣囨繄鏆€婢垛晜鏆?
 
 msgid "Cleanup"
-msgstr "清理"
+msgstr "濞撳懐鎮?
 
 msgid "Get Database Info"
-msgstr "获取数据库信息"
+msgstr "閼惧嘲褰囬弫鐗堝祦鎼存挷淇婇幁?
 
 msgid "Get Cleanup Stats"
-msgstr "获取清理统计"
+msgstr "閼惧嘲褰囧〒鍛倞缂佺喕顓?
 
 msgid "Database optimization options"
-msgstr "数据库优化选项"
+msgstr "閺佺増宓佹惔鎾茬喘閸栨牠鈧銆?
 
 msgid "Database cleanup options"
-msgstr "数据库清理选项"
+msgstr "閺佺増宓佹惔鎾寸閻炲棝鈧銆?
 
 msgid "Database optimization scheduled tasks"
-msgstr "数据库优化计划任务"
+msgstr "閺佺増宓佹惔鎾茬喘閸栨牞顓搁崚鎺嶆崲閸?
 
 msgid "Database information"
-msgstr "数据库信息"
+msgstr "閺佺増宓佹惔鎾蹭繆閹?
 
 msgid "Cleanup statistics"
-msgstr "清理统计"
+msgstr "濞撳懐鎮婄紒鐔活吀"
 
 msgid "Database optimization results"
-msgstr "数据库优化结果"
+msgstr "閺佺増宓佹惔鎾茬喘閸栨牜绮ㄩ弸?

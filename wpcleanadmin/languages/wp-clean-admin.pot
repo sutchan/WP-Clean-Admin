@@ -1,8 +1,8 @@
-msgid ""
+sgid ""
 msgstr ""
-"Project-Id-Version: WP Clean Admin 1.7.13\n"
+"Project-Id-Version: WP Clean Admin 1.7.15\n"
 "Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"
-"POT-Creation-Date: 2025-06-18 00:00+0000\n"
+"POT-Creation-Date: 2025-11-29 00:00+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -84,6 +84,168 @@ msgid "Remove trashed posts"
 msgstr ""
 
 msgid "Remove unapproved comments"
+msgstr ""
+
+# ===========================================================
+# New Database Optimization Strings
+# ===========================================================
+msgid "Database Settings"
+msgstr ""
+
+msgid "Database"
+msgstr ""
+
+msgid "Database Cleanup Settings"
+msgstr ""
+
+msgid "Database Optimization Settings"
+msgstr ""
+
+msgid "Scheduled Cleanup Settings"
+msgstr ""
+
+msgid "Clean up post revisions"
+msgstr ""
+
+msgid "Clean up auto drafts"
+msgstr ""
+
+msgid "Clean up trashed posts"
+msgstr ""
+
+msgid "Clean up spam comments"
+msgstr ""
+
+msgid "Clean up trashed comments"
+msgstr ""
+
+msgid "Clean up orphaned data"
+msgstr ""
+
+msgid "Clean up expired transients"
+msgstr ""
+
+msgid "Clean up oEmbed cache"
+msgstr ""
+
+msgid "Configure which types of data to clean up from your WordPress database."
+msgstr ""
+
+msgid "Configure database table optimization settings."
+msgstr ""
+
+msgid "Configure automatic scheduled database cleanup."
+msgstr ""
+
+msgid "Remove old post revisions"
+msgstr ""
+
+msgid "Remove auto drafts"
+msgstr ""
+
+msgid "Remove trashed posts"
+msgstr ""
+
+msgid "Remove spam comments"
+msgstr ""
+
+msgid "Remove trashed comments"
+msgstr ""
+
+msgid "Remove orphaned data (postmeta, commentmeta, etc.)"
+msgstr ""
+
+msgid "Remove expired transients"
+msgstr ""
+
+msgid "Remove old oEmbed cache"
+msgstr ""
+
+msgid "Automatically optimize database tables after cleanup"
+msgstr ""
+
+msgid "Disabled"
+msgstr ""
+
+msgid "Daily"
+msgstr ""
+
+msgid "Weekly"
+msgstr ""
+
+msgid "Monthly"
+msgstr ""
+
+msgid "WP Clean Admin - Database Settings"
+msgstr ""
+
+msgid "Database Information"
+msgstr ""
+
+msgid "Loading database information..."
+msgstr ""
+
+msgid "Database Actions"
+msgstr ""
+
+msgid "Run Database Cleanup"
+msgstr ""
+
+msgid "Optimize Database Tables"
+msgstr ""
+
+msgid "Cleanup Statistics"
+msgstr ""
+
+msgid "Loading cleanup statistics..."
+msgstr ""
+
+msgid "Clean up post revisions"
+msgstr ""
+
+msgid "Clean up auto drafts"
+msgstr ""
+
+msgid "Clean up trashed posts"
+msgstr ""
+
+msgid "Clean up spam comments"
+msgstr ""
+
+msgid "Clean up trashed comments"
+msgstr ""
+
+msgid "Clean up orphan postmeta"
+msgstr ""
+
+msgid "Clean up orphan commentmeta"
+msgstr ""
+
+msgid "Clean up orphan term relationships"
+msgstr ""
+
+msgid "Clean up orphan usermeta"
+msgstr ""
+
+msgid "Clean up expired transients"
+msgstr ""
+
+msgid "Clean up oEmbed cache"
+msgstr ""
+
+msgid "Insufficient permissions"
+msgstr ""
+
+msgid "Database tables optimized successfully"
+msgstr ""
+
+msgid "Failed to optimize tables"
+msgstr ""
+
+msgid "Database cleanup completed successfully"
+msgstr ""
+
+msgid "Failed to run database cleanup"
 msgstr ""
 
 # ===========================================================

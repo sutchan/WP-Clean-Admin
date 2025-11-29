@@ -1,164 +1,276 @@
-/**
- * WPCleanAdmin Database Optimization Styles
+**
+ * Database optimization styles for WP Clean Admin
  * 
- * Styles for the database optimization settings pages.
- * 
- * @file       wpcleanadmin/assets/css/wpca-database.css
- * @package    WP_Clean_Admin
- * @version    1.7.13
- * @updated    2025-06-18
- * @since      1.6.0
+ * @file wpcleanadmin/assets/css/wpca-database.css
+ * @version 1.7.15
+ * @updated 2025-11-29
  */
 
-/* Settings page structure */
-.wpca-settings-section {
+/* Database Info Grid */
+.wpca-database-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
     margin: 20px 0;
-    padding: 20px;
+}
+
+/* Cleanup Stats Grid */
+.wpca-cleanup-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+/* Info Card */
+.wpca-info-card {
     background: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 4px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
 
-.wpca-settings-section h2 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    font-size: 1.5em;
-    color: #1a202c;
+.wpca-info-card:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
 }
 
-.wpca-settings-section h3 {
-    margin-top: 30px;
-    margin-bottom: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #e2e8f0;
-    font-size: 1.2em;
-    color: #2d3748;
+.wpca-info-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #111827;
 }
 
-.wpca-settings-section p {
-    margin-bottom: 20px;
-    color: #4a5568;
+.wpca-info-card p {
+    margin: 0;
+    font-size: 14px;
+    color: #6b7280;
 }
 
-/* Actions section */
-.wpca-optimization-actions,
-.wpca-cleanup-actions {
-    margin-bottom: 30px;
-    padding: 15px;
-    background: #f7fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 4px;
+/* Database Actions */
+.wpca-database-actions {
+    margin: 30px 0;
+    padding: 20px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
 }
 
-.wpca-optimization-actions .button,
-.wpca-cleanup-actions .button {
-    margin-right: 10px;
+.wpca-action-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
 }
 
-.wpca-optimization-actions .button span.dashicons,
-.wpca-cleanup-actions .button span.dashicons {
-    margin-top: 2px;
-    margin-right: 5px;
-    vertical-align: middle;
+.wpca-action-buttons .button {
+    margin: 0;
 }
 
-/* Results display */
-.wpca-results {
-    margin-top: 15px;
-    padding: 10px;
-    border-radius: 4px;
+.wpca-action-buttons .button-primary {
+    font-weight: 600;
 }
 
-.wpca-results .notice {
-    margin-bottom: 0;
-}
-
-/* Form styling */
-.wpca-optimization-tables table,
-.wpca-database-info table,
-.wpca-cleanup-stats table {
-    margin-top: 15px;
-}
-
-.wpca-optimization-tables table th,
-.wpca-database-info table th,
-.wpca-cleanup-stats table th {
-    width: 70%;
-}
-
-.wpca-optimization-tables table td,
-.wpca-database-info table td,
-.wpca-cleanup-stats table td {
-    vertical-align: middle;
-}
-
-.wpca-optimization-tables table input[type="checkbox"],
-.wpca-cleanup-options table input[type="checkbox"] {
-    margin-top: 0;
-}
-
-/* Indentation for nested options */
-.wpca-cleanup-options-indent {
-    margin-top: 10px;
-    margin-left: 30px;
-}
-
-.wpca-cleanup-options-indent input,
-.wpca-cleanup-options-indent label {
-    margin-right: 5px;
-    vertical-align: middle;
-}
-
-.wpca-cleanup-options-indent input[type="number"] {
-    width: 70px;
-}
-
-/* Detailed results */
-.wpca-detailed-results {
-    margin-top: 15px;
-    padding: 15px;
-    background: #f7fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 4px;
-}
-
-.wpca-detailed-results h4 {
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: 1em;
-    color: #2d3748;
-}
-
-.wpca-detailed-results ul {
-    margin-bottom: 0;
-    padding-left: 20px;
-}
-
-/* Settings submit section */
-.wpca-settings-submit {
+/* Action Results */
+#wpca-action-results {
     margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #e2e8f0;
+    width: 100%;
 }
 
-/* Responsive styles */
-@media screen and (max-width: 782px) {
-    .wpca-optimization-tables table th,
-    .wpca-database-info table th,
-    .wpca-cleanup-stats table th {
-        width: auto;
+/* Cleanup and Optimize Results */
+.wpca-cleanup-results,
+.wpca-optimize-results {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+}
+
+.wpca-cleanup-results h3,
+.wpca-optimize-results h3 {
+    margin: 0 0 15px 0;
+    font-size: 18px;
+    color: #166534;
+}
+
+.wpca-cleanup-results h4 {
+    margin: 20px 0 10px 0;
+    font-size: 16px;
+    color: #166534;
+}
+
+.wpca-cleanup-results p,
+.wpca-optimize-results p {
+    margin: 10px 0;
+    color: #166534;
+}
+
+/* Database Tables */
+.wpca-database-info table,
+.wpca-cleanup-results table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.wpca-database-info th,
+.wpca-cleanup-results th,
+.wpca-database-info td,
+.wpca-cleanup-results td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.wpca-database-info th,
+.wpca-cleanup-results th {
+    background-color: #f9fafb;
+    font-weight: 600;
+    color: #374151;
+}
+
+.wpca-database-info tr:nth-child(even),
+.wpca-cleanup-results tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+.wpca-database-info tr:hover,
+.wpca-cleanup-results tr:hover {
+    background-color: #f3f4f6;
+}
+
+/* Loading State */
+.wpca-database-info-container .loading,
+.wpca-cleanup-stats-container .loading {
+    color: #6b7280;
+    font-style: italic;
+}
+
+/* Error State */
+.wpca-database-info-container .error,
+.wpca-cleanup-stats-container .error {
+    color: #dc2626;
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .wpca-database-info-grid,
+    .wpca-cleanup-stats-grid {
+        grid-template-columns: 1fr;
     }
     
-    .wpca-optimization-actions .button,
-    .wpca-cleanup-actions .button {
+    .wpca-action-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .wpca-action-buttons .button {
         width: 100%;
-        margin-right: 0;
-        margin-bottom: 10px;
-        text-align: center;
     }
     
-    .wpca-cleanup-options-indent {
-        margin-left: 15px;
+    .wpca-database-info table,
+    .wpca-cleanup-results table {
+        font-size: 14px;
     }
+    
+    .wpca-database-info th,
+    .wpca-cleanup-results th,
+    .wpca-database-info td,
+    .wpca-cleanup-results td {
+        padding: 8px;
+    }
+}
+
+/* Notice Styles */
+.wpca-database-settings .notice {
+    margin: 20px 0;
+}
+
+.wpca-database-settings .notice-success {
+    border-left-color: #10b981;
+}
+
+.wpca-database-settings .notice-error {
+    border-left-color: #ef4444;
+}
+
+.wpca-database-settings .notice-warning {
+    border-left-color: #f59e0b;
+}
+
+.wpca-database-settings .notice-info {
+    border-left-color: #3b82f6;
+}
+
+/* Settings Form */
+.wpca-database-settings form {
+    margin-top: 30px;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.wpca-database-settings .form-table {
+    margin-bottom: 30px;
+}
+
+.wpca-database-settings .form-table th {
+    width: 300px;
+    vertical-align: top;
+    padding-top: 15px;
+}
+
+.wpca-database-settings .form-table td {
+    padding-top: 15px;
+}
+
+.wpca-database-settings .form-table input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.wpca-database-settings .form-table label {
+    font-weight: 500;
+    color: #374151;
+}
+
+.wpca-database-settings .form-table p.description {
+    margin-top: 5px;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+/* Section Headers */
+.wpca-database-settings h2 {
+    margin: 30px 0 20px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #111827;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.wpca-database-settings h3 {
+    margin: 25px 0 15px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* Submit Button */
+.wpca-database-settings .submit {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.wpca-database-settings .submit input[type="submit"] {
+    font-weight: 600;
+    padding: 8px 20px;
 }

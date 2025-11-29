@@ -3,8 +3,12 @@
 /docs
 *.code-workspace
 .gitattributes
-设计指令.txt
 wpca-logo.fw.png
 wpca-logo.png
 *.7z
 *.ffs_lock
+/backup_*
+update_*
+check_*
+fix_*
+convert_*

@@ -1,258 +1,382 @@
 /**
- * WPCleanAdmin Database Optimization Script
+ * Database optimization functionality for WP Clean Admin
  * 
- * Handles frontend interactions for database optimization and cleanup features.
- * Manages AJAX requests, button states, and result display.
- * 
- * @file       wpcleanadmin/assets/js/wpca-database.js
- * @version    1.7.13
- * @updated    2025-06-18
- * @package WP_Clean_Admin
- * @since 1.6.0
+ * @file wpcleanadmin/assets/js/wpca-database.js
+ * @version 1.7.15
+ * @updated 2025-11-29
  */
 
-( function( $ ) {
-    
+jQuery(document).ready(function($) {
     'use strict';
     
     /**
-     * Main database handler object
+     * Database optimization class
      */
-    var WPCleanAdminDatabase = {
-        
+    var WPCADatabase = {
         /**
-         * Initialize the database scripts
+         * Initialize database optimization functionality
          */
         init: function() {
-            
-            // Initialize event listeners
-            this.initEventListeners();
+            this.bindEvents();
+            this.loadDatabaseInfo();
+            this.loadCleanupStatistics();
         },
         
         /**
-         * Initialize event listeners
+         * Bind event handlers
          */
-        initEventListeners: function() {
+        bindEvents: function() {
+            // Run cleanup button
+            $('#wpca-run-cleanup').on('click', this.runDatabaseCleanup.bind(this));
             
-            // Table optimization button
-            $( '#wpca-optimize-tables' ).on( 'click', this.handleOptimizeTablesClick.bind( this ) );
-            
-            // Database cleanup button
-            $( '#wpca-cleanup-database' ).on( 'click', this.handleCleanupDatabaseClick.bind( this ) );
-            
-            // Auto enable/disable controls
-            $( '#wpca_auto_optimize_tables' ).on( 'change', function() {
-                $( '#wpca_optimize_interval' ).prop( 'disabled', ! $( this ).is( ':checked' ) );
-            });
-            
-            $( '#wpca_enable_auto_cleanup' ).on( 'change', function() {
-                $( '#wpca_cleanup_interval' ).prop( 'disabled', ! $( this ).is( ':checked' ) );
-            });
+            // Optimize tables button
+            $('#wpca-optimize-tables').on('click', this.optimizeTables.bind(this));
         },
         
         /**
-         * Handle optimize tables button click
+         * Load database information
          */
-        handleOptimizeTablesClick: function( e ) {
-            e.preventDefault();
+        loadDatabaseInfo: function() {
+            var container = $('#wpca-database-info-container');
+            container.html('<p>' + wpca_admin.loading + '</p>');
             
-            var $button = $( '#wpca-optimize-tables' );
-            var $results = $( '#wpca-optimization-results' );
-            
-            // Disable button and show loading state
-            $button.prop( 'disabled', true );
-            $button.html( '<span class="dashicons dashicons-update"></span> ' + wpca_database.loading );
-            $results.empty();
-            
-            // Get selected tables
-            var tables = [];
-            $( 'input[name="wpca_tables_to_optimize[]"]:checked' ).each( function() {
-                tables.push( $( this ).val() );
-            });
-            
-            // Call AJAX to optimize tables
-            this.optimizeTables( tables, function( response ) {
-                
-                // Enable button again
-                $button.prop( 'disabled', false );
-                $button.html( '<span class="dashicons dashicons-database"></span> ' + wpca_database.optimizeTables );
-                
-                if ( response.success ) {
-                    // Show success message
-                    var message = wpca_database.optimizeSuccess.replace( '%d', response.data.successful_tables ).replace( '%d', response.data.total_tables );
-                    $results.html( '<div class="notice notice-success inline"><p>' + message + '</p></div>' );
-                } else {
-                    // Show error message
-                    $results.html( '<div class="notice notice-error inline"><p>' + wpca_database.optimizeFailed + '</p></div>' );
-                }
-            });
-        },
-        
-        /**
-         * Handle cleanup database button click
-         */
-        handleCleanupDatabaseClick: function( e ) {
-            e.preventDefault();
-            
-            var $button = $( '#wpca-cleanup-database' );
-            var $results = $( '#wpca-cleanup-results' );
-            
-            // Get selected cleanup items
-            var cleanupItems = {};
-            var hasSelectedItems = false;
-            
-            // Check for each cleanup option
-            cleanupItems.revisions = $( '#wpca_cleanup_revisions' ).is( ':checked' ) ? parseInt( $( '#wpca_revision_days' ).val(), 10 ) : 0;
-            cleanupItems.auto_drafts = $( '#wpca_cleanup_auto_drafts' ).is( ':checked' ) ? 1 : 0;
-            cleanupItems.trashed_posts = $( '#wpca_cleanup_trashed_posts' ).is( ':checked' ) ? 1 : 0;
-            cleanupItems.spam_comments = $( '#wpca_cleanup_spam_comments' ).is( ':checked' ) ? 1 : 0;
-            cleanupItems.trashed_comments = $( '#wpca_cleanup_trashed_comments' ).is( ':checked' ) ? 1 : 0;
-            cleanupItems.pingbacks_trackbacks = $( '#wpca_cleanup_pingbacks_trackbacks' ).is( ':checked' ) ? 1 : 0;
-            cleanupItems.orphaned_postmeta = $( '#wpca_cleanup_orphaned_postmeta' ).is( ':checked' ) ? 1 : 0;
-            cleanupItems.orphaned_commentmeta = $( '#wpca_cleanup_orphaned_commentmeta' ).is( ':checked' ) ? 1 : 0;
-            cleanupItems.orphaned_relationships = $( '#wpca_cleanup_orphaned_relationships' ).is( ':checked' ) ? 1 : 0;
-            cleanupItems.orphaned_usermeta = $( '#wpca_cleanup_orphaned_usermeta' ).is( ':checked' ) ? 1 : 0;
-            cleanupItems.expired_transients = $( '#wpca_cleanup_expired_transients' ).is( ':checked' ) ? 1 : 0;
-            cleanupItems.all_transients = $( '#wpca_cleanup_all_transients' ).is( ':checked' ) ? 1 : 0;
-            cleanupItems.oembed_caches = $( '#wpca_cleanup_oembed_caches' ).is( ':checked' ) ? 1 : 0;
-            
-            // Check if any items are selected
-            $.each( cleanupItems, function( key, value ) {
-                if ( value > 0 ) {
-                    hasSelectedItems = true;
-                }
-            });
-            
-            // If no items selected, show error
-            if ( ! hasSelectedItems ) {
-                $results.html( '<div class="notice notice-error inline"><p>' + wpca_database.selectCleanupItemsFirst + '</p></div>' );
-                return;
-            }
-            
-            // Confirm with user
-            if ( ! confirm( wpca_database.confirmCleanup ) ) {
-                return;
-            }
-            
-            // Disable button and show loading state
-            $button.prop( 'disabled', true );
-            $button.html( '<span class="dashicons dashicons-update"></span> ' + wpca_database.loading );
-            $results.empty();
-            
-            // Call AJAX to clean up database
-            this.cleanupDatabase( cleanupItems, function( response ) {
-                
-                // Enable button again
-                $button.prop( 'disabled', false );
-                $button.html( '<span class="dashicons dashicons-trash"></span> ' + wpca_database.cleanupDatabase );
-                
-                if ( response.success ) {
-                    // Show success message
-                    var message = wpca_database.cleanupSuccess.replace( '%d', response.data.total_items_removed );
-                    $results.html( '<div class="notice notice-success inline"><p>' + message + '</p></div>' );
-                    
-                    // If we have detailed results, show them
-                    if ( response.data.detailed_results && typeof response.data.detailed_results === 'object' ) {
-                        var detailedHTML = '<div class="wpca-detailed-results"><h4>' + wpca_database.detailedResults + '</h4><ul>';
-                        
-                        $.each( response.data.detailed_results, function( item, count ) {
-                            if ( count > 0 ) {
-                                var itemName = WPCleanAdminDatabase.getItemName( item );
-                                detailedHTML += '<li>' + itemName + ': ' + count + '</li>';
-                            }
-                        });
-                        
-                        detailedHTML += '</ul></div>';
-                        $results.append( detailedHTML );
+            $.ajax({
+                url: wpca_admin.ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'wpca_get_database_info',
+                    nonce: wpca_admin.nonce
+                },
+                success: function(response) {
+                    if (response.success) {
+                        WPCADatabase.renderDatabaseInfo(response.data);
+                    } else {
+                        container.html('<p class="error">' + (response.data.message || wpca_admin.error_request_processing_failed) + '</p>');
                     }
-                } else {
-                    // Show error message
-                    $results.html( '<div class="notice notice-error inline"><p>' + wpca_database.cleanupFailed + '</p></div>' );
+                },
+                error: function() {
+                    container.html('<p class="error">' + wpca_admin.error_server_error + '</p>');
                 }
             });
         },
         
         /**
-         * Optimize database tables via AJAX
+         * Render database information
+         * 
+         * @param {Object} data Database information
          */
-        optimizeTables: function( tables, callback ) {
-            $.ajax( {
-                url: wpca_database.ajax_url,
+        renderDatabaseInfo: function(data) {
+            var container = $('#wpca-database-info-container');
+            var html = '<div class="wpca-database-info-grid">';
+            
+            html += '<div class="wpca-info-card">';
+            html += '<h3>' + wpca_admin.total_tables + '</h3>';
+            html += '<p>' + wpca_admin.tables + '</p>';
+            html += '</div>';
+            
+            html += '<div class="wpca-info-card">';
+            html += '<h3>' + this.formatSize(data.total_size) + '</h3>';
+            html += '<p>' + wpca_admin.total_size + '</p>';
+            html += '</div>';
+            
+            html += '<div class="wpca-info-card">';
+            html += '<h3>' + this.formatSize(data.overhead) + '</h3>';
+            html += '<p>' + wpca_admin.overhead + '</p>';
+            html += '</div>';
+            
+            html += '</div>';
+            
+            html += '<h3>' + wpca_admin.table_details + '</h3>';
+            html += '<table class="wp-list-table widefat fixed striped">';
+            html += '<thead>';
+            html += '<tr>';
+            html += '<th>' + wpca_admin.table_name + '</th>';
+            html += '<th>' + wpca_admin.size + '</th>';
+            html += '<th>' + wpca_admin.overhead + '</th>';
+            html += '<th>' + wpca_admin.rows + '</th>';
+            html += '<th>' + wpca_admin.engine + '</th>';
+            html += '</tr>';
+            html += '</thead>';
+            html += '<tbody>';
+            
+            $.each(data.tables, function(index, table) {
+                html += '<tr>';
+                html += '<td>' + table.name + '</td>';
+                html += '<td>' + WPCADatabase.formatSize(table.size) + '</td>';
+                html += '<td>' + WPCADatabase.formatSize(table.overhead) + '</td>';
+                html += '<td>' + table.rows + '</td>';
+                html += '<td>' + table.engine + '</td>';
+                html += '</tr>';
+            });
+            
+            html += '</tbody>';
+            html += '</table>';
+            
+            container.html(html);
+        },
+        
+        /**
+         * Load cleanup statistics
+         */
+        loadCleanupStatistics: function() {
+            var container = $('#wpca-cleanup-stats-container');
+            container.html('<p>' + wpca_admin.loading + '</p>');
+            
+            $.ajax({
+                url: wpca_admin.ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'wpca_get_cleanup_statistics',
+                    nonce: wpca_admin.nonce
+                },
+                success: function(response) {
+                    if (response.success) {
+                        WPCADatabase.renderCleanupStatistics(response.data);
+                    } else {
+                        container.html('<p class="error">' + (response.data.message || wpca_admin.error_request_processing_failed) + '</p>');
+                    }
+                },
+                error: function() {
+                    container.html('<p class="error">' + wpca_admin.error_server_error + '</p>');
+                }
+            });
+        },
+        
+        /**
+         * Render cleanup statistics
+         * 
+         * @param {Object} data Cleanup statistics
+         */
+        renderCleanupStatistics: function(data) {
+            var container = $('#wpca-cleanup-stats-container');
+            var html = '<div class="wpca-cleanup-stats-grid">';
+            
+            html += '<div class="wpca-info-card">';
+            html += '<h3>' + data.total_cleanups + '</h3>';
+            html += '<p>' + wpca_admin.total_cleanups + '</p>';
+            html += '</div>';
+            
+            html += '<div class="wpca-info-card">';
+            html += '<h3>' + data.total_rows_cleaned.toLocaleString() + '</h3>';
+            html += '<p>' + wpca_admin.total_rows_cleaned + '</p>';
+            html += '</div>';
+            
+            html += '<div class="wpca-info-card">';
+            html += '<h3>' + this.formatSize(data.total_space_saved) + '</h3>';
+            html += '<p>' + wpca_admin.total_space_saved + '</p>';
+            html += '</div>';
+            
+            html += '<div class="wpca-info-card">';
+            html += '<h3>' + (data.last_cleanup ? new Date(data.last_cleanup).toLocaleString() : wpca_admin.never) + '</h3>';
+            html += '<p>' + wpca_admin.last_cleanup + '</p>';
+            html += '</div>';
+            
+            html += '</div>';
+            
+            container.html(html);
+        },
+        
+        /**
+         * Run database cleanup
+         */
+        runDatabaseCleanup: function() {
+            var button = $('#wpca-run-cleanup');
+            var resultsContainer = $('#wpca-action-results');
+            
+            // Disable button and show loading
+            button.prop('disabled', true).html('<span class="spinner is-active"></span> ' + wpca_admin.running_cleanup);
+            resultsContainer.html('');
+            
+            // Get cleanup settings from form
+            var cleanupItems = this.getCleanupItemsFromSettings();
+            
+            $.ajax({
+                url: wpca_admin.ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'wpca_run_database_cleanup',
+                    nonce: wpca_admin.nonce,
+                    cleanup_items: JSON.stringify(cleanupItems)
+                },
+                success: function(response) {
+                    WPCADatabase.handleCleanupResponse(response);
+                },
+                error: function() {
+                    resultsContainer.html('<div class="error notice"><p>' + wpca_admin.error_server_error + '</p></div>');
+                    button.prop('disabled', false).html(wpca_admin.run_cleanup);
+                }
+            });
+        },
+        
+        /**
+         * Get cleanup items from settings
+         * 
+         * @return {Object} Cleanup items configuration
+         */
+        getCleanupItemsFromSettings: function() {
+            var settings = $('#wpca-database-settings-form').serializeArray();
+            var cleanupItems = {};
+            
+            // Default cleanup items
+            var defaultItems = {
+                revision_posts: { enabled: true, days: 30 },
+                auto_drafts: { enabled: true, days: 7 },
+                trashed_posts: { enabled: true, days: 30 },
+                spam_comments: { enabled: true, days: 7 },
+                trash_comments: { enabled: true, days: 30 },
+                orphan_postmeta: { enabled: true, days: 0 },
+                orphan_commentmeta: { enabled: true, days: 0 },
+                orphan_term_relationships: { enabled: true, days: 0 },
+                orphan_usermeta: { enabled: true, days: 0 },
+                expired_transients: { enabled: true, days: 0 },
+                oembed_cache: { enabled: true, days: 30 }
+            };
+            
+            // Override with settings from form
+            $.each(settings, function(index, field) {
+                if (field.name === 'wpca_database_settings[cleanup_revisions]') {
+                    defaultItems.revision_posts.enabled = field.value === '1';
+                } else if (field.name === 'wpca_database_settings[cleanup_auto_drafts]') {
+                    defaultItems.auto_drafts.enabled = field.value === '1';
+                } else if (field.name === 'wpca_database_settings[cleanup_trashed_posts]') {
+                    defaultItems.trashed_posts.enabled = field.value === '1';
+                } else if (field.name === 'wpca_database_settings[cleanup_spam_comments]') {
+                    defaultItems.spam_comments.enabled = field.value === '1';
+                } else if (field.name === 'wpca_database_settings[cleanup_trash_comments]') {
+                    defaultItems.trash_comments.enabled = field.value === '1';
+                } else if (field.name === 'wpca_database_settings[cleanup_orphans]') {
+                    var enabled = field.value === '1';
+                    defaultItems.orphan_postmeta.enabled = enabled;
+                    defaultItems.orphan_commentmeta.enabled = enabled;
+                    defaultItems.orphan_term_relationships.enabled = enabled;
+                    defaultItems.orphan_usermeta.enabled = enabled;
+                } else if (field.name === 'wpca_database_settings[cleanup_expired_transients]') {
+                    defaultItems.expired_transients.enabled = field.value === '1';
+                } else if (field.name === 'wpca_database_settings[cleanup_oembed_cache]') {
+                    defaultItems.oembed_cache.enabled = field.value === '1';
+                }
+            });
+            
+            return defaultItems;
+        },
+        
+        /**
+         * Handle cleanup response
+         * 
+         * @param {Object} response AJAX response
+         */
+        handleCleanupResponse: function(response) {
+            var button = $('#wpca-run-cleanup');
+            var resultsContainer = $('#wpca-action-results');
+            
+            button.prop('disabled', false).html(wpca_admin.run_cleanup);
+            
+            if (response.success) {
+                var html = '<div class="success notice"><p>' + response.data.message + '</p></div>';
+                html += '<div class="wpca-cleanup-results">';
+                html += '<h3>' + wpca_admin.cleanup_results + '</h3>';
+                html += '<p>' + wpca_admin.total_rows_deleted + ': ' + response.data.total_rows.toLocaleString() + '</p>';
+                html += '<p>' + wpca_admin.space_saved + ': ' + response.data.space_saved + '</p>';
+                
+                if (response.data.details && response.data.details.length) {
+                    html += '<h4>' + wpca_admin.cleanup_details + '</h4>';
+                    html += '<table class="wp-list-table widefat fixed striped">';
+                    html += '<thead><tr><th>' + wpca_admin.item + '</th><th>' + wpca_admin.rows_deleted + '</th><th>' + wpca_admin.status + '</th></tr></thead>';
+                    html += '<tbody>';
+                    
+                    $.each(response.data.details, function(index, item) {
+                        html += '<tr>';
+                        html += '<td>' + item.item + '</td>';
+                        html += '<td>' + item.rows_deleted.toLocaleString() + '</td>';
+                        html += '<td>' + item.status + '</td>';
+                        html += '</tr>';
+                    });
+                    
+                    html += '</tbody></table>';
+                }
+                
+                html += '</div>';
+                
+                resultsContainer.html(html);
+                
+                // Reload database info and statistics
+                WPCADatabase.loadDatabaseInfo();
+                WPCADatabase.loadCleanupStatistics();
+            } else {
+                resultsContainer.html('<div class="error notice"><p>' + (response.data.message || wpca_admin.error_request_processing_failed) + '</p></div>');
+            }
+        },
+        
+        /**
+         * Optimize database tables
+         */
+        optimizeTables: function() {
+            var button = $('#wpca-optimize-tables');
+            var resultsContainer = $('#wpca-action-results');
+            
+            // Disable button and show loading
+            button.prop('disabled', true).html('<span class="spinner is-active"></span> ' + wpca_admin.optimizing_tables);
+            resultsContainer.html('');
+            
+            $.ajax({
+                url: wpca_admin.ajaxurl,
                 type: 'POST',
                 data: {
                     action: 'wpca_optimize_tables',
-                    nonce: wpca_database.nonce,
-                    tables: tables
+                    nonce: wpca_admin.nonce
                 },
-                dataType: 'json',
-                success: function( response ) {
-                    if ( typeof callback === 'function' ) {
-                        callback( response );
-                    }
+                success: function(response) {
+                    WPCADatabase.handleOptimizeResponse(response);
                 },
                 error: function() {
-                    if ( typeof callback === 'function' ) {
-                        callback( { success: false, data: {} } );
-                    }
+                    resultsContainer.html('<div class="error notice"><p>' + wpca_admin.error_server_error + '</p></div>');
+                    button.prop('disabled', false).html(wpca_admin.optimize_tables);
                 }
             });
         },
         
         /**
-         * Clean up database via AJAX
+         * Handle optimize response
+         * 
+         * @param {Object} response AJAX response
          */
-        cleanupDatabase: function( cleanupItems, callback ) {
-            $.ajax( {
-                url: wpca_database.ajax_url,
-                type: 'POST',
-                data: {
-                    action: 'wpca_cleanup_database',
-                    nonce: wpca_database.nonce,
-                    cleanup_items: cleanupItems
-                },
-                dataType: 'json',
-                success: function( response ) {
-                    if ( typeof callback === 'function' ) {
-                        callback( response );
-                    }
-                },
-                error: function() {
-                    if ( typeof callback === 'function' ) {
-                        callback( { success: false, data: {} } );
-                    }
-                }
-            });
-        },
-        
-        /**
-         * Get human-readable name for a cleanup item
-         */
-        getItemName: function( itemKey ) {
-            var names = {
-                'revisions': wpca_database.postRevisions,
-                'auto_drafts': wpca_database.autoDrafts,
-                'trashed_posts': wpca_database.trashedPosts,
-                'spam_comments': wpca_database.spamComments,
-                'trashed_comments': wpca_database.trashedComments,
-                'pingbacks_trackbacks': wpca_database.pingbacksTrackbacks,
-                'orphaned_postmeta': wpca_database.orphanedPostmeta,
-                'orphaned_commentmeta': wpca_database.orphanedCommentmeta,
-                'orphaned_relationships': wpca_database.orphanedRelationships,
-                'orphaned_usermeta': wpca_database.orphanedUsermeta,
-                'expired_transients': wpca_database.expiredTransients,
-                'all_transients': wpca_database.allTransients,
-                'oembed_caches': wpca_database.oembedCaches
-            };
+        handleOptimizeResponse: function(response) {
+            var button = $('#wpca-optimize-tables');
+            var resultsContainer = $('#wpca-action-results');
             
-            return names[itemKey] || itemKey;
+            button.prop('disabled', false).html(wpca_admin.optimize_tables);
+            
+            if (response.success) {
+                var html = '<div class="success notice"><p>' + response.data.message + '</p></div>';
+                html += '<div class="wpca-optimize-results">';
+                html += '<h3>' + wpca_admin.optimization_results + '</h3>';
+                html += '<p>' + wpca_admin.optimized_tables + ': ' + response.data.optimized_tables + ' / ' + response.data.total_tables + '</p>';
+                html += '<p>' + wpca_admin.space_saved + ': ' + response.data.space_saved + '</p>';
+                
+                resultsContainer.html(html);
+                
+                // Reload database info
+                WPCADatabase.loadDatabaseInfo();
+            } else {
+                resultsContainer.html('<div class="error notice"><p>' + (response.data.message || wpca_admin.error_request_processing_failed) + '</p></div>');
+            }
+        },
+        
+        /**
+         * Format size in bytes to human readable format
+         * 
+         * @param {number} bytes Size in bytes
+         * @return {string} Human readable size
+         */
+        formatSize: function(bytes) {
+            if (bytes === 0) return '0 B';
+            var k = 1024;
+            var sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+            var i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
     };
     
-    /**
-     * Initialize the script when the DOM is ready
-     */
-    $( document ).ready( function() {
-        WPCleanAdminDatabase.init();
-    });
-    
-} )( jQuery );
+    // Initialize when DOM is ready
+    WPCADatabase.init();
+});
