@@ -201,7 +201,7 @@ class Resources {
     public function optimize_resources( $options = array() ) {
         $results = array(
             'success' => true,
-            'message' => __( 'Resources optimized successfully', WPCA_TEXT_DOMAIN ),
+            'message' => \__( 'Resources optimized successfully', WPCA_TEXT_DOMAIN ),
             'optimized' => array()
         );
         
@@ -300,7 +300,7 @@ class Resources {
     public function disable_resource( $type, $handle ) {
         $results = array(
             'success' => true,
-            'message' => __( 'Resource disabled successfully', WPCA_TEXT_DOMAIN )
+            'message' => \__( 'Resource disabled successfully', WPCA_TEXT_DOMAIN )
         );
         
         // Disable resource based on type
@@ -312,7 +312,7 @@ class Resources {
             wp_dequeue_style( $handle );
         } else {
             $results['success'] = false;
-            $results['message'] = __( 'Invalid resource type', WPCA_TEXT_DOMAIN );
+            $results['message'] = \__( 'Invalid resource type', WPCA_TEXT_DOMAIN );
         }
         
         return $results;
@@ -328,7 +328,7 @@ class Resources {
     public function enable_resource( $type, $handle ) {
         $results = array(
             'success' => true,
-            'message' => __( 'Resource enabled successfully', WPCA_TEXT_DOMAIN )
+            'message' => \__( 'Resource enabled successfully', WPCA_TEXT_DOMAIN )
         );
         
         // Enable resource based on type
@@ -338,7 +338,7 @@ class Resources {
             wp_enqueue_style( $handle );
         } else {
             $results['success'] = false;
-            $results['message'] = __( 'Invalid resource type', WPCA_TEXT_DOMAIN );
+            $results['message'] = \__( 'Invalid resource type', WPCA_TEXT_DOMAIN );
         }
         
         return $results;

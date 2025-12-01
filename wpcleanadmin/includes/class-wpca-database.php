@@ -47,7 +47,9 @@ class Database {
      */
     public function init() {
         // Add database optimization hooks
-        add_action( 'wpca_optimize_database', array( $this, 'optimize_database' ) );
+        if ( function_exists( 'add_action' ) ) {
+            \add_action( 'wpca_optimize_database', array( $this, 'optimize_database' ) );
+        }
     }
     
     /**
@@ -69,7 +71,7 @@ class Database {
         
         // Get database size
         $result = $wpdb->get_row( $wpdb->prepare( "SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema = %s", $wpdb->dbname ), ARRAY_A );
-        $info['size'] = size_format( $result['size'], 2 );
+        $info['size'] = ( function_exists( 'size_format' ) ? \size_format( $result['size'], 2 ) : round( $result['size'] / 1024 / 1024, 2 ) . ' MB' );
         
         // Get WordPress tables
         $info['wp_tables'] = array();
@@ -79,11 +81,15 @@ class Database {
             $table_name = $table[0];
             $table_info = $wpdb->get_row( $wpdb->prepare( "SELECT data_length, index_length FROM information_schema.TABLES WHERE table_schema = %s AND table_name = %s", $wpdb->dbname, $table_name ), ARRAY_A );
             
+            $total_size = $table_info['data_length'] + $table_info['index_length'];
+            $data_size = $table_info['data_length'];
+            $index_size = $table_info['index_length'];
+            
             $info['wp_tables'][] = array(
                 'name' => $table_name,
-                'size' => size_format( $table_info['data_length'] + $table_info['index_length'], 2 ),
-                'data_size' => size_format( $table_info['data_length'], 2 ),
-                'index_size' => size_format( $table_info['index_length'], 2 )
+                'size' => ( function_exists( 'size_format' ) ? \size_format( $total_size, 2 ) : round( $total_size / 1024 / 1024, 2 ) . ' MB' ),
+                'data_size' => ( function_exists( 'size_format' ) ? \size_format( $data_size, 2 ) : round( $data_size / 1024 / 1024, 2 ) . ' MB' ),
+                'index_size' => ( function_exists( 'size_format' ) ? \size_format( $index_size, 2 ) : round( $index_size / 1024 / 1024, 2 ) . ' MB' )
             );
         }
         
@@ -100,7 +106,7 @@ class Database {
         
         $results = array(
             'success' => true,
-            'message' => __( 'Database optimization completed successfully', WPCA_TEXT_DOMAIN ),
+            'message' => \__( 'Database optimization completed successfully', WPCA_TEXT_DOMAIN ),
             'tables' => array()
         );
         
@@ -131,7 +137,7 @@ class Database {
         
         $results = array(
             'success' => false,
-            'message' => __( 'Database backup failed', WPCA_TEXT_DOMAIN )
+            'message' => \__( 'Database backup failed', WPCA_TEXT_DOMAIN )
         );
         
         // Set default options
@@ -208,7 +214,7 @@ class Database {
         // Save backup file
         if ( file_put_contents( $backup_file, $backup_content ) !== false ) {
             $results['success'] = true;
-            $results['message'] = __( 'Database backup created successfully', WPCA_TEXT_DOMAIN );
+            $results['message'] = \__( 'Database backup created successfully', WPCA_TEXT_DOMAIN );
             $results['file'] = basename( $backup_file );
             $results['size'] = filesize( $backup_file );
         }
@@ -227,7 +233,7 @@ class Database {
         
         $results = array(
             'success' => false,
-            'message' => __( 'Database restore failed', WPCA_TEXT_DOMAIN )
+            'message' => \__( 'Database restore failed', WPCA_TEXT_DOMAIN )
         );
         
         // Get full backup file path
@@ -235,7 +241,7 @@ class Database {
         
         // Check if backup file exists
         if ( ! file_exists( $backup_path ) ) {
-            $results['message'] = __( 'Backup file not found', WPCA_TEXT_DOMAIN );
+            $results['message'] = \__( 'Backup file not found', WPCA_TEXT_DOMAIN );
             return $results;
         }
         
@@ -258,7 +264,7 @@ class Database {
         
         if ( $success ) {
             $results['success'] = true;
-            $results['message'] = __( 'Database restore completed successfully', WPCA_TEXT_DOMAIN );
+            $results['message'] = \__( 'Database restore completed successfully', WPCA_TEXT_DOMAIN );
         }
         
         return $results;
@@ -309,7 +315,7 @@ class Database {
     public function delete_database_backup( $backup_file ) {
         $results = array(
             'success' => false,
-            'message' => __( 'Failed to delete backup file', WPCA_TEXT_DOMAIN )
+            'message' => \__( 'Failed to delete backup file', WPCA_TEXT_DOMAIN )
         );
         
         // Get full backup file path
@@ -320,7 +326,7 @@ class Database {
             // Delete backup file
             if ( unlink( $backup_path ) ) {
                 $results['success'] = true;
-                $results['message'] = __( 'Backup file deleted successfully', WPCA_TEXT_DOMAIN );
+                $results['message'] = \__( 'Backup file deleted successfully', WPCA_TEXT_DOMAIN );
             }
         }
         

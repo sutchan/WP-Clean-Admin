@@ -47,11 +47,13 @@ class Login {
      */
     public function init() {
         // Add login hooks
-        add_action( 'login_enqueue_scripts', array( $this, 'enqueue_login_scripts' ) );
-        add_filter( 'login_headerurl', array( $this, 'filter_login_header_url' ) );
-        add_filter( 'login_headertitle', array( $this, 'filter_login_header_title' ) );
-        add_action( 'login_footer', array( $this, 'add_login_footer_content' ) );
-        add_filter( 'login_body_class', array( $this, 'filter_login_body_class' ) );
+        if ( function_exists( 'add_action' ) && function_exists( 'add_filter' ) ) {
+            \add_action( 'login_enqueue_scripts', array( $this, 'enqueue_login_scripts' ) );
+            \add_filter( 'login_headerurl', array( $this, 'filter_login_header_url' ) );
+            \add_filter( 'login_headertitle', array( $this, 'filter_login_header_title' ) );
+            \add_action( 'login_footer', array( $this, 'add_login_footer_content' ) );
+            \add_filter( 'login_body_class', array( $this, 'filter_login_body_class' ) );
+        }
     }
     
     /**
@@ -64,21 +66,25 @@ class Login {
         // Enqueue custom login styles if enabled
         if ( isset( $settings['login'] ) && isset( $settings['login']['custom_login_styles'] ) && $settings['login']['custom_login_styles'] ) {
             // Enqueue login CSS
-            wp_enqueue_style(
-                'wpca-login',
-                WPCA_PLUGIN_URL . 'assets/css/wpca-login.css',
-                array(),
-                WPCA_VERSION
-            );
+            if ( function_exists( 'wp_enqueue_style' ) ) {
+                \wp_enqueue_style(
+                    'wpca-login',
+                    WPCA_PLUGIN_URL . 'assets/css/wpca-login.css',
+                    array(),
+                    WPCA_VERSION
+                );
+            }
             
             // Enqueue login JS
-            wp_enqueue_script(
-                'wpca-login',
-                WPCA_PLUGIN_URL . 'assets/js/wpca-login.js',
-                array( 'jquery' ),
-                WPCA_VERSION,
-                true
-            );
+            if ( function_exists( 'wp_enqueue_script' ) ) {
+                \wp_enqueue_script(
+                    'wpca-login',
+                    WPCA_PLUGIN_URL . 'assets/js/wpca-login.js',
+                    array( 'jquery' ),
+                    WPCA_VERSION,
+                    true
+                );
+            }
         }
     }
     
@@ -94,7 +100,7 @@ class Login {
         
         // Change login header URL if custom URL is set
         if ( isset( $settings['login'] ) && isset( $settings['login']['login_header_url'] ) && ! empty( $settings['login']['login_header_url'] ) ) {
-            return esc_url( $settings['login']['login_header_url'] );
+            return ( function_exists( 'esc_url' ) ? \esc_url( $settings['login']['login_header_url'] ) : $settings['login']['login_header_url'] );
         }
         
         return $url;
@@ -112,7 +118,7 @@ class Login {
         
         // Change login header title if custom title is set
         if ( isset( $settings['login'] ) && isset( $settings['login']['login_header_title'] ) && ! empty( $settings['login']['login_header_title'] ) ) {
-            return esc_html( $settings['login']['login_header_title'] );
+            return ( function_exists( 'esc_html' ) ? \esc_html( $settings['login']['login_header_title'] ) : $settings['login']['login_header_title'] );
         }
         
         return $title;
@@ -127,7 +133,7 @@ class Login {
         
         // Add custom footer content if set
         if ( isset( $settings['login'] ) && isset( $settings['login']['login_footer_content'] ) && ! empty( $settings['login']['login_footer_content'] ) ) {
-            echo wp_kses_post( $settings['login']['login_footer_content'] );
+            echo ( function_exists( 'wp_kses_post' ) ? \wp_kses_post( $settings['login']['login_footer_content'] ) : $settings['login']['login_footer_content'] );
         }
     }
     
@@ -143,7 +149,7 @@ class Login {
         
         // Add custom body class if set
         if ( isset( $settings['login'] ) && isset( $settings['login']['login_body_class'] ) && ! empty( $settings['login']['login_body_class'] ) ) {
-            $classes[] = sanitize_html_class( $settings['login']['login_body_class'] );
+            $classes[] = ( function_exists( 'sanitize_html_class' ) ? \sanitize_html_class( $settings['login']['login_body_class'] ) : $settings['login']['login_body_class'] );
         }
         
         return $classes;
@@ -157,15 +163,15 @@ class Login {
         $settings = wpca_get_settings();
         
         // Customize login page based on settings
-        if ( isset( $settings['login'] ) ) {
+        if ( isset( $settings['login'] ) && function_exists( 'add_action' ) ) {
             // Change login logo
             if ( isset( $settings['login']['custom_login_logo'] ) && $settings['login']['custom_login_logo'] && isset( $settings['login']['login_logo_url'] ) && ! empty( $settings['login']['login_logo_url'] ) ) {
-                add_action( 'login_head', array( $this, 'add_custom_login_logo' ) );
+                \add_action( 'login_head', array( $this, 'add_custom_login_logo' ) );
             }
             
             // Change login background
             if ( isset( $settings['login']['custom_login_background'] ) && $settings['login']['custom_login_background'] && isset( $settings['login']['login_background_url'] ) && ! empty( $settings['login']['login_background_url'] ) ) {
-                add_action( 'login_head', array( $this, 'add_custom_login_background' ) );
+                \add_action( 'login_head', array( $this, 'add_custom_login_background' ) );
             }
         }
     }
@@ -178,9 +184,9 @@ class Login {
         $settings = wpca_get_settings();
         
         if ( isset( $settings['login'] ) && isset( $settings['login']['login_logo_url'] ) && ! empty( $settings['login']['login_logo_url'] ) ) {
-            $logo_url = esc_url( $settings['login']['login_logo_url'] );
-            $logo_width = isset( $settings['login']['login_logo_width'] ) ? esc_attr( $settings['login']['login_logo_width'] ) : '200px';
-            $logo_height = isset( $settings['login']['login_logo_height'] ) ? esc_attr( $settings['login']['login_logo_height'] ) : '80px';
+            $logo_url = ( function_exists( 'esc_url' ) ? \esc_url( $settings['login']['login_logo_url'] ) : $settings['login']['login_logo_url'] );
+            $logo_width = isset( $settings['login']['login_logo_width'] ) ? ( function_exists( 'esc_attr' ) ? \esc_attr( $settings['login']['login_logo_width'] ) : $settings['login']['login_logo_width'] ) : '200px';
+            $logo_height = isset( $settings['login']['login_logo_height'] ) ? ( function_exists( 'esc_attr' ) ? \esc_attr( $settings['login']['login_logo_height'] ) : $settings['login']['login_logo_height'] ) : '80px';
             
             echo "<style type='text/css'>
                 #login h1 a {
@@ -201,10 +207,10 @@ class Login {
         $settings = wpca_get_settings();
         
         if ( isset( $settings['login'] ) && isset( $settings['login']['login_background_url'] ) && ! empty( $settings['login']['login_background_url'] ) ) {
-            $background_url = esc_url( $settings['login']['login_background_url'] );
-            $background_repeat = isset( $settings['login']['login_background_repeat'] ) ? esc_attr( $settings['login']['login_background_repeat'] ) : 'no-repeat';
-            $background_position = isset( $settings['login']['login_background_position'] ) ? esc_attr( $settings['login']['login_background_position'] ) : 'center center';
-            $background_size = isset( $settings['login']['login_background_size'] ) ? esc_attr( $settings['login']['login_background_size'] ) : 'cover';
+            $background_url = ( function_exists( 'esc_url' ) ? \esc_url( $settings['login']['login_background_url'] ) : $settings['login']['login_background_url'] );
+            $background_repeat = isset( $settings['login']['login_background_repeat'] ) ? ( function_exists( 'esc_attr' ) ? \esc_attr( $settings['login']['login_background_repeat'] ) : $settings['login']['login_background_repeat'] ) : 'no-repeat';
+            $background_position = isset( $settings['login']['login_background_position'] ) ? ( function_exists( 'esc_attr' ) ? \esc_attr( $settings['login']['login_background_position'] ) : $settings['login']['login_background_position'] ) : 'center center';
+            $background_size = isset( $settings['login']['login_background_size'] ) ? ( function_exists( 'esc_attr' ) ? \esc_attr( $settings['login']['login_background_size'] ) : $settings['login']['login_background_size'] ) : 'cover';
             
             echo "<style type='text/css'>
                 body.login {
@@ -227,8 +233,10 @@ class Login {
         // Restrict login attempts if enabled
         if ( isset( $settings['login'] ) && isset( $settings['login']['restrict_login_attempts'] ) && $settings['login']['restrict_login_attempts'] ) {
             // Add login attempt restriction hooks
-            add_filter( 'authenticate', array( $this, 'check_login_attempts' ), 30, 3 );
-            add_action( 'wp_login_failed', array( $this, 'log_failed_login' ) );
+            if ( function_exists( 'add_filter' ) && function_exists( 'add_action' ) ) {
+                \add_filter( 'authenticate', array( $this, 'check_login_attempts' ), 30, 3 );
+                \add_action( 'wp_login_failed', array( $this, 'log_failed_login' ) );
+            }
         }
     }
     
@@ -254,7 +262,7 @@ class Login {
         $user_ip = $_SERVER['REMOTE_ADDR'];
         
         // Get login attempts
-        $login_attempts = get_transient( 'wpca_login_attempts_' . $user_ip );
+        $login_attempts = ( function_exists( 'get_transient' ) ? \get_transient( 'wpca_login_attempts_' . $user_ip ) : 0 );
         
         // Check if user is locked out
         if ( $login_attempts >= $max_attempts ) {
@@ -274,12 +282,14 @@ class Login {
         $user_ip = $_SERVER['REMOTE_ADDR'];
         
         // Get login attempts
-        $login_attempts = get_transient( 'wpca_login_attempts_' . $user_ip );
+        $login_attempts = ( function_exists( 'get_transient' ) ? \get_transient( 'wpca_login_attempts_' . $user_ip ) : 0 );
         
         // Increment login attempts
         $login_attempts = $login_attempts ? $login_attempts + 1 : 1;
         
         // Set transient
-        set_transient( 'wpca_login_attempts_' . $user_ip, $login_attempts, 300 ); // 5 minutes
+        if ( function_exists( 'set_transient' ) ) {
+            \set_transient( 'wpca_login_attempts_' . $user_ip, $login_attempts, 300 ); // 5 minutes
+        }
     }
 }

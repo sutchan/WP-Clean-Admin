@@ -52,8 +52,10 @@ class Menu_Customizer {
         // Apply menu customizations based on settings
         if ( isset( $settings['enabled'] ) && $settings['enabled'] ) {
             // Add menu customization hooks
-            add_action( 'admin_menu', array( $this, 'customize_admin_menu' ), 999 );
-            add_action( 'admin_bar_menu', array( $this, 'customize_admin_bar' ), 999 );
+            if ( function_exists( 'add_action' ) ) {
+                \add_action( 'admin_menu', array( $this, 'customize_admin_menu' ), 999 );
+                \add_action( 'admin_bar_menu', array( $this, 'customize_admin_bar' ), 999 );
+            }
         }
     }
     
@@ -234,7 +236,7 @@ class Menu_Customizer {
      */
     public function get_settings() {
         // Get settings from options
-        $settings = get_option( 'wpca_menu_customizer_settings', array() );
+        $settings = ( function_exists( 'get_option' ) ? \get_option( 'wpca_menu_customizer_settings', array() ) : array() );
         
         // Set default settings
         $default_settings = array(
@@ -244,7 +246,7 @@ class Menu_Customizer {
             'admin_bar_items' => array()
         );
         
-        return wp_parse_args( $settings, $default_settings );
+        return ( function_exists( 'wp_parse_args' ) ? \wp_parse_args( $settings, $default_settings ) : array_merge( $default_settings, $settings ) );
     }
     
     /**
@@ -255,7 +257,7 @@ class Menu_Customizer {
      */
     public function save_settings( $settings ) {
         // Save settings to options
-        return update_option( 'wpca_menu_customizer_settings', $settings );
+        return ( function_exists( 'update_option' ) ? \update_option( 'wpca_menu_customizer_settings', $settings ) : false );
     }
     
     /**
@@ -265,7 +267,7 @@ class Menu_Customizer {
      */
     public function reset_settings() {
         // Delete settings from options
-        return delete_option( 'wpca_menu_customizer_settings' );
+        return ( function_exists( 'delete_option' ) ? \delete_option( 'wpca_menu_customizer_settings' ) : false );
     }
     
     /**
@@ -361,7 +363,7 @@ class Menu_Customizer {
     public function import_settings( $imported_settings ) {
         $results = array(
             'success' => false,
-            'message' => __( 'Failed to import settings', WPCA_TEXT_DOMAIN )
+            'message' => \__( 'Failed to import settings', WPCA_TEXT_DOMAIN )
         );
         
         // Decode imported settings
@@ -372,10 +374,10 @@ class Menu_Customizer {
             // Save imported settings
             if ( $this->save_settings( $settings ) ) {
                 $results['success'] = true;
-                $results['message'] = __( 'Settings imported successfully', WPCA_TEXT_DOMAIN );
+                $results['message'] = \__( 'Settings imported successfully', WPCA_TEXT_DOMAIN );
             }
         } else {
-            $results['message'] = __( 'Invalid settings format', WPCA_TEXT_DOMAIN );
+            $results['message'] = \__( 'Invalid settings format', WPCA_TEXT_DOMAIN );
         }
         
         return $results;

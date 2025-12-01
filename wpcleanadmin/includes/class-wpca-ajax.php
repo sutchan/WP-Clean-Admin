@@ -306,9 +306,9 @@ class AJAX {
         $result = wpca_update_settings( $settings );
         
         if ( $result ) {
-            wp_send_json_success( array( 'message' => __( 'Settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
+            \wp_send_json_success( array( 'message' => \__( 'Settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
         } else {
-            wp_send_json_error( __( 'Failed to save settings', WPCA_TEXT_DOMAIN ) );
+            \wp_send_json_error( \__( 'Failed to save settings', WPCA_TEXT_DOMAIN ) );
         }
     }
 
@@ -748,9 +748,9 @@ class AJAX {
         $result = $menu_customizer->save_settings( $settings );
         
         if ( $result ) {
-            wp_send_json_success( array( 'message' => __( 'Menu customizer settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
+            \wp_send_json_success( array( 'message' => \__( 'Menu customizer settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
         } else {
-            wp_send_json_error( __( 'Failed to save menu customizer settings', WPCA_TEXT_DOMAIN ) );
+            \wp_send_json_error( \__( 'Failed to save menu customizer settings', WPCA_TEXT_DOMAIN ) );
         }
     }
 
@@ -783,9 +783,9 @@ class AJAX {
         $result = $menu_customizer->reset_settings();
         
         if ( $result ) {
-            wp_send_json_success( array( 'message' => __( 'Menu customizer settings reset to default', WPCA_TEXT_DOMAIN ) ) );
+            \wp_send_json_success( array( 'message' => \__( 'Menu customizer settings reset to default', WPCA_TEXT_DOMAIN ) ) );
         } else {
-            wp_send_json_error( __( 'Failed to reset menu customizer settings', WPCA_TEXT_DOMAIN ) );
+            \wp_send_json_error( \__( 'Failed to reset menu customizer settings', WPCA_TEXT_DOMAIN ) );
         }
     }
 
@@ -805,9 +805,9 @@ class AJAX {
         $result = $database_settings->save_settings( $settings );
         
         if ( $result ) {
-            wp_send_json_success( array( 'message' => __( 'Database settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
+            \wp_send_json_success( array( 'message' => \__( 'Database settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
         } else {
-            wp_send_json_error( __( 'Failed to save database settings', WPCA_TEXT_DOMAIN ) );
+            \wp_send_json_error( \__( 'Failed to save database settings', WPCA_TEXT_DOMAIN ) );
         }
     }
 
@@ -840,9 +840,9 @@ class AJAX {
         $result = $database_settings->reset_settings();
         
         if ( $result ) {
-            wp_send_json_success( array( 'message' => __( 'Database settings reset to default', WPCA_TEXT_DOMAIN ) ) );
+            \wp_send_json_success( array( 'message' => \__( 'Database settings reset to default', WPCA_TEXT_DOMAIN ) ) );
         } else {
-            wp_send_json_error( __( 'Failed to reset database settings', WPCA_TEXT_DOMAIN ) );
+            \wp_send_json_error( \__( 'Failed to reset database settings', WPCA_TEXT_DOMAIN ) );
         }
     }
 
@@ -862,9 +862,9 @@ class AJAX {
         $result = $performance_settings->save_settings( $settings );
         
         if ( $result ) {
-            wp_send_json_success( array( 'message' => __( 'Performance settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
+            \wp_send_json_success( array( 'message' => \__( 'Performance settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
         } else {
-            wp_send_json_error( __( 'Failed to save performance settings', WPCA_TEXT_DOMAIN ) );
+            \wp_send_json_error( \__( 'Failed to save performance settings', WPCA_TEXT_DOMAIN ) );
         }
     }
 
@@ -897,9 +897,9 @@ class AJAX {
         $result = $performance_settings->reset_settings();
         
         if ( $result ) {
-            wp_send_json_success( array( 'message' => __( 'Performance settings reset to default', WPCA_TEXT_DOMAIN ) ) );
+            \wp_send_json_success( array( 'message' => \__( 'Performance settings reset to default', WPCA_TEXT_DOMAIN ) ) );
         } else {
-            wp_send_json_error( __( 'Failed to reset performance settings', WPCA_TEXT_DOMAIN ) );
+            \wp_send_json_error( \__( 'Failed to reset performance settings', WPCA_TEXT_DOMAIN ) );
         }
     }
 }

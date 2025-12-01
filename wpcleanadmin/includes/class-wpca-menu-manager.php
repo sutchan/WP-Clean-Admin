@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Menu Manager class for WP Clean Admin plugin
  *
@@ -50,20 +50,20 @@ class Menu_Manager {
         $settings = wpca_get_settings();
         
         // Apply menu optimizations based on settings
-        if ( isset( $settings['menu'] ) ) {
+        if ( isset( $settings['menu'] ) && function_exists( 'add_action' ) ) {
             // Remove dashboard widgets
             if ( isset( $settings['menu']['remove_dashboard_widgets'] ) && $settings['menu']['remove_dashboard_widgets'] ) {
-                add_action( 'wp_dashboard_setup', array( $this, 'remove_dashboard_widgets' ) );
+                \add_action( 'wp_dashboard_setup', array( $this, 'remove_dashboard_widgets' ) );
             }
             
             // Simplify admin menu
             if ( isset( $settings['menu']['simplify_admin_menu'] ) && $settings['menu']['simplify_admin_menu'] ) {
-                add_action( 'admin_menu', array( $this, 'simplify_admin_menu' ), 999 );
+                \add_action( 'admin_menu', array( $this, 'simplify_admin_menu' ), 999 );
             }
             
             // Clean admin bar
             if ( isset( $settings['general']['clean_admin_bar'] ) && $settings['general']['clean_admin_bar'] ) {
-                add_action( 'admin_bar_menu', array( $this, 'clean_admin_bar' ), 999 );
+                \add_action( 'admin_bar_menu', array( $this, 'clean_admin_bar' ), 999 );
             }
         }
     }
@@ -73,17 +73,21 @@ class Menu_Manager {
      */
     public function remove_dashboard_widgets() {
         // Remove default WordPress dashboard widgets
-        remove_meta_box( 'dashboard_right_now', 'dashboard', 'normal' );
-        remove_meta_box( 'dashboard_activity', 'dashboard', 'normal' );
-        remove_meta_box( 'dashboard_recent_comments', 'dashboard', 'normal' );
-        remove_meta_box( 'dashboard_incoming_links', 'dashboard', 'normal' );
-        remove_meta_box( 'dashboard_plugins', 'dashboard', 'normal' );
-        remove_meta_box( 'dashboard_recent_drafts', 'dashboard', 'side' );
-        remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );
-        remove_meta_box( 'dashboard_secondary', 'dashboard', 'side' );
+        if ( function_exists( 'remove_meta_box' ) ) {
+            \remove_meta_box( 'dashboard_right_now', 'dashboard', 'normal' );
+            \remove_meta_box( 'dashboard_activity', 'dashboard', 'normal' );
+            \remove_meta_box( 'dashboard_recent_comments', 'dashboard', 'normal' );
+            \remove_meta_box( 'dashboard_incoming_links', 'dashboard', 'normal' );
+            \remove_meta_box( 'dashboard_plugins', 'dashboard', 'normal' );
+            \remove_meta_box( 'dashboard_recent_drafts', 'dashboard', 'side' );
+            \remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );
+            \remove_meta_box( 'dashboard_secondary', 'dashboard', 'side' );
+        }
         
         // Remove WordPress welcome panel
-        remove_action( 'welcome_panel', 'wp_welcome_panel' );
+        if ( function_exists( 'remove_action' ) ) {
+            \remove_action( 'welcome_panel', 'wp_welcome_panel' );
+        }
     }
     
     /**
@@ -201,11 +205,13 @@ class Menu_Manager {
     public function save_menu_items( $menu_items ) {
         $results = array(
             'success' => true,
-            'message' => __( 'Menu items saved successfully', WPCA_TEXT_DOMAIN )
+            'message' => \__( 'Menu items saved successfully', WPCA_TEXT_DOMAIN )
         );
         
         // Save menu items to options
-        update_option( 'wpca_menu_items', $menu_items );
+        if ( function_exists( 'update_option' ) ) {
+            \update_option( 'wpca_menu_items', $menu_items );
+        }
         
         return $results;
     }
@@ -217,15 +223,15 @@ class Menu_Manager {
         // Load settings
         $settings = wpca_get_settings();
         
-        if ( isset( $settings['menu']['dashboard_widgets'] ) ) {
+        if ( isset( $settings['menu']['dashboard_widgets'] ) && function_exists( 'remove_meta_box' ) ) {
             $widgets_to_remove = $settings['menu']['dashboard_widgets'];
             
             foreach ( $widgets_to_remove as $widget_id => $remove ) {
                 if ( $remove ) {
-                    remove_meta_box( $widget_id, 'dashboard', 'normal' );
-                    remove_meta_box( $widget_id, 'dashboard', 'side' );
-                    remove_meta_box( $widget_id, 'dashboard', 'column3' );
-                    remove_meta_box( $widget_id, 'dashboard', 'column4' );
+                    \remove_meta_box( $widget_id, 'dashboard', 'normal' );
+                    \remove_meta_box( $widget_id, 'dashboard', 'side' );
+                    \remove_meta_box( $widget_id, 'dashboard', 'column3' );
+                    \remove_meta_box( $widget_id, 'dashboard', 'column4' );
                 }
             }
         }
@@ -238,11 +244,11 @@ class Menu_Manager {
         // Load settings
         $settings = wpca_get_settings();
         
-        if ( isset( $settings['menu']['menu_items'] ) ) {
+        if ( isset( $settings['menu']['menu_items'] ) && function_exists( 'add_action' ) ) {
             $menu_items_to_remove = $settings['menu']['menu_items'];
             
             // Add action to remove menu items
-            add_action( 'admin_menu', function() use ( $menu_items_to_remove ) {
+            \add_action( 'admin_menu', function() use ( $menu_items_to_remove ) {
                 global $menu, $submenu;
                 
                 // Remove top-level menu items
@@ -283,8 +289,8 @@ class Menu_Manager {
             }
             
             // Clean admin bar
-            if ( isset( $settings['general']['clean_admin_bar'] ) && $settings['general']['clean_admin_bar'] ) {
-                add_action( 'admin_bar_menu', array( $this, 'clean_admin_bar' ), 999 );
+            if ( isset( $settings['general']['clean_admin_bar'] ) && $settings['general']['clean_admin_bar'] && function_exists( 'add_action' ) ) {
+                \add_action( 'admin_bar_menu', array( $this, 'clean_admin_bar' ), 999 );
             }
         }
     }

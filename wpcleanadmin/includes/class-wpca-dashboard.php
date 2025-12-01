@@ -63,7 +63,7 @@ class Dashboard {
         if ( function_exists( '\wp_add_dashboard_widget' ) ) {
             \wp_add_dashboard_widget(
                 'wpca_dashboard_widget',
-                __( 'WP Clean Admin', WPCA_TEXT_DOMAIN ),
+                \__( 'WP Clean Admin', WPCA_TEXT_DOMAIN ),
                 array( $this, 'render_dashboard_widget' )
             );
         }
@@ -76,31 +76,31 @@ class Dashboard {
         $stats = $this->get_dashboard_stats();
         
         ?>        <div class="wpca-dashboard-widget">
-            <h3><?php _e( 'Dashboard Overview', WPCA_TEXT_DOMAIN ); ?></h3>
+            <h3><?php \_e( 'Dashboard Overview', WPCA_TEXT_DOMAIN ); ?></h3>
             <div class="wpca-dashboard-stats">
                 <div class="wpca-stat-item">
-                    <span class="wpca-stat-label"><?php _e( 'Database Size', WPCA_TEXT_DOMAIN ); ?></span>
-                    <span class="wpca-stat-value"><?php echo $stats['database_size']; ?></span>
+                    <span class="wpca-stat-label"><?php \_e( 'Database Size', WPCA_TEXT_DOMAIN ); ?></span>
+                    <span class="wpca-stat-value"><?php echo esc_html( $stats['database_size'] ); ?></span>
                 </div>
                 <div class="wpca-stat-item">
-                    <span class="wpca-stat-label"><?php _e( 'Transients', WPCA_TEXT_DOMAIN ); ?></span>
-                    <span class="wpca-stat-value"><?php echo $stats['transients']; ?></span>
+                    <span class="wpca-stat-label"><?php \_e( 'Transients', WPCA_TEXT_DOMAIN ); ?></span>
+                    <span class="wpca-stat-value"><?php echo esc_html( $stats['transients'] ); ?></span>
                 </div>
                 <div class="wpca-stat-item">
-                    <span class="wpca-stat-label"><?php _e( 'Orphaned Postmeta', WPCA_TEXT_DOMAIN ); ?></span>
-                    <span class="wpca-stat-value"><?php echo $stats['orphaned_postmeta']; ?></span>
+                    <span class="wpca-stat-label"><?php \_e( 'Orphaned Postmeta', WPCA_TEXT_DOMAIN ); ?></span>
+                    <span class="wpca-stat-value"><?php echo esc_html( $stats['orphaned_postmeta'] ); ?></span>
                 </div>
                 <div class="wpca-stat-item">
-                    <span class="wpca-stat-label"><?php _e( 'Orphaned Termmeta', WPCA_TEXT_DOMAIN ); ?></span>
-                    <span class="wpca-stat-value"><?php echo $stats['orphaned_termmeta']; ?></span>
+                    <span class="wpca-stat-label"><?php \_e( 'Orphaned Termmeta', WPCA_TEXT_DOMAIN ); ?></span>
+                    <span class="wpca-stat-value"><?php echo esc_html( $stats['orphaned_termmeta'] ); ?></span>
                 </div>
             </div>
             <div class="wpca-dashboard-actions">
                 <button class="button button-primary wpca-quick-action" data-action="cleanup_database">
-                    <?php _e( 'Quick Database Cleanup', WPCA_TEXT_DOMAIN ); ?>
+                    <?php \_e( 'Quick Database Cleanup', WPCA_TEXT_DOMAIN ); ?>
                 </button>
                 <button class="button button-secondary wpca-quick-action" data-action="optimize_database">
-                    <?php _e( 'Optimize Database', WPCA_TEXT_DOMAIN ); ?>
+                    <?php \_e( 'Optimize Database', WPCA_TEXT_DOMAIN ); ?>
                 </button>
             </div>
         </div>
@@ -149,7 +149,7 @@ class Dashboard {
         $stats = array();
         
         // Get database size
-        $result = $wpdb->get_row( "SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema = '{$wpdb->dbname}'", ARRAY_A );
+        $result = $wpdb->get_row( $wpdb->prepare( "SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema = %s", $wpdb->dbname ), ARRAY_A );
         $stats['database_size'] = ( function_exists( '\size_format' ) ? \size_format( $result['size'], 2 ) : $result['size'] );
         
         // Get transients count
@@ -178,8 +178,8 @@ class Dashboard {
         $info['wordpress'] = array(
             'version' => $wp_version,
             'language' => ( function_exists( '\get_locale' ) ? \get_locale() : 'en_US' ),
-            'multisite' => ( function_exists( '\is_multisite' ) && \is_multisite() ) ? __( 'Yes', WPCA_TEXT_DOMAIN ) : __( 'No', WPCA_TEXT_DOMAIN ),
-            'debug_mode' => defined( 'WP_DEBUG' ) && WP_DEBUG ? __( 'Yes', WPCA_TEXT_DOMAIN ) : __( 'No', WPCA_TEXT_DOMAIN )
+            'multisite' => ( function_exists( '\is_multisite' ) && \is_multisite() ) ? \__( 'Yes', WPCA_TEXT_DOMAIN ) : \__( 'No', WPCA_TEXT_DOMAIN ),
+            'debug_mode' => defined( 'WP_DEBUG' ) && WP_DEBUG ? \__( 'Yes', WPCA_TEXT_DOMAIN ) : \__( 'No', WPCA_TEXT_DOMAIN )
         );
         
         // Server information
@@ -193,7 +193,7 @@ class Dashboard {
         // Plugin information
         $info['plugin'] = array(
             'version' => WPCA_VERSION,
-            'active' => ( function_exists( '\is_plugin_active' ) && function_exists( '\plugin_basename' ) && \is_plugin_active( \plugin_basename( WPCA_PLUGIN_DIR . 'wp-clean-admin.php' ) ) ) ? __( 'Yes', WPCA_TEXT_DOMAIN ) : __( 'Yes', WPCA_TEXT_DOMAIN )
+            'active' => ( function_exists( '\is_plugin_active' ) && function_exists( '\plugin_basename' ) && \is_plugin_active( \plugin_basename( WPCA_PLUGIN_DIR . 'wp-clean-admin.php' ) ) ) ? \__( 'Yes', WPCA_TEXT_DOMAIN ) : \__( 'Yes', WPCA_TEXT_DOMAIN )
         );
         
         return $info;
@@ -208,7 +208,7 @@ class Dashboard {
     public function run_quick_action( $action ) {
         $result = array(
             'success' => false,
-            'message' => __( 'Invalid action', WPCA_TEXT_DOMAIN )
+            'message' => \__( 'Invalid action', WPCA_TEXT_DOMAIN )
         );
         
         switch ( $action ) {
@@ -222,7 +222,7 @@ class Dashboard {
                 ) );
                 
                 $result['success'] = true;
-                $result['message'] = __( 'Database cleanup completed successfully', WPCA_TEXT_DOMAIN );
+                $result['message'] = \__( 'Database cleanup completed successfully', WPCA_TEXT_DOMAIN );
                 $result['data'] = $cleanup_result;
                 break;
                 
@@ -232,7 +232,7 @@ class Dashboard {
                 $optimize_result = $database->optimize_database();
                 
                 $result['success'] = true;
-                $result['message'] = __( 'Database optimization completed successfully', WPCA_TEXT_DOMAIN );
+                $result['message'] = \__( 'Database optimization completed successfully', WPCA_TEXT_DOMAIN );
                 $result['data'] = $optimize_result;
                 break;
         }

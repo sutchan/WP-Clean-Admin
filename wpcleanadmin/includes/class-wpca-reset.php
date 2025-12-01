@@ -59,7 +59,7 @@ class Reset {
     public function reset_settings() {
         $results = array(
             'success' => true,
-            'message' => __( 'Settings reset successfully', WPCA_TEXT_DOMAIN )
+            'message' => \__( 'Settings reset successfully', WPCA_TEXT_DOMAIN )
         );
         
         // Delete all plugin options
@@ -93,7 +93,7 @@ class Reset {
     public function reset_plugin() {
         $results = array(
             'success' => true,
-            'message' => __( 'Plugin reset successfully', WPCA_TEXT_DOMAIN )
+            'message' => \__( 'Plugin reset successfully', WPCA_TEXT_DOMAIN )
         );
         
         // Reset settings
@@ -123,7 +123,7 @@ class Reset {
         
         if ( isset( $settings['user_roles'] ) && isset( $settings['user_roles']['custom_roles'] ) ) {
             foreach ( $settings['user_roles']['custom_roles'] as $role_slug => $role_data ) {
-                remove_role( $role_slug );
+                \remove_role( $role_slug );
             }
         }
         
@@ -139,7 +139,7 @@ class Reset {
     public function reset_module_settings( $module ) {
         $results = array(
             'success' => true,
-            'message' => sprintf( __( '%s module settings reset successfully', WPCA_TEXT_DOMAIN ), ucfirst( $module ) )
+            'message' => sprintf( \__( '%s module settings reset successfully', WPCA_TEXT_DOMAIN ), ucfirst( $module ) )
         );
         
         // Get all settings
@@ -151,7 +151,7 @@ class Reset {
             update_option( 'wpca_settings', $settings );
         } else {
             $results['success'] = false;
-            $results['message'] = sprintf( __( 'Invalid module: %s', WPCA_TEXT_DOMAIN ), $module );
+            $results['message'] = sprintf( \__( 'Invalid module: %s', WPCA_TEXT_DOMAIN ), $module );
         }
         
         return $results;
@@ -165,7 +165,7 @@ class Reset {
     public function reset_dashboard_widgets() {
         $results = array(
             'success' => true,
-            'message' => __( 'Dashboard widgets reset successfully', WPCA_TEXT_DOMAIN )
+            'message' => \__( 'Dashboard widgets reset successfully', WPCA_TEXT_DOMAIN )
         );
         
         // Delete dashboard widget settings
@@ -183,7 +183,7 @@ class Reset {
     public function reset_admin_menu() {
         $results = array(
             'success' => true,
-            'message' => __( 'Admin menu reset successfully', WPCA_TEXT_DOMAIN )
+            'message' => \__( 'Admin menu reset successfully', WPCA_TEXT_DOMAIN )
         );
         
         // Delete admin menu settings
@@ -201,7 +201,7 @@ class Reset {
     public function reset_login_settings() {
         $results = array(
             'success' => true,
-            'message' => __( 'Login settings reset successfully', WPCA_TEXT_DOMAIN )
+            'message' => \__( 'Login settings reset successfully', WPCA_TEXT_DOMAIN )
         );
         
         // Get all settings
@@ -228,7 +228,7 @@ class Reset {
     public function reset_performance_settings() {
         $results = array(
             'success' => true,
-            'message' => __( 'Performance settings reset successfully', WPCA_TEXT_DOMAIN )
+            'message' => \__( 'Performance settings reset successfully', WPCA_TEXT_DOMAIN )
         );
         
         // Get all settings

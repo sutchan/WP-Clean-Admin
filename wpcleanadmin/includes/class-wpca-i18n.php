@@ -47,7 +47,9 @@ class i18n {
      */
     public function init() {
         // Add i18n hooks
-        \add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
+        if ( function_exists( 'add_action' ) ) {
+            \add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
+        }
     }
     
     /**
@@ -55,11 +57,13 @@ class i18n {
      */
     public function load_textdomain() {
         // Load plugin textdomain
-        \load_plugin_textdomain(
-            WPCA_TEXT_DOMAIN,
-            false,
-            \dirname( \plugin_basename( __FILE__ ) ) . '/../languages/'
-        );
+        if ( function_exists( 'load_plugin_textdomain' ) && function_exists( 'plugin_basename' ) ) {
+            \load_plugin_textdomain(
+                WPCA_TEXT_DOMAIN,
+                false,
+                \dirname( \plugin_basename( __FILE__ ) ) . '/../languages/'
+            );
+        }
     }
     
     /**
@@ -71,9 +75,9 @@ class i18n {
      */
     public function translate( $string, $context = '' ) {
         if ( ! empty( $context ) ) {
-            return \_x( $string, $context, WPCA_TEXT_DOMAIN );
+            return ( function_exists( '_x' ) ? \_x( $string, $context, WPCA_TEXT_DOMAIN ) : $string );
         }
-        return \__( $string, WPCA_TEXT_DOMAIN );
+        return ( function_exists( '__' ) ? \__( $string, WPCA_TEXT_DOMAIN ) : $string );
     }
     
     /**
@@ -85,7 +89,7 @@ class i18n {
      * @return string Translated string
      */
     public function translate_plural( $single, $plural, $number ) {
-        return \_n( $single, $plural, $number, WPCA_TEXT_DOMAIN );
+        return ( function_exists( '_n' ) ? \_n( $single, $plural, $number, WPCA_TEXT_DOMAIN ) : ( $number === 1 ? $single : $plural ) );
     }
     
     /**
@@ -98,7 +102,7 @@ class i18n {
      * @return string Translated string
      */
     public function translate_plural_with_context( $single, $plural, $number, $context ) {
-        return \_nx( $single, $plural, $number, $context, WPCA_TEXT_DOMAIN );
+        return ( function_exists( '_nx' ) ? \_nx( $single, $plural, $number, $context, WPCA_TEXT_DOMAIN ) : ( $number === 1 ? $single : $plural ) );
     }
     
     /**
@@ -107,7 +111,7 @@ class i18n {
      * @return string Current locale
      */
     public function get_locale() {
-        return \get_locale();
+        return ( function_exists( 'get_locale' ) ? \get_locale() : 'en_US' );
     }
     
     /**
@@ -116,7 +120,7 @@ class i18n {
      * @return array Available languages
      */
     public function get_available_languages() {
-        return \get_available_languages( WPCA_PLUGIN_DIR . 'languages/' );
+        return ( function_exists( 'get_available_languages' ) ? \get_available_languages( WPCA_PLUGIN_DIR . 'languages/' ) : array() );
     }
     
     /**
@@ -125,8 +129,8 @@ class i18n {
      * @return string Current language
      */
     public function get_current_language() {
-        $locale = \get_locale();
-        return \substr( $locale, 0, 2 );
+        $locale = ( function_exists( 'get_locale' ) ? \get_locale() : 'en_US' );
+        return substr( $locale, 0, 2 );
     }
     
     /**
@@ -135,6 +139,6 @@ class i18n {
      * @return bool Whether current language is RTL
      */
     public function is_rtl() {
-        return \is_rtl();
+        return ( function_exists( 'is_rtl' ) ? \is_rtl() : false );
     }
 }

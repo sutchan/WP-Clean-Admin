@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Cleanup class for WP Clean Admin plugin
  *
@@ -124,7 +124,7 @@ class Cleanup {
         
         $results = array(
             'success' => true,
-            'message' => __( 'Database cleanup completed successfully', WPCA_TEXT_DOMAIN ),
+            'message' => \__( 'Database cleanup completed successfully', WPCA_TEXT_DOMAIN ),
             'cleaned' => array()
         );
         
@@ -198,7 +198,7 @@ class Cleanup {
         
         $results = array(
             'success' => true,
-            'message' => __( 'Media cleanup completed successfully', WPCA_TEXT_DOMAIN ),
+            'message' => \__( 'Media cleanup completed successfully', WPCA_TEXT_DOMAIN ),
             'cleaned' => array()
         );
         
@@ -248,7 +248,7 @@ class Cleanup {
         
         $results = array(
             'success' => true,
-            'message' => __( 'Comments cleanup completed successfully', WPCA_TEXT_DOMAIN ),
+            'message' => \__( 'Comments cleanup completed successfully', WPCA_TEXT_DOMAIN ),
             'cleaned' => array()
         );
         
@@ -302,7 +302,7 @@ class Cleanup {
         
         $results = array(
             'success' => true,
-            'message' => __( 'Content cleanup completed successfully', WPCA_TEXT_DOMAIN ),
+            'message' => \__( 'Content cleanup completed successfully', WPCA_TEXT_DOMAIN ),
             'cleaned' => array()
         );
         
@@ -313,7 +313,7 @@ class Cleanup {
             'duplicate_posts' => false
         );
         
-        $options = wp_parse_args( $options, $default_options );
+        $options = ( function_exists( 'wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
         
         // Clean unused shortcodes
         if ( $options['unused_shortcodes'] ) {

@@ -145,7 +145,7 @@ class Performance {
      */
     public function disable_rest_api_authentication( $result ) {
         if ( ! is_user_logged_in() ) {
-            return new \WP_Error( 'rest_not_logged_in', __( 'REST API is disabled for non-authenticated users', WPCA_TEXT_DOMAIN ), array( 'status' => 401 ) );
+            return new \WP_Error( 'rest_not_logged_in', \__( 'REST API is disabled for non-authenticated users', WPCA_TEXT_DOMAIN ), array( 'status' => 401 ) );
         }
         return $result;
     }
@@ -201,7 +201,7 @@ class Performance {
     public function clear_cache() {
         $results = array(
             'success' => true,
-            'message' => __( 'Cache cleared successfully', WPCA_TEXT_DOMAIN ),
+            'message' => \__( 'Cache cleared successfully', WPCA_TEXT_DOMAIN ),
             'caches' => array()
         );
         
@@ -209,7 +209,7 @@ class Performance {
         if ( function_exists( 'wp_cache_flush' ) ) {
             wp_cache_flush();
             $results['caches'][] = array(
-                'name' => __( 'WordPress Object Cache', WPCA_TEXT_DOMAIN ),
+                'name' => \__( 'WordPress Object Cache', WPCA_TEXT_DOMAIN ),
                 'cleared' => true
             );
         }
@@ -217,7 +217,7 @@ class Performance {
         // Clear transients
         $this->run_transient_cleanup();
         $results['caches'][] = array(
-            'name' => __( 'Transients', WPCA_TEXT_DOMAIN ),
+            'name' => \__( 'Transients', WPCA_TEXT_DOMAIN ),
             'cleared' => true
         );
         
@@ -225,7 +225,7 @@ class Performance {
         if ( function_exists( 'opcache_reset' ) ) {
             opcache_reset();
             $results['caches'][] = array(
-                'name' => __( 'OPcache', WPCA_TEXT_DOMAIN ),
+                'name' => \__( 'OPcache', WPCA_TEXT_DOMAIN ),
                 'cleared' => true
             );
         }
@@ -261,8 +261,8 @@ class Performance {
         
         // Get cache status
         $stats['cache_status'] = array(
-            'object_cache' => function_exists( 'wp_cache_get' ) ? __( 'Enabled', WPCA_TEXT_DOMAIN ) : __( 'Disabled', WPCA_TEXT_DOMAIN ),
-            'opcache' => function_exists( 'opcache_get_status' ) ? __( 'Enabled', WPCA_TEXT_DOMAIN ) : __( 'Disabled', WPCA_TEXT_DOMAIN )
+            'object_cache' => function_exists( 'wp_cache_get' ) ? \__( 'Enabled', WPCA_TEXT_DOMAIN ) : \__( 'Disabled', WPCA_TEXT_DOMAIN ),
+            'opcache' => function_exists( 'opcache_get_status' ) ? \__( 'Enabled', WPCA_TEXT_DOMAIN ) : \__( 'Disabled', WPCA_TEXT_DOMAIN )
         );
         
         return $stats;
