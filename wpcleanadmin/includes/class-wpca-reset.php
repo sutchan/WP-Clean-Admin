@@ -1,4 +1,4 @@
-﻿<?php
+﻿﻿<?php
 /**
  * Reset class for WP Clean Admin plugin
  *

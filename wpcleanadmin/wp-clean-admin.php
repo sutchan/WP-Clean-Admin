@@ -1,4 +1,4 @@
-﻿<?php
+﻿﻿<?php
 /**
  * Plugin Name: WP Clean Admin
  * Plugin URI: https://github.com/sutchan/WPCleanAdmin

@@ -1,4 +1,4 @@
-﻿<?php
+﻿﻿<?php
 /**
  * Login class for WP Clean Admin plugin
  *

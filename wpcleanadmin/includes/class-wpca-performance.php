@@ -1,4 +1,4 @@
-﻿<?php
+﻿﻿<?php
 /**
  * Performance class for WP Clean Admin plugin
  *

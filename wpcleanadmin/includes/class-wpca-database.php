@@ -1,4 +1,4 @@
-﻿<?php
+﻿﻿<?php
 /**
  * Database class for WP Clean Admin plugin
  *
