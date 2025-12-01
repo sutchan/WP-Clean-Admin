@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /**
  * Cleanup class for WP Clean Admin plugin
  *
  * @package WPCleanAdmin
  */
 
+namespace WPCleanAdmin;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-
-namespace WPCleanAdmin;
 
 /**
  * Cleanup class
@@ -137,7 +137,7 @@ class Cleanup {
             'expired_crons' => true
         );
         
-        $options = ( function_exists( 'wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
+        $options = ( function_exists( '\wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
         
         // Clean transients
         if ( $options['transients'] ) {
@@ -166,7 +166,7 @@ class Cleanup {
         
         // Clean expired crons
         if ( $options['expired_crons'] ) {
-            $crons = _get_cron_array();
+            $crons = ( function_exists( '\_get_cron_array' ) ? \_get_cron_array() : array() );
             $now = time();
             $deleted = 0;
             
@@ -174,8 +174,10 @@ class Cleanup {
                 if ( $timestamp < $now ) {
                     foreach ( $cronhooks as $hook => $events ) {
                         foreach ( $events as $sig => $data ) {
-                            wp_unschedule_event( $timestamp, $hook, $data['args'] );
-                            $deleted++;
+                            if ( function_exists( '\wp_unschedule_event' ) ) {
+                                \wp_unschedule_event( $timestamp, $hook, $data['args'] );
+                                $deleted++;
+                            }
                         }
                     }
                 }
@@ -209,7 +211,7 @@ class Cleanup {
             'duplicate_media' => false
         );
         
-        $options = wp_parse_args( $options, $default_options );
+        $options = ( function_exists( 'wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
         
         // Clean orphaned media
         if ( $options['orphaned_media'] ) {
@@ -227,8 +229,10 @@ class Cleanup {
             
             foreach ( $orphaned_media as $media ) {
                 // Delete media file
-                wp_delete_attachment( $media->ID, true );
-                $deleted++;
+                if ( function_exists( '\wp_delete_attachment' ) ) {
+                    \wp_delete_attachment( $media->ID, true );
+                    $deleted++;
+                }
             }
             
             $results['cleaned']['orphaned_media'] = $deleted;
@@ -260,7 +264,7 @@ class Cleanup {
             'old_comments' => false
         );
         
-        $options = wp_parse_args( $options, $default_options );
+        $options = ( function_exists( 'wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
         
         // Clean spam comments
         if ( $options['spam_comments'] ) {

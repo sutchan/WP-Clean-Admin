@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /**
  * Menu Manager class for WP Clean Admin plugin
  *
  * @package WPCleanAdmin
  */
 
+namespace WPCleanAdmin;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-
-namespace WPCleanAdmin;
 
 /**
  * Menu_Manager class
@@ -73,7 +73,7 @@ class Menu_Manager {
      */
     public function remove_dashboard_widgets() {
         // Remove default WordPress dashboard widgets
-        if ( function_exists( 'remove_meta_box' ) ) {
+        if ( function_exists( '\remove_meta_box' ) ) {
             \remove_meta_box( 'dashboard_right_now', 'dashboard', 'normal' );
             \remove_meta_box( 'dashboard_activity', 'dashboard', 'normal' );
             \remove_meta_box( 'dashboard_recent_comments', 'dashboard', 'normal' );
@@ -85,7 +85,7 @@ class Menu_Manager {
         }
         
         // Remove WordPress welcome panel
-        if ( function_exists( 'remove_action' ) ) {
+        if ( function_exists( '\remove_action' ) ) {
             \remove_action( 'welcome_panel', 'wp_welcome_panel' );
         }
     }
@@ -223,7 +223,7 @@ class Menu_Manager {
         // Load settings
         $settings = wpca_get_settings();
         
-        if ( isset( $settings['menu']['dashboard_widgets'] ) && function_exists( 'remove_meta_box' ) ) {
+        if ( isset( $settings['menu']['dashboard_widgets'] ) && function_exists( '\remove_meta_box' ) ) {
             $widgets_to_remove = $settings['menu']['dashboard_widgets'];
             
             foreach ( $widgets_to_remove as $widget_id => $remove ) {

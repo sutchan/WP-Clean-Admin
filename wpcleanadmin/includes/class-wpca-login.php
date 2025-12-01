@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /**
  * Login class for WP Clean Admin plugin
  *
  * @package WPCleanAdmin
  */
 
+namespace WPCleanAdmin;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-
-namespace WPCleanAdmin;
 
 /**
  * Login class
@@ -133,7 +133,7 @@ class Login {
         
         // Add custom footer content if set
         if ( isset( $settings['login'] ) && isset( $settings['login']['login_footer_content'] ) && ! empty( $settings['login']['login_footer_content'] ) ) {
-            echo ( function_exists( 'wp_kses_post' ) ? \wp_kses_post( $settings['login']['login_footer_content'] ) : $settings['login']['login_footer_content'] );
+            echo ( function_exists( '\wp_kses_post' ) ? \wp_kses_post( $settings['login']['login_footer_content'] ) : $settings['login']['login_footer_content'] );
         }
     }
     
@@ -149,7 +149,7 @@ class Login {
         
         // Add custom body class if set
         if ( isset( $settings['login'] ) && isset( $settings['login']['login_body_class'] ) && ! empty( $settings['login']['login_body_class'] ) ) {
-            $classes[] = ( function_exists( 'sanitize_html_class' ) ? \sanitize_html_class( $settings['login']['login_body_class'] ) : $settings['login']['login_body_class'] );
+            $classes[] = ( function_exists( '\sanitize_html_class' ) ? \sanitize_html_class( $settings['login']['login_body_class'] ) : $settings['login']['login_body_class'] );
         }
         
         return $classes;
@@ -262,11 +262,11 @@ class Login {
         $user_ip = $_SERVER['REMOTE_ADDR'];
         
         // Get login attempts
-        $login_attempts = ( function_exists( 'get_transient' ) ? \get_transient( 'wpca_login_attempts_' . $user_ip ) : 0 );
+        $login_attempts = ( function_exists( '\get_transient' ) ? \get_transient( 'wpca_login_attempts_' . $user_ip ) : 0 );
         
         // Check if user is locked out
         if ( $login_attempts >= $max_attempts ) {
-            return new \WP_Error( 'too_many_attempts', __( 'Too many login attempts. Please try again later.', WPCA_TEXT_DOMAIN ) );
+            return new \WP_Error( 'too_many_attempts', \__( 'Too many login attempts. Please try again later.', WPCA_TEXT_DOMAIN ) );
         }
         
         return $user;
@@ -282,13 +282,13 @@ class Login {
         $user_ip = $_SERVER['REMOTE_ADDR'];
         
         // Get login attempts
-        $login_attempts = ( function_exists( 'get_transient' ) ? \get_transient( 'wpca_login_attempts_' . $user_ip ) : 0 );
+        $login_attempts = ( function_exists( '\get_transient' ) ? \get_transient( 'wpca_login_attempts_' . $user_ip ) : 0 );
         
         // Increment login attempts
         $login_attempts = $login_attempts ? $login_attempts + 1 : 1;
         
         // Set transient
-        if ( function_exists( 'set_transient' ) ) {
+        if ( function_exists( '\set_transient' ) ) {
             \set_transient( 'wpca_login_attempts_' . $user_ip, $login_attempts, 300 ); // 5 minutes
         }
     }

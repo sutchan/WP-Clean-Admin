@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Permissions class for WP Clean Admin plugin
  *

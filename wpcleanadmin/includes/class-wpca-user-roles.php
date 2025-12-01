@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * User Roles class for WP Clean Admin plugin
  *

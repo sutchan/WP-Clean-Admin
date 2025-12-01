@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Performance class for WP Clean Admin plugin
  *
@@ -83,7 +83,7 @@ class Performance {
         }
         
         // Add performance hooks
-        add_action( 'wpca_clear_cache', array( $this, 'clear_cache' ) );
+        \add_action( 'wpca_clear_cache', array( $this, 'clear_cache' ) );
     }
     
     /**
@@ -91,16 +91,21 @@ class Performance {
      */
     public function disable_emojis() {
         // Remove emoji actions
-        remove_action( 'admin_print_styles', 'print_emoji_styles' );
-        remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
-        remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
-        remove_action( 'wp_print_styles', 'print_emoji_styles' );
-        remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
-        remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
-        remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
+        if ( function_exists( 'remove_action' ) ) {
+            remove_action( 'admin_print_styles', 'print_emoji_styles' );
+            remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+            remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+            remove_action( 'wp_print_styles', 'print_emoji_styles' );
+        }
+        
+        if ( function_exists( 'remove_filter' ) ) {
+            remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
+            remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
+            remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
+        }
         
         // Disable emoji TinyMCE plugin
-        add_filter( 'tiny_mce_plugins', array( $this, 'disable_emojis_tinymce' ) );
+        \add_filter( 'tiny_mce_plugins', array( $this, 'disable_emojis_tinymce' ) );
     }
     
     /**
@@ -121,12 +126,14 @@ class Performance {
      */
     public function disable_xmlrpc() {
         // Disable XML-RPC methods
-        add_filter( 'xmlrpc_enabled', '__return_false' );
-        add_filter( 'xmlrpc_methods', '__return_empty_array' );
+        \add_filter( 'xmlrpc_enabled', '__return_false' );
+        \add_filter( 'xmlrpc_methods', '__return_empty_array' );
         
         // Remove XML-RPC headers
-        remove_action( 'wp_head', 'rsd_link' );
-        remove_action( 'wp_head', 'wlwmanifest_link' );
+        if ( function_exists( 'remove_action' ) ) {
+            remove_action( 'wp_head', 'rsd_link' );
+            remove_action( 'wp_head', 'wlwmanifest_link' );
+        }
     }
     
     /**
@@ -134,7 +141,7 @@ class Performance {
      */
     public function disable_rest_api() {
         // Disable REST API for non-authenticated users
-        add_filter( 'rest_authentication_errors', array( $this, 'disable_rest_api_authentication' ) );
+        \add_filter( 'rest_authentication_errors', array( $this, 'disable_rest_api_authentication' ) );
     }
     
     /**
@@ -144,7 +151,7 @@ class Performance {
      * @return WP_Error|bool Modified authentication result
      */
     public function disable_rest_api_authentication( $result ) {
-        if ( ! is_user_logged_in() ) {
+        if ( function_exists( 'is_user_logged_in' ) && ! is_user_logged_in() ) {
             return new \WP_Error( 'rest_not_logged_in', \__( 'REST API is disabled for non-authenticated users', WPCA_TEXT_DOMAIN ), array( 'status' => 401 ) );
         }
         return $result;
@@ -155,8 +162,10 @@ class Performance {
      */
     public function disable_heartbeat() {
         // Remove heartbeat actions
-        remove_action( 'admin_enqueue_scripts', 'wp_enqueue_heartbeat' );
-        remove_action( 'wp_enqueue_scripts', 'wp_enqueue_heartbeat' );
+        if ( function_exists( 'remove_action' ) ) {
+            remove_action( 'admin_enqueue_scripts', 'wp_enqueue_heartbeat' );
+            remove_action( 'wp_enqueue_scripts', 'wp_enqueue_heartbeat' );
+        }
     }
     
     /**
@@ -164,8 +173,10 @@ class Performance {
      */
     public function optimize_database() {
         // Schedule database optimization
-        if ( ! wp_next_scheduled( 'wpca_optimize_database' ) ) {
-            wp_schedule_event( time(), 'weekly', 'wpca_optimize_database' );
+        if ( function_exists( '\wp_next_scheduled' ) && function_exists( '\wp_schedule_event' ) ) {
+            if ( ! \wp_next_scheduled( 'wpca_optimize_database' ) ) {
+                \wp_schedule_event( time(), 'weekly', 'wpca_optimize_database' );
+            }
         }
     }
     
@@ -174,12 +185,14 @@ class Performance {
      */
     public function clean_transients() {
         // Schedule transient cleanup
-        if ( ! wp_next_scheduled( 'wpca_clean_transients' ) ) {
-            wp_schedule_event( time(), 'daily', 'wpca_clean_transients' );
+        if ( function_exists( '\wp_next_scheduled' ) && function_exists( '\wp_schedule_event' ) ) {
+            if ( ! \wp_next_scheduled( 'wpca_clean_transients' ) ) {
+                \wp_schedule_event( time(), 'daily', 'wpca_clean_transients' );
+            }
         }
         
         // Add transient cleanup hook
-        add_action( 'wpca_clean_transients', array( $this, 'run_transient_cleanup' ) );
+        \add_action( 'wpca_clean_transients', array( $this, 'run_transient_cleanup' ) );
     }
     
     /**
@@ -206,8 +219,8 @@ class Performance {
         );
         
         // Clear WordPress object cache
-        if ( function_exists( 'wp_cache_flush' ) ) {
-            wp_cache_flush();
+        if ( function_exists( '\wp_cache_flush' ) ) {
+            \wp_cache_flush();
             $results['caches'][] = array(
                 'name' => \__( 'WordPress Object Cache', WPCA_TEXT_DOMAIN ),
                 'cleared' => true
@@ -222,8 +235,8 @@ class Performance {
         );
         
         // Clear opcode cache if available
-        if ( function_exists( 'opcache_reset' ) ) {
-            opcache_reset();
+        if ( function_exists( '\opcache_reset' ) ) {
+            \opcache_reset();
             $results['caches'][] = array(
                 'name' => \__( 'OPcache', WPCA_TEXT_DOMAIN ),
                 'cleared' => true
@@ -245,24 +258,24 @@ class Performance {
         
         // Get PHP memory usage
         $stats['memory_usage'] = array(
-            'current' => size_format( memory_get_usage() ),
-            'peak' => size_format( memory_get_peak_usage() ),
-            'limit' => ini_get( 'memory_limit' )
+            'current' => \size_format( \memory_get_usage() ),
+            'peak' => \size_format( \memory_get_peak_usage() ),
+            'limit' => \ini_get( 'memory_limit' )
         );
         
         // Get database query count
-        $stats['query_count'] = get_num_queries();
+        $stats['query_count'] = function_exists( '\get_num_queries' ) ? \get_num_queries() : 0;
         
         // Get page load time
-        $stats['load_time'] = timer_stop( 0, 3 ) . 's';
+        $stats['load_time'] = function_exists( '\timer_stop' ) ? \timer_stop( 0, 3 ) . 's' : '0.000s';
         
         // Get transients count
         $stats['transients_count'] = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE '%transient%'" );
         
         // Get cache status
         $stats['cache_status'] = array(
-            'object_cache' => function_exists( 'wp_cache_get' ) ? \__( 'Enabled', WPCA_TEXT_DOMAIN ) : \__( 'Disabled', WPCA_TEXT_DOMAIN ),
-            'opcache' => function_exists( 'opcache_get_status' ) ? \__( 'Enabled', WPCA_TEXT_DOMAIN ) : \__( 'Disabled', WPCA_TEXT_DOMAIN )
+            'object_cache' => function_exists( '\wp_cache_get' ) ? \__( 'Enabled', WPCA_TEXT_DOMAIN ) : \__( 'Disabled', WPCA_TEXT_DOMAIN ),
+            'opcache' => function_exists( '\opcache_get_status' ) ? \__( 'Enabled', WPCA_TEXT_DOMAIN ) : \__( 'Disabled', WPCA_TEXT_DOMAIN )
         );
         
         return $stats;
@@ -278,15 +291,14 @@ class Performance {
         if ( isset( $settings['performance'] ) ) {
             // Minify CSS and JS
             if ( isset( $settings['performance']['minify_resources'] ) && $settings['performance']['minify_resources'] ) {
-                add_filter( 'style_loader_tag', array( $this, 'minify_css' ) );
-                add_filter( 'script_loader_tag', array( $this, 'minify_js' ) );
+                \add_filter( 'style_loader_tag', array( $this, 'minify_css' ) );
+                \add_filter( 'script_loader_tag', array( $this, 'minify_js' ) );
             }
             
             // Combine CSS and JS
             if ( isset( $settings['performance']['combine_resources'] ) && $settings['performance']['combine_resources'] ) {
-                add_filter( 'stylesheet_uri', array( $this, 'combine_css' ) );
-                add_filter( 'script_uri', array( $this, 'combine_js' ) );
-            }
+                \add_filter( 'stylesheet_uri', array( $this, 'combine_css' ) );
+                \add_filter( 'script_uri', array( $this, 'combine_js' ) );
         }
     }
     

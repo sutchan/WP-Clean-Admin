@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Core functions for WP Clean Admin plugin
  *

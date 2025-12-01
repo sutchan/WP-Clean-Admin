@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Resources class for WP Clean Admin plugin
  *

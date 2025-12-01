@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /**
  * Database Settings class for WP Clean Admin plugin
  *
  * @package WPCleanAdmin
  */
 
+namespace WPCleanAdmin;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-
-namespace WPCleanAdmin;
 
 /**
  * Database_Settings class

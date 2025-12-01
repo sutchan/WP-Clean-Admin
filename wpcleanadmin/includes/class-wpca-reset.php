@@ -1,15 +1,15 @@
-<?php
+﻿<?php
 /**
  * Reset class for WP Clean Admin plugin
  *
  * @package WPCleanAdmin
  */
 
+namespace WPCleanAdmin;
+
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-
-namespace WPCleanAdmin;
 
 /**
  * Reset class
@@ -112,8 +112,8 @@ class Reset {
         );
         
         foreach ( $events as $event ) {
-            $timestamp = \wp_next_scheduled( $event );
-            if ( $timestamp ) {
+            $timestamp = ( function_exists( 'wp_next_scheduled' ) ? \wp_next_scheduled( $event ) : false );
+            if ( $timestamp && function_exists( 'wp_unschedule_event' ) ) {
                 \wp_unschedule_event( $timestamp, $event );
             }
         }
@@ -123,7 +123,9 @@ class Reset {
         
         if ( isset( $settings['user_roles'] ) && isset( $settings['user_roles']['custom_roles'] ) ) {
             foreach ( $settings['user_roles']['custom_roles'] as $role_slug => $role_data ) {
-                \remove_role( $role_slug );
+                if ( function_exists( 'remove_role' ) ) {
+                    \remove_role( $role_slug );
+                }
             }
         }
         
@@ -247,8 +249,8 @@ class Reset {
         );
         
         foreach ( $events as $event ) {
-            $timestamp = \wp_next_scheduled( $event );
-            if ( $timestamp ) {
+            $timestamp = ( function_exists( 'wp_next_scheduled' ) ? \wp_next_scheduled( $event ) : false );
+            if ( $timestamp && function_exists( 'wp_unschedule_event' ) ) {
                 \wp_unschedule_event( $timestamp, $event );
             }
         }
