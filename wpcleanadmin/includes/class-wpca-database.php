@@ -1,545 +1,329 @@
-<?php
-
+﻿<?php
 /**
- * Database optimization functionality for WP Clean Admin
- * 
- * @file wpcleanadmin/includes/class-wpca-database.php
- * @version 1.7.15
- * @updated 2025-11-29
+ * Database class for WP Clean Admin plugin
+ *
+ * @package WPCleanAdmin
  */
 
-if (! defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+namespace WPCleanAdmin;
+
 /**
- * WPCA_Database class
- * Handles database optimization and cleanup functionality
+ * Database class
  */
-class WPCA_Database {
+class Database {
     
     /**
      * Singleton instance
-     * @var WPCA_Database|null
+     *
+     * @var Database
      */
-    protected static $instance = null;
-    
-    /**
-     * WordPress database object
-     * @var wpdb
-     */
-    private $db;
-    
-    /**
-     * WordPress table prefix
-     * @var string
-     */
-    private $table_prefix = '';
-    
-    /**
-     * Need to optimize tables
-     * @var array
-     */
-    private $tables_to_optimize = array();
-    
-    /**
-     * Cleanup items configuration
-     * @var array
-     */
-    private $cleanup_items = array();
-    
-    /**
-     * Constructor
-     */
-    private function __construct() {
-        global $wpdb;
-        
-        $this->db = $wpdb;
-        $this->table_prefix = $wpdb->prefix;
-        
-        $this->initialize_cleanup_items();
-        $this->register_hooks();
-    }
+    private static $instance;
     
     /**
      * Get singleton instance
-     * 
-     * @return WPCA_Database Singleton instance
+     *
+     * @return Database
      */
     public static function get_instance() {
-        if (null === self::$instance) {
+        if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }
         return self::$instance;
     }
     
     /**
-     * Initialize cleanup items
+     * Constructor
      */
-    private function initialize_cleanup_items() {
-        $this->cleanup_items = array(
-            'revision_posts' => array(
-                'enabled' => true,
-                'days' => 30,
-                'description' => __('Clean up post revisions', 'wp-clean-admin')
-            ),
-            'auto_drafts' => array(
-                'enabled' => true,
-                'days' => 7,
-                'description' => __('Clean up auto drafts', 'wp-clean-admin')
-            ),
-            'trashed_posts' => array(
-                'enabled' => true,
-                'days' => 30,
-                'description' => __('Clean up trashed posts', 'wp-clean-admin')
-            ),
-            'spam_comments' => array(
-                'enabled' => true,
-                'days' => 7,
-                'description' => __('Clean up spam comments', 'wp-clean-admin')
-            ),
-            'trash_comments' => array(
-                'enabled' => true,
-                'days' => 30,
-                'description' => __('Clean up trashed comments', 'wp-clean-admin')
-            ),
-            'orphan_postmeta' => array(
-                'enabled' => true,
-                'days' => 0,
-                'description' => __('Clean up orphan postmeta', 'wp-clean-admin')
-            ),
-            'orphan_commentmeta' => array(
-                'enabled' => true,
-                'days' => 0,
-                'description' => __('Clean up orphan commentmeta', 'wp-clean-admin')
-            ),
-            'orphan_term_relationships' => array(
-                'enabled' => true,
-                'days' => 0,
-                'description' => __('Clean up orphan term relationships', 'wp-clean-admin')
-            ),
-            'orphan_usermeta' => array(
-                'enabled' => true,
-                'days' => 0,
-                'description' => __('Clean up orphan usermeta', 'wp-clean-admin')
-            ),
-            'expired_transients' => array(
-                'enabled' => true,
-                'days' => 0,
-                'description' => __('Clean up expired transients', 'wp-clean-admin')
-            ),
-            'oembed_cache' => array(
-                'enabled' => true,
-                'days' => 30,
-                'description' => __('Clean up oEmbed cache', 'wp-clean-admin')
-            )
-        );
-        
-        // Apply filters to allow customization
-        $this->cleanup_items = apply_filters('wpca_cleanup_items', $this->cleanup_items);
+    private function __construct() {
+        $this->init();
     }
     
     /**
-     * Register hooks
+     * Initialize the database module
      */
-    private function register_hooks() {
-        // AJAX hooks
-        add_action('wp_ajax_wpca_optimize_tables', array($this, 'ajax_optimize_tables'));
-        add_action('wp_ajax_wpca_run_database_cleanup', array($this, 'ajax_run_database_cleanup'));
-        add_action('wp_ajax_wpca_get_database_info', array($this, 'ajax_get_database_info'));
-        add_action('wp_ajax_wpca_get_cleanup_statistics', array($this, 'ajax_get_cleanup_statistics'));
-        
-        // Schedule hooks
-        add_action('wpca_daily_cleanup', array($this, 'run_scheduled_cleanup'));
-        add_action('wpca_weekly_cleanup', array($this, 'run_scheduled_cleanup'));
-        add_action('wpca_monthly_cleanup', array($this, 'run_scheduled_cleanup'));
-    }
-    
-    /**
-     * Get tables to optimize
-     * 
-     * @return array Tables to optimize
-     */
-    private function get_tables_to_optimize() {
-        $tables = array(
-            $this->table_prefix . 'posts',
-            $this->table_prefix . 'postmeta',
-            $this->table_prefix . 'comments',
-            $this->table_prefix . 'commentmeta',
-            $this->table_prefix . 'links',
-            $this->table_prefix . 'term_relationships',
-            $this->table_prefix . 'term_taxonomy',
-            $this->table_prefix . 'terms',
-            $this->table_prefix . 'options',
-            $this->table_prefix . 'users',
-            $this->table_prefix . 'usermeta'
-        );
-        
-        // Apply filters to allow customization
-        return apply_filters('wpca_tables_to_optimize', $tables);
-    }
-    
-    /**
-     * Optimize database tables
-     * 
-     * @return array Optimization results
-     */
-    public function optimize_tables() {
-        $tables = $this->get_tables_to_optimize();
-        $results = array(
-            'success' => true,
-            'optimized_tables' => 0,
-            'total_tables' => count($tables),
-            'space_saved' => 0,
-            'details' => array()
-        );
-        
-        foreach ($tables as $table) {
-            // Trigger before optimization hook
-            do_action('wpca_before_table_optimize', $table);
-            
-            $table_result = $this->db->query("OPTIMIZE TABLE {$table}");
-            
-            // Trigger after optimization hook
-            do_action('wpca_after_table_optimize', $table, $table_result);
-            
-            if ($table_result !== false) {
-                $results['optimized_tables']++;
-                $results['details'][] = array(
-                    'table' => $table,
-                    'status' => 'optimized'
-                );
-            } else {
-                $results['details'][] = array(
-                    'table' => $table,
-                    'status' => 'failed',
-                    'error' => $this->db->last_error
-                );
-            }
-        }
-        
-        return $results;
-    }
-    
-    /**
-     * Get cleanup query for specific item
-     * 
-     * @param string $item Cleanup item name
-     * @param array $config Cleanup configuration
-     * @return string|false Cleanup query or false if invalid
-     */
-    private function get_cleanup_query($item, $config) {
-        $query = false;
-        
-        switch ($item) {
-            case 'revision_posts':
-                $cutoff_date = date('Y-m-d H:i:s', strtotime("-{$config['days']} days"));
-                $query = "DELETE FROM {$this->table_prefix}posts WHERE post_type = 'revision' AND post_modified < %s";
-                break;
-                
-            case 'auto_drafts':
-                $cutoff_date = date('Y-m-d H:i:s', strtotime("-{$config['days']} days"));
-                $query = "DELETE FROM {$this->table_prefix}posts WHERE post_status = 'auto-draft' AND post_date < %s";
-                break;
-                
-            case 'trashed_posts':
-                $cutoff_date = date('Y-m-d H:i:s', strtotime("-{$config['days']} days"));
-                $query = "DELETE FROM {$this->table_prefix}posts WHERE post_status = 'trash' AND post_modified < %s";
-                break;
-                
-            case 'spam_comments':
-                $cutoff_date = date('Y-m-d H:i:s', strtotime("-{$config['days']} days"));
-                $query = "DELETE FROM {$this->table_prefix}comments WHERE comment_approved = 'spam' AND comment_date < %s";
-                break;
-                
-            case 'trash_comments':
-                $cutoff_date = date('Y-m-d H:i:s', strtotime("-{$config['days']} days"));
-                $query = "DELETE FROM {$this->table_prefix}comments WHERE comment_approved = 'trash' AND comment_date < %s";
-                break;
-                
-            case 'orphan_postmeta':
-                $query = "DELETE pm FROM {$this->table_prefix}postmeta pm LEFT JOIN {$this->table_prefix}posts p ON pm.post_id = p.ID WHERE p.ID IS NULL";
-                break;
-                
-            case 'orphan_commentmeta':
-                $query = "DELETE cm FROM {$this->table_prefix}commentmeta cm LEFT JOIN {$this->table_prefix}comments c ON cm.comment_id = c.comment_ID WHERE c.comment_ID IS NULL";
-                break;
-                
-            case 'orphan_term_relationships':
-                $query = "DELETE tr FROM {$this->table_prefix}term_relationships tr LEFT JOIN {$this->table_prefix}posts p ON tr.object_id = p.ID WHERE p.ID IS NULL";
-                break;
-                
-            case 'orphan_usermeta':
-                $query = "DELETE um FROM {$this->table_prefix}usermeta um LEFT JOIN {$this->table_prefix}users u ON um.user_id = u.ID WHERE u.ID IS NULL";
-                break;
-                
-            case 'expired_transients':
-                $query = "DELETE FROM {$this->table_prefix}options WHERE option_name LIKE '_transient_timeout_%' AND option_value < %d";
-                break;
-                
-            case 'oembed_cache':
-                $cutoff_date = date('Y-m-d H:i:s', strtotime("-{$config['days']} days"));
-                $query = "DELETE FROM {$this->table_prefix}postmeta WHERE meta_key LIKE '_oembed_%' AND post_id IN (SELECT ID FROM {$this->table_prefix}posts WHERE post_modified < %s)";
-                break;
-        }
-        
-        // Apply filter for custom queries
-        return apply_filters('wpca_cleanup_query', $query, $item);
-    }
-    
-    /**
-     * Run database cleanup
-     * 
-     * @param array $cleanup_items Cleanup items configuration
-     * @return array Cleanup results
-     */
-    public function run_database_cleanup($cleanup_items = array()) {
-        if (empty($cleanup_items)) {
-            $cleanup_items = $this->cleanup_items;
-        }
-        
-        // Trigger before cleanup hook
-        do_action('wpca_before_database_cleanup', $cleanup_items);
-        
-        $results = array(
-            'success' => true,
-            'total_rows' => 0,
-            'space_saved' => 0,
-            'details' => array()
-        );
-        
-        foreach ($cleanup_items as $item => $config) {
-            if (isset($config['enabled']) && $config['enabled']) {
-                $query = $this->get_cleanup_query($item, $config);
-                
-                if ($query) {
-                    $row_count = 0;
-                    
-                    switch ($item) {
-                        case 'expired_transients':
-                            $row_count = $this->db->query($this->db->prepare($query, time()));
-                            // Also clean up expired transients themselves
-                            $this->db->query("DELETE t FROM {$this->table_prefix}options t INNER JOIN {$this->table_prefix}options tt ON t.option_name = CONCAT('_transient_', SUBSTRING(tt.option_name, 19)) WHERE tt.option_name LIKE '_transient_timeout_%' AND tt.option_value < %d", time());
-                            break;
-                            
-                        default:
-                            $cutoff_date = date('Y-m-d H:i:s', strtotime("-{$config['days']} days"));
-                            $row_count = $this->db->query($this->db->prepare($query, $cutoff_date));
-                            break;
-                    }
-                    
-                    $results['total_rows'] += $row_count;
-                    $results['details'][] = array(
-                        'item' => $item,
-                        'rows_deleted' => $row_count,
-                        'status' => 'completed'
-                    );
-                }
-            }
-        }
-        
-        // Optimize tables after cleanup
-        $this->optimize_tables();
-        
-        // Trigger after cleanup hook
-        do_action('wpca_after_database_cleanup', $results);
-        
-        return $results;
+    public function init() {
+        // Add database optimization hooks
+        add_action( 'wpca_optimize_database', array( $this, 'optimize_database' ) );
     }
     
     /**
      * Get database information
-     * 
+     *
      * @return array Database information
      */
     public function get_database_info() {
-        $tables = $this->get_tables_to_optimize();
-        $total_size = 0;
-        $overhead = 0;
-        $table_details = array();
+        global $wpdb;
         
-        foreach ($tables as $table) {
-            $table_info = $this->db->get_row("SHOW TABLE STATUS LIKE '{$table}'", ARRAY_A);
-            if ($table_info) {
-                $table_size = $table_info['Data_length'] + $table_info['Index_length'];
-                $total_size += $table_size;
-                $overhead += $table_info['Data_free'];
-                
-                $table_details[] = array(
-                    'name' => $table,
-                    'size' => $table_size,
-                    'overhead' => $table_info['Data_free'],
-                    'rows' => $table_info['Rows'],
-                    'engine' => $table_info['Engine']
-                );
+        $info = array();
+        
+        // Get database name and version
+        $info['name'] = $wpdb->dbname;
+        $info['version'] = $wpdb->db_version();
+        
+        // Get table count
+        $info['table_count'] = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM information_schema.TABLES WHERE table_schema = %s", $wpdb->dbname ) );
+        
+        // Get database size
+        $result = $wpdb->get_row( $wpdb->prepare( "SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema = %s", $wpdb->dbname ), ARRAY_A );
+        $info['size'] = size_format( $result['size'], 2 );
+        
+        // Get WordPress tables
+        $info['wp_tables'] = array();
+        $tables = $wpdb->get_results( $wpdb->prepare( "SHOW TABLES LIKE %s", $wpdb->prefix . '%' ), ARRAY_N );
+        
+        foreach ( $tables as $table ) {
+            $table_name = $table[0];
+            $table_info = $wpdb->get_row( $wpdb->prepare( "SELECT data_length, index_length FROM information_schema.TABLES WHERE table_schema = %s AND table_name = %s", $wpdb->dbname, $table_name ), ARRAY_A );
+            
+            $info['wp_tables'][] = array(
+                'name' => $table_name,
+                'size' => size_format( $table_info['data_length'] + $table_info['index_length'], 2 ),
+                'data_size' => size_format( $table_info['data_length'], 2 ),
+                'index_size' => size_format( $table_info['index_length'], 2 )
+            );
+        }
+        
+        return $info;
+    }
+    
+    /**
+     * Optimize database tables
+     *
+     * @return array Optimization results
+     */
+    public function optimize_database() {
+        global $wpdb;
+        
+        $results = array(
+            'success' => true,
+            'message' => __( 'Database optimization completed successfully', WPCA_TEXT_DOMAIN ),
+            'tables' => array()
+        );
+        
+        // Get all WordPress tables
+        $tables = $wpdb->get_results( $wpdb->prepare( "SHOW TABLES LIKE %s", $wpdb->prefix . '%' ), ARRAY_N );
+        
+        foreach ( $tables as $table ) {
+            $table_name = $table[0];
+            $result = $wpdb->query( $wpdb->prepare( "OPTIMIZE TABLE %s", $table_name ) );
+            
+            $results['tables'][] = array(
+                'name' => $table_name,
+                'optimized' => $result !== false
+            );
+        }
+        
+        return $results;
+    }
+    
+    /**
+     * Backup database
+     *
+     * @param array $options Backup options
+     * @return array Backup results
+     */
+    public function backup_database( $options = array() ) {
+        global $wpdb;
+        
+        $results = array(
+            'success' => false,
+            'message' => __( 'Database backup failed', WPCA_TEXT_DOMAIN )
+        );
+        
+        // Set default options
+        $default_options = array(
+            'tables' => 'all',
+            'format' => 'sql',
+            'compress' => true
+        );
+        
+        $options = wp_parse_args( $options, $default_options );
+        
+        // Create backup directory if it doesn't exist
+        $backup_dir = WPCA_PLUGIN_DIR . 'backups/';
+        if ( ! file_exists( $backup_dir ) ) {
+            wp_mkdir_p( $backup_dir );
+        }
+        
+        // Generate backup file name
+        $backup_file = $backup_dir . 'wpca-backup-' . date( 'Y-m-d-H-i-s' ) . '.' . $options['format'];
+        
+        // Get tables to backup
+        if ( $options['tables'] === 'all' ) {
+            $tables = $wpdb->get_results( $wpdb->prepare( "SHOW TABLES LIKE %s", $wpdb->prefix . '%' ), ARRAY_N );
+            $tables = array_column( $tables, 0 );
+        } else {
+            // Get all valid WordPress tables
+            $all_wp_tables = $wpdb->get_results( $wpdb->prepare( "SHOW TABLES LIKE %s", $wpdb->prefix . '%' ), ARRAY_N );
+            $all_wp_tables = array_column( $all_wp_tables, 0 );
+            
+            // Filter requested tables to only include valid WordPress tables
+            $requested_tables = explode( ',', $options['tables'] );
+            $tables = array();
+            
+            foreach ( $requested_tables as $table ) {
+                $table = trim( $table );
+                // Only include valid WordPress tables to prevent SQL injection
+                if ( in_array( $table, $all_wp_tables ) ) {
+                    $tables[] = $table;
+                }
             }
         }
         
-        return array(
-            'tables' => $table_details,
-            'total_size' => $total_size,
-            'overhead' => $overhead,
-            'total_tables' => count($tables)
-        );
-    }
-    
-    /**
-     * Get cleanup statistics
-     * 
-     * @return array Cleanup statistics
-     */
-    public function get_cleanup_statistics() {
-        $stats = get_option('wpca_cleanup_statistics', array(
-            'last_cleanup' => '',
-            'total_cleanups' => 0,
-            'total_rows_cleaned' => 0,
-            'total_space_saved' => 0
-        ));
+        // Start backup
+        $backup_content = "-- WordPress Database Backup\n";
+        $backup_content .= "-- Generated by WP Clean Admin on " . date( 'Y-m-d H:i:s' ) . "\n";
+        $backup_content .= "-- Database: {$wpdb->dbname}\n\n";
         
-        return $stats;
-    }
-    
-    /**
-     * Update cleanup statistics
-     * 
-     * @param array $results Cleanup results
-     */
-    private function update_cleanup_statistics($results) {
-        $stats = $this->get_cleanup_statistics();
-        
-        $stats['last_cleanup'] = current_time('mysql');
-        $stats['total_cleanups']++;
-        $stats['total_rows_cleaned'] += $results['total_rows'];
-        
-        update_option('wpca_cleanup_statistics', $stats);
-    }
-    
-    /**
-     * Set scheduled cleanup
-     * 
-     * @param string $frequency Cleanup frequency (daily, weekly, monthly)
-     * @return bool Success status
-     */
-    public function set_scheduled_cleanup($frequency = 'weekly') {
-        // Remove existing schedules first
-        $this->remove_scheduled_cleanup();
-        
-        $hook = '';
-        switch ($frequency) {
-            case 'daily':
-                $hook = 'wpca_daily_cleanup';
-                break;
-            case 'weekly':
-                $hook = 'wpca_weekly_cleanup';
-                break;
-            case 'monthly':
-                $hook = 'wpca_monthly_cleanup';
-                break;
-            default:
-                return false;
+        // Backup each table
+        foreach ( $tables as $table ) {
+            // Get table structure
+            $create_table = $wpdb->get_var( $wpdb->prepare( "SHOW CREATE TABLE %s", $table ) );
+            $backup_content .= "-- Table structure for table `{$table}`\n";
+            $backup_content .= "{$create_table};\n\n";
+            
+            // Get table data
+            $rows = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM %s", $table ), ARRAY_A );
+            if ( count( $rows ) > 0 ) {
+                $backup_content .= "-- Dumping data for table `{$table}`\n";
+                $backup_content .= "INSERT INTO `{$table}` VALUES\n";
+                
+                $values = array();
+                foreach ( $rows as $row ) {
+                    $row_values = array();
+                    foreach ( $row as $value ) {
+                        $row_values[] = $wpdb->prepare( '%s', $value );
+                    }
+                    $values[] = "(" . implode( ',', $row_values ) . ")";
+                }
+                
+                $backup_content .= implode( ",\n", $values ) . ";\n\n";
+            }
         }
         
-        return wp_schedule_event(time(), $frequency, $hook);
+        // Save backup file
+        if ( file_put_contents( $backup_file, $backup_content ) !== false ) {
+            $results['success'] = true;
+            $results['message'] = __( 'Database backup created successfully', WPCA_TEXT_DOMAIN );
+            $results['file'] = basename( $backup_file );
+            $results['size'] = filesize( $backup_file );
+        }
+        
+        return $results;
     }
     
     /**
-     * Remove scheduled cleanup
-     * 
-     * @return bool Success status
+     * Restore database from backup
+     *
+     * @param string $backup_file Backup file name
+     * @return array Restore results
      */
-    public function remove_scheduled_cleanup() {
+    public function restore_database( $backup_file ) {
+        global $wpdb;
+        
+        $results = array(
+            'success' => false,
+            'message' => __( 'Database restore failed', WPCA_TEXT_DOMAIN )
+        );
+        
+        // Get full backup file path
+        $backup_path = WPCA_PLUGIN_DIR . 'backups/' . $backup_file;
+        
+        // Check if backup file exists
+        if ( ! file_exists( $backup_path ) ) {
+            $results['message'] = __( 'Backup file not found', WPCA_TEXT_DOMAIN );
+            return $results;
+        }
+        
+        // Read backup file content
+        $backup_content = file_get_contents( $backup_path );
+        
+        // Execute SQL queries
+        $queries = explode( ';', $backup_content );
         $success = true;
         
-        if (wp_next_scheduled('wpca_daily_cleanup')) {
-            $success &= wp_clear_scheduled_hook('wpca_daily_cleanup');
+        foreach ( $queries as $query ) {
+            $query = trim( $query );
+            if ( ! empty( $query ) ) {
+                if ( $wpdb->query( $query ) === false ) {
+                    $success = false;
+                    break;
+                }
+            }
         }
         
-        if (wp_next_scheduled('wpca_weekly_cleanup')) {
-            $success &= wp_clear_scheduled_hook('wpca_weekly_cleanup');
+        if ( $success ) {
+            $results['success'] = true;
+            $results['message'] = __( 'Database restore completed successfully', WPCA_TEXT_DOMAIN );
         }
         
-        if (wp_next_scheduled('wpca_monthly_cleanup')) {
-            $success &= wp_clear_scheduled_hook('wpca_monthly_cleanup');
-        }
-        
-        return $success;
+        return $results;
     }
     
     /**
-     * Run scheduled cleanup
+     * Get database backups list
+     *
+     * @return array Database backups
      */
-    public function run_scheduled_cleanup() {
-        $results = $this->run_database_cleanup();
-        $this->update_cleanup_statistics($results);
+    public function get_database_backups() {
+        $backups = array();
+        
+        // Get backup directory
+        $backup_dir = WPCA_PLUGIN_DIR . 'backups/';
+        
+        // Check if backup directory exists
+        if ( ! file_exists( $backup_dir ) ) {
+            return $backups;
+        }
+        
+        // Get backup files
+        $files = glob( $backup_dir . '*.sql' );
+        
+        foreach ( $files as $file ) {
+            $backups[] = array(
+                'name' => basename( $file ),
+                'path' => $file,
+                'size' => filesize( $file ),
+                'modified' => filemtime( $file )
+            );
+        }
+        
+        // Sort backups by modified date (newest first)
+        usort( $backups, function( $a, $b ) {
+            return $b['modified'] - $a['modified'];
+        } );
+        
+        return $backups;
     }
     
     /**
-     * AJAX handler for optimizing tables
+     * Delete database backup
+     *
+     * @param string $backup_file Backup file name
+     * @return array Delete results
      */
-    public function ajax_optimize_tables() {
-        if (! current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Insufficient permissions', 'wp-clean-admin')));
+    public function delete_database_backup( $backup_file ) {
+        $results = array(
+            'success' => false,
+            'message' => __( 'Failed to delete backup file', WPCA_TEXT_DOMAIN )
+        );
+        
+        // Get full backup file path
+        $backup_path = WPCA_PLUGIN_DIR . 'backups/' . $backup_file;
+        
+        // Check if backup file exists
+        if ( file_exists( $backup_path ) ) {
+            // Delete backup file
+            if ( unlink( $backup_path ) ) {
+                $results['success'] = true;
+                $results['message'] = __( 'Backup file deleted successfully', WPCA_TEXT_DOMAIN );
+            }
         }
         
-        $results = $this->optimize_tables();
-        
-        if ($results['success']) {
-            wp_send_json_success(array(
-                'optimized_tables' => $results['optimized_tables'],
-                'total_tables' => $results['total_tables'],
-                'space_saved' => $results['space_saved'],
-                'details' => $results['details']
-            ), __('Database tables optimized successfully', 'wp-clean-admin'));
-        } else {
-            wp_send_json_error(array('message' => __('Failed to optimize tables', 'wp-clean-admin')));
-        }
-    }
-    
-    /**
-     * AJAX handler for running database cleanup
-     */
-    public function ajax_run_database_cleanup() {
-        if (! current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Insufficient permissions', 'wp-clean-admin')));
-        }
-        
-        $cleanup_items = isset($_POST['cleanup_items']) ? json_decode(stripslashes($_POST['cleanup_items']), true) : array();
-        $results = $this->run_database_cleanup($cleanup_items);
-        
-        $this->update_cleanup_statistics($results);
-        
-        if ($results['success']) {
-            wp_send_json_success(array(
-                'total_rows' => $results['total_rows'],
-                'space_saved' => $results['space_saved'],
-                'details' => $results['details']
-            ), __('Database cleanup completed successfully', 'wp-clean-admin'));
-        } else {
-            wp_send_json_error(array('message' => __('Failed to run database cleanup', 'wp-clean-admin')));
-        }
-    }
-    
-    /**
-     * AJAX handler for getting database information
-     */
-    public function ajax_get_database_info() {
-        if (! current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Insufficient permissions', 'wp-clean-admin')));
-        }
-        
-        $info = $this->get_database_info();
-        wp_send_json_success($info);
-    }
-    
-    /**
-     * AJAX handler for getting cleanup statistics
-     */
-    public function ajax_get_cleanup_statistics() {
-        if (! current_user_can('manage_options')) {
-            wp_send_json_error(array('message' => __('Insufficient permissions', 'wp-clean-admin')));
-        }
-        
-        $stats = $this->get_cleanup_statistics();
-        wp_send_json_success($stats);
+        return $results;
     }
 }

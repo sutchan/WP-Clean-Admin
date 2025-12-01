@@ -1,348 +1,324 @@
-<?php
+﻿<?php
+namespace WPCleanAdmin;
 
 /**
- * Settings management for WPCleanAdmin plugin
- * 
- * @file wpcleanadmin/includes/class-wpca-settings.php
- * @version 1.7.15
- * @updated 2025-11-28
+ * Settings class for WP Clean Admin plugin
+ *
+ * @package WPCleanAdmin
  */
 
-if (! defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
 /**
- * WPCA_Settings class
- * Manages plugin settings and configuration
+ * Settings class
  */
-class WPCA_Settings {
+class Settings {
     
     /**
-     * Settings array
-     * 
-     * @var array
+     * Singleton instance
+     *
+     * @var Settings
      */
-    private $settings;
+    private static $instance;
     
     /**
-     * Default settings
-     * 
-     * @var array
+     * Get singleton instance
+     *
+     * @return Settings
      */
-    private $default_settings;
+    public static function get_instance() {
+        if ( ! isset( self::$instance ) ) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
     
     /**
      * Constructor
      */
-    public function __construct() {
-        $this->default_settings = $this->get_default_settings();
-        $this->settings = $this->load_settings();
+    private function __construct() {
         $this->init();
     }
     
     /**
-     * Initialize the settings class
+     * Initialize settings module
      */
-    private function init() {
-        // Register hooks
-        add_action('admin_menu', array($this, 'add_settings_page'));
-        add_action('admin_init', array($this, 'register_settings'));
-    }
-    
-    /**
-     * Get default settings
-     * 
-     * @return array Default settings array
-     */
-    private function get_default_settings() {
-        return array(
-            'version'             => WPCA_VERSION,
-            'menu_order'          => array(),
-            'submenu_order'       => array(),
-            'menu_toggles'        => array(),
-            'dashboard_widgets'   => array(),
-            'login_style'         => 'default',
-            'custom_admin_bar'    => 0,
-            'disable_help_tabs'   => 0,
-            'cleanup_header'      => 0,
-            'minify_admin_assets' => 0
-        );
-    }
-    
-    /**
-     * Load settings from database
-     * 
-     * @return array Settings array
-     */
-    private function load_settings() {
-        $settings = get_option('wpca_settings');
+    public function init() {
+        // Register settings page
+        \add_action( 'admin_menu', array( $this, 'register_settings_page' ) );
         
-        // If settings don't exist, use defaults
-        if (! $settings || ! is_array($settings)) {
-            $settings = $this->default_settings;
-            $this->save_settings($settings);
-        } else {
-            // Merge with defaults to ensure all keys exist
-            $settings = array_merge($this->default_settings, $settings);
-            
-            // Update version if needed
-            if (isset($settings['version']) && $settings['version'] !== WPCA_VERSION) {
-                $settings['version'] = WPCA_VERSION;
-                $this->save_settings($settings);
-            }
-        }
+        // Register settings
+        \add_action( 'admin_init', array( $this, 'register_settings' ) );
         
-        return $settings;
+        // Enqueue admin scripts and styles
+        \add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
     }
     
     /**
-     * Save settings to database
-     * 
-     * @param array $settings Settings array to save
-     * @return bool True if settings were saved successfully
+     * Register settings page
      */
-    private function save_settings($settings) {
-        return update_option('wpca_settings', $settings);
-    }
-    
-    /**
-     * Get a specific setting
-     * 
-     * @param string $key Setting key
-     * @param mixed $default Default value if key doesn't exist
-     * @return mixed Setting value
-     */
-    public function get_setting($key, $default = null) {
-        return isset($this->settings[$key]) ? $this->settings[$key] : $default;
-    }
-    
-    /**
-     * Set a specific setting
-     * 
-     * @param string $key Setting key
-     * @param mixed $value Setting value
-     * @return bool True if setting was saved successfully
-     */
-    public function set_setting($key, $value) {
-        $this->settings[$key] = $value;
-        return $this->save_settings($this->settings);
-    }
-    
-    /**
-     * Get all settings
-     * 
-     * @return array All settings
-     */
-    public function get_all_settings() {
-        return $this->settings;
-    }
-    
-    /**
-     * Reset settings to defaults
-     * 
-     * @return bool True if settings were reset successfully
-     */
-    public function reset_settings() {
-        $this->settings = $this->default_settings;
-        return $this->save_settings($this->settings);
-    }
-    
-    /**
-     * Add settings page to admin menu
-     */
-    public function add_settings_page() {
-        add_menu_page(
-            __('WP Clean Admin', 'wp-clean-admin'),
-            __('Clean Admin', 'wp-clean-admin'),
+    public function register_settings_page() {
+        // Add main settings page
+        \add_menu_page(
+            \__( 'WP Clean Admin', WPCA_TEXT_DOMAIN ),
+            \__( 'Clean Admin', WPCA_TEXT_DOMAIN ),
             'manage_options',
             'wp-clean-admin',
-            array($this, 'render_settings_page'),
+            array( $this, 'render_settings_page' ),
             'dashicons-admin-generic',
-            20
+            60
         );
         
-        // Add submenu pages for different settings sections
-        add_submenu_page(
+        // Add submenu pages
+        \add_submenu_page(
             'wp-clean-admin',
-            __('General Settings', 'wp-clean-admin'),
-            __('General', 'wp-clean-admin'),
+            \__( 'Settings', WPCA_TEXT_DOMAIN ),
+            \__( 'Settings', WPCA_TEXT_DOMAIN ),
             'manage_options',
             'wp-clean-admin',
-            array($this, 'render_settings_page')
-        );
-        
-        add_submenu_page(
-            'wp-clean-admin',
-            __('Menu Settings', 'wp-clean-admin'),
-            __('Menu', 'wp-clean-admin'),
-            'manage_options',
-            'wp-clean-admin-menu',
-            array($this, 'render_menu_settings_page')
-        );
-        
-        add_submenu_page(
-            'wp-clean-admin',
-            __('Dashboard Settings', 'wp-clean-admin'),
-            __('Dashboard', 'wp-clean-admin'),
-            'manage_options',
-            'wp-clean-admin-dashboard',
-            array($this, 'render_dashboard_settings_page')
-        );
-        
-        add_submenu_page(
-            'wp-clean-admin',
-            __('Login Settings', 'wp-clean-admin'),
-            __('Login', 'wp-clean-admin'),
-            'manage_options',
-            'wp-clean-admin-login',
-            array($this, 'render_login_settings_page')
+            array( $this, 'render_settings_page' )
         );
     }
     
     /**
-     * Register settings with WordPress
+     * Register plugin settings
      */
     public function register_settings() {
-        register_setting(
-            'wpca_settings_group',
-            'wpca_settings',
-            array($this, 'validate_settings')
-        );
-        
-        // Add settings sections
-        add_settings_section(
-            'wpca_general_section',
-            __('General Settings', 'wp-clean-admin'),
-            array($this, 'render_general_section'),
+        // Register general settings section
+        \add_settings_section(
+            'wpca_general_settings',
+            \__( 'General Settings', WPCA_TEXT_DOMAIN ),
+            array( $this, 'render_general_settings_section' ),
             'wp-clean-admin'
         );
         
-        // Add settings fields
-        add_settings_field(
-            'wpca_cleanup_header',
-            __('Cleanup Header', 'wp-clean-admin'),
-            array($this, 'render_cleanup_header_field'),
+        // Register general settings fields
+        \add_settings_field(
+            'wpca_clean_admin_bar',
+            \__( 'Clean Admin Bar', WPCA_TEXT_DOMAIN ),
+            array( $this, 'render_clean_admin_bar_field' ),
             'wp-clean-admin',
-            'wpca_general_section'
+            'wpca_general_settings'
         );
         
-        add_settings_field(
-            'wpca_disable_help_tabs',
-            __('Disable Help Tabs', 'wp-clean-admin'),
-            array($this, 'render_disable_help_tabs_field'),
+        \add_settings_field(
+            'wpca_remove_wp_logo',
+            \__( 'Remove WordPress Logo', WPCA_TEXT_DOMAIN ),
+            array( $this, 'render_remove_wp_logo_field' ),
             'wp-clean-admin',
-            'wpca_general_section'
+            'wpca_general_settings'
         );
         
-        add_settings_field(
-            'wpca_custom_admin_bar',
-            __('Custom Admin Bar', 'wp-clean-admin'),
-            array($this, 'render_custom_admin_bar_field'),
-            'wp-clean-admin',
-            'wpca_general_section'
+        // Register cleanup settings section
+        \add_settings_section(
+            'wpca_cleanup_settings',
+            \__( 'Cleanup Settings', WPCA_TEXT_DOMAIN ),
+            array( $this, 'render_cleanup_settings_section' ),
+            'wp-clean-admin'
         );
         
-        add_settings_field(
-            'wpca_minify_admin_assets',
-            __('Minify Admin Assets', 'wp-clean-admin'),
-            array($this, 'render_minify_admin_assets_field'),
+        // Register cleanup settings fields
+        \add_settings_field(
+            'wpca_remove_dashboard_widgets',
+            \__( 'Remove Dashboard Widgets', WPCA_TEXT_DOMAIN ),
+            array( $this, 'render_remove_dashboard_widgets_field' ),
             'wp-clean-admin',
-            'wpca_general_section'
+            'wpca_cleanup_settings'
         );
-    }
-    
-    /**
-     * Validate settings before saving
-     * 
-     * @param array $input Input settings array
-     * @return array Validated settings array
-     */
-    public function validate_settings($input) {
-        $validated = array();
         
-        // Validate each setting
-        $validated['version'] = WPCA_VERSION;
+        \add_settings_field(
+            'wpca_simplify_admin_menu',
+            \__( 'Simplify Admin Menu', WPCA_TEXT_DOMAIN ),
+            array( $this, 'render_simplify_admin_menu_field' ),
+            'wp-clean-admin',
+            'wpca_cleanup_settings'
+        );
         
-        // Menu order
-        $validated['menu_order'] = isset($input['menu_order']) && is_array($input['menu_order']) ? $input['menu_order'] : array();
+        // Register performance settings section
+        \add_settings_section(
+            'wpca_performance_settings',
+            \__( 'Performance Settings', WPCA_TEXT_DOMAIN ),
+            array( $this, 'render_performance_settings_section' ),
+            'wp-clean-admin'
+        );
         
-        // Submenu order
-        $validated['submenu_order'] = isset($input['submenu_order']) && is_array($input['submenu_order']) ? $input['submenu_order'] : array();
+        // Register performance settings fields
+        \add_settings_field(
+            'wpca_optimize_database',
+            \__( 'Optimize Database', WPCA_TEXT_DOMAIN ),
+            array( $this, 'render_optimize_database_field' ),
+            'wp-clean-admin',
+            'wpca_performance_settings'
+        );
         
-        // Menu toggles
-        $validated['menu_toggles'] = isset($input['menu_toggles']) && is_array($input['menu_toggles']) ? $input['menu_toggles'] : array();
+        \add_settings_field(
+            'wpca_clean_transients',
+            \__( 'Clean Transients', WPCA_TEXT_DOMAIN ),
+            array( $this, 'render_clean_transients_field' ),
+            'wp-clean-admin',
+            'wpca_performance_settings'
+        );
         
-        // Dashboard widgets
-        $validated['dashboard_widgets'] = isset($input['dashboard_widgets']) && is_array($input['dashboard_widgets']) ? $input['dashboard_widgets'] : array();
+        \add_settings_field(
+            'wpca_disable_emojis',
+            \__( 'Disable Emojis', WPCA_TEXT_DOMAIN ),
+            array( $this, 'render_disable_emojis_field' ),
+            'wp-clean-admin',
+            'wpca_performance_settings'
+        );
         
-        // Login style
-        $validated['login_style'] = isset($input['login_style']) && is_string($input['login_style']) ? sanitize_text_field($input['login_style']) : 'default';
+        // Register security settings section
+        \add_settings_section(
+            'wpca_security_settings',
+            \__( 'Security Settings', WPCA_TEXT_DOMAIN ),
+            array( $this, 'render_security_settings_section' ),
+            'wp-clean-admin'
+        );
         
-        // Boolean settings
-        $validated['custom_admin_bar'] = isset($input['custom_admin_bar']) ? (int) $input['custom_admin_bar'] : 0;
-        $validated['disable_help_tabs'] = isset($input['disable_help_tabs']) ? (int) $input['disable_help_tabs'] : 0;
-        $validated['cleanup_header'] = isset($input['cleanup_header']) ? (int) $input['cleanup_header'] : 0;
-        $validated['minify_admin_assets'] = isset($input['minify_admin_assets']) ? (int) $input['minify_admin_assets'] : 0;
+        // Register security settings fields
+        \add_settings_field(
+            'wpca_hide_wp_version',
+            \__( 'Hide WordPress Version', WPCA_TEXT_DOMAIN ),
+            array( $this, 'render_hide_wp_version_field' ),
+            'wp-clean-admin',
+            'wpca_security_settings'
+        );
         
-        return $validated;
+        // Register settings
+        \register_setting( 'wp-clean-admin', 'wpca_settings', array( $this, 'validate_settings' ) );
     }
     
     /**
      * Render general settings section
      */
-    public function render_general_section() {
-        echo '<p>' . __('Configure general settings for WP Clean Admin.', 'wp-clean-admin') . '</p>';
+    public function render_general_settings_section() {
+        echo '<p>' . \__( 'Configure general settings for WP Clean Admin plugin.', WPCA_TEXT_DOMAIN ) . '</p>';
     }
     
     /**
-     * Render cleanup header field
+     * Render clean admin bar field
      */
-    public function render_cleanup_header_field() {
-        $value = $this->get_setting('cleanup_header');
-        echo '<input type="checkbox" name="wpca_settings[cleanup_header]" value="1" ' . checked(1, $value, false) . ' />';
-        echo '<label for="wpca_settings[cleanup_header]"> ' . __('Clean up WordPress header by removing unnecessary meta tags and links.', 'wp-clean-admin') . '</label>';
+    public function render_clean_admin_bar_field() {
+        $settings = \get_option( 'wpca_settings', array() );
+        $clean_admin_bar = isset( $settings['general']['clean_admin_bar'] ) ? $settings['general']['clean_admin_bar'] : 1;
+        
+        echo '<input type="checkbox" name="wpca_settings[general][clean_admin_bar]" value="1" ' . \checked( $clean_admin_bar, 1, false ) . ' />';
+        echo '<label for="wpca_clean_admin_bar"> ' . \__( 'Remove unnecessary items from the admin bar.', WPCA_TEXT_DOMAIN ) . '</label>';
     }
     
     /**
-     * Render disable help tabs field
+     * Render remove WordPress logo field
      */
-    public function render_disable_help_tabs_field() {
-        $value = $this->get_setting('disable_help_tabs');
-        echo '<input type="checkbox" name="wpca_settings[disable_help_tabs]" value="1" ' . checked(1, $value, false) . ' />';
-        echo '<label for="wpca_settings[disable_help_tabs]"> ' . __('Disable help tabs in the WordPress admin interface.', 'wp-clean-admin') . '</label>';
+    public function render_remove_wp_logo_field() {
+        $settings = \get_option( 'wpca_settings', array() );
+        $remove_wp_logo = isset( $settings['general']['remove_wp_logo'] ) ? $settings['general']['remove_wp_logo'] : 1;
+        
+        echo '<input type="checkbox" name="wpca_settings[general][remove_wp_logo]" value="1" ' . \checked( $remove_wp_logo, 1, false ) . ' />';
+        echo '<label for="wpca_remove_wp_logo"> ' . \__( 'Remove WordPress logo from admin bar.', WPCA_TEXT_DOMAIN ) . '</label>';
     }
     
     /**
-     * Render custom admin bar field
+     * Render cleanup settings section
      */
-    public function render_custom_admin_bar_field() {
-        $value = $this->get_setting('custom_admin_bar');
-        echo '<input type="checkbox" name="wpca_settings[custom_admin_bar]" value="1" ' . checked(1, $value, false) . ' />';
-        echo '<label for="wpca_settings[custom_admin_bar]"> ' . __('Enable custom admin bar modifications.', 'wp-clean-admin') . '</label>';
+    public function render_cleanup_settings_section() {
+        echo '<p>' . \__( 'Configure cleanup settings for WP Clean Admin plugin.', WPCA_TEXT_DOMAIN ) . '</p>';
     }
     
     /**
-     * Render minify admin assets field
+     * Render remove dashboard widgets field
      */
-    public function render_minify_admin_assets_field() {
-        $value = $this->get_setting('minify_admin_assets');
-        echo '<input type="checkbox" name="wpca_settings[minify_admin_assets]" value="1" ' . checked(1, $value, false) . ' />';
-        echo '<label for="wpca_settings[minify_admin_assets]"> ' . __('Minify admin CSS and JavaScript files for improved performance.', 'wp-clean-admin') . '</label>';
+    public function render_remove_dashboard_widgets_field() {
+        $settings = \get_option( 'wpca_settings', array() );
+        $remove_dashboard_widgets = isset( $settings['menu']['remove_dashboard_widgets'] ) ? $settings['menu']['remove_dashboard_widgets'] : 1;
+        
+        echo '<input type="checkbox" name="wpca_settings[menu][remove_dashboard_widgets]" value="1" ' . \checked( $remove_dashboard_widgets, 1, false ) . ' />';
+        echo '<label for="wpca_remove_dashboard_widgets"> ' . \__( 'Remove unnecessary dashboard widgets.', WPCA_TEXT_DOMAIN ) . '</label>';
     }
     
     /**
-     * Render main settings page
+     * Render simplify admin menu field
+     */
+    public function render_simplify_admin_menu_field() {
+        $settings = \get_option( 'wpca_settings', array() );
+        $simplify_admin_menu = isset( $settings['menu']['simplify_admin_menu'] ) ? $settings['menu']['simplify_admin_menu'] : 1;
+        
+        echo '<input type="checkbox" name="wpca_settings[menu][simplify_admin_menu]" value="1" ' . \checked( $simplify_admin_menu, 1, false ) . ' />';
+        echo '<label for="wpca_simplify_admin_menu"> ' . \__( 'Simplify admin menu by removing unnecessary items.', WPCA_TEXT_DOMAIN ) . '</label>';
+    }
+    
+    /**
+     * Render performance settings section
+     */
+    public function render_performance_settings_section() {
+        echo '<p>' . \__( 'Configure performance optimization settings for WP Clean Admin plugin.', WPCA_TEXT_DOMAIN ) . '</p>';
+    }
+    
+    /**
+     * Render optimize database field
+     */
+    public function render_optimize_database_field() {
+        $settings = \get_option( 'wpca_settings', array() );
+        $optimize_database = isset( $settings['performance']['optimize_database'] ) ? $settings['performance']['optimize_database'] : 1;
+        
+        echo '<input type="checkbox" name="wpca_settings[performance][optimize_database]" value="1" ' . \checked( $optimize_database, 1, false ) . ' />';
+        echo '<label for="wpca_optimize_database"> ' . \__( 'Automatically optimize database tables.', WPCA_TEXT_DOMAIN ) . '</label>';
+    }
+    
+    /**
+     * Render clean transients field
+     */
+    public function render_clean_transients_field() {
+        $settings = \get_option( 'wpca_settings', array() );
+        $clean_transients = isset( $settings['performance']['clean_transients'] ) ? $settings['performance']['clean_transients'] : 1;
+        
+        echo '<input type="checkbox" name="wpca_settings[performance][clean_transients]" value="1" ' . \checked( $clean_transients, 1, false ) . ' />';
+        echo '<label for="wpca_clean_transients"> ' . \__( 'Automatically clean expired transients.', WPCA_TEXT_DOMAIN ) . '</label>';
+    }
+    
+    /**
+     * Render disable emojis field
+     */
+    public function render_disable_emojis_field() {
+        $settings = \get_option( 'wpca_settings', array() );
+        $disable_emojis = isset( $settings['performance']['disable_emoji'] ) ? $settings['performance']['disable_emoji'] : 1;
+        
+        echo '<input type="checkbox" name="wpca_settings[performance][disable_emoji]" value="1" ' . \checked( $disable_emojis, 1, false ) . ' />';
+        echo '<label for="wpca_disable_emojis"> ' . \__( 'Disable WordPress emoji support.', WPCA_TEXT_DOMAIN ) . '</label>';
+    }
+    
+    /**
+     * Render security settings section
+     */
+    public function render_security_settings_section() {
+        echo '<p>' . \__( 'Configure security settings for WP Clean Admin plugin.', WPCA_TEXT_DOMAIN ) . '</p>';
+    }
+    
+    /**
+     * Render hide WordPress version field
+     */
+    public function render_hide_wp_version_field() {
+        $settings = \get_option( 'wpca_settings', array() );
+        $hide_wp_version = isset( $settings['security']['hide_wp_version'] ) ? $settings['security']['hide_wp_version'] : 1;
+        
+        echo '<input type="checkbox" name="wpca_settings[security][hide_wp_version]" value="1" ' . \checked( $hide_wp_version, 1, false ) . ' />';
+        echo '<label for="wpca_hide_wp_version"> ' . \__( 'Hide WordPress version information.', WPCA_TEXT_DOMAIN ) . '</label>';
+    }
+    
+    /**
+     * Render settings page
      */
     public function render_settings_page() {
         ?>
         <div class="wrap">
-            <h1><?php _e('WP Clean Admin Settings', 'wp-clean-admin'); ?></h1>
+            <h1><?php echo \esc_html( \get_admin_page_title() ); ?></h1>
             <form method="post" action="options.php">
                 <?php
-                settings_fields('wpca_settings_group');
-                do_settings_sections('wp-clean-admin');
-                submit_button();
+                // Output settings fields
+                \settings_fields( 'wp-clean-admin' );
+                \do_settings_sections( 'wp-clean-admin' );
+                \submit_button();
                 ?>
             </form>
         </div>
@@ -350,38 +326,113 @@ class WPCA_Settings {
     }
     
     /**
-     * Render menu settings page
+     * Validate settings
+     *
+     * @param array $input Input settings
+     * @return array Validated settings
      */
-    public function render_menu_settings_page() {
-        ?>
-        <div class="wrap">
-            <h1><?php _e('Menu Settings', 'wp-clean-admin'); ?></h1>
-            <p><?php _e('Menu customization features will be available soon.', 'wp-clean-admin'); ?></p>
-        </div>
-        <?php
+    public function validate_settings( $input ) {
+        $validated = array();
+        
+        // Validate general settings
+        if ( isset( $input['general'] ) ) {
+            $validated['general'] = array();
+            
+            // Validate clean admin bar setting
+            $validated['general']['clean_admin_bar'] = isset( $input['general']['clean_admin_bar'] ) ? 1 : 0;
+            
+            // Validate remove WordPress logo setting
+            $validated['general']['remove_wp_logo'] = isset( $input['general']['remove_wp_logo'] ) ? 1 : 0;
+        }
+        
+        // Validate menu settings
+        if ( isset( $input['menu'] ) ) {
+            $validated['menu'] = array();
+            
+            // Validate remove dashboard widgets setting
+            $validated['menu']['remove_dashboard_widgets'] = isset( $input['menu']['remove_dashboard_widgets'] ) ? 1 : 0;
+            
+            // Validate simplify admin menu setting
+            $validated['menu']['simplify_admin_menu'] = isset( $input['menu']['simplify_admin_menu'] ) ? 1 : 0;
+        }
+        
+        // Validate performance settings
+        if ( isset( $input['performance'] ) ) {
+            $validated['performance'] = array();
+            
+            // Validate optimize database setting
+            $validated['performance']['optimize_database'] = isset( $input['performance']['optimize_database'] ) ? 1 : 0;
+            
+            // Validate clean transients setting
+            $validated['performance']['clean_transients'] = isset( $input['performance']['clean_transients'] ) ? 1 : 0;
+            
+            // Validate disable emoji setting
+            $validated['performance']['disable_emoji'] = isset( $input['performance']['disable_emoji'] ) ? 1 : 0;
+        }
+        
+        // Validate security settings
+        if ( isset( $input['security'] ) ) {
+            $validated['security'] = array();
+            
+            // Validate hide WordPress version setting
+            $validated['security']['hide_wp_version'] = isset( $input['security']['hide_wp_version'] ) ? 1 : 0;
+        }
+        
+        return $validated;
     }
     
     /**
-     * Render dashboard settings page
+     * Enqueue admin scripts and styles
+     *
+     * @param string $hook Current admin page hook
      */
-    public function render_dashboard_settings_page() {
-        ?>
-        <div class="wrap">
-            <h1><?php _e('Dashboard Settings', 'wp-clean-admin'); ?></h1>
-            <p><?php _e('Dashboard customization features will be available soon.', 'wp-clean-admin'); ?></p>
-        </div>
-        <?php
-    }
-    
-    /**
-     * Render login settings page
-     */
-    public function render_login_settings_page() {
-        ?>
-        <div class="wrap">
-            <h1><?php _e('Login Settings', 'wp-clean-admin'); ?></h1>
-            <p><?php _e('Login customization features will be available soon.', 'wp-clean-admin'); ?></p>
-        </div>
-        <?php
+    public function enqueue_scripts( $hook ) {
+        // Only enqueue on plugin pages
+        if ( \strpos( $hook, 'wp-clean-admin' ) === false ) {
+            return;
+        }
+        
+        // Enqueue main CSS
+        \wp_enqueue_style(
+            'wpca-admin',
+            WPCA_PLUGIN_URL . 'assets/css/wpca-admin.css',
+            array(),
+            WPCA_VERSION
+        );
+        
+        // Enqueue settings CSS
+        \wp_enqueue_style(
+            'wpca-settings',
+            WPCA_PLUGIN_URL . 'assets/css/wpca-settings.css',
+            array( 'wpca-admin' ),
+            WPCA_VERSION
+        );
+        
+        // Enqueue main JS
+        \wp_enqueue_script(
+            'wpca-main',
+            WPCA_PLUGIN_URL . 'assets/js/wpca-main.js',
+            array( 'jquery' ),
+            WPCA_VERSION,
+            true
+        );
+        
+        // Enqueue settings JS
+        \wp_enqueue_script(
+            'wpca-settings',
+            WPCA_PLUGIN_URL . 'assets/js/wpca-settings.js',
+            array( 'jquery', 'wpca-main' ),
+            WPCA_VERSION,
+            true
+        );
+        
+        // Localize script
+        \wp_localize_script( 'wpca-settings', 'wpca_settings_vars', array(
+            'ajax_url' => \admin_url( 'admin-ajax.php' ),
+            'nonce' => \wp_create_nonce( 'wpca_settings_nonce' ),
+            'save' => \__( 'Save Changes', WPCA_TEXT_DOMAIN ),
+            'saved' => \__( 'Settings saved successfully!', WPCA_TEXT_DOMAIN ),
+            'error' => \__( 'An error occurred while saving settings.', WPCA_TEXT_DOMAIN )
+        ));
     }
 }

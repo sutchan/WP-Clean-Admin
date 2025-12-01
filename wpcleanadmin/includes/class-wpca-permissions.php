@@ -1,212 +1,228 @@
-<?php
-
+﻿<?php
 /**
- * Permissions management for WPCleanAdmin plugin
- * 
- * @file wpcleanadmin/includes/class-wpca-permissions.php
- * @version 1.7.15
- * @updated 2025-11-28
+ * Permissions class for WP Clean Admin plugin
+ *
+ * @package WPCleanAdmin
  */
 
-if (! defined('ABSPATH')) {
+if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+namespace WPCleanAdmin;
+
 /**
- * WPCA_Permissions class
- * Manages user permissions for the plugin
+ * Permissions class
  */
-class WPCA_Permissions {
+class Permissions {
     
     /**
-     * Default permissions array
-     * 
-     * @var array
+     * Singleton instance
+     *
+     * @var Permissions
      */
-    private $default_permissions;
+    private static $instance;
+    
+    /**
+     * Get singleton instance
+     *
+     * @return Permissions
+     */
+    public static function get_instance() {
+        if ( ! isset( self::$instance ) ) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
     
     /**
      * Constructor
      */
-    public function __construct() {
-        $this->default_permissions = $this->get_default_permissions();
+    private function __construct() {
         $this->init();
     }
     
     /**
-     * Initialize the permissions class
+     * Initialize the permissions module
      */
-    private function init() {
-        // Register hooks
-        add_action('admin_init', array($this, 'register_capabilities'));
+    public function init() {
+        // Add permissions hooks
+        add_filter( 'user_has_cap', array( $this, 'filter_user_capabilities' ), 10, 3 );
     }
     
     /**
-     * Get default permissions
-     * 
-     * @return array Default permissions array
+     * Filter user capabilities
+     *
+     * @param array $allcaps All capabilities
+     * @param array $caps Required capabilities
+     * @param array $args Arguments
+     * @return array Modified capabilities
      */
-    private function get_default_permissions() {
+    public function filter_user_capabilities( $allcaps, $caps, $args ) {
+        // Load settings
+        $settings = wpca_get_settings();
+        
+        // Apply permission filters based on settings
+        if ( isset( $settings['permissions'] ) ) {
+            // Restrict access to certain features
+            if ( isset( $settings['permissions']['restrict_features'] ) && $settings['permissions']['restrict_features'] ) {
+                // Restrict access to specific capabilities
+                $restricted_caps = array(
+                    'manage_options',
+                    'edit_theme_options',
+                    'install_plugins',
+                    'update_plugins',
+                    'delete_plugins',
+                    'install_themes',
+                    'update_themes',
+                    'delete_themes',
+                    'import',
+                    'export'
+                );
+                
+                // Remove restricted capabilities for non-administrators
+                if ( ! isset( $allcaps['administrator'] ) || ! $allcaps['administrator'] ) {
+                    foreach ( $restricted_caps as $cap ) {
+                        if ( isset( $allcaps[$cap] ) ) {
+                            unset( $allcaps[$cap] );
+                        }
+                    }
+                }
+            }
+        }
+        
+        return $allcaps;
+    }
+    
+    /**
+     * Check if user has permission to access a feature
+     *
+     * @param string $feature Feature name
+     * @param int $user_id User ID
+     * @return bool Permission result
+     */
+    public function has_feature_permission( $feature, $user_id = null ) {
+        // Get user ID if not provided
+        if ( $user_id === null ) {
+            $user_id = get_current_user_id();
+        }
+        
+        // Get user object
+        $user = get_user_by( 'id', $user_id );
+        if ( ! $user ) {
+            return false;
+        }
+        
+        // Load settings
+        $settings = wpca_get_settings();
+        
+        // Check if feature is restricted
+        if ( isset( $settings['permissions']['feature_restrictions'] ) && isset( $settings['permissions']['feature_restrictions'][$feature] ) ) {
+            $restriction = $settings['permissions']['feature_restrictions'][$feature];
+            
+            // Check if user has required role
+            if ( isset( $restriction['roles'] ) && ! empty( $restriction['roles'] ) ) {
+                $user_roles = $user->roles;
+                $has_role = array_intersect( $user_roles, $restriction['roles'] );
+                
+                if ( empty( $has_role ) ) {
+                    return false;
+                }
+            }
+            
+            // Check if user has required capability
+            if ( isset( $restriction['capability'] ) && ! empty( $restriction['capability'] ) ) {
+                if ( ! user_can( $user_id, $restriction['capability'] ) ) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Get user permissions
+     *
+     * @param int $user_id User ID
+     * @return array User permissions
+     */
+    public function get_user_permissions( $user_id = null ) {
+        // Get user ID if not provided
+        if ( $user_id === null ) {
+            $user_id = get_current_user_id();
+        }
+        
+        // Get user object
+        $user = get_user_by( 'id', $user_id );
+        if ( ! $user ) {
+            return array();
+        }
+        
+        // Get user capabilities
+        $capabilities = $user->allcaps;
+        
+        // Get user roles
+        $roles = $user->roles;
+        
+        // Load settings
+        $settings = wpca_get_settings();
+        
+        // Get feature permissions
+        $feature_permissions = array();
+        
+        if ( isset( $settings['permissions']['feature_restrictions'] ) ) {
+            foreach ( $settings['permissions']['feature_restrictions'] as $feature => $restriction ) {
+                $feature_permissions[$feature] = $this->has_feature_permission( $feature, $user_id );
+            }
+        }
+        
         return array(
-            'manage_options' => array(
-                'wpca_manage_settings',
-                'wpca_manage_menu',
-                'wpca_manage_dashboard',
-                'wpca_manage_login',
-                'wpca_manage_performance',
-                'wpca_manage_security'
-            )
+            'capabilities' => $capabilities,
+            'roles' => $roles,
+            'feature_permissions' => $feature_permissions
         );
     }
     
     /**
-     * Register capabilities for WordPress roles
+     * Restrict access to admin pages
      */
-    public function register_capabilities() {
-        // Get all WordPress roles
-        $roles = wp_roles();
+    public function restrict_admin_access() {
+        // Load settings
+        $settings = wpca_get_settings();
         
-        if (! $roles) {
-            return;
-        }
-        
-        // Assign capabilities to roles
-        foreach ($this->default_permissions as $role_name => $capabilities) {
-            $role = $roles->get_role($role_name);
-            
-            if ($role) {
-                foreach ($capabilities as $capability) {
-                    $role->add_cap($capability);
-                }
+        // Check if admin access restriction is enabled
+        if ( isset( $settings['permissions']['restrict_admin_access'] ) && $settings['permissions']['restrict_admin_access'] ) {
+            // Check if user has access to admin area
+            if ( ! current_user_can( 'manage_options' ) ) {
+                // Redirect non-administrators to front-end
+                wp_redirect( home_url() );
+                exit;
             }
         }
     }
     
     /**
-     * Set default permissions
+     * Restrict access to specific admin pages
      */
-    public function set_default_permissions() {
-        $this->register_capabilities();
-    }
-    
-    /**
-     * Check if current user has a specific capability
-     * 
-     * @param string $capability Capability to check
-     * @return bool True if user has the capability, false otherwise
-     */
-    public function current_user_can($capability) {
-        // Check if WordPress function exists
-        if (function_exists('current_user_can')) {
-            return current_user_can($capability);
-        }
+    public function restrict_specific_admin_pages() {
+        // Load settings
+        $settings = wpca_get_settings();
         
-        // Fallback: assume admin has all capabilities
-        return true;
-    }
-    
-    /**
-     * Check if user has a specific capability
-     * 
-     * @param int $user_id User ID
-     * @param string $capability Capability to check
-     * @return bool True if user has the capability, false otherwise
-     */
-    public function user_can($user_id, $capability) {
-        // Check if WordPress function exists
-        if (function_exists('user_can')) {
-            return user_can($user_id, $capability);
-        }
-        
-        // Fallback: assume admin has all capabilities
-        return true;
-    }
-    
-    /**
-     * Get all capabilities registered by the plugin
-     * 
-     * @return array Array of capabilities
-     */
-    public function get_plugin_capabilities() {
-        $capabilities = array();
-        
-        foreach ($this->default_permissions as $role_capabilities) {
-            $capabilities = array_merge($capabilities, $role_capabilities);
-        }
-        
-        return array_unique($capabilities);
-    }
-    
-    /**
-     * Cleanup capabilities when plugin is deactivated
-     */
-    public function cleanup_capabilities() {
-        // Get all WordPress roles
-        $roles = wp_roles();
-        
-        if (! $roles) {
-            return;
-        }
-        
-        // Remove plugin capabilities from all roles
-        $capabilities = $this->get_plugin_capabilities();
-        
-        foreach ($roles->roles as $role_name => $role_data) {
-            $role = $roles->get_role($role_name);
+        // Check if specific admin page restriction is enabled
+        if ( isset( $settings['permissions']['restrict_specific_pages'] ) && $settings['permissions']['restrict_specific_pages'] ) {
+            // Get current admin page
+            $current_page = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : '';
             
-            if ($role) {
-                foreach ($capabilities as $capability) {
-                    $role->remove_cap($capability);
+            // Check if current page is restricted
+            if ( isset( $settings['permissions']['restricted_pages'] ) && in_array( $current_page, $settings['permissions']['restricted_pages'] ) ) {
+                // Check if user has access to restricted page
+                if ( ! current_user_can( 'manage_options' ) ) {
+                    // Redirect to admin dashboard
+                    wp_redirect( admin_url() );
+                    exit;
                 }
             }
         }
-    }
-    
-    /**
-     * Add capability to a role
-     * 
-     * @param string $role_name Role name
-     * @param string $capability Capability to add
-     * @return bool True if capability was added successfully
-     */
-    public function add_capability_to_role($role_name, $capability) {
-        $roles = wp_roles();
-        
-        if (! $roles) {
-            return false;
-        }
-        
-        $role = $roles->get_role($role_name);
-        
-        if (! $role) {
-            return false;
-        }
-        
-        $role->add_cap($capability);
-        return true;
-    }
-    
-    /**
-     * Remove capability from a role
-     * 
-     * @param string $role_name Role name
-     * @param string $capability Capability to remove
-     * @return bool True if capability was removed successfully
-     */
-    public function remove_capability_from_role($role_name, $capability) {
-        $roles = wp_roles();
-        
-        if (! $roles) {
-            return false;
-        }
-        
-        $role = $roles->get_role($role_name);
-        
-        if (! $role) {
-            return false;
-        }
-        
-        $role->remove_cap($capability);
-        return true;
     }
 }

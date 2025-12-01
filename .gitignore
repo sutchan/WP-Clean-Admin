@@ -1,4 +1,4 @@
-.gitignore
+﻿.gitignore
 .vscode
 /docs
 *.code-workspace
@@ -12,3 +12,4 @@ update_*
 check_*
 fix_*
 convert_*
+/test

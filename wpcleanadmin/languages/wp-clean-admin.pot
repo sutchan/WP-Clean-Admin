@@ -1,4 +1,4 @@
-sgid ""
+﻿sgid ""
 msgstr ""
 "Project-Id-Version: WP Clean Admin 1.7.15\n"
 "Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"
