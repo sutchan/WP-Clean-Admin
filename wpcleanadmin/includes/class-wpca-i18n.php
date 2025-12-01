@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * i18n class for WP Clean Admin plugin
  *

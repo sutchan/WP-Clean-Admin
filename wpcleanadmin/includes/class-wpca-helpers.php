@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 namespace WPCleanAdmin;
 
 /**
@@ -166,10 +166,18 @@ class Helpers {
      */
     public function is_network_activated() {
         if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
-            require_once ABSPATH . '/wp-admin/includes/plugin.php';
+            if ( defined( 'ABSPATH' ) ) {
+                require_once ABSPATH . '/wp-admin/includes/plugin.php';
+            } else {
+                return false;
+            }
         }
         
-        return \is_plugin_active_for_network( \plugin_basename( WPCA_PLUGIN_DIR . 'wp-clean-admin.php' ) );
+        if ( function_exists( 'plugin_basename' ) ) {
+            return \is_plugin_active_for_network( \plugin_basename( WPCA_PLUGIN_DIR . 'wp-clean-admin.php' ) );
+        }
+        
+        return false;
     }
     
     /**

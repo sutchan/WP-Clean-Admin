@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Reset class for WP Clean Admin plugin
  *
@@ -47,8 +47,8 @@ class Reset {
      */
     public function init() {
         // Add reset hooks
-        add_action( 'wpca_reset_settings', array( $this, 'reset_settings' ) );
-        add_action( 'wpca_reset_plugin', array( $this, 'reset_plugin' ) );
+        \add_action( 'wpca_reset_settings', array( $this, 'reset_settings' ) );
+        \add_action( 'wpca_reset_plugin', array( $this, 'reset_plugin' ) );
     }
     
     /**
@@ -78,7 +78,7 @@ class Reset {
                 $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $pattern ) );
             } else {
                 // Delete specific option
-                delete_option( $option );
+                \delete_option( $option );
             }
         }
         
@@ -112,9 +112,9 @@ class Reset {
         );
         
         foreach ( $events as $event ) {
-            $timestamp = wp_next_scheduled( $event );
+            $timestamp = \wp_next_scheduled( $event );
             if ( $timestamp ) {
-                wp_unschedule_event( $timestamp, $event );
+                \wp_unschedule_event( $timestamp, $event );
             }
         }
         
@@ -148,7 +148,7 @@ class Reset {
         // Reset specific module settings
         if ( isset( $settings[$module] ) ) {
             unset( $settings[$module] );
-            update_option( 'wpca_settings', $settings );
+            \update_option( 'wpca_settings', $settings );
         } else {
             $results['success'] = false;
             $results['message'] = sprintf( \__( 'Invalid module: %s', WPCA_TEXT_DOMAIN ), $module );
@@ -169,8 +169,8 @@ class Reset {
         );
         
         // Delete dashboard widget settings
-        delete_option( 'wp_user_dashboard_widgets' );
-        delete_option( 'dashboard_widget_options' );
+        \delete_option( 'wp_user_dashboard_widgets' );
+        \delete_option( 'dashboard_widget_options' );
         
         return $results;
     }
@@ -187,8 +187,8 @@ class Reset {
         );
         
         // Delete admin menu settings
-        delete_option( 'wpca_menu_items' );
-        delete_option( 'wpca_menu_customizer_settings' );
+        \delete_option( 'wpca_menu_items' );
+        \delete_option( 'wpca_menu_customizer_settings' );
         
         return $results;
     }
@@ -210,7 +210,7 @@ class Reset {
         // Reset login settings
         if ( isset( $settings['login'] ) ) {
             unset( $settings['login'] );
-            update_option( 'wpca_settings', $settings );
+            \update_option( 'wpca_settings', $settings );
         }
         
         // Delete login attempt transients
@@ -237,7 +237,7 @@ class Reset {
         // Reset performance settings
         if ( isset( $settings['performance'] ) ) {
             unset( $settings['performance'] );
-            update_option( 'wpca_settings', $settings );
+            \update_option( 'wpca_settings', $settings );
         }
         
         // Remove scheduled performance events
@@ -247,9 +247,9 @@ class Reset {
         );
         
         foreach ( $events as $event ) {
-            $timestamp = wp_next_scheduled( $event );
+            $timestamp = \wp_next_scheduled( $event );
             if ( $timestamp ) {
-                wp_unschedule_event( $timestamp, $event );
+                \wp_unschedule_event( $timestamp, $event );
             }
         }
         

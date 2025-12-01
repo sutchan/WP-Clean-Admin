@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 namespace WPCleanAdmin;
 
 /**
@@ -141,9 +141,11 @@ class Core {
         );
         
         // Update settings if they don't exist
-        $current_settings = \get_option( 'wpca_settings', array() );
-        $updated_settings = function_exists( '\wp_parse_args' ) ? \wp_parse_args( $current_settings, $default_settings ) : array_merge( $default_settings, $current_settings );
+        $current_settings = ( function_exists( 'get_option' ) ? \get_option( 'wpca_settings', array() ) : array() );
+        $updated_settings = ( function_exists( 'wp_parse_args' ) ? \wp_parse_args( $current_settings, $default_settings ) : array_merge( $default_settings, $current_settings ) );
         
-        \update_option( 'wpca_settings', $updated_settings );
+        if ( function_exists( 'update_option' ) ) {
+            \update_option( 'wpca_settings', $updated_settings );
+        }
     }
 }

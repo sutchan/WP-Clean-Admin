@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Database class for WP Clean Admin plugin
  *
@@ -147,12 +147,17 @@ class Database {
             'compress' => true
         );
         
-        $options = wp_parse_args( $options, $default_options );
+        $options = ( function_exists( 'wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
         
         // Create backup directory if it doesn't exist
         $backup_dir = WPCA_PLUGIN_DIR . 'backups/';
         if ( ! file_exists( $backup_dir ) ) {
-            wp_mkdir_p( $backup_dir );
+            if ( function_exists( 'wp_mkdir_p' ) ) {
+                \wp_mkdir_p( $backup_dir );
+            } else {
+                // Fallback to mkdir with recursive flag
+                mkdir( $backup_dir, 0755, true );
+            }
         }
         
         // Generate backup file name

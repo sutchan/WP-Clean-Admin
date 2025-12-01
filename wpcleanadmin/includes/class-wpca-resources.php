@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Resources class for WP Clean Admin plugin
  *
@@ -47,8 +47,10 @@ class Resources {
      */
     public function init() {
         // Add resources hooks
-        add_action( 'wp_enqueue_scripts', array( $this, 'optimize_frontend_resources' ), 999 );
-        add_action( 'admin_enqueue_scripts', array( $this, 'optimize_admin_resources' ), 999 );
+        if ( function_exists( 'add_action' ) ) {
+            \add_action( 'wp_enqueue_scripts', array( $this, 'optimize_frontend_resources' ), 999 );
+            \add_action( 'admin_enqueue_scripts', array( $this, 'optimize_admin_resources' ), 999 );
+        }
     }
     
     /**
@@ -62,33 +64,43 @@ class Resources {
         if ( isset( $settings['resources'] ) ) {
             // Disable emojis
             if ( isset( $settings['resources']['disable_emojis'] ) && $settings['resources']['disable_emojis'] ) {
-                remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
-                remove_action( 'wp_print_styles', 'print_emoji_styles' );
-                remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
-                remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
-                remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
+                if ( function_exists( 'remove_action' ) && function_exists( 'remove_filter' ) ) {
+                    \remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+                    \remove_action( 'wp_print_styles', 'print_emoji_styles' );
+                    \remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
+                    \remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
+                    \remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
+                }
             }
             
             // Disable WordPress embeds
             if ( isset( $settings['resources']['disable_embeds'] ) && $settings['resources']['disable_embeds'] ) {
-                remove_action( 'wp_head', 'wp_oembed_add_host_js' );
-                remove_action( 'wp_head', 'wp_oembed_add_discovery_links' );
+                if ( function_exists( 'remove_action' ) ) {
+                    \remove_action( 'wp_head', 'wp_oembed_add_host_js' );
+                    \remove_action( 'wp_head', 'wp_oembed_add_discovery_links' );
+                }
             }
             
             // Disable WordPress version
             if ( isset( $settings['resources']['disable_version'] ) && $settings['resources']['disable_version'] ) {
-                remove_action( 'wp_head', 'wp_generator' );
+                if ( function_exists( 'remove_action' ) ) {
+                    \remove_action( 'wp_head', 'wp_generator' );
+                }
             }
             
             // Disable RSS feeds
             if ( isset( $settings['resources']['disable_rss'] ) && $settings['resources']['disable_rss'] ) {
-                remove_action( 'wp_head', 'feed_links', 2 );
-                remove_action( 'wp_head', 'feed_links_extra', 3 );
+                if ( function_exists( 'remove_action' ) ) {
+                    \remove_action( 'wp_head', 'feed_links', 2 );
+                    \remove_action( 'wp_head', 'feed_links_extra', 3 );
+                }
             }
             
             // Disable REST API
             if ( isset( $settings['resources']['disable_rest_api'] ) && $settings['resources']['disable_rest_api'] ) {
-                remove_action( 'wp_head', 'rest_output_link_wp_head' );
+                if ( function_exists( 'remove_action' ) ) {
+                    \remove_action( 'wp_head', 'rest_output_link_wp_head' );
+                }
             }
         }
     }
@@ -103,7 +115,9 @@ class Resources {
         // Apply admin resource optimizations based on settings
         if ( isset( $settings['resources'] ) && isset( $settings['resources']['optimize_admin_resources'] ) && $settings['resources']['optimize_admin_resources'] ) {
             // Remove unnecessary admin scripts and styles
-            add_action( 'admin_init', array( $this, 'remove_unnecessary_admin_resources' ) );
+            if ( function_exists( 'add_action' ) ) {
+                \add_action( 'admin_init', array( $this, 'remove_unnecessary_admin_resources' ) );
+            }
         }
     }
     
@@ -112,17 +126,21 @@ class Resources {
      */
     public function remove_unnecessary_admin_resources() {
         // Remove WordPress welcome panel
-        remove_action( 'welcome_panel', 'wp_welcome_panel' );
+        if ( function_exists( 'remove_action' ) ) {
+            \remove_action( 'welcome_panel', 'wp_welcome_panel' );
+        }
         
         // Remove unnecessary dashboard widgets
-        remove_meta_box( 'dashboard_right_now', 'dashboard', 'normal' );
-        remove_meta_box( 'dashboard_activity', 'dashboard', 'normal' );
-        remove_meta_box( 'dashboard_recent_comments', 'dashboard', 'normal' );
-        remove_meta_box( 'dashboard_incoming_links', 'dashboard', 'normal' );
-        remove_meta_box( 'dashboard_plugins', 'dashboard', 'normal' );
-        remove_meta_box( 'dashboard_recent_drafts', 'dashboard', 'side' );
-        remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );
-        remove_meta_box( 'dashboard_secondary', 'dashboard', 'side' );
+        if ( function_exists( 'remove_meta_box' ) ) {
+            \remove_meta_box( 'dashboard_right_now', 'dashboard', 'normal' );
+            \remove_meta_box( 'dashboard_activity', 'dashboard', 'normal' );
+            \remove_meta_box( 'dashboard_recent_comments', 'dashboard', 'normal' );
+            \remove_meta_box( 'dashboard_incoming_links', 'dashboard', 'normal' );
+            \remove_meta_box( 'dashboard_plugins', 'dashboard', 'normal' );
+            \remove_meta_box( 'dashboard_recent_drafts', 'dashboard', 'side' );
+            \remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );
+            \remove_meta_box( 'dashboard_secondary', 'dashboard', 'side' );
+        }
     }
     
     /**
@@ -213,26 +231,32 @@ class Resources {
             'async' => false
         );
         
-        $options = wp_parse_args( $options, $default_options );
+        $options = ( function_exists( 'wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
         
         // Apply resource optimizations based on options
         if ( $options['minify'] ) {
             // Add minification hooks
-            add_filter( 'style_loader_tag', array( $this, 'minify_css' ) );
-            add_filter( 'script_loader_tag', array( $this, 'minify_js' ) );
-            $results['optimized']['minify'] = true;
+            if ( function_exists( 'add_filter' ) ) {
+                \add_filter( 'style_loader_tag', array( $this, 'minify_css' ) );
+                \add_filter( 'script_loader_tag', array( $this, 'minify_js' ) );
+                $results['optimized']['minify'] = true;
+            }
         }
         
         if ( $options['defer'] ) {
             // Add defer attribute to scripts
-            add_filter( 'script_loader_tag', array( $this, 'add_defer_attribute' ), 10, 2 );
-            $results['optimized']['defer'] = true;
+            if ( function_exists( 'add_filter' ) ) {
+                \add_filter( 'script_loader_tag', array( $this, 'add_defer_attribute' ), 10, 2 );
+                $results['optimized']['defer'] = true;
+            }
         }
         
         if ( $options['async'] ) {
             // Add async attribute to scripts
-            add_filter( 'script_loader_tag', array( $this, 'add_async_attribute' ), 10, 2 );
-            $results['optimized']['async'] = true;
+            if ( function_exists( 'add_filter' ) ) {
+                \add_filter( 'script_loader_tag', array( $this, 'add_async_attribute' ), 10, 2 );
+                $results['optimized']['async'] = true;
+            }
         }
         
         return $results;
@@ -305,11 +329,15 @@ class Resources {
         
         // Disable resource based on type
         if ( $type === 'scripts' ) {
-            wp_deregister_script( $handle );
-            wp_dequeue_script( $handle );
+            if ( function_exists( 'wp_deregister_script' ) && function_exists( 'wp_dequeue_script' ) ) {
+                \wp_deregister_script( $handle );
+                \wp_dequeue_script( $handle );
+            }
         } else if ( $type === 'styles' ) {
-            wp_deregister_style( $handle );
-            wp_dequeue_style( $handle );
+            if ( function_exists( 'wp_deregister_style' ) && function_exists( 'wp_dequeue_style' ) ) {
+                \wp_deregister_style( $handle );
+                \wp_dequeue_style( $handle );
+            }
         } else {
             $results['success'] = false;
             $results['message'] = \__( 'Invalid resource type', WPCA_TEXT_DOMAIN );
@@ -333,9 +361,13 @@ class Resources {
         
         // Enable resource based on type
         if ( $type === 'scripts' ) {
-            wp_enqueue_script( $handle );
+            if ( function_exists( 'wp_enqueue_script' ) ) {
+                \wp_enqueue_script( $handle );
+            }
         } else if ( $type === 'styles' ) {
-            wp_enqueue_style( $handle );
+            if ( function_exists( 'wp_enqueue_style' ) ) {
+                \wp_enqueue_style( $handle );
+            }
         } else {
             $results['success'] = false;
             $results['message'] = \__( 'Invalid resource type', WPCA_TEXT_DOMAIN );

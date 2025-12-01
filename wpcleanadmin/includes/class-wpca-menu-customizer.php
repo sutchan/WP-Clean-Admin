@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Menu Customizer class for WP Clean Admin plugin
  *

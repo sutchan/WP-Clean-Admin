@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * User Roles class for WP Clean Admin plugin
  *
@@ -47,7 +47,9 @@ class User_Roles {
      */
     public function init() {
         // Add user roles hooks
-        add_action( 'init', array( $this, 'register_custom_roles' ) );
+        if ( function_exists( 'add_action' ) ) {
+            \add_action( 'init', array( $this, 'register_custom_roles' ) );
+        }
     }
     
     /**
@@ -61,7 +63,9 @@ class User_Roles {
         if ( isset( $settings['user_roles'] ) && isset( $settings['user_roles']['custom_roles'] ) ) {
             foreach ( $settings['user_roles']['custom_roles'] as $role_slug => $role_data ) {
                 // Register custom role
-                \add_role( $role_slug, $role_data['name'], $role_data['capabilities'] );
+                if ( function_exists( 'add_role' ) ) {
+                    \add_role( $role_slug, $role_data['name'], $role_data['capabilities'] );
+                }
             }
         }
     }
@@ -91,7 +95,7 @@ class User_Roles {
      */
     public function update_role_capabilities( $role_slug, $capabilities ) {
         // Get role object
-        $role = \get_role( $role_slug );
+        $role = ( function_exists( 'get_role' ) ? \get_role( $role_slug ) : false );
         
         if ( ! $role ) {
             return false;
@@ -100,9 +104,13 @@ class User_Roles {
         // Update capabilities
         foreach ( $capabilities as $capability => $grant ) {
             if ( $grant ) {
-                $role->add_cap( $capability );
+                if ( method_exists( $role, 'add_cap' ) ) {
+                    $role->add_cap( $capability );
+                }
             } else {
-                $role->remove_cap( $capability );
+                if ( method_exists( $role, 'remove_cap' ) ) {
+                    $role->remove_cap( $capability );
+                }
             }
         }
         
@@ -124,13 +132,13 @@ class User_Roles {
         );
         
         // Check if role already exists
-        if ( \get_role( $role_slug ) ) {
+        if ( function_exists( 'get_role' ) && \get_role( $role_slug ) ) {
             $result['message'] = \__( 'Role already exists', WPCA_TEXT_DOMAIN );
             return $result;
         }
         
         // Create new role
-        $role = \add_role( $role_slug, $role_name, $capabilities );
+        $role = ( function_exists( 'add_role' ) ? \add_role( $role_slug, $role_name, $capabilities ) : false );
         
         if ( $role ) {
             $result['success'] = true;
@@ -153,13 +161,13 @@ class User_Roles {
         );
         
         // Check if role exists
-        if ( ! \get_role( $role_slug ) ) {
+        if ( ! ( function_exists( 'get_role' ) && \get_role( $role_slug ) ) ) {
             $result['message'] = \__( 'Role does not exist', WPCA_TEXT_DOMAIN );
             return $result;
         }
         
         // Delete role
-        if ( \remove_role( $role_slug ) ) {
+        if ( function_exists( 'remove_role' ) && \remove_role( $role_slug ) ) {
             $result['success'] = true;
             $result['message'] = \__( 'Role deleted successfully', WPCA_TEXT_DOMAIN );
         }
@@ -182,20 +190,20 @@ class User_Roles {
         );
         
         // Check if source role exists
-        $source_role = \get_role( $role_slug );
+        $source_role = ( function_exists( 'get_role' ) ? \get_role( $role_slug ) : false );
         if ( ! $source_role ) {
             $result['message'] = \__( 'Source role does not exist', WPCA_TEXT_DOMAIN );
             return $result;
         }
         
         // Check if new role already exists
-        if ( \get_role( $new_role_slug ) ) {
+        if ( function_exists( 'get_role' ) && \get_role( $new_role_slug ) ) {
             $result['message'] = \__( 'New role already exists', WPCA_TEXT_DOMAIN );
             return $result;
         }
         
         // Create new role with same capabilities
-        $new_role = \add_role( $new_role_slug, $new_role_name, $source_role->capabilities );
+        $new_role = ( function_exists( 'add_role' ) ? \add_role( $new_role_slug, $new_role_name, $source_role->capabilities ) : false );
         
         if ( $new_role ) {
             $result['success'] = true;
@@ -213,7 +221,7 @@ class User_Roles {
      */
     public function get_role_capabilities( $role_slug ) {
         // Get role object
-        $role = \get_role( $role_slug );
+        $role = ( function_exists( 'get_role' ) ? \get_role( $role_slug ) : false );
         
         if ( ! $role ) {
             return array();

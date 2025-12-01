@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Permissions class for WP Clean Admin plugin
  *
@@ -47,7 +47,9 @@ class Permissions {
      */
     public function init() {
         // Add permissions hooks
-        add_filter( 'user_has_cap', array( $this, 'filter_user_capabilities' ), 10, 3 );
+        if ( function_exists( 'add_filter' ) ) {
+            \add_filter( 'user_has_cap', array( $this, 'filter_user_capabilities' ), 10, 3 );
+        }
     }
     
     /**
@@ -104,11 +106,11 @@ class Permissions {
     public function has_feature_permission( $feature, $user_id = null ) {
         // Get user ID if not provided
         if ( $user_id === null ) {
-            $user_id = get_current_user_id();
+            $user_id = ( function_exists( 'get_current_user_id' ) ? \get_current_user_id() : 0 );
         }
         
         // Get user object
-        $user = get_user_by( 'id', $user_id );
+        $user = ( function_exists( 'get_user_by' ) ? \get_user_by( 'id', $user_id ) : false );
         if ( ! $user ) {
             return false;
         }
@@ -132,7 +134,7 @@ class Permissions {
             
             // Check if user has required capability
             if ( isset( $restriction['capability'] ) && ! empty( $restriction['capability'] ) ) {
-                if ( ! user_can( $user_id, $restriction['capability'] ) ) {
+                if ( ! ( function_exists( 'user_can' ) && \user_can( $user_id, $restriction['capability'] ) ) ) {
                     return false;
                 }
             }
@@ -150,11 +152,11 @@ class Permissions {
     public function get_user_permissions( $user_id = null ) {
         // Get user ID if not provided
         if ( $user_id === null ) {
-            $user_id = get_current_user_id();
+            $user_id = ( function_exists( 'get_current_user_id' ) ? \get_current_user_id() : 0 );
         }
         
         // Get user object
-        $user = get_user_by( 'id', $user_id );
+        $user = ( function_exists( 'get_user_by' ) ? \get_user_by( 'id', $user_id ) : false );
         if ( ! $user ) {
             return array();
         }
@@ -194,10 +196,12 @@ class Permissions {
         // Check if admin access restriction is enabled
         if ( isset( $settings['permissions']['restrict_admin_access'] ) && $settings['permissions']['restrict_admin_access'] ) {
             // Check if user has access to admin area
-            if ( ! current_user_can( 'manage_options' ) ) {
+            if ( ! ( function_exists( 'current_user_can' ) && \current_user_can( 'manage_options' ) ) ) {
                 // Redirect non-administrators to front-end
-                wp_redirect( home_url() );
-                exit;
+                if ( function_exists( 'wp_redirect' ) && function_exists( 'home_url' ) ) {
+                    \wp_redirect( \home_url() );
+                    exit;
+                }
             }
         }
     }
@@ -212,15 +216,17 @@ class Permissions {
         // Check if specific admin page restriction is enabled
         if ( isset( $settings['permissions']['restrict_specific_pages'] ) && $settings['permissions']['restrict_specific_pages'] ) {
             // Get current admin page
-            $current_page = isset( $_GET['page'] ) ? sanitize_text_field( $_GET['page'] ) : '';
+            $current_page = isset( $_GET['page'] ) ? ( function_exists( 'sanitize_text_field' ) ? \sanitize_text_field( $_GET['page'] ) : $_GET['page'] ) : '';
             
             // Check if current page is restricted
             if ( isset( $settings['permissions']['restricted_pages'] ) && in_array( $current_page, $settings['permissions']['restricted_pages'] ) ) {
                 // Check if user has access to restricted page
-                if ( ! current_user_can( 'manage_options' ) ) {
+                if ( ! ( function_exists( 'current_user_can' ) && \current_user_can( 'manage_options' ) ) ) {
                     // Redirect to admin dashboard
-                    wp_redirect( admin_url() );
-                    exit;
+                    if ( function_exists( 'wp_redirect' ) && function_exists( 'admin_url' ) ) {
+                        \wp_redirect( \admin_url() );
+                        exit;
+                    }
                 }
             }
         }
