@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Cleanup class for WP Clean Admin plugin
  *
@@ -47,10 +47,12 @@ class Cleanup {
      */
     public function init() {
         // Add cleanup hooks
-        add_action( 'wpca_cleanup_database', array( $this, 'run_database_cleanup' ) );
-        add_action( 'wpca_cleanup_media', array( $this, 'run_media_cleanup' ) );
-        add_action( 'wpca_cleanup_comments', array( $this, 'run_comments_cleanup' ) );
-        add_action( 'wpca_cleanup_content', array( $this, 'run_content_cleanup' ) );
+        if ( function_exists( 'add_action' ) ) {
+            \add_action( 'wpca_cleanup_database', array( $this, 'run_database_cleanup' ) );
+            \add_action( 'wpca_cleanup_media', array( $this, 'run_media_cleanup' ) );
+            \add_action( 'wpca_cleanup_comments', array( $this, 'run_comments_cleanup' ) );
+            \add_action( 'wpca_cleanup_content', array( $this, 'run_content_cleanup' ) );
+        }
     }
     
     /**
@@ -135,7 +137,7 @@ class Cleanup {
             'expired_crons' => true
         );
         
-        $options = wp_parse_args( $options, $default_options );
+        $options = ( function_exists( 'wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
         
         // Clean transients
         if ( $options['transients'] ) {
