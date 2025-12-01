@@ -147,7 +147,7 @@ class Database {
             'compress' => true
         );
         
-        $options = ( function_exists( 'wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
+        $options = ( function_exists( '\wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
         
         // Create backup directory if it doesn't exist
         $backup_dir = WPCA_PLUGIN_DIR . 'backups/';

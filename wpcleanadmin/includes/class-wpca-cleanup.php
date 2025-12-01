@@ -1,4 +1,4 @@
-﻿﻿<?php
+﻿﻿﻿﻿<?php
 /**
  * Cleanup class for WP Clean Admin plugin
  *
@@ -211,7 +211,7 @@ class Cleanup {
             'duplicate_media' => false
         );
         
-        $options = ( function_exists( 'wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
+        $options = ( function_exists( '\wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
         
         // Clean orphaned media
         if ( $options['orphaned_media'] ) {
@@ -264,7 +264,7 @@ class Cleanup {
             'old_comments' => false
         );
         
-        $options = ( function_exists( 'wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
+        $options = ( function_exists( '\wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
         
         // Clean spam comments
         if ( $options['spam_comments'] ) {
@@ -317,7 +317,7 @@ class Cleanup {
             'duplicate_posts' => false
         );
         
-        $options = ( function_exists( 'wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
+        $options = ( function_exists( '\wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
         
         // Clean unused shortcodes
         if ( $options['unused_shortcodes'] ) {

@@ -299,6 +299,7 @@ class Performance {
             if ( isset( $settings['performance']['combine_resources'] ) && $settings['performance']['combine_resources'] ) {
                 \add_filter( 'stylesheet_uri', array( $this, 'combine_css' ) );
                 \add_filter( 'script_uri', array( $this, 'combine_js' ) );
+            }
         }
     }
     

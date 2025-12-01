@@ -1,7 +1,4 @@
-﻿.gitignore
-.vscode
-/docs
-*.code-workspace
+﻿.vscode
 .gitattributes
 wpca-logo.fw.png
 wpca-logo.png

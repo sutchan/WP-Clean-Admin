@@ -1,4 +1,6 @@
 ﻿﻿<?php
+namespace WPCleanAdmin;
+
 /**
  * WPCleanAdmin AJAX Handler
  *
@@ -8,8 +10,6 @@
  * @subpackage AJAX
  * @since 1.7.15
  */
-
-namespace WPCleanAdmin;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -314,9 +314,13 @@ class AJAX {
         $result = wpca_update_settings( $settings );
         
         if ( $result ) {
-            \wp_send_json_success( array( 'message' => \__( 'Settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( array( 'message' => \__( 'Settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
+            }
         } else {
-            \wp_send_json_error( \__( 'Failed to save settings', WPCA_TEXT_DOMAIN ) );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Failed to save settings', WPCA_TEXT_DOMAIN ) );
+            }
         }
     }
 
@@ -814,7 +818,7 @@ class AJAX {
             return;
         }
         
-        $settings = isset( $_POST['settings'] ) ? wp_unslash( $_POST['settings'] ) : array();
+        $settings = isset( $_POST['settings'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
         
         $menu_customizer = new Menu_Customizer();
         $result = $menu_customizer->save_settings( $settings );
@@ -838,7 +842,9 @@ class AJAX {
         
         $menu_customizer = new Menu_Customizer();
         $settings = $menu_customizer->get_settings();
-        wp_send_json_success( $settings );
+        if ( function_exists( '\wp_send_json_success' ) ) {
+            \wp_send_json_success( $settings );
+        }
     }
 
     /**
@@ -871,7 +877,7 @@ class AJAX {
             return;
         }
         
-        $settings = isset( $_POST['settings'] ) ? wp_unslash( $_POST['settings'] ) : array();
+        $settings = isset( $_POST['settings'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
         
         $database_settings = new Database_Settings();
         $result = $database_settings->save_settings( $settings );
@@ -895,7 +901,9 @@ class AJAX {
         
         $database_settings = new Database_Settings();
         $settings = $database_settings->get_settings();
-        wp_send_json_success( $settings );
+        if ( function_exists( '\wp_send_json_success' ) ) {
+            \wp_send_json_success( $settings );
+        }
     }
 
     /**
@@ -928,7 +936,7 @@ class AJAX {
             return;
         }
         
-        $settings = isset( $_POST['settings'] ) ? wp_unslash( $_POST['settings'] ) : array();
+        $settings = isset( $_POST['settings'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
         
         $performance_settings = new Performance_Settings();
         $result = $performance_settings->save_settings( $settings );
@@ -952,7 +960,9 @@ class AJAX {
         
         $performance_settings = new Performance_Settings();
         $settings = $performance_settings->get_settings();
-        wp_send_json_success( $settings );
+        if ( function_exists( '\wp_send_json_success' ) ) {
+            \wp_send_json_success( $settings );
+        }
     }
 
     /**

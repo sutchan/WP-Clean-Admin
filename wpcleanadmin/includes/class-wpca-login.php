@@ -1,4 +1,4 @@
-﻿﻿<?php
+﻿<?php
 /**
  * Login class for WP Clean Admin plugin
  *
@@ -66,7 +66,7 @@ class Login {
         // Enqueue custom login styles if enabled
         if ( isset( $settings['login'] ) && isset( $settings['login']['custom_login_styles'] ) && $settings['login']['custom_login_styles'] ) {
             // Enqueue login CSS
-            if ( function_exists( 'wp_enqueue_style' ) ) {
+            if ( function_exists( '\wp_enqueue_style' ) ) {
                 \wp_enqueue_style(
                     'wpca-login',
                     WPCA_PLUGIN_URL . 'assets/css/wpca-login.css',
@@ -76,7 +76,7 @@ class Login {
             }
             
             // Enqueue login JS
-            if ( function_exists( 'wp_enqueue_script' ) ) {
+            if ( function_exists( '\wp_enqueue_script' ) ) {
                 \wp_enqueue_script(
                     'wpca-login',
                     WPCA_PLUGIN_URL . 'assets/js/wpca-login.js',

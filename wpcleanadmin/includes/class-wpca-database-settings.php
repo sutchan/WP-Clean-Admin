@@ -152,7 +152,7 @@ class Database_Settings {
             'enable_backups' => 0
         );
         
-        return ( function_exists( 'wp_parse_args' ) ? \wp_parse_args( $settings, $default_settings ) : array_merge( $default_settings, $settings ) );
+        return ( function_exists( '\wp_parse_args' ) ? \wp_parse_args( $settings, $default_settings ) : array_merge( $default_settings, $settings ) );
     }
     
     /**
