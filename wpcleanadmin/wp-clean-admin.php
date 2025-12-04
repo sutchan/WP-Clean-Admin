@@ -1,17 +1,13 @@
-﻿﻿<?php
+<?php
 /**
- * Plugin Name: WP Clean Admin
- * Plugin URI: https://github.com/sutchan/WPCleanAdmin
- * Description: A comprehensive WordPress admin cleanup and optimization plugin
- * Version: 1.7.15
- * Author: Sut
- * Author URI: https://github.com/sutchan
- * License: GPL-2.0+
- * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain: wp-clean-admin
- * Domain Path: /languages
+ * WP Clean Admin - WordPress Admin Cleanup and Optimization Plugin
+ *
+ * @package WPCleanAdmin
+ * @version 1.7.15
+ * @author Sut
+ * @author URI: https://github.com/sutchan
+ * @since 1.7.15
  */
-
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -46,7 +42,7 @@ function wpca_init() {
     }
     
     // Initialize core class
-    WPCleanAdmin\Core::get_instance();
+    WPCleanAdmin\Core::getInstance();
 }
 
 // Hook into WordPress initialization
@@ -57,13 +53,13 @@ if ( function_exists( 'add_action' ) ) {
 // Register activation hook
 if ( function_exists( 'register_activation_hook' ) ) {
     register_activation_hook( __FILE__, function() {
-        WPCleanAdmin\Core::get_instance()->activate();
+        WPCleanAdmin\Core::getInstance()->activate();
     });
 }
 
 // Register deactivation hook
 if ( function_exists( 'register_deactivation_hook' ) ) {
     register_deactivation_hook( __FILE__, function() {
-        WPCleanAdmin\Core::get_instance()->deactivate();
+        WPCleanAdmin\Core::getInstance()->deactivate();
     });
 }

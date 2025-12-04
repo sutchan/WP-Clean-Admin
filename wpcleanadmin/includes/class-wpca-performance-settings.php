@@ -1,4 +1,13 @@
-﻿﻿<?php
+<?php
+/**
+ * WPCleanAdmin Performance Settings Class
+ *
+ * @package WPCleanAdmin
+ * @version 1.7.15
+ * @author Sut
+ * @author URI: https://github.com/sutchan
+ * @since 1.7.15
+ */
 namespace WPCleanAdmin;
 
 /**
@@ -28,7 +37,7 @@ class Performance_Settings {
      *
      * @return Performance_Settings
      */
-    public static function get_instance() {
+    public static function getInstance() {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }

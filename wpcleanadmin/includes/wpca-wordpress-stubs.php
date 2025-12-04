@@ -1,13 +1,13 @@
-﻿﻿<?php
+<?php
 /**
- * WordPress function stubs for IDE support
- *
- * This file contains stub definitions for WordPress functions to provide
- * IDE auto-completion and type hinting support for the WPCleanAdmin plugin.
+ * WordPress Function Stubs for IDE Support
  *
  * @package WPCleanAdmin
+ * @version 1.7.15
+ * @author Sut
+ * @author URI: https://github.com/sutchan
+ * @since 1.7.15
  */
-
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }

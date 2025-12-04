@@ -1,4 +1,13 @@
-﻿<?php
+<?php
+/**
+ * WPCleanAdmin Core Class
+ *
+ * @package WPCleanAdmin
+ * @version 1.7.15
+ * @author Sut
+ * @author URI: https://github.com/sutchan
+ * @since 1.7.15
+ */
 namespace WPCleanAdmin;
 
 /**
@@ -28,7 +37,7 @@ class Core {
      *
      * @return Core
      */
-    public static function get_instance() {
+    public static function getInstance() {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }
@@ -58,46 +67,46 @@ class Core {
      */
     private function init_modules() {
         // Load settings module
-        Settings::get_instance();
+        Settings::getInstance();
         
         // Load dashboard module
-        Dashboard::get_instance();
+        Dashboard::getInstance();
         
         // Load database module
-        Database::get_instance();
+        Database::getInstance();
         
         // Load performance module
-        Performance::get_instance();
+        Performance::getInstance();
         
         // Load menu manager module
-        Menu_Manager::get_instance();
+        Menu_Manager::getInstance();
         
         // Load menu customizer module
-        Menu_Customizer::get_instance();
+        Menu_Customizer::getInstance();
         
         // Load permissions module
-        Permissions::get_instance();
+        Permissions::getInstance();
         
         // Load user roles module
-        User_Roles::get_instance();
+        User_Roles::getInstance();
         
         // Load login module
-        Login::get_instance();
+        Login::getInstance();
         
         // Load cleanup module
-        Cleanup::get_instance();
+        Cleanup::getInstance();
         
         // Load resources module
-        Resources::get_instance();
+        Resources::getInstance();
         
         // Load reset module
-        Reset::get_instance();
+        Reset::getInstance();
         
         // Load AJAX module
-        AJAX::get_instance();
+        AJAX::getInstance();
         
         // Load i18n module
-        i18n::get_instance();
+        i18n::getInstance();
     }
     
     /**

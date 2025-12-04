@@ -1,10 +1,13 @@
-﻿﻿<?php
+<?php
 /**
- * Database Settings class for WP Clean Admin plugin
+ * WPCleanAdmin Database Settings Class
  *
  * @package WPCleanAdmin
+ * @version 1.7.15
+ * @author Sut
+ * @author URI: https://github.com/sutchan
+ * @since 1.7.15
  */
-
 namespace WPCleanAdmin;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -28,7 +31,7 @@ class Database_Settings {
      *
      * @return Database_Settings
      */
-    public static function get_instance() {
+    public static function getInstance() {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }

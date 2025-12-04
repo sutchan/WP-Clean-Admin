@@ -1,4 +1,13 @@
-﻿﻿<?php
+<?php
+/**
+ * WPCleanAdmin Ajax Class
+ *
+ * @package WPCleanAdmin
+ * @version 1.7.15
+ * @author Sut
+ * @author URI: https://github.com/sutchan
+ * @since 1.7.15
+ */
 namespace WPCleanAdmin;
 
 /**
@@ -40,7 +49,7 @@ class AJAX {
      * @since 1.7.15
      * @return AJAX A single instance of this class.
      */
-    public static function get_instance() {
+    public static function getInstance() {
         if ( null === self::$instance ) {
             self::$instance = new self();
         }

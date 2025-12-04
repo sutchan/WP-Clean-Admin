@@ -1,15 +1,20 @@
-﻿<?php
+<?php
 /**
- * Permissions class for WP Clean Admin plugin
+ * WPCleanAdmin Permissions Class
  *
  * @package WPCleanAdmin
+ * @version 1.7.15
+ * @author Sut
+ * @author URI: https://github.com/sutchan
+ * @since 1.7.15
  */
+namespace WPCleanAdmin;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-namespace WPCleanAdmin;
+
 
 /**
  * Permissions class
@@ -28,7 +33,7 @@ class Permissions {
      *
      * @return Permissions
      */
-    public static function get_instance() {
+    public static function getInstance() {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }

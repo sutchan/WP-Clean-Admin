@@ -1,10 +1,13 @@
-﻿<?php
+<?php
 /**
- * PSR-4 Autoloader for WPCleanAdmin plugin
+ * WPCleanAdmin PSR-4 Autoloader
  *
  * @package WPCleanAdmin
+ * @version 1.7.15
+ * @author Sut
+ * @author URI: https://github.com/sutchan
+ * @since 1.7.15
  */
-
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }

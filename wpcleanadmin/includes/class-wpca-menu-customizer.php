@@ -1,15 +1,20 @@
-﻿<?php
+<?php
 /**
- * Menu Customizer class for WP Clean Admin plugin
+ * WPCleanAdmin Menu Customizer Class
  *
  * @package WPCleanAdmin
+ * @version 1.7.15
+ * @author Sut
+ * @author URI: https://github.com/sutchan
+ * @since 1.7.15
  */
+namespace WPCleanAdmin;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-namespace WPCleanAdmin;
+
 
 /**
  * Menu_Customizer class
@@ -28,7 +33,7 @@ class Menu_Customizer {
      *
      * @return Menu_Customizer
      */
-    public static function get_instance() {
+    public static function getInstance() {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }
