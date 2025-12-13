@@ -1,4 +1,4 @@
-/**
+﻿/**
  * WP Clean Admin Menu JavaScript
  *
  * @package WPCA

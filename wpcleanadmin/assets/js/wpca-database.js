@@ -1,4 +1,4 @@
-/**
+﻿/**
  * WP Clean Admin Database JavaScript
  *
  * @package WPCA

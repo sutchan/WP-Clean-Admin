@@ -1,4 +1,4 @@
-/**
+﻿/**
  * WP Clean Admin Tabs JavaScript
  *
  * @package WPCA

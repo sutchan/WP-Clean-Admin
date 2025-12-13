@@ -1,4 +1,4 @@
-/**
+﻿/**
  * WP Clean Admin Performance JavaScript
  *
  * @package WPCA

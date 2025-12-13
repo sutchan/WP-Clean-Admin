@@ -1,4 +1,4 @@
-/**
+﻿/**
  * WP Clean Admin Reset JavaScript
  *
  * @package WPCA

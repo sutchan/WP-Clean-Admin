@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * WordPress Function Stubs for IDE Support
  *

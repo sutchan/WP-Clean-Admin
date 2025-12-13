@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * WPCleanAdmin Core Functions
  *
