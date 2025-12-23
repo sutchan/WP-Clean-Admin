@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * WPCleanAdmin Database Settings Class
  *

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * WP Clean Admin - WordPress Admin Cleanup and Optimization Plugin
  *
