@@ -68,6 +68,9 @@ class Menu_Manager {
             if ( isset( $settings['general']['clean_admin_bar'] ) && $settings['general']['clean_admin_bar'] ) {
                 \add_action( 'admin_bar_menu', array( $this, 'clean_admin_bar' ), 999 );
             }
+            
+            // Apply role-based menu restrictions
+            \add_action( 'admin_menu', array( $this, 'apply_role_based_menu_restrictions' ), 999 );
         }
     }
     
@@ -270,6 +273,65 @@ class Menu_Manager {
                     }
                 }
             }, 999 );
+        }
+    }
+    
+    /**
+     * Apply role-based menu restrictions
+     */
+    public function apply_role_based_menu_restrictions() {
+        global $menu, $submenu;
+        
+        // Get current user
+        if ( ! function_exists( 'wp_get_current_user' ) ) {
+            return;
+        }
+        
+        $current_user = \wp_get_current_user();
+        if ( ! $current_user || ! isset( $current_user->roles ) ) {
+            return;
+        }
+        
+        $user_roles = $current_user->roles;
+        
+        // Load settings
+        $settings = wpca_get_settings();
+        
+        // Check if role-based menu restrictions are enabled
+        if ( ! isset( $settings['menu']['role_based_restrictions'] ) || ! $settings['menu']['role_based_restrictions'] ) {
+            return;
+        }
+        
+        // Get role-based menu restrictions
+        $role_restrictions = isset( $settings['menu']['role_menu_restrictions'] ) ? $settings['menu']['role_menu_restrictions'] : array();
+        
+        // Menu items to remove for current user
+        $menu_items_to_remove = array();
+        
+        // Check each role restriction
+        foreach ( $role_restrictions as $role => $restrictions ) {
+            if ( in_array( $role, $user_roles ) && isset( $restrictions['menu_items'] ) ) {
+                $menu_items_to_remove = array_merge( $menu_items_to_remove, array_keys( array_filter( $restrictions['menu_items'] ) ) );
+            }
+        }
+        
+        // Remove duplicates
+        $menu_items_to_remove = array_unique( $menu_items_to_remove );
+        
+        // Remove top-level menu items
+        foreach ( $menu as $key => $menu_item ) {
+            if ( isset( $menu_item[2] ) && in_array( $menu_item[2], $menu_items_to_remove ) ) {
+                unset( $menu[$key] );
+            }
+        }
+        
+        // Remove submenu items
+        foreach ( $submenu as $parent_slug => $submenu_items ) {
+            foreach ( $submenu_items as $key => $submenu_item ) {
+                if ( isset( $submenu_item[2] ) && in_array( $submenu_item[2], $menu_items_to_remove ) ) {
+                    unset( $submenu[$parent_slug][$key] );
+                }
+            }
         }
     }
     

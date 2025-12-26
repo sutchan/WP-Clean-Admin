@@ -3,34 +3,9 @@
 ### 架构设计
 - **详细设计**: [plugin-architecture/design.md](../plugin-architecture/design.md)
 
-## 设计参考
-
-### 架构设计
-- **详细设计**: [plugin-architecture/design.md](../plugin-architecture/design.md)
-
-## 设计参考
-
-### 架构设计
-- **详细设计**: [plugin-architecture/design.md](../plugin-architecture/design.md)
-
-## 设计参考
-
-### 架构设计
-- **详细设计**: [plugin-architecture/design.md](../plugin-architecture/design.md)
-
-## 设计参考
-
-### 架构设计
-- **详细设计**: [plugin-architecture/design.md](../plugin-architecture/design.md)
-
-## 设计参考
-
-### 架构设计
-- **详细设计**: [plugin-architecture/design.md](../plugin-architecture/design.md)
-
 ## ADDED Requirements
 
-### Requirement: 数据库清理自定义菜单排序自定义用户角色登录尝试限制不必要功能禁用后台菜单清理
+### Requirement: 后台菜单清理
 系统SHALL提供隐藏不必要WordPress后台菜单的功能
 
 #### Scenario: 成功隐藏后台菜单
@@ -59,6 +34,38 @@
 - **WHEN** 管理员在WP Clean Admin设置页面自定义了登录页面样式
 - **THEN** WordPress登录页面将显示自定义的样式
 
+### Requirement: 数据库清理
+系统SHALL提供数据库清理功能，包括清理过期的transients、孤儿元数据和过期的cron事件
+
+#### Scenario: 成功运行数据库清理
+- **WHEN** 管理员在WP Clean Admin设置页面点击了"运行数据库清理"按钮
+- **THEN** 系统将清理过期的transients、孤儿元数据和过期的cron事件
+- **AND** 系统将显示清理结果，包括删除的记录数量
+
+### Requirement: 媒体文件清理
+系统SHALL提供媒体文件清理功能，包括清理孤儿媒体和未使用的媒体
+
+#### Scenario: 成功运行媒体文件清理
+- **WHEN** 管理员在WP Clean Admin设置页面点击了"运行媒体清理"按钮
+- **THEN** 系统将清理孤儿媒体和未使用的媒体
+- **AND** 系统将显示清理结果，包括删除的媒体文件数量
+
+### Requirement: 评论清理
+系统SHALL提供评论清理功能，包括清理垃圾评论、回收站评论和未批准评论
+
+#### Scenario: 成功运行评论清理
+- **WHEN** 管理员在WP Clean Admin设置页面点击了"运行评论清理"按钮
+- **THEN** 系统将清理垃圾评论、回收站评论和未批准评论
+- **AND** 系统将显示清理结果，包括删除的评论数量
+
+### Requirement: 内容清理
+系统SHALL提供内容清理功能，包括清理未使用的短代码和空帖子
+
+#### Scenario: 成功运行内容清理
+- **WHEN** 管理员在WP Clean Admin设置页面点击了"运行内容清理"按钮
+- **THEN** 系统将清理未使用的短代码和空帖子
+- **AND** 系统将显示清理结果，包括清理的内容数量
+
 ## MODIFIED Requirements
 
 ### Requirement: 菜单隐藏功能
@@ -82,6 +89,10 @@
 - 使用 WordPress 钩子 `wp_dashboard_setup` 隐藏仪表盘小工具
 - 使用 WordPress 钩子 `admin_head` 和 `admin_footer` 清理后台头部和底部
 - 使用 WordPress 钩子 `login_enqueue_scripts` 优化登录页面样式
+- 使用 WordPress 钩子 `wpca_cleanup_database` 运行数据库清理
+- 使用 WordPress 钩子 `wpca_cleanup_media` 运行媒体清理
+- 使用 WordPress 钩子 `wpca_cleanup_comments` 运行评论清理
+- 使用 WordPress 钩子 `wpca_cleanup_content` 运行内容清理
 
 ### 相关文件
 - `includes/class-wpca-cleanup.php` - 后台清理核心类
@@ -92,18 +103,18 @@
 ### 相关API
 
 ```php
-// 隐藏指定菜单
-wpca_hide_menu( 'edit-comments.php' );
+// 获取清理统计信息
+wpca_get_cleanup_stats();
 
-// 隐藏所有非必要菜单
-wpca_hide_all_unnecessary_menus();
+// 运行数据库清理
+wpca_run_database_cleanup( $options );
 
-// 优化仪表盘
-wpca_optimize_dashboard();
+// 运行媒体清理
+wpca_run_media_cleanup( $options );
 
-// 清理后台头部和底部
-wpca_cleanup_admin_header_footer();
+// 运行评论清理
+wpca_run_comments_cleanup( $options );
 
-// 自定义登录页面
-wpca_customize_login_page();
+// 运行内容清理
+wpca_run_content_cleanup( $options );
 ```

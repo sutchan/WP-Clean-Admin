@@ -115,9 +115,9 @@ class Reset {
         );
         
         foreach ( $events as $event ) {
-            $timestamp = ( function_exists( '\wp_next_scheduled' ) ? \wp_next_scheduled( $event ) : false );
-            if ( $timestamp && function_exists( '\wp_unschedule_event' ) ) {
-                \wp_unschedule_event( $timestamp, $event );
+            $timestamp = $this->wp_next_scheduled( $event );
+            if ( $timestamp ) {
+                $this->wp_unschedule_event( $timestamp, $event );
             }
         }
         
@@ -126,9 +126,7 @@ class Reset {
         
         if ( isset( $settings['user_roles'] ) && isset( $settings['user_roles']['custom_roles'] ) ) {
             foreach ( $settings['user_roles']['custom_roles'] as $role_slug => $role_data ) {
-                if ( function_exists( '\remove_role' ) ) {
-                    \remove_role( $role_slug );
-                }
+                $this->remove_role( $role_slug );
             }
         }
         
@@ -220,7 +218,7 @@ class Reset {
         
         // Delete login attempt transients
         global $wpdb;
-        $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE 'wpca_login_attempts_%'" );
+        $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", 'wpca_login_attempts_%' ) );
         
         return $results;
     }
@@ -252,12 +250,49 @@ class Reset {
         );
         
         foreach ( $events as $event ) {
-            $timestamp = ( function_exists( '\wp_next_scheduled' ) ? \wp_next_scheduled( $event ) : false );
-            if ( $timestamp && function_exists( '\wp_unschedule_event' ) ) {
-                \wp_unschedule_event( $timestamp, $event );
+            $timestamp = $this->wp_next_scheduled( $event );
+            if ( $timestamp ) {
+                $this->wp_unschedule_event( $timestamp, $event );
             }
         }
         
         return $results;
+    }
+    
+    /**
+     * Wrapper for wp_next_scheduled function
+     *
+     * @param string $event Event hook name
+     * @return int|false Timestamp or false
+     */
+    private function wp_next_scheduled( $event ) {
+        if ( function_exists( '\wp_next_scheduled' ) ) {
+            return \wp_next_scheduled( $event );
+        }
+        return false;
+    }
+    
+    /**
+     * Wrapper for wp_unschedule_event function
+     *
+     * @param int $timestamp Timestamp
+     * @param string $event Event hook name
+     * @param array $args Event arguments
+     */
+    private function wp_unschedule_event( $timestamp, $event, $args = array() ) {
+        if ( function_exists( '\wp_unschedule_event' ) ) {
+            \wp_unschedule_event( $timestamp, $event, $args );
+        }
+    }
+    
+    /**
+     * Wrapper for remove_role function
+     *
+     * @param string $role Role slug
+     */
+    private function remove_role( $role ) {
+        if ( function_exists( '\remove_role' ) ) {
+            \remove_role( $role );
+        }
     }
 }

@@ -140,12 +140,12 @@ class Cleanup {
             'expired_crons' => true
         );
         
-        $options = ( function_exists( '\wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
+        $options = $this->wp_parse_args( $options, $default_options );
         
         // Clean transients
         if ( $options['transients'] ) {
-            $deleted = $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '%_transient_timeout_%' AND option_value < " . time() );
-            $deleted += $wpdb->query( "DELETE t1 FROM {$wpdb->options} t1 INNER JOIN {$wpdb->options} t2 ON t1.option_name = CONCAT( '_transient_', SUBSTRING( t2.option_name, 19 ) ) WHERE t2.option_name LIKE '%_transient_timeout_%'" );
+            $deleted = $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s AND option_value < %d", '%_transient_timeout_%', time() ) );
+            $deleted += $wpdb->query( $wpdb->prepare( "DELETE t1 FROM {$wpdb->options} t1 INNER JOIN {$wpdb->options} t2 ON t1.option_name = CONCAT( '_transient_', SUBSTRING( t2.option_name, 19 ) ) WHERE t2.option_name LIKE %s", '%_transient_timeout_%' ) );
             $results['cleaned']['transients'] = $deleted;
         }
         
@@ -169,7 +169,7 @@ class Cleanup {
         
         // Clean expired crons
         if ( $options['expired_crons'] ) {
-            $crons = ( function_exists( '\_get_cron_array' ) ? \_get_cron_array() : array() );
+            $crons = $this->_get_cron_array();
             $now = time();
             $deleted = 0;
             
@@ -177,10 +177,8 @@ class Cleanup {
                 if ( $timestamp < $now ) {
                     foreach ( $cronhooks as $hook => $events ) {
                         foreach ( $events as $sig => $data ) {
-                            if ( function_exists( '\wp_unschedule_event' ) ) {
-                                \wp_unschedule_event( $timestamp, $hook, $data['args'] );
-                                $deleted++;
-                            }
+                            $this->wp_unschedule_event( $timestamp, $hook, $data['args'] );
+                            $deleted++;
                         }
                     }
                 }
@@ -214,7 +212,7 @@ class Cleanup {
             'duplicate_media' => false
         );
         
-        $options = ( function_exists( '\wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
+        $options = $this->wp_parse_args( $options, $default_options );
         
         // Clean orphaned media
         if ( $options['orphaned_media'] ) {
@@ -232,10 +230,8 @@ class Cleanup {
             
             foreach ( $orphaned_media as $media ) {
                 // Delete media file
-                if ( function_exists( '\wp_delete_attachment' ) ) {
-                    \wp_delete_attachment( $media->ID, true );
-                    $deleted++;
-                }
+                $this->wp_delete_attachment( $media->ID, true );
+                $deleted++;
             }
             
             $results['cleaned']['orphaned_media'] = $deleted;
@@ -267,23 +263,23 @@ class Cleanup {
             'old_comments' => false
         );
         
-        $options = ( function_exists( '\wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
+        $options = $this->wp_parse_args( $options, $default_options );
         
         // Clean spam comments
         if ( $options['spam_comments'] ) {
-            $deleted = $wpdb->query( "DELETE FROM {$wpdb->comments} WHERE comment_approved = 'spam'" );
+            $deleted = $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->comments} WHERE comment_approved = %s", 'spam' ) );
             $results['cleaned']['spam_comments'] = $deleted;
         }
         
         // Clean trash comments
         if ( $options['trash_comments'] ) {
-            $deleted = $wpdb->query( "DELETE FROM {$wpdb->comments} WHERE comment_approved = 'trash'" );
+            $deleted = $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->comments} WHERE comment_approved = %s", 'trash' ) );
             $results['cleaned']['trash_comments'] = $deleted;
         }
         
         // Clean unapproved comments
         if ( $options['unapproved_comments'] ) {
-            $deleted = $wpdb->query( "DELETE FROM {$wpdb->comments} WHERE comment_approved = '0'" );
+            $deleted = $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->comments} WHERE comment_approved = %s", '0' ) );
             $results['cleaned']['unapproved_comments'] = $deleted;
         }
         
@@ -320,7 +316,7 @@ class Cleanup {
             'duplicate_posts' => false
         );
         
-        $options = ( function_exists( '\wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
+        $options = $this->wp_parse_args( $options, $default_options );
         
         // Clean unused shortcodes
         if ( $options['unused_shortcodes'] ) {
@@ -330,10 +326,63 @@ class Cleanup {
         
         // Clean empty posts
         if ( $options['empty_posts'] ) {
-            $deleted = $wpdb->query( "DELETE FROM {$wpdb->posts} WHERE post_content = '' AND post_type = 'post' AND post_status = 'publish'" );
+            $deleted = $wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->posts} WHERE post_content = %s AND post_type = %s AND post_status = %s", '', 'post', 'publish' ) );
             $results['cleaned']['empty_posts'] = $deleted;
         }
         
         return $results;
+    }
+    
+    /**
+     * Wrapper for wp_parse_args function
+     *
+     * @param array|string $args Arguments to parse
+     * @param array $defaults Default values
+     * @return array Parsed arguments
+     */
+    private function wp_parse_args( $args, $defaults ) {
+        if ( function_exists( '\wp_parse_args' ) ) {
+            return \wp_parse_args( $args, $defaults );
+        }
+        return array_merge( $defaults, (array) $args );
+    }
+    
+    /**
+     * Wrapper for _get_cron_array function
+     *
+     * @return array Cron events array
+     */
+    private function _get_cron_array() {
+        if ( function_exists( '\_get_cron_array' ) ) {
+            return \_get_cron_array();
+        }
+        return array();
+    }
+    
+    /**
+     * Wrapper for wp_unschedule_event function
+     *
+     * @param int $timestamp Timestamp
+     * @param string $hook Hook name
+     * @param array $args Hook arguments
+     */
+    private function wp_unschedule_event( $timestamp, $hook, $args = array() ) {
+        if ( function_exists( '\wp_unschedule_event' ) ) {
+            \wp_unschedule_event( $timestamp, $hook, $args );
+        }
+    }
+    
+    /**
+     * Wrapper for wp_delete_attachment function
+     *
+     * @param int $post_id Post ID
+     * @param bool $force_delete Force delete
+     * @return mixed Deleted post or false
+     */
+    private function wp_delete_attachment( $post_id, $force_delete = false ) {
+        if ( function_exists( '\wp_delete_attachment' ) ) {
+            return \wp_delete_attachment( $post_id, $force_delete );
+        }
+        return false;
     }
 }

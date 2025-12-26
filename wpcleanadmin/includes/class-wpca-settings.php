@@ -7,6 +7,16 @@
  * @author Sut
  * @author URI: https://github.com/sutchan
  * @since 1.7.15
+ *
+ * @function add_menu_page(string $page_title, string $menu_title, string $capability, string $menu_slug, callable $callback = '', string $icon_url = '', int $position = null) WordPress core function
+ * @function add_submenu_page(string $parent_slug, string $page_title, string $menu_title, string $capability, string $menu_slug, callable $callback = '') WordPress core function
+ * @function checked(mixed $checked, mixed $current = true, bool $echo = true) WordPress core function
+ * @function wp_roles() WordPress core function
+ * @function get_admin_page_title() WordPress core function
+ * @function settings_fields(string $option_group) WordPress core function
+ * @function do_settings_sections(string $page) WordPress core function
+ * @function submit_button(string $text = null, string $type = 'primary', string $name = 'submit', bool $wrap = true, string|array $other_attributes = null) WordPress core function
+ * @function wp_enqueue_style(string $handle, string $src = '', string[] $deps = array(), string|bool|null $ver = false, string $media = 'all') WordPress core function
  */
 namespace WPCleanAdmin;
 
@@ -195,6 +205,39 @@ class Settings {
             'wpca_security_settings'
         );
         
+        \add_settings_field(
+            'wpca_two_factor_auth',
+            \__( 'Enable Two-Factor Authentication', WPCA_TEXT_DOMAIN ),
+            array( $this, 'render_two_factor_auth_field' ),
+            'wp-clean-admin',
+            'wpca_security_settings'
+        );
+        
+        // Register role-based menu settings section
+        \add_settings_section(
+            'wpca_role_menu_settings',
+            \__( 'Role-Based Menu Settings', WPCA_TEXT_DOMAIN ),
+            array( $this, 'render_role_menu_settings_section' ),
+            'wp-clean-admin'
+        );
+        
+        // Register role-based menu settings fields
+        \add_settings_field(
+            'wpca_role_based_restrictions',
+            \__( 'Enable Role-Based Menu Restrictions', WPCA_TEXT_DOMAIN ),
+            array( $this, 'render_role_based_restrictions_field' ),
+            'wp-clean-admin',
+            'wpca_role_menu_settings'
+        );
+        
+        \add_settings_field(
+            'wpca_role_menu_restrictions',
+            \__( 'Role Menu Restrictions', WPCA_TEXT_DOMAIN ),
+            array( $this, 'render_role_menu_restrictions_field' ),
+            'wp-clean-admin',
+            'wpca_role_menu_settings'
+        );
+        
         // Register settings
         \register_setting( 'wp-clean-admin', 'wpca_settings', array( $this, 'validate_settings' ) );
     }
@@ -316,12 +359,108 @@ class Settings {
     }
     
     /**
+     * Render two-factor authentication field
+     */
+    public function render_two_factor_auth_field() {
+        $settings = \get_option( 'wpca_settings', array() );
+        $two_factor_auth = isset( $settings['security']['two_factor_auth'] ) ? $settings['security']['two_factor_auth'] : 0;
+        
+        echo '<input type="checkbox" name="wpca_settings[security][two_factor_auth]" value="1" ' . \checked( $two_factor_auth, 1, false ) . ' />';
+        echo '<label for="wpca_two_factor_auth"> ' . \__( 'Enable two-factor authentication for all users.', WPCA_TEXT_DOMAIN ) . '</label>';
+        echo '<p class="description">' . \__( 'When enabled, users will be required to enter a 6-digit code from their authenticator app during login.', WPCA_TEXT_DOMAIN ) . '</p>';
+    }
+    
+    /**
+     * Render role menu settings section
+     */
+    public function render_role_menu_settings_section() {
+        echo '<p>' . \__( 'Configure role-based menu restrictions for WP Clean Admin plugin.', WPCA_TEXT_DOMAIN ) . '</p>';
+    }
+    
+    /**
+     * Render role-based restrictions field
+     */
+    public function render_role_based_restrictions_field() {
+        $settings = \get_option( 'wpca_settings', array() );
+        $role_based_restrictions = isset( $settings['menu']['role_based_restrictions'] ) ? $settings['menu']['role_based_restrictions'] : 0;
+        
+        echo '<input type="checkbox" name="wpca_settings[menu][role_based_restrictions]" value="1" ' . \checked( $role_based_restrictions, 1, false ) . ' />';
+        echo '<label for="wpca_role_based_restrictions"> ' . \__( 'Enable role-based menu restrictions for different user roles.', WPCA_TEXT_DOMAIN ) . '</label>';
+    }
+    
+    /**
+     * Render role menu restrictions field
+     */
+    public function render_role_menu_restrictions_field() {
+        $settings = \get_option( 'wpca_settings', array() );
+        $role_restrictions = isset( $settings['menu']['role_menu_restrictions'] ) ? $settings['menu']['role_menu_restrictions'] : array();
+        
+        // Get all user roles
+        $roles = function_exists( 'wp_roles' ) ? \wp_roles()->get_names() : array();
+        
+        // Get all menu items
+        $menu_manager = Menu_Manager::getInstance();
+        $menu_items = $menu_manager->get_menu_items();
+        
+        echo '<div class="wpca-role-menu-restrictions">';
+        
+        foreach ( $roles as $role_slug => $role_name ) {
+            echo '<h4>' . \esc_html( $role_name ) . '</h4>';
+            echo '<table class="form-table">';
+            
+            // Get role-specific menu restrictions
+            $role_menu_restrictions = isset( $role_restrictions[$role_slug]['menu_items'] ) ? $role_restrictions[$role_slug]['menu_items'] : array();
+            
+            // Render top-level menu items
+            foreach ( $menu_items as $menu_item ) {
+                $menu_slug = $menu_item['slug'];
+                $is_checked = isset( $role_menu_restrictions[$menu_slug] ) ? $role_menu_restrictions[$menu_slug] : 0;
+                
+                echo '<tr>';
+                echo '<th scope="row">' . \esc_html( $menu_item['title'] ) . '</th>';
+                echo '<td>';
+                echo '<input type="checkbox" name="wpca_settings[menu][role_menu_restrictions][' . \esc_attr( $role_slug ) . '][menu_items][' . \esc_attr( $menu_slug ) . ']" value="1" ' . \checked( $is_checked, 1, false ) . ' />';
+                echo '<label> ' . \__( 'Hide this menu item for', WPCA_TEXT_DOMAIN ) . ' ' . \esc_html( $role_name ) . '</label>';
+                echo '</td>';
+                echo '</tr>';
+                
+                // Render submenu items
+                if ( ! empty( $menu_item['submenu'] ) ) {
+                    foreach ( $menu_item['submenu'] as $submenu_item ) {
+                        $submenu_slug = $submenu_item['slug'];
+                        $submenu_is_checked = isset( $role_menu_restrictions[$submenu_slug] ) ? $role_menu_restrictions[$submenu_slug] : 0;
+                        
+                        echo '<tr>';
+                        echo '<th scope="row" style="padding-left: 20px;">└── ' . \esc_html( $submenu_item['title'] ) . '</th>';
+                        echo '<td>';
+                        echo '<input type="checkbox" name="wpca_settings[menu][role_menu_restrictions][' . \esc_attr( $role_slug ) . '][menu_items][' . \esc_attr( $submenu_slug ) . ']" value="1" ' . \checked( $submenu_is_checked, 1, false ) . ' />';
+                        echo '<label> ' . \__( 'Hide this submenu item for', WPCA_TEXT_DOMAIN ) . ' ' . \esc_html( $role_name ) . '</label>';
+                        echo '</td>';
+                        echo '</tr>';
+                    }
+                }
+            }
+            
+            echo '</table>';
+        }
+        
+        echo '</div>';
+    }
+    
+    /**
      * Render settings page
      */
     public function render_settings_page() {
         ?>
         <div class="wrap">
             <h1><?php echo \esc_html( \get_admin_page_title() ); ?></h1>
+            
+            <!-- Settings Search -->
+            <div class="wpca-settings-search">
+                <input type="text" id="wpca-settings-search" placeholder="<?php echo \esc_attr( \__( 'Search settings...', WPCA_TEXT_DOMAIN ) ); ?>" />
+                <button type="button" class="button" id="wpca-clear-search"><?php echo \esc_html( \__( 'Clear', WPCA_TEXT_DOMAIN ) ); ?></button>
+            </div>
+            
             <form method="post" action="options.php">
                 <?php
                 // Output settings fields
@@ -331,6 +470,119 @@ class Settings {
                 ?>
             </form>
         </div>
+        
+        <script type="text/javascript">
+        (function($) {
+            'use strict';
+            
+            $(document).ready(function() {
+                // Settings search functionality
+                const searchInput = $('#wpca-settings-search');
+                const clearButton = $('#wpca-clear-search');
+                const settingSections = $('.wpca-settings-section');
+                const settingFields = $('.form-table tr');
+                
+                // Add class to sections for styling and selection
+                $('.settings-section').addClass('wpca-settings-section');
+                
+                // Search functionality
+                searchInput.on('input', function() {
+                    const searchTerm = $(this).val().toLowerCase();
+                    
+                    // Show/hide sections based on search term
+                    $('.wpca-settings-section').each(function() {
+                        const sectionTitle = $(this).find('h3').text().toLowerCase();
+                        const sectionContent = $(this).nextUntil('.wpca-settings-section').text().toLowerCase();
+                        const matchesTitle = sectionTitle.includes(searchTerm);
+                        const matchesContent = sectionContent.includes(searchTerm);
+                        
+                        if (matchesTitle || matchesContent) {
+                            $(this).show();
+                            $(this).nextUntil('.wpca-settings-section').show();
+                        } else {
+                            $(this).hide();
+                            $(this).nextUntil('.wpca-settings-section').hide();
+                        }
+                    });
+                    
+                    // Show/hide individual setting fields
+                    settingFields.each(function() {
+                        const fieldText = $(this).text().toLowerCase();
+                        if (fieldText.includes(searchTerm)) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                        }
+                    });
+                    
+                    // Show clear button if search term is not empty
+                    if (searchTerm) {
+                        clearButton.show();
+                    } else {
+                        clearButton.hide();
+                    }
+                });
+                
+                // Clear search functionality
+                clearButton.on('click', function() {
+                    searchInput.val('');
+                    settingSections.show();
+                    settingFields.show();
+                    clearButton.hide();
+                });
+                
+                // Hide clear button initially
+                clearButton.hide();
+            });
+        })(jQuery);
+        </script>
+        
+        <style type="text/css">
+            .wpca-settings-search {
+                margin: 15px 0;
+                padding: 10px;
+                background: #f1f1f1;
+                border-radius: 4px;
+                display: flex;
+                gap: 10px;
+            }
+            
+            #wpca-settings-search {
+                flex: 1;
+                padding: 8px 12px;
+                font-size: 14px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
+            
+            #wpca-clear-search {
+                white-space: nowrap;
+            }
+            
+            .wpca-settings-section {
+                margin-bottom: 20px;
+                padding: 15px;
+                background: #fff;
+                border: 1px solid #e1e1e1;
+                border-radius: 4px;
+            }
+            
+            .wpca-role-menu-restrictions {
+                max-height: 500px;
+                overflow-y: auto;
+                padding: 10px;
+                background: #f9f9f9;
+                border: 1px solid #e1e1e1;
+                border-radius: 4px;
+            }
+            
+            .wpca-role-menu-restrictions h4 {
+                margin: 15px 0 10px;
+                padding: 5px 10px;
+                background: #e1e1e1;
+                border-radius: 3px;
+            }
+        </style>
         <?php
     }
     
@@ -363,6 +615,33 @@ class Settings {
             
             // Validate simplify admin menu setting
             $validated['menu']['simplify_admin_menu'] = isset( $input['menu']['simplify_admin_menu'] ) ? 1 : 0;
+            
+            // Validate role-based restrictions setting
+            $validated['menu']['role_based_restrictions'] = isset( $input['menu']['role_based_restrictions'] ) ? 1 : 0;
+            
+            // Validate role menu restrictions
+            if ( isset( $input['menu']['role_menu_restrictions'] ) && is_array( $input['menu']['role_menu_restrictions'] ) ) {
+                $validated['menu']['role_menu_restrictions'] = array();
+                
+                foreach ( $input['menu']['role_menu_restrictions'] as $role_slug => $restrictions ) {
+                    // Sanitize role slug
+                    $sanitized_role = sanitize_text_field( $role_slug );
+                    
+                    if ( ! empty( $sanitized_role ) ) {
+                        $validated['menu']['role_menu_restrictions'][$sanitized_role] = array();
+                        
+                        // Validate menu items
+                        if ( isset( $restrictions['menu_items'] ) && is_array( $restrictions['menu_items'] ) ) {
+                            $validated['menu']['role_menu_restrictions'][$sanitized_role]['menu_items'] = array();
+                            
+                            foreach ( $restrictions['menu_items'] as $menu_slug => $hide ) {
+                                $sanitized_menu = sanitize_text_field( $menu_slug );
+                                $validated['menu']['role_menu_restrictions'][$sanitized_role]['menu_items'][$sanitized_menu] = ( $hide == 1 ) ? 1 : 0;
+                            }
+                        }
+                    }
+                }
+            }
         }
         
         // Validate performance settings
@@ -385,6 +664,9 @@ class Settings {
             
             // Validate hide WordPress version setting
             $validated['security']['hide_wp_version'] = isset( $input['security']['hide_wp_version'] ) ? 1 : 0;
+            
+            // Validate two-factor authentication setting
+            $validated['security']['two_factor_auth'] = isset( $input['security']['two_factor_auth'] ) ? 1 : 0;
         }
         
         return $validated;

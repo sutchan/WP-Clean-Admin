@@ -5,63 +5,63 @@
 
 ## ADDED Requirements
 
-### Requirement: 自定义用户角色
-系统SHALL提供自定义用户角色的功能
+### Requirement: 用户权限过滤
+系统SHALL提供过滤用户权限的功能，允许根据设置修改用户的权限
 
-#### Scenario: 成功创建自定义用户角色
-- **WHEN** 管理员在WP Clean Admin设置页面创建了一个新的用户角色
-- **THEN** 新的用户角色将被添加到WordPress中
-- **AND** 管理员可以为该角色分配权限
+#### Scenario: 成功过滤用户权限
+- **WHEN** 管理员在WP Clean Admin设置页面启用了权限过滤功能
+- **THEN** 系统将根据设置过滤用户的权限
+- **AND** 非管理员用户将被限制访问某些功能
 
-### Requirement: 分配用户权限
-系统SHALL提供分配用户权限的功能
+### Requirement: 功能权限检查
+系统SHALL提供检查用户是否有特定功能访问权限的功能
 
-#### Scenario: 成功分配用户权限
-- **WHEN** 管理员在WP Clean Admin设置页面为用户角色分配了权限
-- **THEN** 该角色的用户将拥有分配的权限
-- **AND** 系统将按照权限控制用户的操作
+#### Scenario: 成功检查功能权限
+- **WHEN** 系统在执行功能前调用了功能权限检查
+- **THEN** 系统将根据用户角色和权限设置决定是否允许访问该功能
+- **AND** 只有具有权限的用户才能访问该功能
 
-### Requirement: 限制后台访问
-系统SHALL提供限制后台访问的功能
+### Requirement: 获取用户权限信息
+系统SHALL提供获取用户权限信息的功能，包括用户的权限、角色和功能权限
 
-#### Scenario: 成功限制后台访问
-- **WHEN** 管理员在WP Clean Admin设置页面设置了后台访问限制
-- **THEN** 只有授权用户可以访问WordPress后台
-- **AND** 未授权用户将被重定向到指定页面
+#### Scenario: 成功获取用户权限信息
+- **WHEN** 系统调用了获取用户权限信息的函数
+- **THEN** 系统将返回包含用户权限、角色和功能权限的数组
+- **AND** 该信息可用于权限验证和日志记录
 
-### Requirement: 用户角色管理
-系统SHALL提供管理用户角色的功能
+### Requirement: 管理后台访问限制
+系统SHALL提供限制管理后台访问的功能，允许管理员控制哪些用户可以访问后台
 
-#### Scenario: 成功管理用户角色
-- **WHEN** 管理员在WP Clean Admin设置页面管理用户角色
-- **THEN** 管理员可以查看、编辑和删除用户角色
-- **AND** 系统将更新用户角色的信息
+#### Scenario: 成功限制管理后台访问
+- **WHEN** 管理员在WP Clean Admin设置页面启用了管理后台访问限制
+- **THEN** 只有具有管理权限的用户才能访问WordPress后台
+- **AND** 未授权用户将被重定向到网站首页
+
+### Requirement: 特定管理页面访问限制
+系统SHALL提供限制特定管理页面访问的功能，允许管理员控制哪些用户可以访问特定的管理页面
+
+#### Scenario: 成功限制特定管理页面访问
+- **WHEN** 管理员在WP Clean Admin设置页面设置了特定管理页面的访问限制
+- **THEN** 只有具有管理权限的用户才能访问被限制的管理页面
+- **AND** 未授权用户将被重定向到管理仪表盘
 
 ## MODIFIED Requirements
 
-### Requirement: 角色权限继承
-系统SHALL允许用户角色继承其他角色的权限
+### Requirement: 功能访问限制
+系统SHALL允许为不同功能设置访问限制，基于用户角色和权限
 
-#### Scenario: 成功设置角色权限继承
-- **WHEN** 管理员在WP Clean Admin设置页面设置了角色权限继承
-- **THEN** 子角色将继承父角色的所有权限
-- **AND** 管理员可以在继承的基础上添加或删除权限
-
-### Requirement: 角色权限批量管理
-系统SHALL提供批量管理角色权限的功能
-
-#### Scenario: 成功批量管理角色权限
-- **WHEN** 管理员在WP Clean Admin设置页面批量管理角色权限
-- **THEN** 管理员可以一次性为多个角色分配相同的权限
-- **AND** 系统将更新所有选定角色的权限
+#### Scenario: 成功设置功能访问限制
+- **WHEN** 管理员在WP Clean Admin设置页面为某个功能设置了访问限制
+- **THEN** 系统将根据设置限制用户对该功能的访问
+- **AND** 只有具有所需角色或权限的用户才能访问该功能
 
 ## Design References
 
 ### 技术实现
-- 使用 WordPress 函数 `add_role` 和 `remove_role` 管理用户角色
-- 使用 WordPress 函数 `add_cap` 和 `remove_cap` 管理用户权限
-- 使用 WordPress 钩子 `admin_init` 和 `init` 限制后台访问
-- 使用 WordPress 函数 `get_editable_roles` 和 `get_role` 获取角色信息
+- 使用 WordPress 钩子 `user_has_cap` 过滤用户权限
+- 使用 WordPress 函数 `current_user_can` 检查用户权限
+- 使用 WordPress 函数 `wp_redirect` 重定向未授权用户
+- 使用 WordPress 函数 `get_current_user_id` 和 `get_user_by` 获取用户信息
 
 ### 相关文件
 - `includes/class-wpca-permissions.php` - 权限管理核心类
@@ -70,18 +70,18 @@
 ### 相关API
 
 ```php
-// 创建自定义用户角色
-wpca_create_user_role( $role_name, $display_name, $capabilities );
+// 过滤用户权限
+wpca_filter_user_capabilities( $allcaps, $caps, $args );
 
-// 分配用户权限
-wpca_assign_user_permission( $role_name, $capability );
+// 检查用户是否有特定功能的访问权限
+wpca_has_feature_permission( $feature, $user_id );
 
-// 限制后台访问
-wpca_restrict_admin_access( $allowed_roles );
+// 获取用户权限信息
+wpca_get_user_permissions( $user_id );
 
-// 获取用户角色
-wpca_get_user_role( $user_id );
+// 限制管理后台访问
+wpca_restrict_admin_access();
 
-// 检查用户权限
-wpca_current_user_can( $capability );
+// 限制特定管理页面访问
+wpca_restrict_specific_admin_pages();
 ```
