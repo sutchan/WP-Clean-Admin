@@ -23,13 +23,21 @@ WP Clean Admin API 提供了一系列用于管理和配置 WP Clean Admin 插件
 /**
  * 获取 WP Clean Admin 插件设置
  *
- * @return array 插件设置数组
+ * @param string $key 可选，设置键名
+ * @param mixed $default 可选，默认值
+ * @return mixed 插件设置值或数组
  */
-function wpca_get_settings() {}
+function wpca_get_settings( $key = null, $default = null ) {}
 ```
 
+**参数**：
+- `$key`：可选，要获取的设置键名
+- `$default`：可选，当设置不存在时返回的默认值
+
 **返回值**：
-- 包含所有插件设置的关联数组
+- 如果提供了 `$key`，返回对应设置值
+- 如果未提供 `$key`，返回包含所有插件设置的关联数组
+- 如果设置不存在且提供了默认值，返回默认值
 
 ### 3.2 更新插件设置
 
