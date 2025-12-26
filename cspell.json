@@ -1,0 +1,14 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "ABSPATH",
+    "WPCA"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    "dist",
+    "build",
+    ".git"
+  ]
+}
