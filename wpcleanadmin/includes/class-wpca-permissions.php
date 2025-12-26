@@ -1,1 +1,239 @@
-﻿<?php\r\n/**\r\n * WPCleanAdmin Permissions Class\r\n *\r\n * @package WPCleanAdmin\r\n * @version 1.7.15\r\n * @author Sut\r\n * @author URI: https://github.com/sutchan\r\n * @since 1.7.15\r\n */\r\nnamespace WPCleanAdmin;\r\n\r\nif ( ! defined( 'ABSPATH' ) ) {\r\n    exit;\r\n}\r\n\r\n\r\n\r\n/**\r\n * Permissions class\r\n */\r\nclass Permissions {\r\n    \r\n    /**\r\n     * Singleton instance\r\n     *\r\n     * @var Permissions\r\n     */\r\n    private static $instance;\r\n    \r\n    /**\r\n     * Get singleton instance\r\n     *\r\n     * @return Permissions\r\n     */\r\n    public static function getInstance() {\r\n        if ( ! isset( self::$instance ) ) {\r\n            self::$instance = new self();\r\n        }\r\n        return self::$instance;\r\n    }\r\n    \r\n    /**\r\n     * Constructor\r\n     */\r\n    private function __construct() {\r\n        $this->init();\r\n    }\r\n    \r\n    /**\r\n     * Initialize the permissions module\r\n     */\r\n    public function init() {\r\n        // Add permissions hooks\r\n        if ( function_exists( 'add_filter' ) ) {\r\n            \add_filter( 'user_has_cap', array( $this, 'filter_user_capabilities' ), 10, 3 );\r\n        }\r\n    }\r\n    \r\n    /**\r\n     * Filter user capabilities\r\n     *\r\n     * @param array $allcaps All capabilities\r\n     * @param array $caps Required capabilities\r\n     * @param array $args Arguments\r\n     * @return array Modified capabilities\r\n     */\r\n    public function filter_user_capabilities( $allcaps, $caps, $args ) {\r\n        // Load settings\r\n        $settings = wpca_get_settings();\r\n        \r\n        // Apply permission filters based on settings\r\n        if ( isset( $settings['permissions'] ) ) {\r\n            // Restrict access to certain features\r\n            if ( isset( $settings['permissions']['restrict_features'] ) && $settings['permissions']['restrict_features'] ) {\r\n                // Restrict access to specific capabilities\r\n                $restricted_caps = array(\r\n                    'manage_options',\r\n                    'edit_theme_options',\r\n                    'install_plugins',\r\n                    'update_plugins',\r\n                    'delete_plugins',\r\n                    'install_themes',\r\n                    'update_themes',\r\n                    'delete_themes',\r\n                    'import',\r\n                    'export'\r\n                );\r\n                \r\n                // Remove restricted capabilities for non-administrators\r\n                if ( ! isset( $allcaps['administrator'] ) || ! $allcaps['administrator'] ) {\r\n                    foreach ( $restricted_caps as $cap ) {\r\n                        if ( isset( $allcaps[$cap] ) ) {\r\n                            unset( $allcaps[$cap] );\r\n                        }\r\n                    }\r\n                }\r\n            }\r\n        }\r\n        \r\n        return $allcaps;\r\n    }\r\n    \r\n    /**\r\n     * Check if user has permission to access a feature\r\n     *\r\n     * @param string $feature Feature name\r\n     * @param int $user_id User ID\r\n     * @return bool Permission result\r\n     */\r\n    public function has_feature_permission( $feature, $user_id = null ) {\r\n        // Get user ID if not provided\r\n        if ( $user_id === null ) {\r\n            $user_id = ( function_exists( 'get_current_user_id' ) ? \get_current_user_id() : 0 );\r\n        }\r\n        \r\n        // Get user object\r\n        $user = ( function_exists( 'get_user_by' ) ? \get_user_by( 'id', $user_id ) : false );\r\n        if ( ! $user ) {\r\n            return false;\r\n        }\r\n        \r\n        // Load settings\r\n        $settings = wpca_get_settings();\r\n        \r\n        // Check if feature is restricted\r\n        if ( isset( $settings['permissions']['feature_restrictions'] ) && isset( $settings['permissions']['feature_restrictions'][$feature] ) ) {\r\n            $restriction = $settings['permissions']['feature_restrictions'][$feature];\r\n            \r\n            // Check if user has required role\r\n            if ( isset( $restriction['roles'] ) && ! empty( $restriction['roles'] ) ) {\r\n                $user_roles = $user->roles;\r\n                $has_role = array_intersect( $user_roles, $restriction['roles'] );\r\n                \r\n                if ( empty( $has_role ) ) {\r\n                    return false;\r\n                }\r\n            }\r\n            \r\n            // Check if user has required capability\r\n            if ( isset( $restriction['capability'] ) && ! empty( $restriction['capability'] ) ) {\r\n                if ( ! ( function_exists( 'user_can' ) && \user_can( $user_id, $restriction['capability'] ) ) ) {\r\n                    return false;\r\n                }\r\n            }\r\n        }\r\n        \r\n        return true;\r\n    }\r\n    \r\n    /**\r\n     * Get user permissions\r\n     *\r\n     * @param int $user_id User ID\r\n     * @return array User permissions\r\n     */\r\n    public function get_user_permissions( $user_id = null ) {\r\n        // Get user ID if not provided\r\n        if ( $user_id === null ) {\r\n            $user_id = ( function_exists( 'get_current_user_id' ) ? \get_current_user_id() : 0 );\r\n        }\r\n        \r\n        // Get user object\r\n        $user = ( function_exists( 'get_user_by' ) ? \get_user_by( 'id', $user_id ) : false );\r\n        if ( ! $user ) {\r\n            return array();\r\n        }\r\n        \r\n        // Get user capabilities\r\n        $capabilities = $user->allcaps;\r\n        \r\n        // Get user roles\r\n        $roles = $user->roles;\r\n        \r\n        // Load settings\r\n        $settings = wpca_get_settings();\r\n        \r\n        // Get feature permissions\r\n        $feature_permissions = array();\r\n        \r\n        if ( isset( $settings['permissions']['feature_restrictions'] ) ) {\r\n            foreach ( $settings['permissions']['feature_restrictions'] as $feature => $restriction ) {\r\n                $feature_permissions[$feature] = $this->has_feature_permission( $feature, $user_id );\r\n            }\r\n        }\r\n        \r\n        return array(\r\n            'capabilities' => $capabilities,\r\n            'roles' => $roles,\r\n            'feature_permissions' => $feature_permissions\r\n        );\r\n    }\r\n    \r\n    /**\r\n     * Restrict access to admin pages\r\n     */\r\n    public function restrict_admin_access() {\r\n        // Load settings\r\n        $settings = wpca_get_settings();\r\n        \r\n        // Check if admin access restriction is enabled\r\n        if ( isset( $settings['permissions']['restrict_admin_access'] ) && $settings['permissions']['restrict_admin_access'] ) {\r\n            // Check if user has access to admin area\r\n            if ( ! ( function_exists( 'current_user_can' ) && \current_user_can( 'manage_options' ) ) ) {\r\n                // Redirect non-administrators to front-end\r\n                if ( function_exists( 'wp_redirect' ) && function_exists( 'home_url' ) ) {\r\n                    \wp_redirect( \home_url() );\r\n                    exit;\r\n                }\r\n            }\r\n        }\r\n    }\r\n    \r\n    /**\r\n     * Restrict access to specific admin pages\r\n     */\r\n    public function restrict_specific_admin_pages() {\r\n        // Load settings\r\n        $settings = wpca_get_settings();\r\n        \r\n        // Check if specific admin page restriction is enabled\r\n        if ( isset( $settings['permissions']['restrict_specific_pages'] ) && $settings['permissions']['restrict_specific_pages'] ) {\r\n            // Get current admin page\r\n            $current_page = isset( $_GET['page'] ) ? ( function_exists( 'sanitize_text_field' ) ? \sanitize_text_field( $_GET['page'] ) : $_GET['page'] ) : '';\r\n            \r\n            // Check if current page is restricted\r\n            if ( isset( $settings['permissions']['restricted_pages'] ) && in_array( $current_page, $settings['permissions']['restricted_pages'] ) ) {\r\n                // Check if user has access to restricted page\r\n                if ( ! ( function_exists( 'current_user_can' ) && \current_user_can( 'manage_options' ) ) ) {\r\n                    // Redirect to admin dashboard\r\n                    if ( function_exists( 'wp_redirect' ) && function_exists( 'admin_url' ) ) {\r\n                        \wp_redirect( \admin_url() );\r\n                        exit;\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    }\r\n}
+<?php
+/**
+ * WPCleanAdmin Permissions Class
+ *
+ * @package WPCleanAdmin
+ * @version 1.7.15
+ * @author Sut
+ * @author URI: https://github.com/sutchan
+ * @since 1.7.15
+ */
+namespace WPCleanAdmin;
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+
+
+/**
+ * Permissions class
+ */
+class Permissions {
+    
+    /**
+     * Singleton instance
+     *
+     * @var Permissions
+     */
+    private static $instance;
+    
+    /**
+     * Get singleton instance
+     *
+     * @return Permissions
+     */
+    public static function getInstance() {
+        if ( ! isset( self::$instance ) ) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+    
+    /**
+     * Constructor
+     */
+    private function __construct() {
+        $this->init();
+    }
+    
+    /**
+     * Initialize the permissions module
+     */
+    public function init() {
+        // Add permissions hooks
+        if ( function_exists( 'add_filter' ) ) {
+            \add_filter( 'user_has_cap', array( $this, 'filter_user_capabilities' ), 10, 3 );
+        }
+    }
+    
+    /**
+     * Filter user capabilities
+     *
+     * @param array $allcaps All capabilities
+     * @param array $caps Required capabilities
+     * @param array $args Arguments
+     * @return array Modified capabilities
+     */
+    public function filter_user_capabilities( $allcaps, $caps, $args ) {
+        // Load settings
+        $settings = wpca_get_settings();
+        
+        // Apply permission filters based on settings
+        if ( isset( $settings['permissions'] ) ) {
+            // Restrict access to certain features
+            if ( isset( $settings['permissions']['restrict_features'] ) && $settings['permissions']['restrict_features'] ) {
+                // Restrict access to specific capabilities
+                $restricted_caps = array(
+                    'manage_options',
+                    'edit_theme_options',
+                    'install_plugins',
+                    'update_plugins',
+                    'delete_plugins',
+                    'install_themes',
+                    'update_themes',
+                    'delete_themes',
+                    'import',
+                    'export'
+                );
+                
+                // Remove restricted capabilities for non-administrators
+                if ( ! isset( $allcaps['administrator'] ) || ! $allcaps['administrator'] ) {
+                    foreach ( $restricted_caps as $cap ) {
+                        if ( isset( $allcaps[$cap] ) ) {
+                            unset( $allcaps[$cap] );
+                        }
+                    }
+                }
+            }
+        }
+        
+        return $allcaps;
+    }
+    
+    /**
+     * Check if user has permission to access a feature
+     *
+     * @param string $feature Feature name
+     * @param int $user_id User ID
+     * @return bool Permission result
+     */
+    public function has_feature_permission( $feature, $user_id = null ) {
+        // Get user ID if not provided
+        if ( $user_id === null ) {
+            $user_id = ( function_exists( 'get_current_user_id' ) ? \get_current_user_id() : 0 );
+        }
+        
+        // Get user object
+        $user = ( function_exists( 'get_user_by' ) ? \get_user_by( 'id', $user_id ) : false );
+        if ( ! $user ) {
+            return false;
+        }
+        
+        // Load settings
+        $settings = wpca_get_settings();
+        
+        // Check if feature is restricted
+        if ( isset( $settings['permissions']['feature_restrictions'] ) && isset( $settings['permissions']['feature_restrictions'][$feature] ) ) {
+            $restriction = $settings['permissions']['feature_restrictions'][$feature];
+            
+            // Check if user has required role
+            if ( isset( $restriction['roles'] ) && ! empty( $restriction['roles'] ) ) {
+                $user_roles = $user->roles;
+                $has_role = array_intersect( $user_roles, $restriction['roles'] );
+                
+                if ( empty( $has_role ) ) {
+                    return false;
+                }
+            }
+            
+            // Check if user has required capability
+            if ( isset( $restriction['capability'] ) && ! empty( $restriction['capability'] ) ) {
+                if ( ! ( function_exists( 'user_can' ) && \user_can( $user_id, $restriction['capability'] ) ) ) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Get user permissions
+     *
+     * @param int $user_id User ID
+     * @return array User permissions
+     */
+    public function get_user_permissions( $user_id = null ) {
+        // Get user ID if not provided
+        if ( $user_id === null ) {
+            $user_id = ( function_exists( 'get_current_user_id' ) ? \get_current_user_id() : 0 );
+        }
+        
+        // Get user object
+        $user = ( function_exists( 'get_user_by' ) ? \get_user_by( 'id', $user_id ) : false );
+        if ( ! $user ) {
+            return array();
+        }
+        
+        // Get user capabilities
+        $capabilities = $user->allcaps;
+        
+        // Get user roles
+        $roles = $user->roles;
+        
+        // Load settings
+        $settings = wpca_get_settings();
+        
+        // Get feature permissions
+        $feature_permissions = array();
+        
+        if ( isset( $settings['permissions']['feature_restrictions'] ) ) {
+            foreach ( $settings['permissions']['feature_restrictions'] as $feature => $restriction ) {
+                $feature_permissions[$feature] = $this->has_feature_permission( $feature, $user_id );
+            }
+        }
+        
+        return array(
+            'capabilities' => $capabilities,
+            'roles' => $roles,
+            'feature_permissions' => $feature_permissions
+        );
+    }
+    
+    /**
+     * Restrict access to admin pages
+     */
+    public function restrict_admin_access() {
+        // Load settings
+        $settings = wpca_get_settings();
+        
+        // Check if admin access restriction is enabled
+        if ( isset( $settings['permissions']['restrict_admin_access'] ) && $settings['permissions']['restrict_admin_access'] ) {
+            // Check if user has access to admin area
+            if ( ! ( function_exists( 'current_user_can' ) && \current_user_can( 'manage_options' ) ) ) {
+                // Redirect non-administrators to front-end
+                if ( function_exists( 'wp_redirect' ) && function_exists( 'home_url' ) ) {
+                    \wp_redirect( \home_url() );
+                    exit;
+                }
+            }
+        }
+    }
+    
+    /**
+     * Restrict access to specific admin pages
+     */
+    public function restrict_specific_admin_pages() {
+        // Load settings
+        $settings = wpca_get_settings();
+        
+        // Check if specific admin page restriction is enabled
+        if ( isset( $settings['permissions']['restrict_specific_pages'] ) && $settings['permissions']['restrict_specific_pages'] ) {
+            // Get current admin page
+            $current_page = isset( $_GET['page'] ) ? ( function_exists( 'sanitize_text_field' ) ? \sanitize_text_field( $_GET['page'] ) : $_GET['page'] ) : '';
+            
+            // Check if current page is restricted
+            if ( isset( $settings['permissions']['restricted_pages'] ) && in_array( $current_page, $settings['permissions']['restricted_pages'] ) ) {
+                // Check if user has access to restricted page
+                if ( ! ( function_exists( 'current_user_can' ) && \current_user_can( 'manage_options' ) ) ) {
+                    // Redirect to admin dashboard
+                    if ( function_exists( 'wp_redirect' ) && function_exists( 'admin_url' ) ) {
+                        \wp_redirect( \admin_url() );
+                        exit;
+                    }
+                }
+            }
+        }
+    }
+}

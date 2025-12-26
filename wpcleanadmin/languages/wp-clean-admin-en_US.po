@@ -1,1 +1,460 @@
-﻿sgid ""\r\nmsgstr ""\r\n"Project-Id-Version: WP Clean Admin 1.7.13\n"\r\n"Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"\r\n"POT-Creation-Date: 2025-06-18 00:00+0000\n"\r\n"PO-Revision-Date: 2025-06-18 00:00+0000\n"\r\n"Last-Translator: \n"\r\n"Language-Team: \n"\r\n"Language: en_US\n"\r\n"MIME-Version: 1.0\n"\r\n"Content-Type: text/plain; charset=UTF-8\n"\r\n"Content-Transfer-Encoding: 8bit\n"\r\n"X-Generator: Poedit 3.7\n"\r\n"X-Poedit-Basepath: ..\n"\r\n"X-Poedit-KeywordsList: __;_e;_x\n"\r\n"X-Poedit-SearchPath-0: .\n"\r\n\r\n# ===========================================================\r\n# Plugin Core Strings\r\n# ===========================================================\r\nmsgid "WP Clean Admin"\r\nmsgstr "WP Clean Admin"\r\n\r\nmsgid "WP Clean Admin Settings"\r\nmsgstr "WP Clean Admin Settings"\r\n\r\nmsgid "Settings"\r\nmsgstr "Settings"\r\n\r\n# ===========================================================\r\n# Database Optimization Module\r\n# ===========================================================\r\nmsgid "Cleanup action completed successfully."\r\nmsgstr "Cleanup action completed successfully."\r\n\r\nmsgid "Cleanup action failed."\r\nmsgstr "Cleanup action failed."\r\n\r\nmsgid "Database cleanup error: %s"\r\nmsgstr "Database cleanup error: %s"\r\n\r\nmsgid "Database cleanup error"\r\nmsgstr "Database cleanup error"\r\n\r\nmsgid "Database optimization completed successfully."\r\nmsgstr "Database optimization completed successfully."\r\n\r\nmsgid "Database optimization failed."\r\nmsgstr "Database optimization failed."\r\n\r\nmsgid "Optimize database tables"\r\nmsgstr "Optimize database tables"\r\n\r\nmsgid "Remove auto-saved drafts"\r\nmsgstr "Remove auto-saved drafts"\r\n\r\nmsgid "Remove expired transients"\r\nmsgstr "Remove expired transients"\r\n\r\nmsgid "Remove old post revisions"\r\nmsgstr "Remove old post revisions"\r\n\r\nmsgid "Remove orphan comment meta"\r\nmsgstr "Remove orphan comment meta"\r\n\r\nmsgid "Remove orphan post meta"\r\nmsgstr "Remove orphan post meta"\r\n\r\nmsgid "Remove orphan term meta"\r\nmsgstr "Remove orphan term meta"\r\n\r\nmsgid "Remove orphan user meta"\r\nmsgstr "Remove orphan user meta"\r\n\r\nmsgid "Remove pingbacks and trackbacks"\r\nmsgstr "Remove pingbacks and trackbacks"\r\n\r\nmsgid "Remove spam comments"\r\nmsgstr "Remove spam comments"\r\n\r\nmsgid "Remove trashed comments"\r\nmsgstr "Remove trashed comments"\r\n\r\nmsgid "Remove trashed posts"\r\nmsgstr "Remove trashed posts"\r\n\r\nmsgid "Remove unapproved comments"\r\nmsgstr "Remove unapproved comments"\r\n\r\n# ===========================================================\r\n# Settings Module\r\n# ===========================================================\r\nmsgid "About"\r\nmsgstr "About"\r\n\r\nmsgid "About WP Clean Admin"\r\nmsgstr "About WP Clean Admin"\r\n\r\nmsgid "Accent"\r\nmsgstr "Accent"\r\n\r\nmsgid "Activity"\r\nmsgstr "Activity"\r\n\r\nmsgid "Add custom CSS to the login page."\r\nmsgstr "Add custom CSS to the login page."\r\n\r\nmsgid "A powerful WordPress admin cleanup and optimization plugin."\r\nmsgstr "A powerful WordPress admin cleanup and optimization plugin."\r\n\r\nmsgid "Are you sure you want to reset about page settings to default?"\r\nmsgstr "Are you sure you want to reset about page settings to default?"\r\n\r\nmsgid "Are you sure you want to reset all settings to default?"\r\nmsgstr "Are you sure you want to reset all settings to default?"\r\n\r\nmsgid "Are you sure you want to reset general settings to default?"\r\nmsgstr "Are you sure you want to reset general settings to default?"\r\n\r\nmsgid "Are you sure you want to reset login page settings to default?"\r\nmsgstr "Are you sure you want to reset login page settings to default?"\r\n\r\nmsgid "Are you sure you want to reset the menu order to default?"\r\nmsgstr "Are you sure you want to reset the menu order to default?"\r\n\r\nmsgid "Are you sure you want to reset visual style settings to default?"\r\nmsgstr "Are you sure you want to reset visual style settings to default?"\r\n\r\nmsgid "At a Glance"\r\nmsgstr "At a Glance"\r\n\r\nmsgid "Author"\r\nmsgstr "Author"\r\n\r\nmsgid "Blue"\r\nmsgstr "Blue"\r\n\r\nmsgid "Compact"\r\nmsgstr "Compact"\r\n\r\nmsgid "Dark"\r\nmsgstr "Dark"\r\n\r\nmsgid "Default"\r\nmsgstr "Default"\r\n\r\nmsgid "Description"\r\nmsgstr "Description"\r\n\r\nmsgid "Donate"\r\nmsgstr "Donate"\r\n\r\nmsgid "Documentation"\r\nmsgstr "Documentation"\r\n\r\nmsgid "Error"\r\nmsgstr "Error"\r\n\r\nmsgid "Failed to reset menu order"\r\nmsgstr "Failed to reset menu order"\r\n\r\nmsgid "Failed to reset settings"\r\nmsgstr "Failed to reset settings"\r\n\r\nmsgid "Feature Request"\r\nmsgstr "Feature Request"\r\n\r\nmsgid "Font Awesome"\r\nmsgstr "Font Awesome"\r\n\r\nmsgid "Found a bug? Please report it on GitHub."\r\nmsgstr "Found a bug? Please report it on GitHub."\r\n\r\nmsgid "General"\r\nmsgstr "General"\r\n\r\nmsgid "General Settings"\r\nmsgstr "General Settings"\r\n\r\nmsgid "Get help and support for WP Clean Admin."\r\nmsgstr "Get help and support for WP Clean Admin."\r\n\r\nmsgid "Green"\r\nmsgstr "Green"\r\n\r\nmsgid "Have a feature idea? Suggest it on GitHub."\r\nmsgstr "Have a feature idea? Suggest it on GitHub."\r\n\r\nmsgid "Hide Admin Bar Items"\r\nmsgstr "Hide Admin Bar Items"\r\n\r\nmsgid "Hide Admin Menu Items"\r\nmsgstr "Hide Admin Menu Items"\r\n\r\nmsgid "Hide Dashboard Widgets"\r\nmsgstr "Hide Dashboard Widgets"\r\n\r\nmsgid "Hide Frontend Admin Bar"\r\nmsgstr "Hide Frontend Admin Bar"\r\n\r\nmsgid "Hide the admin bar on the frontend for all users."\r\nmsgstr "Hide the admin bar on the frontend for all users."\r\n\r\nmsgid "Hide the \"Thank you for creating with WordPress\" text in the admin footer."\r\nmsgstr "Hide the \"Thank you for creating with WordPress\" text in the admin footer."\r\n\r\nmsgid "Hide the WordPress version number from the footer."\r\nmsgstr "Hide the WordPress version number from the footer."\r\n\r\nmsgid "Hide WordPress Footer"\r\nmsgstr "Hide WordPress Footer"\r\n\r\nmsgid "Hide WordPress Version"\r\nmsgstr "Hide WordPress Version"\r\n\r\nmsgid "Home Link"\r\nmsgstr "Home Link"\r\n\r\nmsgid "If you enjoy using this plugin, please consider leaving a 5-star review on WordPress.org."\r\nmsgstr "If you enjoy using this plugin, please consider leaving a 5-star review on WordPress.org."\r\n\r\nmsgid "Info"\r\nmsgstr "Info"\r\n\r\nmsgid "Invalid action."\r\nmsgstr "Invalid action."\r\n\r\nmsgid "Invalid request"\r\nmsgstr "Invalid request"\r\n\r\nmsgid "Invalid tab specified"\r\nmsgstr "Invalid tab specified"\r\n\r\nmsgid "Language Switcher"\r\nmsgstr "Language Switcher"\r\n\r\nmsgid "Large"\r\nmsgstr "Large"\r\n\r\nmsgid "Login Background"\r\nmsgstr "Login Background"\r\n\r\nmsgid "Login Custom CSS"\r\nmsgstr "Login Custom CSS"\r\n\r\nmsgid "Login Elements"\r\nmsgstr "Login Elements"\r\n\r\nmsgid "Login Logo"\r\nmsgstr "Login Logo"\r\n\r\nmsgid "Login Page"\r\nmsgstr "Login Page"\r\n\r\nmsgid "Login Page Customization"\r\nmsgstr "Login Page Customization"\r\n\r\nmsgid "Login Page Settings"\r\nmsgstr "Login Page Settings"\r\n\r\nmsgid "Login Style"\r\nmsgstr "Login Style"\r\n\r\nmsgid "Medium"\r\nmsgstr "Medium"\r\n\r\nmsgid "Menu Customization"\r\nmsgstr "Menu Customization"\r\n\r\nmsgid "Menu Customization Settings"\r\nmsgstr "Menu Customization Settings"\r\n\r\nmsgid "Menu order reset successfully"\r\nmsgstr "Menu order reset successfully"\r\n\r\nmsgid "Minimal"\r\nmsgstr "Minimal"\r\n\r\nmsgid "Monospace"\r\nmsgstr "Monospace"\r\n\r\nmsgid "Moderate"\r\nmsgstr "Moderate"\r\n\r\nmsgid "Modern"\r\nmsgstr "Modern"\r\n\r\nmsgid "No Icons"\r\nmsgstr "No Icons"\r\n\r\nmsgid "Nonce verification failed."\r\nmsgstr "Nonce verification failed."\r\n\r\nmsgid "None"\r\nmsgstr "None"\r\n\r\nmsgid "Permission denied."\r\nmsgstr "Permission denied."\r\n\r\nmsgid "Primary"\r\nmsgstr "Primary"\r\n\r\nmsgid "Pronounced"\r\nmsgstr "Pronounced"\r\n\r\nmsgid "Purple"\r\nmsgstr "Purple"\r\n\r\nmsgid "Quick Draft"\r\nmsgstr "Quick Draft"\r\n\r\nmsgid "Read the official documentation."\r\nmsgstr "Read the official documentation."\r\n\r\nmsgid "Register Link"\r\nmsgstr "Register Link"\r\n\r\nmsgid "Remember Me"\r\nmsgstr "Remember Me"\r\n\r\nmsgid "Report a Bug"\r\nmsgstr "Report a Bug"\r\n\r\nmsgid "Reset About Page"\r\nmsgstr "Reset About Page"\r\n\r\nmsgid "Reset General Settings"\r\nmsgstr "Reset General Settings"\r\n\r\nmsgid "Reset Login Page"\r\nmsgstr "Reset Login Page"\r\n\r\nmsgid "Reset Menu Order"\r\nmsgstr "Reset Menu Order"\r\n\r\nmsgid "Reset to Default Order"\r\nmsgstr "Reset to Default Order"\r\n\r\nmsgid "Reset to Defaults"\r\nmsgstr "Reset to Defaults"\r\n\r\nmsgid "Reset Visual Style"\r\nmsgstr "Reset Visual Style"\r\n\r\nmsgid "Sans Serif"\r\nmsgstr "Sans Serif"\r\n\r\nmsgid "Secondary"\r\nmsgstr "Secondary"\r\n\r\nmsgid "Select a style for the WordPress login page."\r\nmsgstr "Select a style for the WordPress login page."\r\n\r\nmsgid "Select a theme style for the admin area."\r\nmsgstr "Select a theme style for the admin area."\r\n\r\nmsgid "Select which admin bar items to hide."\r\nmsgstr "Select which admin bar items to hide."\r\n\r\nmsgid "Select which admin menu items to hide."\r\nmsgstr "Select which admin menu items to hide."\r\n\r\nmsgid "Select which dashboard widgets to hide."\r\nmsgstr "Select which dashboard widgets to hide."\r\n\r\nmsgid "Select which elements to display on the login page."\r\nmsgstr "Select which elements to display on the login page."\r\n\r\nmsgid "Select the background color for the admin interface."\r\nmsgstr "Select the background color for the admin interface."\r\n\r\nmsgid "Select the base font size for the admin interface."\r\nmsgstr "Select the base font size for the admin interface."\r\n\r\nmsgid "Select the border radius style for elements."\r\nmsgstr "Select the border radius style for elements."\r\n\r\nmsgid "Select the font stack for the admin interface."\r\nmsgstr "Select the font stack for the admin interface."\r\n\r\nmsgid "Select the icon style for the admin interface."\r\nmsgstr "Select the icon style for the admin interface."\r\n\r\nmsgid "Select the layout density."\r\nmsgstr "Select the layout density."\r\n\r\nmsgid "Select the primary color for links, buttons, and active states."\r\nmsgstr "Select the primary color for links, buttons, and active states."\r\n\r\nmsgid "Select the shadow style for elements."\r\nmsgstr "Select the shadow style for elements."\r\n\r\nmsgid "Select the text color for the admin interface."\r\nmsgstr "Select the text color for the admin interface."\r\n\r\nmsgid "Serif"\r\nmsgstr "Serif"\r\n\r\nmsgid "Settings reset successfully"\r\nmsgstr "Settings reset successfully"\r\n\r\nmsgid "Site Health Status"\r\nmsgstr "Site Health Status"\r\n\r\nmsgid "Small"\r\nmsgstr "Small"\r\n\r\nmsgid "Spacious"\r\nmsgstr "Spacious"\r\n\r\nmsgid "Standard"\r\nmsgstr "Standard"\r\n\r\nmsgid "Subtle"\r\nmsgstr "Subtle"\r\n\r\nmsgid "Support"\r\nmsgstr "Support"\r\n\r\nmsgid "Support the development of WP Clean Admin."\r\nmsgstr "Support the development of WP Clean Admin."\r\n\r\nmsgid "System Default"\r\nmsgstr "System Default"\r\n\r\nmsgid "Thank you for using WP Clean Admin!"\r\nmsgstr "Thank you for using WP Clean Admin!"\r\n\r\nmsgid "This plugin helps you keep your WordPress admin area clean, fast, and secure."\r\nmsgstr "This plugin helps you keep your WordPress admin area clean, fast, and secure."\r\n\r\nmsgid "Upload a custom background image for the login page."\r\nmsgstr "Upload a custom background image for the login page."\r\n\r\nmsgid "Upload a custom logo for the login page."\r\nmsgstr "Upload a custom logo for the login page."\r\n\r\nmsgid "Version"\r\nmsgstr "Version"\r\n\r\nmsgid "Visual Style"\r\nmsgstr "Visual Style"\r\n\r\nmsgid "Visual Style Settings"\r\nmsgstr "Visual Style Settings"\r\n\r\nmsgid "Warning"\r\nmsgstr "Warning"\r\n\r\nmsgid "Welcome"\r\nmsgstr "Welcome"\r\n\r\nmsgid "WordPress Dashicons"\r\nmsgstr "WordPress Dashicons"\r\n\r\nmsgid "WordPress Events and News"\r\nmsgstr "WordPress Events and News"\r\n\r\nmsgid "Your support helps us continue to develop and improve WP Clean Admin."\r\nmsgstr "Your support helps us continue to develop and improve WP Clean Admin."
+sgid ""
+msgstr ""
+"Project-Id-Version: WP Clean Admin 1.7.13\n"
+"Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"
+"POT-Creation-Date: 2025-06-18 00:00+0000\n"
+"PO-Revision-Date: 2025-06-18 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.7\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e;_x\n"
+"X-Poedit-SearchPath-0: .\n"
+
+# ===========================================================
+# Plugin Core Strings
+# ===========================================================
+msgid "WP Clean Admin"
+msgstr "WP Clean Admin"
+
+msgid "WP Clean Admin Settings"
+msgstr "WP Clean Admin Settings"
+
+msgid "Settings"
+msgstr "Settings"
+
+# ===========================================================
+# Database Optimization Module
+# ===========================================================
+msgid "Cleanup action completed successfully."
+msgstr "Cleanup action completed successfully."
+
+msgid "Cleanup action failed."
+msgstr "Cleanup action failed."
+
+msgid "Database cleanup error: %s"
+msgstr "Database cleanup error: %s"
+
+msgid "Database cleanup error"
+msgstr "Database cleanup error"
+
+msgid "Database optimization completed successfully."
+msgstr "Database optimization completed successfully."
+
+msgid "Database optimization failed."
+msgstr "Database optimization failed."
+
+msgid "Optimize database tables"
+msgstr "Optimize database tables"
+
+msgid "Remove auto-saved drafts"
+msgstr "Remove auto-saved drafts"
+
+msgid "Remove expired transients"
+msgstr "Remove expired transients"
+
+msgid "Remove old post revisions"
+msgstr "Remove old post revisions"
+
+msgid "Remove orphan comment meta"
+msgstr "Remove orphan comment meta"
+
+msgid "Remove orphan post meta"
+msgstr "Remove orphan post meta"
+
+msgid "Remove orphan term meta"
+msgstr "Remove orphan term meta"
+
+msgid "Remove orphan user meta"
+msgstr "Remove orphan user meta"
+
+msgid "Remove pingbacks and trackbacks"
+msgstr "Remove pingbacks and trackbacks"
+
+msgid "Remove spam comments"
+msgstr "Remove spam comments"
+
+msgid "Remove trashed comments"
+msgstr "Remove trashed comments"
+
+msgid "Remove trashed posts"
+msgstr "Remove trashed posts"
+
+msgid "Remove unapproved comments"
+msgstr "Remove unapproved comments"
+
+# ===========================================================
+# Settings Module
+# ===========================================================
+msgid "About"
+msgstr "About"
+
+msgid "About WP Clean Admin"
+msgstr "About WP Clean Admin"
+
+msgid "Accent"
+msgstr "Accent"
+
+msgid "Activity"
+msgstr "Activity"
+
+msgid "Add custom CSS to the login page."
+msgstr "Add custom CSS to the login page."
+
+msgid "A powerful WordPress admin cleanup and optimization plugin."
+msgstr "A powerful WordPress admin cleanup and optimization plugin."
+
+msgid "Are you sure you want to reset about page settings to default?"
+msgstr "Are you sure you want to reset about page settings to default?"
+
+msgid "Are you sure you want to reset all settings to default?"
+msgstr "Are you sure you want to reset all settings to default?"
+
+msgid "Are you sure you want to reset general settings to default?"
+msgstr "Are you sure you want to reset general settings to default?"
+
+msgid "Are you sure you want to reset login page settings to default?"
+msgstr "Are you sure you want to reset login page settings to default?"
+
+msgid "Are you sure you want to reset the menu order to default?"
+msgstr "Are you sure you want to reset the menu order to default?"
+
+msgid "Are you sure you want to reset visual style settings to default?"
+msgstr "Are you sure you want to reset visual style settings to default?"
+
+msgid "At a Glance"
+msgstr "At a Glance"
+
+msgid "Author"
+msgstr "Author"
+
+msgid "Blue"
+msgstr "Blue"
+
+msgid "Compact"
+msgstr "Compact"
+
+msgid "Dark"
+msgstr "Dark"
+
+msgid "Default"
+msgstr "Default"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Donate"
+msgstr "Donate"
+
+msgid "Documentation"
+msgstr "Documentation"
+
+msgid "Error"
+msgstr "Error"
+
+msgid "Failed to reset menu order"
+msgstr "Failed to reset menu order"
+
+msgid "Failed to reset settings"
+msgstr "Failed to reset settings"
+
+msgid "Feature Request"
+msgstr "Feature Request"
+
+msgid "Font Awesome"
+msgstr "Font Awesome"
+
+msgid "Found a bug? Please report it on GitHub."
+msgstr "Found a bug? Please report it on GitHub."
+
+msgid "General"
+msgstr "General"
+
+msgid "General Settings"
+msgstr "General Settings"
+
+msgid "Get help and support for WP Clean Admin."
+msgstr "Get help and support for WP Clean Admin."
+
+msgid "Green"
+msgstr "Green"
+
+msgid "Have a feature idea? Suggest it on GitHub."
+msgstr "Have a feature idea? Suggest it on GitHub."
+
+msgid "Hide Admin Bar Items"
+msgstr "Hide Admin Bar Items"
+
+msgid "Hide Admin Menu Items"
+msgstr "Hide Admin Menu Items"
+
+msgid "Hide Dashboard Widgets"
+msgstr "Hide Dashboard Widgets"
+
+msgid "Hide Frontend Admin Bar"
+msgstr "Hide Frontend Admin Bar"
+
+msgid "Hide the admin bar on the frontend for all users."
+msgstr "Hide the admin bar on the frontend for all users."
+
+msgid "Hide the \"Thank you for creating with WordPress\" text in the admin footer."
+msgstr "Hide the \"Thank you for creating with WordPress\" text in the admin footer."
+
+msgid "Hide the WordPress version number from the footer."
+msgstr "Hide the WordPress version number from the footer."
+
+msgid "Hide WordPress Footer"
+msgstr "Hide WordPress Footer"
+
+msgid "Hide WordPress Version"
+msgstr "Hide WordPress Version"
+
+msgid "Home Link"
+msgstr "Home Link"
+
+msgid "If you enjoy using this plugin, please consider leaving a 5-star review on WordPress.org."
+msgstr "If you enjoy using this plugin, please consider leaving a 5-star review on WordPress.org."
+
+msgid "Info"
+msgstr "Info"
+
+msgid "Invalid action."
+msgstr "Invalid action."
+
+msgid "Invalid request"
+msgstr "Invalid request"
+
+msgid "Invalid tab specified"
+msgstr "Invalid tab specified"
+
+msgid "Language Switcher"
+msgstr "Language Switcher"
+
+msgid "Large"
+msgstr "Large"
+
+msgid "Login Background"
+msgstr "Login Background"
+
+msgid "Login Custom CSS"
+msgstr "Login Custom CSS"
+
+msgid "Login Elements"
+msgstr "Login Elements"
+
+msgid "Login Logo"
+msgstr "Login Logo"
+
+msgid "Login Page"
+msgstr "Login Page"
+
+msgid "Login Page Customization"
+msgstr "Login Page Customization"
+
+msgid "Login Page Settings"
+msgstr "Login Page Settings"
+
+msgid "Login Style"
+msgstr "Login Style"
+
+msgid "Medium"
+msgstr "Medium"
+
+msgid "Menu Customization"
+msgstr "Menu Customization"
+
+msgid "Menu Customization Settings"
+msgstr "Menu Customization Settings"
+
+msgid "Menu order reset successfully"
+msgstr "Menu order reset successfully"
+
+msgid "Minimal"
+msgstr "Minimal"
+
+msgid "Monospace"
+msgstr "Monospace"
+
+msgid "Moderate"
+msgstr "Moderate"
+
+msgid "Modern"
+msgstr "Modern"
+
+msgid "No Icons"
+msgstr "No Icons"
+
+msgid "Nonce verification failed."
+msgstr "Nonce verification failed."
+
+msgid "None"
+msgstr "None"
+
+msgid "Permission denied."
+msgstr "Permission denied."
+
+msgid "Primary"
+msgstr "Primary"
+
+msgid "Pronounced"
+msgstr "Pronounced"
+
+msgid "Purple"
+msgstr "Purple"
+
+msgid "Quick Draft"
+msgstr "Quick Draft"
+
+msgid "Read the official documentation."
+msgstr "Read the official documentation."
+
+msgid "Register Link"
+msgstr "Register Link"
+
+msgid "Remember Me"
+msgstr "Remember Me"
+
+msgid "Report a Bug"
+msgstr "Report a Bug"
+
+msgid "Reset About Page"
+msgstr "Reset About Page"
+
+msgid "Reset General Settings"
+msgstr "Reset General Settings"
+
+msgid "Reset Login Page"
+msgstr "Reset Login Page"
+
+msgid "Reset Menu Order"
+msgstr "Reset Menu Order"
+
+msgid "Reset to Default Order"
+msgstr "Reset to Default Order"
+
+msgid "Reset to Defaults"
+msgstr "Reset to Defaults"
+
+msgid "Reset Visual Style"
+msgstr "Reset Visual Style"
+
+msgid "Sans Serif"
+msgstr "Sans Serif"
+
+msgid "Secondary"
+msgstr "Secondary"
+
+msgid "Select a style for the WordPress login page."
+msgstr "Select a style for the WordPress login page."
+
+msgid "Select a theme style for the admin area."
+msgstr "Select a theme style for the admin area."
+
+msgid "Select which admin bar items to hide."
+msgstr "Select which admin bar items to hide."
+
+msgid "Select which admin menu items to hide."
+msgstr "Select which admin menu items to hide."
+
+msgid "Select which dashboard widgets to hide."
+msgstr "Select which dashboard widgets to hide."
+
+msgid "Select which elements to display on the login page."
+msgstr "Select which elements to display on the login page."
+
+msgid "Select the background color for the admin interface."
+msgstr "Select the background color for the admin interface."
+
+msgid "Select the base font size for the admin interface."
+msgstr "Select the base font size for the admin interface."
+
+msgid "Select the border radius style for elements."
+msgstr "Select the border radius style for elements."
+
+msgid "Select the font stack for the admin interface."
+msgstr "Select the font stack for the admin interface."
+
+msgid "Select the icon style for the admin interface."
+msgstr "Select the icon style for the admin interface."
+
+msgid "Select the layout density."
+msgstr "Select the layout density."
+
+msgid "Select the primary color for links, buttons, and active states."
+msgstr "Select the primary color for links, buttons, and active states."
+
+msgid "Select the shadow style for elements."
+msgstr "Select the shadow style for elements."
+
+msgid "Select the text color for the admin interface."
+msgstr "Select the text color for the admin interface."
+
+msgid "Serif"
+msgstr "Serif"
+
+msgid "Settings reset successfully"
+msgstr "Settings reset successfully"
+
+msgid "Site Health Status"
+msgstr "Site Health Status"
+
+msgid "Small"
+msgstr "Small"
+
+msgid "Spacious"
+msgstr "Spacious"
+
+msgid "Standard"
+msgstr "Standard"
+
+msgid "Subtle"
+msgstr "Subtle"
+
+msgid "Support"
+msgstr "Support"
+
+msgid "Support the development of WP Clean Admin."
+msgstr "Support the development of WP Clean Admin."
+
+msgid "System Default"
+msgstr "System Default"
+
+msgid "Thank you for using WP Clean Admin!"
+msgstr "Thank you for using WP Clean Admin!"
+
+msgid "This plugin helps you keep your WordPress admin area clean, fast, and secure."
+msgstr "This plugin helps you keep your WordPress admin area clean, fast, and secure."
+
+msgid "Upload a custom background image for the login page."
+msgstr "Upload a custom background image for the login page."
+
+msgid "Upload a custom logo for the login page."
+msgstr "Upload a custom logo for the login page."
+
+msgid "Version"
+msgstr "Version"
+
+msgid "Visual Style"
+msgstr "Visual Style"
+
+msgid "Visual Style Settings"
+msgstr "Visual Style Settings"
+
+msgid "Warning"
+msgstr "Warning"
+
+msgid "Welcome"
+msgstr "Welcome"
+
+msgid "WordPress Dashicons"
+msgstr "WordPress Dashicons"
+
+msgid "WordPress Events and News"
+msgstr "WordPress Events and News"
+
+msgid "Your support helps us continue to develop and improve WP Clean Admin."
+msgstr "Your support helps us continue to develop and improve WP Clean Admin."

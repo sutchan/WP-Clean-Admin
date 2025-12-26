@@ -1,1 +1,383 @@
-﻿<?php\r\n/**\r\n * WPCleanAdmin Resources Class\r\n *\r\n * @package WPCleanAdmin\r\n * @version 1.7.15\r\n * @author Sut\r\n * @author URI: https://github.com/sutchan\r\n * @since 1.7.15\r\n */\r\nnamespace WPCleanAdmin;\r\n\r\nif ( ! defined( 'ABSPATH' ) ) {\r\n    exit;\r\n}\r\n\r\n\r\n\r\n/**\r\n * Resources class\r\n */\r\nclass Resources {\r\n    \r\n    /**\r\n     * Singleton instance\r\n     *\r\n     * @var Resources\r\n     */\r\n    private static $instance;\r\n    \r\n    /**\r\n     * Get singleton instance\r\n     *\r\n     * @return Resources\r\n     */\r\n    public static function getInstance() {\r\n        if ( ! isset( self::$instance ) ) {\r\n            self::$instance = new self();\r\n        }\r\n        return self::$instance;\r\n    }\r\n    \r\n    /**\r\n     * Constructor\r\n     */\r\n    private function __construct() {\r\n        $this->init();\r\n    }\r\n    \r\n    /**\r\n     * Initialize the resources module\r\n     */\r\n    public function init() {\r\n        // Add resources hooks\r\n        if ( function_exists( 'add_action' ) ) {\r\n            \add_action( 'wp_enqueue_scripts', array( $this, 'optimize_frontend_resources' ), 999 );\r\n            \add_action( 'admin_enqueue_scripts', array( $this, 'optimize_admin_resources' ), 999 );\r\n        }\r\n    }\r\n    \r\n    /**\r\n     * Optimize frontend resources\r\n     */\r\n    public function optimize_frontend_resources() {\r\n        // Load settings\r\n        $settings = wpca_get_settings();\r\n        \r\n        // Apply frontend resource optimizations based on settings\r\n        if ( isset( $settings['resources'] ) ) {\r\n            // Disable emojis\r\n            if ( isset( $settings['resources']['disable_emojis'] ) && $settings['resources']['disable_emojis'] ) {\r\n                if ( function_exists( 'remove_action' ) && function_exists( 'remove_filter' ) ) {\r\n                    \remove_action( 'wp_head', 'print_emoji_detection_script', 7 );\r\n                    \remove_action( 'wp_print_styles', 'print_emoji_styles' );\r\n                    \remove_filter( 'the_content_feed', 'wp_staticize_emoji' );\r\n                    \remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );\r\n                    \remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );\r\n                }\r\n            }\r\n            \r\n            // Disable WordPress embeds\r\n            if ( isset( $settings['resources']['disable_embeds'] ) && $settings['resources']['disable_embeds'] ) {\r\n                if ( function_exists( 'remove_action' ) ) {\r\n                    \remove_action( 'wp_head', 'wp_oembed_add_host_js' );\r\n                    \remove_action( 'wp_head', 'wp_oembed_add_discovery_links' );\r\n                }\r\n            }\r\n            \r\n            // Disable WordPress version\r\n            if ( isset( $settings['resources']['disable_version'] ) && $settings['resources']['disable_version'] ) {\r\n                if ( function_exists( 'remove_action' ) ) {\r\n                    \remove_action( 'wp_head', 'wp_generator' );\r\n                }\r\n            }\r\n            \r\n            // Disable RSS feeds\r\n            if ( isset( $settings['resources']['disable_rss'] ) && $settings['resources']['disable_rss'] ) {\r\n                if ( function_exists( 'remove_action' ) ) {\r\n                    \remove_action( 'wp_head', 'feed_links', 2 );\r\n                    \remove_action( 'wp_head', 'feed_links_extra', 3 );\r\n                }\r\n            }\r\n            \r\n            // Disable REST API\r\n            if ( isset( $settings['resources']['disable_rest_api'] ) && $settings['resources']['disable_rest_api'] ) {\r\n                if ( function_exists( 'remove_action' ) ) {\r\n                    \remove_action( 'wp_head', 'rest_output_link_wp_head' );\r\n                }\r\n            }\r\n        }\r\n    }\r\n    \r\n    /**\r\n     * Optimize admin resources\r\n     */\r\n    public function optimize_admin_resources() {\r\n        // Load settings\r\n        $settings = wpca_get_settings();\r\n        \r\n        // Apply admin resource optimizations based on settings\r\n        if ( isset( $settings['resources'] ) && isset( $settings['resources']['optimize_admin_resources'] ) && $settings['resources']['optimize_admin_resources'] ) {\r\n            // Remove unnecessary admin scripts and styles\r\n            if ( function_exists( 'add_action' ) ) {\r\n                \add_action( 'admin_init', array( $this, 'remove_unnecessary_admin_resources' ) );\r\n            }\r\n        }\r\n    }\r\n    \r\n    /**\r\n     * Remove unnecessary admin resources\r\n     */\r\n    public function remove_unnecessary_admin_resources() {\r\n        // Remove WordPress welcome panel\r\n        if ( function_exists( 'remove_action' ) ) {\r\n            \remove_action( 'welcome_panel', 'wp_welcome_panel' );\r\n        }\r\n        \r\n        // Remove unnecessary dashboard widgets\r\n        if ( function_exists( 'remove_meta_box' ) ) {\r\n            \remove_meta_box( 'dashboard_right_now', 'dashboard', 'normal' );\r\n            \remove_meta_box( 'dashboard_activity', 'dashboard', 'normal' );\r\n            \remove_meta_box( 'dashboard_recent_comments', 'dashboard', 'normal' );\r\n            \remove_meta_box( 'dashboard_incoming_links', 'dashboard', 'normal' );\r\n            \remove_meta_box( 'dashboard_plugins', 'dashboard', 'normal' );\r\n            \remove_meta_box( 'dashboard_recent_drafts', 'dashboard', 'side' );\r\n            \remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );\r\n            \remove_meta_box( 'dashboard_secondary', 'dashboard', 'side' );\r\n        }\r\n    }\r\n    \r\n    /**\r\n     * Get resources statistics\r\n     *\r\n     * @return array Resources statistics\r\n     */\r\n    public function get_resources_stats() {\r\n        $stats = array();\r\n        \r\n        // Get enqueued scripts count\r\n        global $wp_scripts;\r\n        $stats['enqueued_scripts'] = count( $wp_scripts->queue );\r\n        \r\n        // Get enqueued styles count\r\n        global $wp_styles;\r\n        $stats['enqueued_styles'] = count( $wp_styles->queue );\r\n        \r\n        // Get total scripts count\r\n        $stats['total_scripts'] = count( $wp_scripts->registered );\r\n        \r\n        // Get total styles count\r\n        $stats['total_styles'] = count( $wp_styles->registered );\r\n        \r\n        return $stats;\r\n    }\r\n    \r\n    /**\r\n     * Get resource details\r\n     *\r\n     * @param string $type Resource type (scripts or styles)\r\n     * @return array Resource details\r\n     */\r\n    public function get_resource_details( $type = 'scripts' ) {\r\n        $details = array();\r\n        \r\n        if ( $type === 'scripts' ) {\r\n            // Get script details\r\n            global $wp_scripts;\r\n            \r\n            foreach ( $wp_scripts->registered as $handle => $script ) {\r\n                $details[] = array(\r\n                    'handle' => $handle,\r\n                    'src' => $script->src,\r\n                    'deps' => $script->deps,\r\n                    'version' => $script->ver,\r\n                    'in_footer' => $script->args,\r\n                    'enqueued' => in_array( $handle, $wp_scripts->queue )\r\n                );\r\n            }\r\n        } else if ( $type === 'styles' ) {\r\n            // Get style details\r\n            global $wp_styles;\r\n            \r\n            foreach ( $wp_styles->registered as $handle => $style ) {\r\n                $details[] = array(\r\n                    'handle' => $handle,\r\n                    'src' => $style->src,\r\n                    'deps' => $style->deps,\r\n                    'version' => $style->ver,\r\n                    'media' => $style->args,\r\n                    'enqueued' => in_array( $handle, $wp_styles->queue )\r\n                );\r\n            }\r\n        }\r\n        \r\n        return $details;\r\n    }\r\n    \r\n    /**\r\n     * Optimize resources\r\n     *\r\n     * @param array $options Optimization options\r\n     * @return array Optimization results\r\n     */\r\n    public function optimize_resources( $options = array() ) {\r\n        $results = array(\r\n            'success' => true,\r\n            'message' => \__( 'Resources optimized successfully', WPCA_TEXT_DOMAIN ),\r\n            'optimized' => array()\r\n        );\r\n        \r\n        // Set default options\r\n        $default_options = array(\r\n            'minify' => true,\r\n            'combine' => false,\r\n            'defer' => false,\r\n            'async' => false\r\n        );\r\n        \r\n        $options = ( function_exists( 'wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );\r\n        \r\n        // Apply resource optimizations based on options\r\n        if ( $options['minify'] ) {\r\n            // Add minification hooks\r\n            if ( function_exists( 'add_filter' ) ) {\r\n                \add_filter( 'style_loader_tag', array( $this, 'minify_css' ) );\r\n                \add_filter( 'script_loader_tag', array( $this, 'minify_js' ) );\r\n                $results['optimized']['minify'] = true;\r\n            }\r\n        }\r\n        \r\n        if ( $options['defer'] ) {\r\n            // Add defer attribute to scripts\r\n            if ( function_exists( 'add_filter' ) ) {\r\n                \add_filter( 'script_loader_tag', array( $this, 'add_defer_attribute' ), 10, 2 );\r\n                $results['optimized']['defer'] = true;\r\n            }\r\n        }\r\n        \r\n        if ( $options['async'] ) {\r\n            // Add async attribute to scripts\r\n            if ( function_exists( 'add_filter' ) ) {\r\n                \add_filter( 'script_loader_tag', array( $this, 'add_async_attribute' ), 10, 2 );\r\n                $results['optimized']['async'] = true;\r\n            }\r\n        }\r\n        \r\n        return $results;\r\n    }\r\n    \r\n    /**\r\n     * Minify CSS\r\n     *\r\n     * @param string $tag CSS tag\r\n     * @return string Modified tag\r\n     */\r\n    public function minify_css( $tag ) {\r\n        // This is a placeholder for actual CSS minification\r\n        return $tag;\r\n    }\r\n    \r\n    /**\r\n     * Minify JS\r\n     *\r\n     * @param string $tag JS tag\r\n     * @return string Modified tag\r\n     */\r\n    public function minify_js( $tag ) {\r\n        // This is a placeholder for actual JS minification\r\n        return $tag;\r\n    }\r\n    \r\n    /**\r\n     * Add defer attribute to scripts\r\n     *\r\n     * @param string $tag Script tag\r\n     * @param string $handle Script handle\r\n     * @return string Modified tag\r\n     */\r\n    public function add_defer_attribute( $tag, $handle ) {\r\n        // Add defer attribute to all scripts except jQuery\r\n        if ( 'jquery' !== $handle ) {\r\n            return str_replace( ' src', ' defer src', $tag );\r\n        }\r\n        return $tag;\r\n    }\r\n    \r\n    /**\r\n     * Add async attribute to scripts\r\n     *\r\n     * @param string $tag Script tag\r\n     * @param string $handle Script handle\r\n     * @return string Modified tag\r\n     */\r\n    public function add_async_attribute( $tag, $handle ) {\r\n        // Add async attribute to all scripts except jQuery\r\n        if ( 'jquery' !== $handle ) {\r\n            return str_replace( ' src', ' async src', $tag );\r\n        }\r\n        return $tag;\r\n    }\r\n    \r\n    /**\r\n     * Disable resource\r\n     *\r\n     * @param string $type Resource type (scripts or styles)\r\n     * @param string $handle Resource handle\r\n     * @return array Disable result\r\n     */\r\n    public function disable_resource( $type, $handle ) {\r\n        $results = array(\r\n            'success' => true,\r\n            'message' => \__( 'Resource disabled successfully', WPCA_TEXT_DOMAIN )\r\n        );\r\n        \r\n        // Disable resource based on type\r\n        if ( $type === 'scripts' ) {\r\n            if ( function_exists( 'wp_deregister_script' ) && function_exists( 'wp_dequeue_script' ) ) {\r\n                \wp_deregister_script( $handle );\r\n                \wp_dequeue_script( $handle );\r\n            }\r\n        } else if ( $type === 'styles' ) {\r\n            if ( function_exists( 'wp_deregister_style' ) && function_exists( 'wp_dequeue_style' ) ) {\r\n                \wp_deregister_style( $handle );\r\n                \wp_dequeue_style( $handle );\r\n            }\r\n        } else {\r\n            $results['success'] = false;\r\n            $results['message'] = \__( 'Invalid resource type', WPCA_TEXT_DOMAIN );\r\n        }\r\n        \r\n        return $results;\r\n    }\r\n    \r\n    /**\r\n     * Enable resource\r\n     *\r\n     * @param string $type Resource type (scripts or styles)\r\n     * @param string $handle Resource handle\r\n     * @return array Enable result\r\n     */\r\n    public function enable_resource( $type, $handle ) {\r\n        $results = array(\r\n            'success' => true,\r\n            'message' => \__( 'Resource enabled successfully', WPCA_TEXT_DOMAIN )\r\n        );\r\n        \r\n        // Enable resource based on type\r\n        if ( $type === 'scripts' ) {\r\n            if ( function_exists( 'wp_enqueue_script' ) ) {\r\n                \wp_enqueue_script( $handle );\r\n            }\r\n        } else if ( $type === 'styles' ) {\r\n            if ( function_exists( 'wp_enqueue_style' ) ) {\r\n                \wp_enqueue_style( $handle );\r\n            }\r\n        } else {\r\n            $results['success'] = false;\r\n            $results['message'] = \__( 'Invalid resource type', WPCA_TEXT_DOMAIN );\r\n        }\r\n        \r\n        return $results;\r\n    }\r\n}
+<?php
+/**
+ * WPCleanAdmin Resources Class
+ *
+ * @package WPCleanAdmin
+ * @version 1.7.15
+ * @author Sut
+ * @author URI: https://github.com/sutchan
+ * @since 1.7.15
+ */
+namespace WPCleanAdmin;
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+
+
+/**
+ * Resources class
+ */
+class Resources {
+    
+    /**
+     * Singleton instance
+     *
+     * @var Resources
+     */
+    private static $instance;
+    
+    /**
+     * Get singleton instance
+     *
+     * @return Resources
+     */
+    public static function getInstance() {
+        if ( ! isset( self::$instance ) ) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+    
+    /**
+     * Constructor
+     */
+    private function __construct() {
+        $this->init();
+    }
+    
+    /**
+     * Initialize the resources module
+     */
+    public function init() {
+        // Add resources hooks
+        if ( function_exists( 'add_action' ) ) {
+            \add_action( 'wp_enqueue_scripts', array( $this, 'optimize_frontend_resources' ), 999 );
+            \add_action( 'admin_enqueue_scripts', array( $this, 'optimize_admin_resources' ), 999 );
+        }
+    }
+    
+    /**
+     * Optimize frontend resources
+     */
+    public function optimize_frontend_resources() {
+        // Load settings
+        $settings = wpca_get_settings();
+        
+        // Apply frontend resource optimizations based on settings
+        if ( isset( $settings['resources'] ) ) {
+            // Disable emojis
+            if ( isset( $settings['resources']['disable_emojis'] ) && $settings['resources']['disable_emojis'] ) {
+                if ( function_exists( 'remove_action' ) && function_exists( 'remove_filter' ) ) {
+                    \remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+                    \remove_action( 'wp_print_styles', 'print_emoji_styles' );
+                    \remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
+                    \remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
+                    \remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
+                }
+            }
+            
+            // Disable WordPress embeds
+            if ( isset( $settings['resources']['disable_embeds'] ) && $settings['resources']['disable_embeds'] ) {
+                if ( function_exists( 'remove_action' ) ) {
+                    \remove_action( 'wp_head', 'wp_oembed_add_host_js' );
+                    \remove_action( 'wp_head', 'wp_oembed_add_discovery_links' );
+                }
+            }
+            
+            // Disable WordPress version
+            if ( isset( $settings['resources']['disable_version'] ) && $settings['resources']['disable_version'] ) {
+                if ( function_exists( 'remove_action' ) ) {
+                    \remove_action( 'wp_head', 'wp_generator' );
+                }
+            }
+            
+            // Disable RSS feeds
+            if ( isset( $settings['resources']['disable_rss'] ) && $settings['resources']['disable_rss'] ) {
+                if ( function_exists( 'remove_action' ) ) {
+                    \remove_action( 'wp_head', 'feed_links', 2 );
+                    \remove_action( 'wp_head', 'feed_links_extra', 3 );
+                }
+            }
+            
+            // Disable REST API
+            if ( isset( $settings['resources']['disable_rest_api'] ) && $settings['resources']['disable_rest_api'] ) {
+                if ( function_exists( 'remove_action' ) ) {
+                    \remove_action( 'wp_head', 'rest_output_link_wp_head' );
+                }
+            }
+        }
+    }
+    
+    /**
+     * Optimize admin resources
+     */
+    public function optimize_admin_resources() {
+        // Load settings
+        $settings = wpca_get_settings();
+        
+        // Apply admin resource optimizations based on settings
+        if ( isset( $settings['resources'] ) && isset( $settings['resources']['optimize_admin_resources'] ) && $settings['resources']['optimize_admin_resources'] ) {
+            // Remove unnecessary admin scripts and styles
+            if ( function_exists( 'add_action' ) ) {
+                \add_action( 'admin_init', array( $this, 'remove_unnecessary_admin_resources' ) );
+            }
+        }
+    }
+    
+    /**
+     * Remove unnecessary admin resources
+     */
+    public function remove_unnecessary_admin_resources() {
+        // Remove WordPress welcome panel
+        if ( function_exists( 'remove_action' ) ) {
+            \remove_action( 'welcome_panel', 'wp_welcome_panel' );
+        }
+        
+        // Remove unnecessary dashboard widgets
+        if ( function_exists( 'remove_meta_box' ) ) {
+            \remove_meta_box( 'dashboard_right_now', 'dashboard', 'normal' );
+            \remove_meta_box( 'dashboard_activity', 'dashboard', 'normal' );
+            \remove_meta_box( 'dashboard_recent_comments', 'dashboard', 'normal' );
+            \remove_meta_box( 'dashboard_incoming_links', 'dashboard', 'normal' );
+            \remove_meta_box( 'dashboard_plugins', 'dashboard', 'normal' );
+            \remove_meta_box( 'dashboard_recent_drafts', 'dashboard', 'side' );
+            \remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );
+            \remove_meta_box( 'dashboard_secondary', 'dashboard', 'side' );
+        }
+    }
+    
+    /**
+     * Get resources statistics
+     *
+     * @return array Resources statistics
+     */
+    public function get_resources_stats() {
+        $stats = array();
+        
+        // Get enqueued scripts count
+        global $wp_scripts;
+        $stats['enqueued_scripts'] = count( $wp_scripts->queue );
+        
+        // Get enqueued styles count
+        global $wp_styles;
+        $stats['enqueued_styles'] = count( $wp_styles->queue );
+        
+        // Get total scripts count
+        $stats['total_scripts'] = count( $wp_scripts->registered );
+        
+        // Get total styles count
+        $stats['total_styles'] = count( $wp_styles->registered );
+        
+        return $stats;
+    }
+    
+    /**
+     * Get resource details
+     *
+     * @param string $type Resource type (scripts or styles)
+     * @return array Resource details
+     */
+    public function get_resource_details( $type = 'scripts' ) {
+        $details = array();
+        
+        if ( $type === 'scripts' ) {
+            // Get script details
+            global $wp_scripts;
+            
+            foreach ( $wp_scripts->registered as $handle => $script ) {
+                $details[] = array(
+                    'handle' => $handle,
+                    'src' => $script->src,
+                    'deps' => $script->deps,
+                    'version' => $script->ver,
+                    'in_footer' => $script->args,
+                    'enqueued' => in_array( $handle, $wp_scripts->queue )
+                );
+            }
+        } else if ( $type === 'styles' ) {
+            // Get style details
+            global $wp_styles;
+            
+            foreach ( $wp_styles->registered as $handle => $style ) {
+                $details[] = array(
+                    'handle' => $handle,
+                    'src' => $style->src,
+                    'deps' => $style->deps,
+                    'version' => $style->ver,
+                    'media' => $style->args,
+                    'enqueued' => in_array( $handle, $wp_styles->queue )
+                );
+            }
+        }
+        
+        return $details;
+    }
+    
+    /**
+     * Optimize resources
+     *
+     * @param array $options Optimization options
+     * @return array Optimization results
+     */
+    public function optimize_resources( $options = array() ) {
+        $results = array(
+            'success' => true,
+            'message' => \__( 'Resources optimized successfully', WPCA_TEXT_DOMAIN ),
+            'optimized' => array()
+        );
+        
+        // Set default options
+        $default_options = array(
+            'minify' => true,
+            'combine' => false,
+            'defer' => false,
+            'async' => false
+        );
+        
+        $options = ( function_exists( 'wp_parse_args' ) ? \wp_parse_args( $options, $default_options ) : array_merge( $default_options, $options ) );
+        
+        // Apply resource optimizations based on options
+        if ( $options['minify'] ) {
+            // Add minification hooks
+            if ( function_exists( 'add_filter' ) ) {
+                \add_filter( 'style_loader_tag', array( $this, 'minify_css' ) );
+                \add_filter( 'script_loader_tag', array( $this, 'minify_js' ) );
+                $results['optimized']['minify'] = true;
+            }
+        }
+        
+        if ( $options['defer'] ) {
+            // Add defer attribute to scripts
+            if ( function_exists( 'add_filter' ) ) {
+                \add_filter( 'script_loader_tag', array( $this, 'add_defer_attribute' ), 10, 2 );
+                $results['optimized']['defer'] = true;
+            }
+        }
+        
+        if ( $options['async'] ) {
+            // Add async attribute to scripts
+            if ( function_exists( 'add_filter' ) ) {
+                \add_filter( 'script_loader_tag', array( $this, 'add_async_attribute' ), 10, 2 );
+                $results['optimized']['async'] = true;
+            }
+        }
+        
+        return $results;
+    }
+    
+    /**
+     * Minify CSS
+     *
+     * @param string $tag CSS tag
+     * @return string Modified tag
+     */
+    public function minify_css( $tag ) {
+        // This is a placeholder for actual CSS minification
+        return $tag;
+    }
+    
+    /**
+     * Minify JS
+     *
+     * @param string $tag JS tag
+     * @return string Modified tag
+     */
+    public function minify_js( $tag ) {
+        // This is a placeholder for actual JS minification
+        return $tag;
+    }
+    
+    /**
+     * Add defer attribute to scripts
+     *
+     * @param string $tag Script tag
+     * @param string $handle Script handle
+     * @return string Modified tag
+     */
+    public function add_defer_attribute( $tag, $handle ) {
+        // Add defer attribute to all scripts except jQuery
+        if ( 'jquery' !== $handle ) {
+            return str_replace( ' src', ' defer src', $tag );
+        }
+        return $tag;
+    }
+    
+    /**
+     * Add async attribute to scripts
+     *
+     * @param string $tag Script tag
+     * @param string $handle Script handle
+     * @return string Modified tag
+     */
+    public function add_async_attribute( $tag, $handle ) {
+        // Add async attribute to all scripts except jQuery
+        if ( 'jquery' !== $handle ) {
+            return str_replace( ' src', ' async src', $tag );
+        }
+        return $tag;
+    }
+    
+    /**
+     * Disable resource
+     *
+     * @param string $type Resource type (scripts or styles)
+     * @param string $handle Resource handle
+     * @return array Disable result
+     */
+    public function disable_resource( $type, $handle ) {
+        $results = array(
+            'success' => true,
+            'message' => \__( 'Resource disabled successfully', WPCA_TEXT_DOMAIN )
+        );
+        
+        // Disable resource based on type
+        if ( $type === 'scripts' ) {
+            if ( function_exists( 'wp_deregister_script' ) && function_exists( 'wp_dequeue_script' ) ) {
+                \wp_deregister_script( $handle );
+                \wp_dequeue_script( $handle );
+            }
+        } else if ( $type === 'styles' ) {
+            if ( function_exists( 'wp_deregister_style' ) && function_exists( 'wp_dequeue_style' ) ) {
+                \wp_deregister_style( $handle );
+                \wp_dequeue_style( $handle );
+            }
+        } else {
+            $results['success'] = false;
+            $results['message'] = \__( 'Invalid resource type', WPCA_TEXT_DOMAIN );
+        }
+        
+        return $results;
+    }
+    
+    /**
+     * Enable resource
+     *
+     * @param string $type Resource type (scripts or styles)
+     * @param string $handle Resource handle
+     * @return array Enable result
+     */
+    public function enable_resource( $type, $handle ) {
+        $results = array(
+            'success' => true,
+            'message' => \__( 'Resource enabled successfully', WPCA_TEXT_DOMAIN )
+        );
+        
+        // Enable resource based on type
+        if ( $type === 'scripts' ) {
+            if ( function_exists( 'wp_enqueue_script' ) ) {
+                \wp_enqueue_script( $handle );
+            }
+        } else if ( $type === 'styles' ) {
+            if ( function_exists( 'wp_enqueue_style' ) ) {
+                \wp_enqueue_style( $handle );
+            }
+        } else {
+            $results['success'] = false;
+            $results['message'] = \__( 'Invalid resource type', WPCA_TEXT_DOMAIN );
+        }
+        
+        return $results;
+    }
+}

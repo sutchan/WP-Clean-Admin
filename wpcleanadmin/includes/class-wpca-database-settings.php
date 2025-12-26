@@ -1,1 +1,179 @@
-﻿<?php\r\n/**\r\n * WPCleanAdmin Database Settings Class\r\n *\r\n * @package WPCleanAdmin\r\n * @version 1.7.15\r\n * @author Sut\r\n * @author URI: https://github.com/sutchan\r\n * @since 1.7.15\r\n */\r\nnamespace WPCleanAdmin;\r\n\r\nif ( ! defined( 'ABSPATH' ) ) {\r\n    exit;\r\n}\r\n\r\n/**\r\n * Database_Settings class\r\n */\r\nclass Database_Settings {\r\n    \r\n    /**\r\n     * Singleton instance\r\n     *\r\n     * @var Database_Settings\r\n     */\r\n    private static $instance;\r\n    \r\n    /**\r\n     * Get singleton instance\r\n     *\r\n     * @return Database_Settings\r\n     */\r\n    public static function getInstance() {\r\n        if ( ! isset( self::$instance ) ) {\r\n            self::$instance = new self();\r\n        }\r\n        return self::$instance;\r\n    }\r\n    \r\n    /**\r\n     * Constructor\r\n     */\r\n    private function __construct() {\r\n        $this->init();\r\n    }\r\n    \r\n    /**\r\n     * Initialize the database settings module\r\n     */\r\n    public function init() {\r\n        // Register settings\r\n        if ( function_exists( 'add_action' ) ) {\r\n            \add_action( 'admin_init', array( $this, 'register_settings' ) );\r\n        }\r\n    }\r\n    \r\n    /**\r\n     * Register database settings\r\n     */\r\n    public function register_settings() {\r\n        // Register database settings section\r\n        if ( function_exists( 'add_settings_section' ) ) {\r\n            \add_settings_section(\r\n                'wpca_database_settings',\r\n                \__( 'Database Settings', WPCA_TEXT_DOMAIN ),\r\n                array( $this, 'settings_section_callback' ),\r\n                'wpca_settings'\r\n            );\r\n        }\r\n        \r\n        // Register database optimization setting\r\n        if ( function_exists( 'add_settings_field' ) ) {\r\n            \add_settings_field(\r\n                'wpca_optimize_database',\r\n                \__( 'Optimize Database', WPCA_TEXT_DOMAIN ),\r\n                array( $this, 'optimize_database_field_callback' ),\r\n                'wpca_settings',\r\n                'wpca_database_settings'\r\n            );\r\n            \r\n            // Register clean transients setting\r\n            \add_settings_field(\r\n                'wpca_clean_transients',\r\n                \__( 'Clean Transients', WPCA_TEXT_DOMAIN ),\r\n                array( $this, 'clean_transients_field_callback' ),\r\n                'wpca_settings',\r\n                'wpca_database_settings'\r\n            );\r\n            \r\n            // Register database backup setting\r\n            \add_settings_field(\r\n                'wpca_enable_backups',\r\n                \__( 'Enable Database Backups', WPCA_TEXT_DOMAIN ),\r\n                array( $this, 'enable_backups_field_callback' ),\r\n                'wpca_settings',\r\n                'wpca_database_settings'\r\n            );\r\n        }\r\n        \r\n        // Register settings\r\n        if ( function_exists( 'register_setting' ) ) {\r\n            \register_setting( 'wpca_settings', 'wpca_database_settings' );\r\n        }\r\n    }\r\n    \r\n    /**\r\n     * Settings section callback\r\n     */\r\n    public function settings_section_callback() {\r\n        echo '<p>' . \__( 'Configure database optimization and maintenance settings.', WPCA_TEXT_DOMAIN ) . '</p>';\r\n    }\r\n    \r\n    /**\r\n     * Optimize database field callback\r\n     */\r\n    public function optimize_database_field_callback() {\r\n        $settings = $this->get_settings();\r\n        $checked = isset( $settings['optimize_database'] ) && $settings['optimize_database'] ? 'checked' : '';\r\n        echo '<input type="checkbox" name="wpca_database_settings[optimize_database]" id="wpca_optimize_database" value="1" ' . $checked . '>';\r\n        echo '<label for="wpca_optimize_database">' . \__( 'Enable automatic database optimization', WPCA_TEXT_DOMAIN ) . '</label>';\r\n    }\r\n    \r\n    /**\r\n     * Clean transients field callback\r\n     */\r\n    public function clean_transients_field_callback() {\r\n        $settings = $this->get_settings();\r\n        $checked = isset( $settings['clean_transients'] ) && $settings['clean_transients'] ? 'checked' : '';\r\n        echo '<input type="checkbox" name="wpca_database_settings[clean_transients]" id="wpca_clean_transients" value="1" ' . $checked . '>';\r\n        echo '<label for="wpca_clean_transients">' . \__( 'Clean expired transients automatically', WPCA_TEXT_DOMAIN ) . '</label>';\r\n    }\r\n    \r\n    /**\r\n     * Enable backups field callback\r\n     */\r\n    public function enable_backups_field_callback() {\r\n        $settings = $this->get_settings();\r\n        $checked = isset( $settings['enable_backups'] ) && $settings['enable_backups'] ? 'checked' : '';\r\n        echo '<input type="checkbox" name="wpca_database_settings[enable_backups]" id="wpca_enable_backups" value="1" ' . $checked . '>';\r\n        echo '<label for="wpca_enable_backups">' . \__( 'Create database backups before optimization', WPCA_TEXT_DOMAIN ) . '</label>';\r\n    }\r\n    \r\n    /**\r\n     * Get database settings\r\n     *\r\n     * @return array Database settings\r\n     */\r\n    public function get_settings() {\r\n        $settings = ( function_exists( 'get_option' ) ? \get_option( 'wpca_database_settings', array() ) : array() );\r\n        \r\n        $default_settings = array(\r\n            'optimize_database' => 1,\r\n            'clean_transients' => 1,\r\n            'enable_backups' => 0\r\n        );\r\n        \r\n        return ( function_exists( '\wp_parse_args' ) ? \wp_parse_args( $settings, $default_settings ) : array_merge( $default_settings, $settings ) );\r\n    }\r\n    \r\n    /**\r\n     * Save database settings\r\n     *\r\n     * @param array $settings Settings to save\r\n     * @return bool Save result\r\n     */\r\n    public function save_settings( $settings ) {\r\n        return ( function_exists( 'update_option' ) ? \update_option( 'wpca_database_settings', $settings ) : false );\r\n    }\r\n    \r\n    /**\r\n     * Reset database settings\r\n     *\r\n     * @return bool Reset result\r\n     */\r\n    public function reset_settings() {\r\n        return ( function_exists( 'delete_option' ) ? \delete_option( 'wpca_database_settings' ) : false );\r\n    }\r\n}
+<?php
+/**
+ * WPCleanAdmin Database Settings Class
+ *
+ * @package WPCleanAdmin
+ * @version 1.7.15
+ * @author Sut
+ * @author URI: https://github.com/sutchan
+ * @since 1.7.15
+ */
+namespace WPCleanAdmin;
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+/**
+ * Database_Settings class
+ */
+class Database_Settings {
+    
+    /**
+     * Singleton instance
+     *
+     * @var Database_Settings
+     */
+    private static $instance;
+    
+    /**
+     * Get singleton instance
+     *
+     * @return Database_Settings
+     */
+    public static function getInstance() {
+        if ( ! isset( self::$instance ) ) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+    
+    /**
+     * Constructor
+     */
+    private function __construct() {
+        $this->init();
+    }
+    
+    /**
+     * Initialize the database settings module
+     */
+    public function init() {
+        // Register settings
+        if ( function_exists( 'add_action' ) ) {
+            \add_action( 'admin_init', array( $this, 'register_settings' ) );
+        }
+    }
+    
+    /**
+     * Register database settings
+     */
+    public function register_settings() {
+        // Register database settings section
+        if ( function_exists( 'add_settings_section' ) ) {
+            \add_settings_section(
+                'wpca_database_settings',
+                \__( 'Database Settings', WPCA_TEXT_DOMAIN ),
+                array( $this, 'settings_section_callback' ),
+                'wpca_settings'
+            );
+        }
+        
+        // Register database optimization setting
+        if ( function_exists( 'add_settings_field' ) ) {
+            \add_settings_field(
+                'wpca_optimize_database',
+                \__( 'Optimize Database', WPCA_TEXT_DOMAIN ),
+                array( $this, 'optimize_database_field_callback' ),
+                'wpca_settings',
+                'wpca_database_settings'
+            );
+            
+            // Register clean transients setting
+            \add_settings_field(
+                'wpca_clean_transients',
+                \__( 'Clean Transients', WPCA_TEXT_DOMAIN ),
+                array( $this, 'clean_transients_field_callback' ),
+                'wpca_settings',
+                'wpca_database_settings'
+            );
+            
+            // Register database backup setting
+            \add_settings_field(
+                'wpca_enable_backups',
+                \__( 'Enable Database Backups', WPCA_TEXT_DOMAIN ),
+                array( $this, 'enable_backups_field_callback' ),
+                'wpca_settings',
+                'wpca_database_settings'
+            );
+        }
+        
+        // Register settings
+        if ( function_exists( 'register_setting' ) ) {
+            \register_setting( 'wpca_settings', 'wpca_database_settings' );
+        }
+    }
+    
+    /**
+     * Settings section callback
+     */
+    public function settings_section_callback() {
+        echo '<p>' . \__( 'Configure database optimization and maintenance settings.', WPCA_TEXT_DOMAIN ) . '</p>';
+    }
+    
+    /**
+     * Optimize database field callback
+     */
+    public function optimize_database_field_callback() {
+        $settings = $this->get_settings();
+        $checked = isset( $settings['optimize_database'] ) && $settings['optimize_database'] ? 'checked' : '';
+        echo '<input type="checkbox" name="wpca_database_settings[optimize_database]" id="wpca_optimize_database" value="1" ' . $checked . '>';
+        echo '<label for="wpca_optimize_database">' . \__( 'Enable automatic database optimization', WPCA_TEXT_DOMAIN ) . '</label>';
+    }
+    
+    /**
+     * Clean transients field callback
+     */
+    public function clean_transients_field_callback() {
+        $settings = $this->get_settings();
+        $checked = isset( $settings['clean_transients'] ) && $settings['clean_transients'] ? 'checked' : '';
+        echo '<input type="checkbox" name="wpca_database_settings[clean_transients]" id="wpca_clean_transients" value="1" ' . $checked . '>';
+        echo '<label for="wpca_clean_transients">' . \__( 'Clean expired transients automatically', WPCA_TEXT_DOMAIN ) . '</label>';
+    }
+    
+    /**
+     * Enable backups field callback
+     */
+    public function enable_backups_field_callback() {
+        $settings = $this->get_settings();
+        $checked = isset( $settings['enable_backups'] ) && $settings['enable_backups'] ? 'checked' : '';
+        echo '<input type="checkbox" name="wpca_database_settings[enable_backups]" id="wpca_enable_backups" value="1" ' . $checked . '>';
+        echo '<label for="wpca_enable_backups">' . \__( 'Create database backups before optimization', WPCA_TEXT_DOMAIN ) . '</label>';
+    }
+    
+    /**
+     * Get database settings
+     *
+     * @return array Database settings
+     */
+    public function get_settings() {
+        $settings = ( function_exists( 'get_option' ) ? \get_option( 'wpca_database_settings', array() ) : array() );
+        
+        $default_settings = array(
+            'optimize_database' => 1,
+            'clean_transients' => 1,
+            'enable_backups' => 0
+        );
+        
+        return ( function_exists( '\wp_parse_args' ) ? \wp_parse_args( $settings, $default_settings ) : array_merge( $default_settings, $settings ) );
+    }
+    
+    /**
+     * Save database settings
+     *
+     * @param array $settings Settings to save
+     * @return bool Save result
+     */
+    public function save_settings( $settings ) {
+        return ( function_exists( 'update_option' ) ? \update_option( 'wpca_database_settings', $settings ) : false );
+    }
+    
+    /**
+     * Reset database settings
+     *
+     * @return bool Reset result
+     */
+    public function reset_settings() {
+        return ( function_exists( 'delete_option' ) ? \delete_option( 'wpca_database_settings' ) : false );
+    }
+}

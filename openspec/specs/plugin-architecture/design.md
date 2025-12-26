@@ -1,0 +1,262 @@
+## Context
+WP Clean Admin 是一个基于模块化设计的 WordPress 插件，旨在提供全面的 WordPress 后台清理和优化功能。插件采用面向对象的设计模式，遵循 WordPress 最佳实践，确保插件的可扩展性、可维护性和安全性。
+
+## Goals / Non-Goals
+
+### Goals
+- 提供全面的 WordPress 后台清理和优化功能
+- 采用模块化设计，便于维护和扩展
+- 遵循 WordPress 安全最佳实践
+- 兼容 WordPress 5.0+ 和 PHP 7.0+
+- 提供钩子和 API，允许开发者扩展功能
+
+### Non-Goals
+- 不修改 WordPress 核心文件
+- 不提供与 WordPress 后台管理无关的功能
+- 不支持低于 WordPress 5.0 的版本
+
+## Decisions
+
+### 1. 模块化架构设计
+- **Decision**: 采用模块化设计，将功能划分为独立的模块
+- **Reason**: 提高代码的可维护性和可扩展性，便于团队协作开发
+- **Alternatives considered**: 
+  - 单一文件设计: 不适合复杂插件，维护困难
+  - 分层架构: 过于复杂，不适合 WordPress 插件开发
+
+### 2. 单例模式应用
+- **Decision**: 核心类和功能模块使用单例模式
+- **Reason**: 确保每个模块只有一个实例，避免资源浪费，便于模块间通信
+- **Alternatives considered**: 
+  - 工厂模式: 增加复杂性，不适合插件开发
+  - 原型模式: 不符合插件架构需求
+
+### 3. PSR-4 自动加载
+- **Decision**: 使用 PSR-4 自动加载规范
+- **Reason**: 符合现代 PHP 开发标准，提高代码的可维护性
+- **Alternatives considered**: 
+  - 手动加载: 繁琐，容易出错
+  - WordPress 传统加载方式: 不符合现代 PHP 开发标准
+
+### 4. WordPress 钩子系统集成
+- **Decision**: 深度集成 WordPress 钩子系统
+- **Reason**: 符合 WordPress 插件开发最佳实践，便于与其他插件和主题集成
+- **Alternatives considered**: 
+  - 自定义事件系统: 增加复杂性，不便于与其他 WordPress 插件集成
+
+## Architecture
+
+### 架构层次
+
+| 层次 | 描述 | 主要组件 |
+| --- | --- | --- |
+| 核心层 | 插件的基础架构，负责初始化和协调其他模块 | Core、Autoloader |
+| 功能层 | 实现具体功能的模块 | Cleanup、Performance、Security、Permissions、Menu Customizer、Database |
+| 资源层 | 静态资源文件 | CSS、JavaScript、语言文件 |
+| 配置层 | 插件设置和配置 | Settings、Database Settings、Performance Settings |
+| 扩展层 | 插件扩展机制 | Hooks、API |
+
+### 核心组件
+
+#### 插件主文件 (wp-clean-admin.php)
+- **功能**: 插件的入口文件，负责定义常量、加载必要文件、初始化插件
+- **主要职责**:
+  - 定义插件常量
+  - 加载自动加载器
+  - 初始化插件
+  - 注册激活和停用钩子
+  - 加载文本域
+
+#### 自动加载器 (autoload.php)
+- **功能**: 实现 PSR-4 自动加载规范，自动加载插件类文件
+- **主要职责**:
+  - 注册自动加载函数
+  - 根据命名空间和类名加载对应的文件
+  - 支持 `WPCleanAdmin` 命名空间
+
+#### 核心类 (Core)
+- **功能**: 插件的核心类，负责初始化所有模块和注册钩子
+- **主要职责**:
+  - 初始化插件模块
+  - 注册钩子
+  - 处理插件激活和停用
+
+#### 设置类 (Settings)
+- **功能**: 管理插件设置页面和设置保存
+- **主要职责**:
+  - 注册设置页面
+  - 渲染设置页面
+  - 验证和保存设置
+  - 提供设置 API
+
+### 功能模块
+
+#### 后台清理模块 (Cleanup)
+- **功能**: 清理和优化 WordPress 后台界面
+- **主要职责**:
+  - 隐藏不必要的菜单
+  - 优化仪表盘
+  - 清理后台头部和底部信息
+  - 自定义登录页面
+- **详细规范**: [admin-cleanup/spec.md](../admin-cleanup/spec.md)
+
+#### 性能优化模块 (Performance)
+- **功能**: 优化 WordPress 网站性能
+- **主要职责**:
+  - 禁用不必要的功能
+  - 优化资源加载
+  - 优化数据库查询
+  - 减少 HTTP 请求
+- **详细规范**: [performance-optimization/spec.md](../performance-optimization/spec.md)
+
+#### 安全增强模块 (Security)
+- **功能**: 增强 WordPress 网站安全性
+- **主要职责**:
+  - 限制登录尝试次数
+  - 隐藏敏感信息
+  - 配置安全头部
+  - 增强后台安全
+- **详细规范**: [security-enhancement/spec.md](../security-enhancement/spec.md)
+
+#### 权限管理模块 (Permissions)
+- **功能**: 管理用户角色和权限
+- **主要职责**:
+  - 自定义用户角色
+  - 分配用户权限
+  - 限制后台访问
+  - 管理用户角色
+- **详细规范**: [permission-management/spec.md](../permission-management/spec.md)
+
+#### 菜单定制模块 (Menu Customizer)
+- **功能**: 自定义 WordPress 后台菜单
+- **主要职责**:
+  - 自定义菜单顺序
+  - 创建菜单组
+  - 按角色显示菜单
+  - 自定义菜单样式
+- **详细规范**: [menu-customization/spec.md](../menu-customization/spec.md)
+
+#### 数据库管理模块 (Database)
+- **功能**: 管理和优化 WordPress 数据库
+- **主要职责**:
+  - 清理数据库
+  - 优化数据库
+  - 备份数据库
+  - 恢复数据库
+- **详细规范**: [database-management/spec.md](../database-management/spec.md)
+
+## Hooks System
+
+### 动作钩子
+
+| 钩子名称 | 描述 | 参数 |
+| --- | --- | --- |
+| wpca_init | 插件初始化完成后触发 | 无 |
+| wpca_after_save_settings | 设置保存后触发 | $settings |
+| wpca_before_cleanup | 后台清理前触发 | 无 |
+| wpca_after_cleanup | 后台清理后触发 | $results |
+| wpca_before_optimize | 性能优化前触发 | 无 |
+| wpca_after_optimize | 性能优化后触发 | $results |
+
+### 过滤器钩子
+| 钩子名称 | 描述 | 参数 | 返回值 |
+| --- | --- | --- | --- |
+| wpca_hidden_menus | 过滤要隐藏的菜单 | $menus | 过滤后的菜单数组 |
+| wpca_disabled_features | 过滤要禁用的功能 | $features | 过滤后的功能数组 |
+| wpca_optimization_options | 过滤优化选项 | $options | 过滤后的优化选项 |
+| wpca_database_cleanup_options | 过滤数据库清理选项 | $options | 过滤后的清理选项 |
+| wpca_settings | 过滤插件设置 | $settings | 过滤后的设置 |
+
+## API
+
+### 核心 API 函数
+
+```php
+// 隐藏指定菜单
+wpca_hide_menu( 'edit-comments.php' );
+
+// 禁用指定功能
+wpca_disable_feature( 'emoji' );
+
+// 设置菜单顺序
+wpca_set_menu_order( array( 'index.php', 'edit.php', 'upload.php' ) );
+```
+
+### 扩展机制
+
+插件支持开发者创建自定义模块：
+1. 创建模块类，继承 `WPCleanAdmin\Module` 类
+2. 实现必要的方法：`init()`, `register_hooks()`, `render_settings()`
+3. 在核心类中注册模块
+4. 实现设置页面
+
+## Security Design
+
+### 输入验证
+- **所有用户输入必须经过验证**：使用 WordPress 验证函数
+- **验证类型**：字符串、数字、邮箱、URL 等
+- **验证函数**：`sanitize_text_field()`, `sanitize_email()`, `sanitize_url()`, `absint()` 等
+
+### 输出转义
+- **所有输出到页面的内容必须转义**：防止 XSS 攻击
+- **转义函数**：`esc_html()`, `esc_attr()`, `esc_url()`, `esc_js()` 等
+
+### SQL 注入防护
+- **使用 `$wpdb->prepare()` 处理所有 SQL 查询**：防止 SQL 注入
+- **参数绑定**：将用户输入作为参数绑定，而不是直接插入 SQL
+
+### CSRF 防护
+- **使用 nonce 验证所有表单提交**：防止 CSRF 攻击
+- **函数**：`wp_nonce_field()`, `wp_verify_nonce()`
+
+### 权限检查
+- **所有管理操作必须检查权限**：防止未授权访问
+- **函数**：`wpca_current_user_can()`, `current_user_can()`
+
+### 安全头部
+- **添加安全 HTTP 头部**：增强网站安全性
+- **头部**：X-Frame-Options, X-XSS-Protection, X-Content-Type-Options, Strict-Transport-Security, Content-Security-Policy
+
+## Compatibility
+
+### WordPress 版本兼容性
+- **最低版本**：WordPress 5.0+
+- **兼容性检查**：使用 `function_exists()` 检查函数是否存在
+- **功能降级**：根据 WordPress 版本提供不同功能
+
+### PHP 版本兼容性
+- **最低版本**：PHP 7.0+
+- **兼容性检查**：使用 `function_exists()` 检查函数是否存在
+- **语法兼容**：使用兼容 PHP 7.0+ 的语法
+
+### 浏览器兼容性
+- **支持浏览器**：Chrome, Firefox, Safari, Edge
+- **兼容性处理**：使用兼容的 HTML, CSS, JavaScript
+- **响应式设计**：支持不同屏幕尺寸
+
+### 主题兼容性
+- **兼容性处理**：与主流 WordPress 主题兼容
+- **样式隔离**：使用独特的 CSS 类名，避免样式冲突
+- **钩子集成**：提供钩子供主题扩展
+
+## Deployment and Maintenance
+
+### 插件安装
+- **自动安装**：通过 WordPress 后台安装
+- **手动安装**：上传 ZIP 文件或 FTP 上传
+- **命令行安装**：使用 WP CLI 安装
+
+### 版本管理
+- **自动更新**：支持 WordPress 自动更新
+- **手动更新**：上传新版本 ZIP 文件
+- **版本控制**：使用 Git 进行版本控制
+
+### 错误处理
+- **日志记录**：使用 `wpca_log()` 函数记录日志
+- **异常处理**：使用 `try/catch` 块处理异常
+- **管理通知**：使用 `wpca_admin_notice()` 函数显示通知
+
+### 数据迁移
+- **设置迁移**：支持设置的导入和导出
+- **数据库迁移**：支持数据库备份和恢复
+- **升级迁移**：处理版本升级时的数据迁移

@@ -1,1 +1,390 @@
-﻿<?php\r\n/**\r\n * WPCleanAdmin Menu Customizer Class\r\n *\r\n * @package WPCleanAdmin\r\n * @version 1.7.15\r\n * @author Sut\r\n * @author URI: https://github.com/sutchan\r\n * @since 1.7.15\r\n */\r\nnamespace WPCleanAdmin;\r\n\r\nif ( ! defined( 'ABSPATH' ) ) {\r\n    exit;\r\n}\r\n\r\n\r\n\r\n/**\r\n * Menu_Customizer class\r\n */\r\nclass Menu_Customizer {\r\n    \r\n    /**\r\n     * Singleton instance\r\n     *\r\n     * @var Menu_Customizer\r\n     */\r\n    private static $instance;\r\n    \r\n    /**\r\n     * Get singleton instance\r\n     *\r\n     * @return Menu_Customizer\r\n     */\r\n    public static function getInstance() {\r\n        if ( ! isset( self::$instance ) ) {\r\n            self::$instance = new self();\r\n        }\r\n        return self::$instance;\r\n    }\r\n    \r\n    /**\r\n     * Constructor\r\n     */\r\n    private function __construct() {\r\n        $this->init();\r\n    }\r\n    \r\n    /**\r\n     * Initialize the menu customizer module\r\n     */\r\n    public function init() {\r\n        // Load settings\r\n        $settings = $this->get_settings();\r\n        \r\n        // Apply menu customizations based on settings\r\n        if ( isset( $settings['enabled'] ) && $settings['enabled'] ) {\r\n            // Add menu customization hooks\r\n            if ( function_exists( 'add_action' ) ) {\r\n                \add_action( 'admin_menu', array( $this, 'customize_admin_menu' ), 999 );\r\n                \add_action( 'admin_bar_menu', array( $this, 'customize_admin_bar' ), 999 );\r\n            }\r\n        }\r\n    }\r\n    \r\n    /**\r\n     * Customize admin menu\r\n     */\r\n    public function customize_admin_menu() {\r\n        global $menu, $submenu;\r\n        \r\n        // Load settings\r\n        $settings = $this->get_settings();\r\n        \r\n        // Customize menu items based on settings\r\n        if ( isset( $settings['menu_items'] ) ) {\r\n            foreach ( $settings['menu_items'] as $menu_slug => $menu_settings ) {\r\n                // Hide menu item\r\n                if ( isset( $menu_settings['hidden'] ) && $menu_settings['hidden'] ) {\r\n                    // Find and remove top-level menu\r\n                    foreach ( $menu as $key => $menu_item ) {\r\n                        if ( isset( $menu_item[2] ) && $menu_item[2] === $menu_slug ) {\r\n                            unset( $menu[$key] );\r\n                            break;\r\n                        }\r\n                    }\r\n                }\r\n                \r\n                // Customize menu title\r\n                if ( isset( $menu_settings['title'] ) && ! empty( $menu_settings['title'] ) ) {\r\n                    foreach ( $menu as $key => $menu_item ) {\r\n                        if ( isset( $menu_item[2] ) && $menu_item[2] === $menu_slug ) {\r\n                            $menu[$key][0] = $menu_settings['title'];\r\n                            break;\r\n                        }\r\n                    }\r\n                }\r\n                \r\n                // Customize menu icon\r\n                if ( isset( $menu_settings['icon'] ) && ! empty( $menu_settings['icon'] ) ) {\r\n                    foreach ( $menu as $key => $menu_item ) {\r\n                        if ( isset( $menu_item[2] ) && $menu_item[2] === $menu_slug ) {\r\n                            $menu[$key][6] = $menu_settings['icon'];\r\n                            break;\r\n                        }\r\n                    }\r\n                }\r\n                \r\n                // Customize menu position\r\n                if ( isset( $menu_settings['position'] ) && is_numeric( $menu_settings['position'] ) ) {\r\n                    foreach ( $menu as $key => $menu_item ) {\r\n                        if ( isset( $menu_item[2] ) && $menu_item[2] === $menu_slug ) {\r\n                            $menu[$key][5] = $menu_settings['position'];\r\n                            break;\r\n                        }\r\n                    }\r\n                }\r\n            }\r\n        }\r\n        \r\n        // Customize submenu items\r\n        if ( isset( $settings['submenu_items'] ) ) {\r\n            foreach ( $settings['submenu_items'] as $parent_slug => $submenu_items ) {\r\n                if ( isset( $submenu[$parent_slug] ) ) {\r\n                    foreach ( $submenu_items as $submenu_slug => $submenu_settings ) {\r\n                        // Hide submenu item\r\n                        if ( isset( $submenu_settings['hidden'] ) && $submenu_settings['hidden'] ) {\r\n                            foreach ( $submenu[$parent_slug] as $key => $submenu_item ) {\r\n                                if ( isset( $submenu_item[2] ) && $submenu_item[2] === $submenu_slug ) {\r\n                                    unset( $submenu[$parent_slug][$key] );\r\n                                    break;\r\n                                }\r\n                            }\r\n                        }\r\n                        \r\n                        // Customize submenu title\r\n                        if ( isset( $submenu_settings['title'] ) && ! empty( $submenu_settings['title'] ) ) {\r\n                            foreach ( $submenu[$parent_slug] as $key => $submenu_item ) {\r\n                                if ( isset( $submenu_item[2] ) && $submenu_item[2] === $submenu_slug ) {\r\n                                    $submenu[$parent_slug][$key][0] = $submenu_settings['title'];\r\n                                    break;\r\n                                }\r\n                            }\r\n                        }\r\n                    }\r\n                }\r\n            }\r\n        }\r\n        \r\n        // Apply menu order\r\n        if ( isset( $settings['menu_order'] ) && ! empty( $settings['menu_order'] ) ) {\r\n            $this->apply_menu_order( $menu, $settings['menu_order'] );\r\n        }\r\n        \r\n        // Apply menu groups\r\n        if ( isset( $settings['menu_groups'] ) && ! empty( $settings['menu_groups'] ) ) {\r\n            $this->apply_menu_groups( $menu, $settings['menu_groups'] );\r\n        }\r\n    }\r\n    \r\n    /**\r\n     * Apply menu order to admin menu\r\n     *\r\n     * @param array $menu Admin menu array\r\n     * @param array $menu_order Menu order settings\r\n     */\r\n    private function apply_menu_order( &$menu, $menu_order ) {\r\n        // Create a new menu array with the desired order\r\n        $new_menu = array();\r\n        $remaining_menu = $menu;\r\n        \r\n        // Add menu items in the specified order\r\n        foreach ( $menu_order as $menu_slug ) {\r\n            foreach ( $remaining_menu as $key => $menu_item ) {\r\n                if ( isset( $menu_item[2] ) && $menu_item[2] === $menu_slug ) {\r\n                    $new_menu[] = $menu_item;\r\n                    unset( $remaining_menu[$key] );\r\n                    break;\r\n                }\r\n            }\r\n        }\r\n        \r\n        // Add remaining menu items at the end\r\n        foreach ( $remaining_menu as $menu_item ) {\r\n            $new_menu[] = $menu_item;\r\n        }\r\n        \r\n        // Update the menu with the new order\r\n        $menu = $new_menu;\r\n    }\r\n    \r\n    /**\r\n     * Apply menu groups to admin menu\r\n     *\r\n     * @param array $menu Admin menu array\r\n     * @param array $menu_groups Menu groups settings\r\n     */\r\n    private function apply_menu_groups( &$menu, $menu_groups ) {\r\n        // This is a placeholder for menu groups implementation\r\n        // Menu groups would require more complex changes to the WordPress menu system\r\n        // For now, we'll just log that menu groups are enabled\r\n        if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {\r\n            error_log( 'Menu groups enabled: ' . print_r( $menu_groups, true ) );\r\n        }\r\n    }\r\n    \r\n    /**\r\n     * Customize admin bar\r\n     *\r\n     * @param WP_Admin_Bar $wp_admin_bar Admin bar object\r\n     */\r\n    public function customize_admin_bar( $wp_admin_bar ) {\r\n        // Load settings\r\n        $settings = $this->get_settings();\r\n        \r\n        // Customize admin bar items based on settings\r\n        if ( isset( $settings['admin_bar_items'] ) ) {\r\n            foreach ( $settings['admin_bar_items'] as $node_id => $node_settings ) {\r\n                // Hide admin bar item\r\n                if ( isset( $node_settings['hidden'] ) && $node_settings['hidden'] ) {\r\n                    $wp_admin_bar->remove_node( $node_id );\r\n                }\r\n                \r\n                // Customize admin bar item\r\n                if ( isset( $node_settings['title'] ) && ! empty( $node_settings['title'] ) ) {\r\n                    $node = $wp_admin_bar->get_node( $node_id );\r\n                    if ( $node ) {\r\n                        $node->title = $node_settings['title'];\r\n                        $wp_admin_bar->add_node( $node );\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    }\r\n    \r\n    /**\r\n     * Get menu customizer settings\r\n     *\r\n     * @return array Menu customizer settings\r\n     */\r\n    public function get_settings() {\r\n        // Get settings from options\r\n        $settings = ( function_exists( 'get_option' ) ? \get_option( 'wpca_menu_customizer_settings', array() ) : array() );\r\n        \r\n        // Set default settings\r\n        $default_settings = array(\r\n            'enabled' => false,\r\n            'menu_items' => array(),\r\n            'submenu_items' => array(),\r\n            'admin_bar_items' => array()\r\n        );\r\n        \r\n        return ( function_exists( 'wp_parse_args' ) ? \wp_parse_args( $settings, $default_settings ) : array_merge( $default_settings, $settings ) );\r\n    }\r\n    \r\n    /**\r\n     * Save menu customizer settings\r\n     *\r\n     * @param array $settings Settings to save\r\n     * @return bool Save result\r\n     */\r\n    public function save_settings( $settings ) {\r\n        // Save settings to options\r\n        return ( function_exists( 'update_option' ) ? \update_option( 'wpca_menu_customizer_settings', $settings ) : false );\r\n    }\r\n    \r\n    /**\r\n     * Reset menu customizer settings\r\n     *\r\n     * @return bool Reset result\r\n     */\r\n    public function reset_settings() {\r\n        // Delete settings from options\r\n        return ( function_exists( 'delete_option' ) ? \delete_option( 'wpca_menu_customizer_settings' ) : false );\r\n    }\r\n    \r\n    /**\r\n     * Get admin menu structure\r\n     *\r\n     * @return array Admin menu structure\r\n     */\r\n    public function get_admin_menu_structure() {\r\n        global $menu, $submenu;\r\n        \r\n        $menu_structure = array();\r\n        \r\n        // Get top-level menu items\r\n        foreach ( $menu as $key => $menu_item ) {\r\n            if ( ! empty( $menu_item[0] ) && $menu_item[0] !== '-' ) {\r\n                $menu_data = array(\r\n                    'id' => $key,\r\n                    'title' => $menu_item[0],\r\n                    'slug' => $menu_item[2],\r\n                    'capability' => $menu_item[1],\r\n                    'icon' => $menu_item[6],\r\n                    'position' => $menu_item[5],\r\n                    'submenu' => array()\r\n                );\r\n                \r\n                // Get submenu items\r\n                if ( isset( $submenu[$menu_item[2]] ) ) {\r\n                    foreach ( $submenu[$menu_item[2]] as $submenu_key => $submenu_item ) {\r\n                        $menu_data['submenu'][] = array(\r\n                            'id' => $submenu_key,\r\n                            'title' => $submenu_item[0],\r\n                            'slug' => $submenu_item[2],\r\n                            'capability' => $submenu_item[1]\r\n                        );\r\n                    }\r\n                }\r\n                \r\n                $menu_structure[] = $menu_data;\r\n            }\r\n        }\r\n        \r\n        return $menu_structure;\r\n    }\r\n    \r\n    /**\r\n     * Get admin bar structure\r\n     *\r\n     * @return array Admin bar structure\r\n     */\r\n    public function get_admin_bar_structure() {\r\n        global $wp_admin_bar;\r\n        \r\n        $admin_bar_structure = array();\r\n        \r\n        // Get admin bar nodes\r\n        $nodes = $wp_admin_bar->get_nodes();\r\n        \r\n        if ( ! empty( $nodes ) ) {\r\n            foreach ( $nodes as $node_id => $node ) {\r\n                $admin_bar_structure[] = array(\r\n                    'id' => $node_id,\r\n                    'title' => $node->title,\r\n                    'parent' => $node->parent,\r\n                    'href' => $node->href,\r\n                    'group' => $node->group,\r\n                    'meta' => $node->meta\r\n                );\r\n            }\r\n        }\r\n        \r\n        return $admin_bar_structure;\r\n    }\r\n    \r\n    /**\r\n     * Export menu customizer settings\r\n     *\r\n     * @return string Exported settings\r\n     */\r\n    public function export_settings() {\r\n        // Get settings\r\n        $settings = $this->get_settings();\r\n        \r\n        // Export settings as JSON\r\n        return json_encode( $settings, JSON_PRETTY_PRINT );\r\n    }\r\n    \r\n    /**\r\n     * Import menu customizer settings\r\n     *\r\n     * @param string $imported_settings Imported settings\r\n     * @return array Import results\r\n     */\r\n    public function import_settings( $imported_settings ) {\r\n        $results = array(\r\n            'success' => false,\r\n            'message' => \__( 'Failed to import settings', WPCA_TEXT_DOMAIN )\r\n        );\r\n        \r\n        // Decode imported settings\r\n        $settings = json_decode( $imported_settings, true );\r\n        \r\n        // Check if settings are valid\r\n        if ( is_array( $settings ) ) {\r\n            // Save imported settings\r\n            if ( $this->save_settings( $settings ) ) {\r\n                $results['success'] = true;\r\n                $results['message'] = \__( 'Settings imported successfully', WPCA_TEXT_DOMAIN );\r\n            }\r\n        } else {\r\n            $results['message'] = \__( 'Invalid settings format', WPCA_TEXT_DOMAIN );\r\n        }\r\n        \r\n        return $results;\r\n    }\r\n}
+<?php
+/**
+ * WPCleanAdmin Menu Customizer Class
+ *
+ * @package WPCleanAdmin
+ * @version 1.7.15
+ * @author Sut
+ * @author URI: https://github.com/sutchan
+ * @since 1.7.15
+ */
+namespace WPCleanAdmin;
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+
+
+/**
+ * Menu_Customizer class
+ */
+class Menu_Customizer {
+    
+    /**
+     * Singleton instance
+     *
+     * @var Menu_Customizer
+     */
+    private static $instance;
+    
+    /**
+     * Get singleton instance
+     *
+     * @return Menu_Customizer
+     */
+    public static function getInstance() {
+        if ( ! isset( self::$instance ) ) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+    
+    /**
+     * Constructor
+     */
+    private function __construct() {
+        $this->init();
+    }
+    
+    /**
+     * Initialize the menu customizer module
+     */
+    public function init() {
+        // Load settings
+        $settings = $this->get_settings();
+        
+        // Apply menu customizations based on settings
+        if ( isset( $settings['enabled'] ) && $settings['enabled'] ) {
+            // Add menu customization hooks
+            if ( function_exists( 'add_action' ) ) {
+                \add_action( 'admin_menu', array( $this, 'customize_admin_menu' ), 999 );
+                \add_action( 'admin_bar_menu', array( $this, 'customize_admin_bar' ), 999 );
+            }
+        }
+    }
+    
+    /**
+     * Customize admin menu
+     */
+    public function customize_admin_menu() {
+        global $menu, $submenu;
+        
+        // Load settings
+        $settings = $this->get_settings();
+        
+        // Customize menu items based on settings
+        if ( isset( $settings['menu_items'] ) ) {
+            foreach ( $settings['menu_items'] as $menu_slug => $menu_settings ) {
+                // Hide menu item
+                if ( isset( $menu_settings['hidden'] ) && $menu_settings['hidden'] ) {
+                    // Find and remove top-level menu
+                    foreach ( $menu as $key => $menu_item ) {
+                        if ( isset( $menu_item[2] ) && $menu_item[2] === $menu_slug ) {
+                            unset( $menu[$key] );
+                            break;
+                        }
+                    }
+                }
+                
+                // Customize menu title
+                if ( isset( $menu_settings['title'] ) && ! empty( $menu_settings['title'] ) ) {
+                    foreach ( $menu as $key => $menu_item ) {
+                        if ( isset( $menu_item[2] ) && $menu_item[2] === $menu_slug ) {
+                            $menu[$key][0] = $menu_settings['title'];
+                            break;
+                        }
+                    }
+                }
+                
+                // Customize menu icon
+                if ( isset( $menu_settings['icon'] ) && ! empty( $menu_settings['icon'] ) ) {
+                    foreach ( $menu as $key => $menu_item ) {
+                        if ( isset( $menu_item[2] ) && $menu_item[2] === $menu_slug ) {
+                            $menu[$key][6] = $menu_settings['icon'];
+                            break;
+                        }
+                    }
+                }
+                
+                // Customize menu position
+                if ( isset( $menu_settings['position'] ) && is_numeric( $menu_settings['position'] ) ) {
+                    foreach ( $menu as $key => $menu_item ) {
+                        if ( isset( $menu_item[2] ) && $menu_item[2] === $menu_slug ) {
+                            $menu[$key][5] = $menu_settings['position'];
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Customize submenu items
+        if ( isset( $settings['submenu_items'] ) ) {
+            foreach ( $settings['submenu_items'] as $parent_slug => $submenu_items ) {
+                if ( isset( $submenu[$parent_slug] ) ) {
+                    foreach ( $submenu_items as $submenu_slug => $submenu_settings ) {
+                        // Hide submenu item
+                        if ( isset( $submenu_settings['hidden'] ) && $submenu_settings['hidden'] ) {
+                            foreach ( $submenu[$parent_slug] as $key => $submenu_item ) {
+                                if ( isset( $submenu_item[2] ) && $submenu_item[2] === $submenu_slug ) {
+                                    unset( $submenu[$parent_slug][$key] );
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        // Customize submenu title
+                        if ( isset( $submenu_settings['title'] ) && ! empty( $submenu_settings['title'] ) ) {
+                            foreach ( $submenu[$parent_slug] as $key => $submenu_item ) {
+                                if ( isset( $submenu_item[2] ) && $submenu_item[2] === $submenu_slug ) {
+                                    $submenu[$parent_slug][$key][0] = $submenu_settings['title'];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Apply menu order
+        if ( isset( $settings['menu_order'] ) && ! empty( $settings['menu_order'] ) ) {
+            $this->apply_menu_order( $menu, $settings['menu_order'] );
+        }
+        
+        // Apply menu groups
+        if ( isset( $settings['menu_groups'] ) && ! empty( $settings['menu_groups'] ) ) {
+            $this->apply_menu_groups( $menu, $settings['menu_groups'] );
+        }
+    }
+    
+    /**
+     * Apply menu order to admin menu
+     *
+     * @param array $menu Admin menu array
+     * @param array $menu_order Menu order settings
+     */
+    private function apply_menu_order( &$menu, $menu_order ) {
+        // Create a new menu array with the desired order
+        $new_menu = array();
+        $remaining_menu = $menu;
+        
+        // Add menu items in the specified order
+        foreach ( $menu_order as $menu_slug ) {
+            foreach ( $remaining_menu as $key => $menu_item ) {
+                if ( isset( $menu_item[2] ) && $menu_item[2] === $menu_slug ) {
+                    $new_menu[] = $menu_item;
+                    unset( $remaining_menu[$key] );
+                    break;
+                }
+            }
+        }
+        
+        // Add remaining menu items at the end
+        foreach ( $remaining_menu as $menu_item ) {
+            $new_menu[] = $menu_item;
+        }
+        
+        // Update the menu with the new order
+        $menu = $new_menu;
+    }
+    
+    /**
+     * Apply menu groups to admin menu
+     *
+     * @param array $menu Admin menu array
+     * @param array $menu_groups Menu groups settings
+     */
+    private function apply_menu_groups( &$menu, $menu_groups ) {
+        // This is a placeholder for menu groups implementation
+        // Menu groups would require more complex changes to the WordPress menu system
+        // For now, we'll just log that menu groups are enabled
+        if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+            error_log( 'Menu groups enabled: ' . print_r( $menu_groups, true ) );
+        }
+    }
+    
+    /**
+     * Customize admin bar
+     *
+     * @param WP_Admin_Bar $wp_admin_bar Admin bar object
+     */
+    public function customize_admin_bar( $wp_admin_bar ) {
+        // Load settings
+        $settings = $this->get_settings();
+        
+        // Customize admin bar items based on settings
+        if ( isset( $settings['admin_bar_items'] ) ) {
+            foreach ( $settings['admin_bar_items'] as $node_id => $node_settings ) {
+                // Hide admin bar item
+                if ( isset( $node_settings['hidden'] ) && $node_settings['hidden'] ) {
+                    $wp_admin_bar->remove_node( $node_id );
+                }
+                
+                // Customize admin bar item
+                if ( isset( $node_settings['title'] ) && ! empty( $node_settings['title'] ) ) {
+                    $node = $wp_admin_bar->get_node( $node_id );
+                    if ( $node ) {
+                        $node->title = $node_settings['title'];
+                        $wp_admin_bar->add_node( $node );
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Get menu customizer settings
+     *
+     * @return array Menu customizer settings
+     */
+    public function get_settings() {
+        // Get settings from options
+        $settings = ( function_exists( 'get_option' ) ? \get_option( 'wpca_menu_customizer_settings', array() ) : array() );
+        
+        // Set default settings
+        $default_settings = array(
+            'enabled' => false,
+            'menu_items' => array(),
+            'submenu_items' => array(),
+            'admin_bar_items' => array()
+        );
+        
+        return ( function_exists( 'wp_parse_args' ) ? \wp_parse_args( $settings, $default_settings ) : array_merge( $default_settings, $settings ) );
+    }
+    
+    /**
+     * Save menu customizer settings
+     *
+     * @param array $settings Settings to save
+     * @return bool Save result
+     */
+    public function save_settings( $settings ) {
+        // Save settings to options
+        return ( function_exists( 'update_option' ) ? \update_option( 'wpca_menu_customizer_settings', $settings ) : false );
+    }
+    
+    /**
+     * Reset menu customizer settings
+     *
+     * @return bool Reset result
+     */
+    public function reset_settings() {
+        // Delete settings from options
+        return ( function_exists( 'delete_option' ) ? \delete_option( 'wpca_menu_customizer_settings' ) : false );
+    }
+    
+    /**
+     * Get admin menu structure
+     *
+     * @return array Admin menu structure
+     */
+    public function get_admin_menu_structure() {
+        global $menu, $submenu;
+        
+        $menu_structure = array();
+        
+        // Get top-level menu items
+        foreach ( $menu as $key => $menu_item ) {
+            if ( ! empty( $menu_item[0] ) && $menu_item[0] !== '-' ) {
+                $menu_data = array(
+                    'id' => $key,
+                    'title' => $menu_item[0],
+                    'slug' => $menu_item[2],
+                    'capability' => $menu_item[1],
+                    'icon' => $menu_item[6],
+                    'position' => $menu_item[5],
+                    'submenu' => array()
+                );
+                
+                // Get submenu items
+                if ( isset( $submenu[$menu_item[2]] ) ) {
+                    foreach ( $submenu[$menu_item[2]] as $submenu_key => $submenu_item ) {
+                        $menu_data['submenu'][] = array(
+                            'id' => $submenu_key,
+                            'title' => $submenu_item[0],
+                            'slug' => $submenu_item[2],
+                            'capability' => $submenu_item[1]
+                        );
+                    }
+                }
+                
+                $menu_structure[] = $menu_data;
+            }
+        }
+        
+        return $menu_structure;
+    }
+    
+    /**
+     * Get admin bar structure
+     *
+     * @return array Admin bar structure
+     */
+    public function get_admin_bar_structure() {
+        global $wp_admin_bar;
+        
+        $admin_bar_structure = array();
+        
+        // Get admin bar nodes
+        $nodes = $wp_admin_bar->get_nodes();
+        
+        if ( ! empty( $nodes ) ) {
+            foreach ( $nodes as $node_id => $node ) {
+                $admin_bar_structure[] = array(
+                    'id' => $node_id,
+                    'title' => $node->title,
+                    'parent' => $node->parent,
+                    'href' => $node->href,
+                    'group' => $node->group,
+                    'meta' => $node->meta
+                );
+            }
+        }
+        
+        return $admin_bar_structure;
+    }
+    
+    /**
+     * Export menu customizer settings
+     *
+     * @return string Exported settings
+     */
+    public function export_settings() {
+        // Get settings
+        $settings = $this->get_settings();
+        
+        // Export settings as JSON
+        return json_encode( $settings, JSON_PRETTY_PRINT );
+    }
+    
+    /**
+     * Import menu customizer settings
+     *
+     * @param string $imported_settings Imported settings
+     * @return array Import results
+     */
+    public function import_settings( $imported_settings ) {
+        $results = array(
+            'success' => false,
+            'message' => \__( 'Failed to import settings', WPCA_TEXT_DOMAIN )
+        );
+        
+        // Decode imported settings
+        $settings = json_decode( $imported_settings, true );
+        
+        // Check if settings are valid
+        if ( is_array( $settings ) ) {
+            // Save imported settings
+            if ( $this->save_settings( $settings ) ) {
+                $results['success'] = true;
+                $results['message'] = \__( 'Settings imported successfully', WPCA_TEXT_DOMAIN );
+            }
+        } else {
+            $results['message'] = \__( 'Invalid settings format', WPCA_TEXT_DOMAIN );
+        }
+        
+        return $results;
+    }
+}

@@ -1,1 +1,258 @@
-﻿<?php\r\n/**\r\n * WPCleanAdmin Helpers Class\r\n *\r\n * @package WPCleanAdmin\r\n * @version 1.7.15\r\n * @author Sut\r\n * @author URI: https://github.com/sutchan\r\n * @since 1.7.15\r\n */\r\nnamespace WPCleanAdmin;\r\n\r\n/**\r\n * Helpers class for WP Clean Admin plugin\r\n *\r\n * @package WPCleanAdmin\r\n */\r\n\r\nif ( ! defined( 'ABSPATH' ) ) {\r\n    exit;\r\n}\r\n\r\n/**\r\n * Helpers class\r\n */\r\nclass Helpers {\r\n    \r\n    /**\r\n     * Singleton instance\r\n     *\r\n     * @var Helpers\r\n     */\r\n    private static $instance;\r\n    \r\n    /**\r\n     * Get singleton instance\r\n     *\r\n     * @return Helpers\r\n     */\r\n    public static function getInstance() {\r\n        if ( ! isset( self::$instance ) ) {\r\n            self::$instance = new self();\r\n        }\r\n        return self::$instance;\r\n    }\r\n    \r\n    /**\r\n     * Constructor\r\n     */\r\n    private function __construct() {\r\n        // Empty constructor\r\n    }\r\n    \r\n    /**\r\n     * Format bytes to human readable size\r\n     *\r\n     * @param int $bytes Bytes to format\r\n     * @param int $precision Precision of the result\r\n     * @return string Human readable size\r\n     */\r\n    public function format_bytes( $bytes, $precision = 2 ) {\r\n        $units = array( 'B', 'KB', 'MB', 'GB', 'TB' );\r\n        \r\n        $bytes = max( $bytes, 0 );\r\n        $pow = floor( ( $bytes ? log( $bytes ) : 0 ) / log( 1024 ) );\r\n        $pow = min( $pow, count( $units ) - 1 );\r\n        \r\n        $bytes /= pow( 1024, $pow );\r\n        \r\n        return round( $bytes, $precision ) . ' ' . $units[ $pow ];\r\n    }\r\n    \r\n    /**\r\n     * Format seconds to human readable time\r\n     *\r\n     * @param int $seconds Seconds to format\r\n     * @return string Human readable time\r\n     */\r\n    public function format_seconds( $seconds ) {\r\n        $days = floor( $seconds / 86400 );\r\n        $hours = floor( ( $seconds % 86400 ) / 3600 );\r\n        $minutes = floor( ( $seconds % 3600 ) / 60 );\r\n        $seconds = $seconds % 60;\r\n        \r\n        $result = array();\r\n        \r\n        if ( $days > 0 ) {\r\n            $result[] = sprintf( \_n( '%d day', '%d days', $days, WPCA_TEXT_DOMAIN ), $days );\r\n        }\r\n        if ( $hours > 0 ) {\r\n            $result[] = sprintf( \_n( '%d hour', '%d hours', $hours, WPCA_TEXT_DOMAIN ), $hours );\r\n        }\r\n        if ( $minutes > 0 ) {\r\n            $result[] = sprintf( \_n( '%d minute', '%d minutes', $minutes, WPCA_TEXT_DOMAIN ), $minutes );\r\n        }\r\n        if ( $seconds > 0 ) {\r\n            $result[] = sprintf( \_n( '%d second', '%d seconds', $seconds, WPCA_TEXT_DOMAIN ), $seconds );\r\n        }\r\n        \r\n        return implode( ', ', $result );\r\n    }\r\n    \r\n    /**\r\n     * Check if user has required capability\r\n     *\r\n     * @param string $capability Capability to check\r\n     * @return bool True if user has capability, false otherwise\r\n     */\r\n    public function user_has_capability( $capability ) {\r\n        if ( ! function_exists( 'current_user_can' ) ) {\r\n            return false;\r\n        }\r\n        \r\n        return \current_user_can( $capability );\r\n    }\r\n    \r\n    /**\r\n     * Get plugin information\r\n     *\r\n     * @param string $field Field to get\r\n     * @return mixed Plugin information\r\n     */\r\n    public function get_plugin_info( $field = '' ) {\r\n        $plugin_data = \get_plugin_data( WPCA_PLUGIN_DIR . 'wp-clean-admin.php' );\r\n        \r\n        if ( empty( $field ) ) {\r\n            return $plugin_data;\r\n        }\r\n        \r\n        return isset( $plugin_data[ $field ] ) ? $plugin_data[ $field ] : '';\r\n    }\r\n    \r\n    /**\r\n     * Get WordPress version\r\n     *\r\n     * @return string WordPress version\r\n     */\r\n    public function get_wp_version() {\r\n        global $wp_version;\r\n        return $wp_version;\r\n    }\r\n    \r\n    /**\r\n     * Get PHP version\r\n     *\r\n     * @return string PHP version\r\n     */\r\n    public function get_php_version() {\r\n        return PHP_VERSION;\r\n    }\r\n    \r\n    /**\r\n     * Get database version\r\n     *\r\n     * @return string Database version\r\n     */\r\n    public function get_db_version() {\r\n        global $wpdb;\r\n        return $wpdb->db_version();\r\n    }\r\n    \r\n    /**\r\n     * Get server information\r\n     *\r\n     * @return string Server information\r\n     */\r\n    public function get_server_info() {\r\n        return $_SERVER['SERVER_SOFTWARE'];\r\n    }\r\n    \r\n    /**\r\n     * Check if plugin is network activated\r\n     *\r\n     * @return bool True if network activated, false otherwise\r\n     */\r\n    public function is_network_activated() {\r\n        if ( ! function_exists( 'is_plugin_active_for_network' ) ) {\r\n            if ( defined( 'ABSPATH' ) ) {\r\n                require_once ABSPATH . '/wp-admin/includes/plugin.php';\r\n            } else {\r\n                return false;\r\n            }\r\n        }\r\n        \r\n        if ( function_exists( 'plugin_basename' ) ) {\r\n            return \is_plugin_active_for_network( \plugin_basename( WPCA_PLUGIN_DIR . 'wp-clean-admin.php' ) );\r\n        }\r\n        \r\n        return false;\r\n    }\r\n    \r\n    /**\r\n     * Get current admin page URL\r\n     *\r\n     * @return string Current admin page URL\r\n     */\r\n    public function get_current_admin_url() {\r\n        return \admin_url( \add_query_arg( array(), $_SERVER['REQUEST_URI'] ) );\r\n    }\r\n    \r\n    /**\r\n     * Sanitize array of data\r\n     *\r\n     * @param array $data Data to sanitize\r\n     * @return array Sanitized data\r\n     */\r\n    public function sanitize_array( $data ) {\r\n        if ( ! is_array( $data ) ) {\r\n            return \sanitize_text_field( $data );\r\n        }\r\n        \r\n        foreach ( $data as &$value ) {\r\n            if ( is_array( $value ) ) {\r\n                $value = $this->sanitize_array( $value );\r\n            } else {\r\n                $value = \sanitize_text_field( $value );\r\n            }\r\n        }\r\n        \r\n        return $data;\r\n    }\r\n    \r\n    /**\r\n     * Get plugin settings page URL\r\n     *\r\n     * @param string $tab Tab to open\r\n     * @return string Settings page URL\r\n     */\r\n    public function get_settings_url( $tab = '' ) {\r\n        $url = \admin_url( 'admin.php?page=wp-clean-admin' );\r\n        \r\n        if ( ! empty( $tab ) ) {\r\n            $url .= '&tab=' . $tab;\r\n        }\r\n        \r\n        return $url;\r\n    }\r\n    \r\n    /**\r\n     * Log message to debug log\r\n     *\r\n     * @param mixed $message Message to log\r\n     * @param string $context Context of the log\r\n     */\r\n    public function log( $message, $context = 'general' ) {\r\n        if ( ! defined( 'WP_DEBUG' ) || ! WP_DEBUG ) {\r\n            return;\r\n        }\r\n        \r\n        $log_message = sprintf( '[WPCleanAdmin] [%s] %s', $context, $message );\r\n        \r\n        if ( is_array( $message ) || is_object( $message ) ) {\r\n            $log_message = sprintf( '[WPCleanAdmin] [%s] %s', $context, print_r( $message, true ) );\r\n        }\r\n        \r\n        error_log( $log_message );\r\n    }\r\n}
+<?php
+/**
+ * WPCleanAdmin Helpers Class
+ *
+ * @package WPCleanAdmin
+ * @version 1.7.15
+ * @author Sut
+ * @author URI: https://github.com/sutchan
+ * @since 1.7.15
+ */
+namespace WPCleanAdmin;
+
+/**
+ * Helpers class for WP Clean Admin plugin
+ *
+ * @package WPCleanAdmin
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+/**
+ * Helpers class
+ */
+class Helpers {
+    
+    /**
+     * Singleton instance
+     *
+     * @var Helpers
+     */
+    private static $instance;
+    
+    /**
+     * Get singleton instance
+     *
+     * @return Helpers
+     */
+    public static function getInstance() {
+        if ( ! isset( self::$instance ) ) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+    
+    /**
+     * Constructor
+     */
+    private function __construct() {
+        // Empty constructor
+    }
+    
+    /**
+     * Format bytes to human readable size
+     *
+     * @param int $bytes Bytes to format
+     * @param int $precision Precision of the result
+     * @return string Human readable size
+     */
+    public function format_bytes( $bytes, $precision = 2 ) {
+        $units = array( 'B', 'KB', 'MB', 'GB', 'TB' );
+        
+        $bytes = max( $bytes, 0 );
+        $pow = floor( ( $bytes ? log( $bytes ) : 0 ) / log( 1024 ) );
+        $pow = min( $pow, count( $units ) - 1 );
+        
+        $bytes /= pow( 1024, $pow );
+        
+        return round( $bytes, $precision ) . ' ' . $units[ $pow ];
+    }
+    
+    /**
+     * Format seconds to human readable time
+     *
+     * @param int $seconds Seconds to format
+     * @return string Human readable time
+     */
+    public function format_seconds( $seconds ) {
+        $days = floor( $seconds / 86400 );
+        $hours = floor( ( $seconds % 86400 ) / 3600 );
+        $minutes = floor( ( $seconds % 3600 ) / 60 );
+        $seconds = $seconds % 60;
+        
+        $result = array();
+        
+        if ( $days > 0 ) {
+            $result[] = sprintf( \_n( '%d day', '%d days', $days, WPCA_TEXT_DOMAIN ), $days );
+        }
+        if ( $hours > 0 ) {
+            $result[] = sprintf( \_n( '%d hour', '%d hours', $hours, WPCA_TEXT_DOMAIN ), $hours );
+        }
+        if ( $minutes > 0 ) {
+            $result[] = sprintf( \_n( '%d minute', '%d minutes', $minutes, WPCA_TEXT_DOMAIN ), $minutes );
+        }
+        if ( $seconds > 0 ) {
+            $result[] = sprintf( \_n( '%d second', '%d seconds', $seconds, WPCA_TEXT_DOMAIN ), $seconds );
+        }
+        
+        return implode( ', ', $result );
+    }
+    
+    /**
+     * Check if user has required capability
+     *
+     * @param string $capability Capability to check
+     * @return bool True if user has capability, false otherwise
+     */
+    public function user_has_capability( $capability ) {
+        if ( ! function_exists( 'current_user_can' ) ) {
+            return false;
+        }
+        
+        return \current_user_can( $capability );
+    }
+    
+    /**
+     * Get plugin information
+     *
+     * @param string $field Field to get
+     * @return mixed Plugin information
+     */
+    public function get_plugin_info( $field = '' ) {
+        $plugin_data = \get_plugin_data( WPCA_PLUGIN_DIR . 'wp-clean-admin.php' );
+        
+        if ( empty( $field ) ) {
+            return $plugin_data;
+        }
+        
+        return isset( $plugin_data[ $field ] ) ? $plugin_data[ $field ] : '';
+    }
+    
+    /**
+     * Get WordPress version
+     *
+     * @return string WordPress version
+     */
+    public function get_wp_version() {
+        global $wp_version;
+        return $wp_version;
+    }
+    
+    /**
+     * Get PHP version
+     *
+     * @return string PHP version
+     */
+    public function get_php_version() {
+        return PHP_VERSION;
+    }
+    
+    /**
+     * Get database version
+     *
+     * @return string Database version
+     */
+    public function get_db_version() {
+        global $wpdb;
+        return $wpdb->db_version();
+    }
+    
+    /**
+     * Get server information
+     *
+     * @return string Server information
+     */
+    public function get_server_info() {
+        return $_SERVER['SERVER_SOFTWARE'];
+    }
+    
+    /**
+     * Check if plugin is network activated
+     *
+     * @return bool True if network activated, false otherwise
+     */
+    public function is_network_activated() {
+        if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
+            if ( defined( 'ABSPATH' ) ) {
+                require_once ABSPATH . '/wp-admin/includes/plugin.php';
+            } else {
+                return false;
+            }
+        }
+        
+        if ( function_exists( 'plugin_basename' ) ) {
+            return \is_plugin_active_for_network( \plugin_basename( WPCA_PLUGIN_DIR . 'wp-clean-admin.php' ) );
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Get current admin page URL
+     *
+     * @return string Current admin page URL
+     */
+    public function get_current_admin_url() {
+        return \admin_url( \add_query_arg( array(), $_SERVER['REQUEST_URI'] ) );
+    }
+    
+    /**
+     * Sanitize array of data
+     *
+     * @param array $data Data to sanitize
+     * @return array Sanitized data
+     */
+    public function sanitize_array( $data ) {
+        if ( ! is_array( $data ) ) {
+            return \sanitize_text_field( $data );
+        }
+        
+        foreach ( $data as &$value ) {
+            if ( is_array( $value ) ) {
+                $value = $this->sanitize_array( $value );
+            } else {
+                $value = \sanitize_text_field( $value );
+            }
+        }
+        
+        return $data;
+    }
+    
+    /**
+     * Get plugin settings page URL
+     *
+     * @param string $tab Tab to open
+     * @return string Settings page URL
+     */
+    public function get_settings_url( $tab = '' ) {
+        $url = \admin_url( 'admin.php?page=wp-clean-admin' );
+        
+        if ( ! empty( $tab ) ) {
+            $url .= '&tab=' . $tab;
+        }
+        
+        return $url;
+    }
+    
+    /**
+     * Log message to debug log
+     *
+     * @param mixed $message Message to log
+     * @param string $context Context of the log
+     */
+    public function log( $message, $context = 'general' ) {
+        if ( ! defined( 'WP_DEBUG' ) || ! WP_DEBUG ) {
+            return;
+        }
+        
+        $log_message = sprintf( '[WPCleanAdmin] [%s] %s', $context, $message );
+        
+        if ( is_array( $message ) || is_object( $message ) ) {
+            $log_message = sprintf( '[WPCleanAdmin] [%s] %s', $context, print_r( $message, true ) );
+        }
+        
+        error_log( $log_message );
+    }
+}

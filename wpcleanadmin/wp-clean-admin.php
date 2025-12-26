@@ -1,1 +1,65 @@
-﻿<?php\r\n/**\r\n * WP Clean Admin - WordPress Admin Cleanup and Optimization Plugin\r\n *\r\n * @package WPCleanAdmin\r\n * @version 1.7.15\r\n * @author Sut\r\n * @author URI: https://github.com/sutchan\r\n * @since 1.7.15\r\n */\r\n// Exit if accessed directly\r\nif ( ! defined( 'ABSPATH' ) ) {\r\n    exit;\r\n}\r\n\r\n// Define plugin constants\r\ndefine( 'WPCA_VERSION', '1.7.15' );\r\ndefine( 'WPCA_PLUGIN_DIR', ( function_exists( 'plugin_dir_path' ) ? plugin_dir_path( __FILE__ ) : dirname( __FILE__ ) . '/' ) );\r\ndefine( 'WPCA_PLUGIN_URL', ( function_exists( 'plugin_dir_url' ) ? plugin_dir_url( __FILE__ ) : '' ) );\r\ndefine( 'WPCA_TEXT_DOMAIN', 'wp-clean-admin' );\r\n\r\n// Load WordPress function stubs for IDE support\r\nif ( file_exists( WPCA_PLUGIN_DIR . 'includes/wpca-wordpress-stubs.php' ) ) {\r\n    require_once WPCA_PLUGIN_DIR . 'includes/wpca-wordpress-stubs.php';\r\n}\r\n\r\n// Load autoloader\r\nrequire_once WPCA_PLUGIN_DIR . 'includes/autoload.php';\r\n\r\n/**\r\n * Initialize the WP Clean Admin plugin\r\n *\r\n * This function loads the plugin text domain and initializes the core class.\r\n * It's hooked to the 'plugins_loaded' action.\r\n *\r\n * @since 1.7.15\r\n */\r\nfunction wpca_init() {\r\n    // Load text domain for translations\r\n    if ( function_exists( 'load_plugin_textdomain' ) && function_exists( 'plugin_basename' ) ) {\r\n        load_plugin_textdomain( WPCA_TEXT_DOMAIN, false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );\r\n    }\r\n    \r\n    // Initialize core class\r\n    WPCleanAdmin\Core::getInstance();\r\n}\r\n\r\n// Hook into WordPress initialization\r\nif ( function_exists( 'add_action' ) ) {\r\n    add_action( 'plugins_loaded', 'wpca_init' );\r\n}\r\n\r\n// Register activation hook\r\nif ( function_exists( 'register_activation_hook' ) ) {\r\n    register_activation_hook( __FILE__, function() {\r\n        WPCleanAdmin\Core::getInstance()->activate();\r\n    });\r\n}\r\n\r\n// Register deactivation hook\r\nif ( function_exists( 'register_deactivation_hook' ) ) {\r\n    register_deactivation_hook( __FILE__, function() {\r\n        WPCleanAdmin\Core::getInstance()->deactivate();\r\n    });\r\n}\r\n
+<?php
+/**
+ * WP Clean Admin - WordPress Admin Cleanup and Optimization Plugin
+ *
+ * @package WPCleanAdmin
+ * @version 1.7.15
+ * @author Sut
+ * @author URI: https://github.com/sutchan
+ * @since 1.7.15
+ */
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+// Define plugin constants
+define( 'WPCA_VERSION', '1.7.15' );
+define( 'WPCA_PLUGIN_DIR', ( function_exists( 'plugin_dir_path' ) ? plugin_dir_path( __FILE__ ) : dirname( __FILE__ ) . '/' ) );
+define( 'WPCA_PLUGIN_URL', ( function_exists( 'plugin_dir_url' ) ? plugin_dir_url( __FILE__ ) : '' ) );
+define( 'WPCA_TEXT_DOMAIN', 'wp-clean-admin' );
+
+// Load WordPress function stubs for IDE support
+if ( file_exists( WPCA_PLUGIN_DIR . 'includes/wpca-wordpress-stubs.php' ) ) {
+    require_once WPCA_PLUGIN_DIR . 'includes/wpca-wordpress-stubs.php';
+}
+
+// Load autoloader
+require_once WPCA_PLUGIN_DIR . 'includes/autoload.php';
+
+/**
+ * Initialize the WP Clean Admin plugin
+ *
+ * This function loads the plugin text domain and initializes the core class.
+ * It's hooked to the 'plugins_loaded' action.
+ *
+ * @since 1.7.15
+ */
+function wpca_init() {
+    // Load text domain for translations
+    if ( function_exists( 'load_plugin_textdomain' ) && function_exists( 'plugin_basename' ) ) {
+        load_plugin_textdomain( WPCA_TEXT_DOMAIN, false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+    }
+    
+    // Initialize core class
+    WPCleanAdmin\Core::getInstance();
+}
+
+// Hook into WordPress initialization
+if ( function_exists( 'add_action' ) ) {
+    add_action( 'plugins_loaded', 'wpca_init' );
+}
+
+// Register activation hook
+if ( function_exists( 'register_activation_hook' ) ) {
+    register_activation_hook( __FILE__, function() {
+        WPCleanAdmin\Core::getInstance()->activate();
+    });
+}
+
+// Register deactivation hook
+if ( function_exists( 'register_deactivation_hook' ) ) {
+    register_deactivation_hook( __FILE__, function() {
+        WPCleanAdmin\Core::getInstance()->deactivate();
+    });
+}
