@@ -59,6 +59,11 @@ class User_Roles {
     
     /**
      * Register custom roles
+     *
+     * @uses wpca_get_settings() To retrieve plugin settings
+     * @uses \add_action() To register init hook
+     * @uses \add_role() To register custom WordPress roles
+     * @return void
      */
     public function register_custom_roles() {
         // Load settings

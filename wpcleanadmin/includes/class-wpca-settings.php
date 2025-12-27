@@ -8,15 +8,7 @@
  * @author URI: https://github.com/sutchan
  * @since 1.7.15
  *
- * @function add_menu_page(string $page_title, string $menu_title, string $capability, string $menu_slug, callable $callback = '', string $icon_url = '', int $position = null) WordPress core function
- * @function add_submenu_page(string $parent_slug, string $page_title, string $menu_title, string $capability, string $menu_slug, callable $callback = '') WordPress core function
- * @function checked(mixed $checked, mixed $current = true, bool $echo = true) WordPress core function
- * @function wp_roles() WordPress core function
- * @function get_admin_page_title() WordPress core function
- * @function settings_fields(string $option_group) WordPress core function
- * @function do_settings_sections(string $page) WordPress core function
- * @function submit_button(string $text = null, string $type = 'primary', string $name = 'submit', bool $wrap = true, string|array $other_attributes = null) WordPress core function
- * @function wp_enqueue_style(string $handle, string $src = '', string[] $deps = array(), string|bool|null $ver = false, string $media = 'all') WordPress core function
+ * @noinspection PhpUndefinedFunctionInspection WordPress functions are available in WP environment
  */
 namespace WPCleanAdmin;
 
@@ -32,6 +24,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Settings class
+ *
+ * @noinspection PhpUndefinedFunctionInspection WordPress functions are available in WP environment
  */
 class Settings {
     
@@ -77,6 +71,11 @@ class Settings {
     
     /**
      * Register settings page
+     *
+     * @uses \add_menu_page() To add main settings page to admin menu
+     * @uses \add_submenu_page() To add submenu pages to admin menu
+     * @uses \esc_html() To escape HTML output
+     * @uses \__() To translate strings
      */
     public function register_settings_page() {
         // Add main settings page
@@ -390,6 +389,14 @@ class Settings {
     
     /**
      * Render role menu restrictions field
+     *
+     * @uses \get_option() To retrieve saved settings
+     * @uses \wp_roles() To get all user roles
+     * @uses \esc_html() To escape HTML output
+     * @uses \esc_attr() To escape HTML attributes
+     * @uses \checked() To output checked attribute for checkboxes
+     * @uses \__() To translate strings
+     * @uses Menu_Manager::get_menu_items() To retrieve all menu items
      */
     public function render_role_menu_restrictions_field() {
         $settings = \get_option( 'wpca_settings', array() );
@@ -449,6 +456,14 @@ class Settings {
     
     /**
      * Render settings page
+     *
+     * @uses \esc_html() To escape HTML output
+     * @uses \esc_attr() To escape HTML attributes
+     * @uses \get_admin_page_title() To get the current admin page title
+     * @uses \settings_fields() To render nonce fields
+     * @uses \do_settings_sections() To render all settings sections
+     * @uses \submit_button() To render submit button
+     * @uses \__() To translate strings
      */
     public function render_settings_page() {
         ?>
@@ -589,8 +604,9 @@ class Settings {
     /**
      * Validate settings
      *
-     * @param array $input Input settings
-     * @return array Validated settings
+     * @param array $input Raw input settings from form submission
+     * @return array Validated and sanitized settings
+     * @uses sanitize_text_field() To sanitize text inputs
      */
     public function validate_settings( $input ) {
         $validated = array();
@@ -676,6 +692,13 @@ class Settings {
      * Enqueue admin scripts and styles
      *
      * @param string $hook Current admin page hook
+     * @uses \strpos() To check if current page is plugin page
+     * @uses \wp_enqueue_style() To enqueue admin styles
+     * @uses \wp_enqueue_script() To enqueue admin scripts
+     * @uses \wp_localize_script() To localize script variables
+     * @uses \admin_url() To get admin AJAX URL
+     * @uses \wp_create_nonce() To create security nonce
+     * @uses \__() To translate strings
      */
     public function enqueue_scripts( $hook ) {
         // Only enqueue on plugin pages

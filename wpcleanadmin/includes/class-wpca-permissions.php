@@ -60,10 +60,11 @@ class Permissions {
     /**
      * Filter user capabilities
      *
-     * @param array $allcaps All capabilities
-     * @param array $caps Required capabilities
-     * @param array $args Arguments
+     * @param array $allcaps All capabilities assigned to the user
+     * @param array $caps Required capabilities for the capability check
+     * @param array $args Arguments passed to the capability check
      * @return array Modified capabilities
+     * @uses wpca_get_settings() To retrieve plugin settings
      */
     public function filter_user_capabilities( $allcaps, $caps, $args ) {
         // Load settings

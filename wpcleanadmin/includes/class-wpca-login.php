@@ -84,6 +84,11 @@ class Login {
     
     /**
      * Enqueue login scripts and styles
+     *
+     * @uses wpca_get_settings() To retrieve plugin settings
+     * @uses \wp_enqueue_style() To enqueue login styles
+     * @uses \wp_enqueue_script() To enqueue login scripts
+     * @return void
      */
     public function enqueue_login_scripts() {
         // Load settings

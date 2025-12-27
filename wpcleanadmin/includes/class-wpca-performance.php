@@ -91,6 +91,10 @@ class Performance {
     
     /**
      * Disable WordPress emojis
+     *
+     * @uses remove_action() To remove emoji detection actions
+     * @uses remove_action() To remove emoji styles
+     * @return void
      */
     public function disable_emojis() {
         // Remove emoji actions
@@ -313,8 +317,91 @@ class Performance {
      * @return string Modified CSS tag
      */
     public function minify_css( $tag ) {
-        // This is a placeholder for actual CSS minification
+        // Check if minification is enabled
+        $settings = wpca_get_settings();
+        if ( ! isset( $settings['performance']['minify_css'] ) || ! $settings['performance']['minify_css'] ) {
+            return $tag;
+        }
+        
+        // Extract CSS URL from tag
+        if ( preg_match( '/href=["\']([^"\']+\.css[^"\']*)["\']/', $tag, $matches ) ) {
+            $css_url = $matches[1];
+            $minified_url = $this->get_minified_css_url( $css_url );
+            
+            if ( $minified_url ) {
+                $tag = str_replace( $css_url, $minified_url, $tag );
+            }
+        }
+        
         return $tag;
+    }
+    
+    /**
+     * Get minified CSS URL
+     *
+     * @param string $original_url Original CSS URL
+     * @return string Minified CSS URL or original if not found
+     */
+    private function get_minified_css_url( $original_url ) {
+        $parsed_url = parse_url( $original_url );
+        
+        if ( ! isset( $parsed_url['path'] ) ) {
+            return $original_url;
+        }
+        
+        $path = $parsed_url['path'];
+        $dirname = dirname( $path );
+        $basename = basename( $path );
+        $minified_basename = preg_replace( '/\.css$/i', '.min.css', $basename );
+        $minified_path = $dirname . '/' . $minified_basename;
+        
+        // Check if minified file exists
+        $document_root = isset( $_SERVER['DOCUMENT_ROOT'] ) ? $_SERVER['DOCUMENT_ROOT'] : ABSPATH;
+        $full_path = $document_root . ltrim( $minified_path, '/' );
+        
+        if ( file_exists( $full_path ) ) {
+            // Build the full URL
+            $site_url = function_exists( '\site_url' ) ? \site_url() : get_option( 'siteurl' );
+            $minified_url = $site_url . $minified_path;
+            
+            // Preserve query string
+            if ( isset( $parsed_url['query'] ) ) {
+                $minified_url .= '?' . $parsed_url['query'];
+            }
+            
+            return $minified_url;
+        }
+        
+        return $original_url;
+    }
+    
+    /**
+     * Minify CSS content
+     *
+     * @param string $css CSS content
+     * @return string Minified CSS content
+     */
+    public function minify_css_content( $css ) {
+        if ( empty( $css ) ) {
+            return $css;
+        }
+        
+        // Remove comments
+        $css = preg_replace( '/\/\*[\s\S]*?\*\//', '', $css );
+        
+        // Remove whitespace
+        $css = preg_replace( '/\s+/', ' ', $css );
+        
+        // Remove space around special characters
+        $css = preg_replace( '/\s*([{}:;,>+~])\s*/', '$1', $css );
+        
+        // Remove last semicolon before }
+        $css = preg_replace( '/;}/', '}', $css );
+        
+        // Trim
+        $css = trim( $css );
+        
+        return $css;
     }
     
     /**
@@ -324,29 +411,396 @@ class Performance {
      * @return string Modified JS tag
      */
     public function minify_js( $tag ) {
-        // This is a placeholder for actual JS minification
+        // Check if minification is enabled
+        $settings = wpca_get_settings();
+        if ( ! isset( $settings['performance']['minify_js'] ) || ! $settings['performance']['minify_js'] ) {
+            return $tag;
+        }
+        
+        // Extract JS URL from tag
+        if ( preg_match( '/src=["\']([^"\']+\.js[^"\']*)["\']/', $tag, $matches ) ) {
+            $js_url = $matches[1];
+            $minified_url = $this->get_minified_js_url( $js_url );
+            
+            if ( $minified_url ) {
+                $tag = str_replace( $js_url, $minified_url, $tag );
+            }
+        }
+        
         return $tag;
     }
     
     /**
-     * Combine CSS
+     * Get minified JS URL
+     *
+     * @param string $original_url Original JS URL
+     * @return string Minified JS URL or original if not found
+     */
+    private function get_minified_js_url( $original_url ) {
+        $parsed_url = parse_url( $original_url );
+        
+        if ( ! isset( $parsed_url['path'] ) ) {
+            return $original_url;
+        }
+        
+        $path = $parsed_url['path'];
+        $dirname = dirname( $path );
+        $basename = basename( $path );
+        $minified_basename = preg_replace( '/\.js$/i', '.min.js', $basename );
+        $minified_path = $dirname . '/' . $minified_basename;
+        
+        // Check if minified file exists
+        $document_root = isset( $_SERVER['DOCUMENT_ROOT'] ) ? $_SERVER['DOCUMENT_ROOT'] : ABSPATH;
+        $full_path = $document_root . ltrim( $minified_path, '/' );
+        
+        if ( file_exists( $full_path ) ) {
+            // Build the full URL
+            $site_url = function_exists( '\site_url' ) ? \site_url() : get_option( 'siteurl' );
+            $minified_url = $site_url . $minified_path;
+            
+            // Preserve query string
+            if ( isset( $parsed_url['query'] ) ) {
+                $minified_url .= '?' . $parsed_url['query'];
+            }
+            
+            return $minified_url;
+        }
+        
+        return $original_url;
+    }
+    
+    /**
+     * Minify JS content
+     *
+     * Basic JS minification - removes comments and extra whitespace
+     * For production use, consider using a library like JSMin or Terser
+     *
+     * @param string $js JS content
+     * @return string Minified JS content
+     */
+    public function minify_js_content( $js ) {
+        if ( empty( $js ) ) {
+            return $js;
+        }
+        
+        // Remove single-line comments (but not http:// URLs)
+        $js = preg_replace( '/\/\/(?![a-zA-Z]+:\/\/)(.*?)[\r\n]/', '$1', $js );
+        
+        // Remove multi-line comments
+        $js = preg_replace( '/\/\*[\s\S]*?\*\//', '', $js );
+        
+        // Remove extra whitespace
+        $js = preg_replace( '/\s+/', ' ', $js );
+        
+        // Remove space around operators
+        $js = preg_replace( '/\s*([{}();,.=!<>+\-*\/&|?%:~])\s*/', '$1', $js );
+        
+        // Trim
+        $js = trim( $js );
+        
+        return $js;
+    }
+    
+    /**
+     * Combine CSS files
      *
      * @param string $uri CSS URI
      * @return string Modified CSS URI
      */
     public function combine_css( $uri ) {
-        // This is a placeholder for actual CSS combination
+        // Check if combination is enabled
+        $settings = wpca_get_settings();
+        if ( ! isset( $settings['performance']['combine_css'] ) || ! $settings['performance']['combine_css'] ) {
+            return $uri;
+        }
+        
         return $uri;
     }
     
     /**
-     * Combine JS
+     * Combine multiple CSS files into one
+     *
+     * @param array $css_urls Array of CSS URLs to combine
+     * @return string|null Combined CSS file URL or null on failure
+     */
+    public function combine_css_files( $css_urls = array() ) {
+        if ( empty( $css_urls ) || ! is_array( $css_urls ) ) {
+            return null;
+        }
+        
+        $combined_content = '';
+        $content_hash = '';
+        
+        foreach ( $css_urls as $url ) {
+            $response = \wp_remote_get( $url );
+            if ( ! \is_wp_error( $response ) && \wp_remote_retrieve_response_code( $response ) === 200 ) {
+                $content = \wp_remote_retrieve_body( $response );
+                // Minify the content first
+                $content = $this->minify_css_content( $content );
+                $combined_content .= $content . "\n";
+                $content_hash = md5( $content_hash . $content );
+            }
+        }
+        
+        if ( empty( $combined_content ) ) {
+            return null;
+        }
+        
+        // Create combined filename
+        $hash = md5( implode( ',', $css_urls ) );
+        $combined_filename = 'wpca-combined-' . $hash . '.css';
+        $upload_dir = \wp_upload_dir();
+        $combined_dir = $upload_dir['basedir'] . '/wpca-cache';
+        
+        // Create directory if it doesn't exist
+        if ( ! file_exists( $combined_dir ) ) {
+            \wp_mkdir_p( $combined_dir );
+        }
+        
+        $combined_path = $combined_dir . '/' . $combined_filename;
+        
+        // Write combined content to file
+        $result = file_put_contents( $combined_path, $combined_content );
+        
+        if ( $result !== false ) {
+            return $upload_dir['baseurl'] . '/wpca-cache/' . $combined_filename;
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Combine JS files
      *
      * @param string $uri JS URI
      * @return string Modified JS URI
      */
     public function combine_js( $uri ) {
-        // This is a placeholder for actual JS combination
+        // Check if combination is enabled
+        $settings = wpca_get_settings();
+        if ( ! isset( $settings['performance']['combine_js'] ) || ! $settings['performance']['combine_js'] ) {
+            return $uri;
+        }
+        
         return $uri;
+    }
+    
+    /**
+     * Combine multiple JS files into one
+     *
+     * @param array $js_urls Array of JS URLs to combine
+     * @return string|null Combined JS file URL or null on failure
+     */
+    public function combine_js_files( $js_urls = array() ) {
+        if ( empty( $js_urls ) || ! is_array( $js_urls ) ) {
+            return null;
+        }
+        
+        $combined_content = '';
+        
+        foreach ( $js_urls as $url ) {
+            $response = \wp_remote_get( $url );
+            if ( ! \is_wp_error( $response ) && \wp_remote_retrieve_response_code( $response ) === 200 ) {
+                $content = \wp_remote_retrieve_body( $response );
+                // Add semicolon if needed between files
+                if ( ! empty( $combined_content ) ) {
+                    $content = ';' . trim( $content );
+                }
+                $combined_content .= $content . "\n";
+            }
+        }
+        
+        if ( empty( $combined_content ) ) {
+            return null;
+        }
+        
+        // Create combined filename
+        $hash = md5( implode( ',', $js_urls ) );
+        $combined_filename = 'wpca-combined-' . $hash . '.js';
+        $upload_dir = wp_upload_dir();
+        $combined_dir = $upload_dir['basedir'] . '/wpca-cache';
+        
+        // Create directory if it doesn't exist
+        if ( ! file_exists( $combined_dir ) ) {
+            wp_mkdir_p( $combined_dir );
+        }
+        
+        $combined_path = $combined_dir . '/' . $combined_filename;
+        
+        // Write combined content to file
+        $result = file_put_contents( $combined_path, $combined_content );
+        
+        if ( $result !== false ) {
+            return $upload_dir['baseurl'] . '/wpca-cache/' . $combined_filename;
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Resource preloading for admin pages
+     *
+     * Preloads critical resources to improve page load performance
+     * Uses WordPress resource hints (preload, prefetch, prerender)
+     *
+     * @uses \add_filter() To add resource hints filter
+     * @return void
+     */
+    public function enable_resource_preloading() {
+        \add_filter( 'wp_resource_hints', array( $this, 'add_resource_hints' ), 10, 2 );
+    }
+    
+    /**
+     * Add resource hints for performance optimization
+     *
+     * @param array $hints Resource hints array
+     * @param string $type Resource type (dns-prefetch, preconnect, preload, prerender)
+     * @return array Modified resource hints
+     */
+    public function add_resource_hints( $hints, $type ) {
+        $settings = wpca_get_settings();
+        
+        if ( ! isset( $settings['performance']['resource_preloading'] ) || ! $settings['performance']['resource_preloading'] ) {
+            return $hints;
+        }
+        
+        // Preload critical admin assets
+        $preload_resources = array(
+            'admin-css' => array(
+                'href' => \includes_url( 'css/common.css' ),
+                'as' => 'style',
+                'crossorigin' => false,
+            ),
+            'admin-js' => array(
+                'href' => \includes_url( 'js/common.js' ),
+                'as' => 'script',
+                'crossorigin' => false,
+            ),
+        );
+        
+        foreach ( $preload_resources as $id => $resource ) {
+            $hints[] = array(
+                'href' => $resource['href'],
+                'as' => $resource['as'],
+                'id' => $id,
+                'crossorigin' => $resource['crossorigin'] ? 'anonymous' : null,
+            );
+        }
+        
+        return $hints;
+    }
+    
+    /**
+     * Preload specific resource
+     *
+     * @param string $url Resource URL to preload
+     * @param string $as Resource type (style, script, font, image, etc.)
+     * @param string $media Optional media attribute for styles
+     * @return string Link tag for preloading
+     */
+    public function preload_resource( $url, $as = 'script', $media = '' ) {
+        if ( empty( $url ) ) {
+            return '';
+        }
+        
+        $link_tag = '<link rel="preload" href="' . \esc_url( $url ) . '" as="' . \esc_attr( $as ) . '"';
+        
+        if ( ! empty( $media ) && $as === 'style' ) {
+            $link_tag .= ' media="' . \esc_attr( $media ) . '"';
+        }
+        
+        $link_tag .= ' />';
+        
+        return $link_tag;
+    }
+    
+    /**
+     * Add DNS prefetch for external resources
+     *
+     * @param array $domains Array of domains to prefetch
+     * @return void
+     */
+    public function add_dns_prefetch( $domains = array() ) {
+        if ( empty( $domains ) || ! is_array( $domains ) ) {
+            return;
+        }
+        
+        \add_filter( 'wp_resource_hints', function( $hints ) use ( $domains ) {
+            foreach ( $domains as $domain ) {
+                $hints[] = array(
+                    'href' => $domain,
+                    'as' => 'script',
+                    'rel' => 'dns-prefetch',
+                );
+            }
+            return $hints;
+        }, 10, 1 );
+    }
+    
+    /**
+     * Add preconnect for external resources
+     *
+     * @param array $domains Array of domains to preconnect
+     * @return void
+     */
+    public function add_preconnect( $domains = array() ) {
+        if ( empty( $domains ) || ! is_array( $domains ) ) {
+            return;
+        }
+        
+        \add_filter( 'wp_resource_hints', function( $hints ) use ( $domains ) {
+            foreach ( $domains as $domain ) {
+                $hints[] = array(
+                    'href' => $domain,
+                    'as' => 'script',
+                    'rel' => 'preconnect',
+                );
+            }
+            return $hints;
+        }, 10, 1 );
+    }
+    
+    /**
+     * Prerender specified URL
+     *
+     * @param string $url URL to prerender
+     * @return string Link tag for prerendering
+     */
+    public function prerender_url( $url ) {
+        if ( empty( $url ) ) {
+            return '';
+        }
+        
+        return '<link rel="prerender" href="' . \esc_url( $url ) . '" />';
+    }
+    
+    /**
+     * Prefetch specified URL
+     *
+     * @param string $url URL to prefetch
+     * @return string Link tag for prefetching
+     */
+    public function prefetch_url( $url ) {
+        if ( empty( $url ) ) {
+            return '';
+        }
+        
+        return '<link rel="prefetch" href="' . \esc_url( $url ) . '" />';
+    }
+    
+    /**
+     * Get preloading status
+     *
+     * @return array Preloading status information
+     */
+    public function get_preloading_status() {
+        $settings = wpca_get_settings();
+        
+        return array(
+            'enabled' => isset( $settings['performance']['resource_preloading'] ) ? $settings['performance']['resource_preloading'] : false,
+            'preload_count' => 0,
+            'dns_prefetch_count' => 0,
+            'preconnect_count' => 0,
+        );
     }
 }

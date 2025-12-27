@@ -21,6 +21,12 @@ namespace PHPUnit\Framework {
             public function assertNotNull( $actual, $message = '' ) {}
             public function assertArrayHasKey( $key, $array, $message = '' ) {}
             public function assertArrayNotHasKey( $key, $array, $message = '' ) {}
+            public function assertNotEmpty( $actual, $message = '' ) {}
+            public function assertStringNotContainsString( $needle, $haystack, $message = '' ) {}
+            public function assertIsString( $actual, $message = '' ) {}
+            public function assertEmpty( $actual, $message = '' ) {}
+            public function assertIsBool( $actual, $message = '' ) {}
+            public function assertStringContainsString( $needle, $haystack, $message = '' ) {}
         }
     }
 }

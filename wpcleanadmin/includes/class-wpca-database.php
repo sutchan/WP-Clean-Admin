@@ -102,7 +102,11 @@ class Database {
     /**
      * Optimize database tables
      *
-     * @return array Optimization results
+     * @uses $wpdb->prepare() To safely prepare SQL queries
+     * @uses $wpdb->get_results() To retrieve table list
+     * @uses $wpdb->query() To execute optimization query
+     * @uses \__() To translate strings
+     * @return array Optimization results with success status, message, and table details
      */
     public function optimize_database() {
         global $wpdb;

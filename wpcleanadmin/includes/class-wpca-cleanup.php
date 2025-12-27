@@ -119,8 +119,14 @@ class Cleanup {
     /**
      * Run database cleanup
      *
-     * @param array $options Cleanup options
-     * @return array Cleanup results
+     * @param array $options Cleanup options including transients, orphaned_postmeta, orphaned_termmeta, orphaned_relationships, and expired_crons
+     * @return array Cleanup results with success status, message, and cleaned item counts
+     * @global $wpdb WordPress database object
+     * @uses $wpdb->prepare() To safely prepare SQL queries
+     * @uses $wpdb->query() To execute deletion queries
+     * @uses \_get_cron_array() To get scheduled cron events
+     * @uses \wp_unschedule_event() To remove expired cron events
+     * @uses \__() To translate strings
      */
     public function run_database_cleanup( $options = array() ) {
         global $wpdb;
@@ -320,8 +326,7 @@ class Cleanup {
         
         // Clean unused shortcodes
         if ( $options['unused_shortcodes'] ) {
-            // This is a placeholder for actual shortcode cleanup
-            $results['cleaned']['unused_shortcodes'] = 0;
+            $results['cleaned']['unused_shortcodes'] = $this->cleanup_unused_shortcodes();
         }
         
         // Clean empty posts
@@ -331,6 +336,83 @@ class Cleanup {
         }
         
         return $results;
+    }
+    
+    /**
+     * Clean unused shortcodes from posts
+     *
+     * This method finds posts containing shortcodes that are no longer registered
+     * and removes the shortcode tags from the content.
+     *
+     * @global wpdb $wpdb WordPress database object
+     * @return int Number of posts cleaned
+     */
+    private function cleanup_unused_shortcodes() {
+        global $wpdb;
+        
+        $cleaned_count = 0;
+        
+        // Get all registered shortcodes
+        $registered_shortcodes = array();
+        if ( function_exists( '\shortcode_atts' ) ) {
+            global $shortcode_tags;
+            if ( isset( $shortcode_tags ) && is_array( $shortcode_tags ) ) {
+                $registered_shortcodes = array_keys( $shortcode_tags );
+            }
+        }
+        
+        if ( empty( $registered_shortcodes ) ) {
+            return 0;
+        }
+        
+        // Build pattern to match all registered shortcodes
+        $shortcode_patterns = array();
+        foreach ( $registered_shortcodes as $shortcode ) {
+            $shortcode_patterns[] = '\[' . preg_quote( $shortcode, '/' ) . '(?:\s+[^=\]]+)?(?:\s*=\s*["\'][^"\']*["\'])?(?:\s*|\/)*\]';
+            $shortcode_patterns[] = '\[\/' . preg_quote( $shortcode, '/' ) . '\]';
+        }
+        
+        // Build pattern to match any shortcode
+        $all_shortcodes_pattern = '/' . implode( '|', $shortcode_patterns ) . '/s';
+        
+        // Find posts with content that might contain shortcodes
+        $posts = $wpdb->get_results(
+            "SELECT ID, post_content FROM {$wpdb->posts} 
+             WHERE post_type IN ('post', 'page') 
+             AND post_status IN ('publish', 'draft', 'pending', 'private')
+             AND post_content LIKE '%[%'"
+        );
+        
+        foreach ( $posts as $post ) {
+            $original_content = $post->post_content;
+            $cleaned_content = preg_replace( $all_shortcodes_pattern, '', $original_content );
+            
+            // If content changed, update the post
+            if ( $original_content !== $cleaned_content ) {
+                $wpdb->update(
+                    $wpdb->posts,
+                    array( 'post_content' => $cleaned_content ),
+                    array( 'ID' => $post->ID ),
+                    array( '%s' ),
+                    array( '%d' )
+                );
+                $cleaned_count++;
+            }
+        }
+        
+        return $cleaned_count;
+    }
+    
+    /**
+     * Remove specific shortcode from content
+     *
+     * @param string $content Post content
+     * @param string $shortcode Shortcode name
+     * @return string Content with shortcode removed
+     */
+    public function remove_shortcode( $content, $shortcode ) {
+        $pattern = '/\[' . preg_quote( $shortcode, '/' ) . '(?:\s+[^=\]]+)?(?:\s*=\s*["\'][^"\']*["\'])?(?:\s*|\/)*\](\[\/' . preg_quote( $shortcode, '/' ) . '\])?/s';
+        return preg_replace( $pattern, '', $content );
     }
     
     /**

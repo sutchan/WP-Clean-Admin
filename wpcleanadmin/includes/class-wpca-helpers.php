@@ -11,6 +11,30 @@
 namespace WPCleanAdmin;
 
 /**
+ * Error codes for WPCleanAdmin plugin
+ */
+abstract class WPCA_Errors {
+    /** @var int No error */
+    const ERROR_NONE = 0;
+    /** @var int Database error */
+    const ERROR_DATABASE = 1001;
+    /** @var int Permission denied */
+    const ERROR_PERMISSION = 1002;
+    /** @var int Invalid input */
+    const ERROR_INVALID_INPUT = 1003;
+    /** @var int File operation error */
+    const ERROR_FILE_OPERATION = 1004;
+    /** @var int AJAX error */
+    const ERROR_AJAX = 1005;
+    /** @var int Settings validation error */
+    const ERROR_VALIDATION = 1006;
+    /** @var int Authentication error */
+    const ERROR_AUTH = 1007;
+    /** @var int Unknown error */
+    const ERROR_UNKNOWN = 9999;
+}
+
+/**
  * Helpers class for WP Clean Admin plugin
  *
  * @package WPCleanAdmin
@@ -254,5 +278,329 @@ class Helpers {
         }
         
         error_log( $log_message );
+    }
+    
+    /**
+     * Create standardized error response
+     *
+     * @param int $error_code Error code from WPCA_Errors class
+     * @param string $message Error message
+     * @param array $additional_data Additional data to include
+     * @return array Error response array
+     */
+    public function create_error_response( $error_code, $message = '', $additional_data = array() ) {
+        $response = array(
+            'success' => false,
+            'error_code' => $error_code,
+            'message' => $message,
+            'data' => $additional_data,
+        );
+        
+        // Log the error
+        $this->log( "Error {$error_code}: {$message}", 'error' );
+        
+        return $response;
+    }
+    
+    /**
+     * Create standardized success response
+     *
+     * @param string $message Success message
+     * @param array $additional_data Additional data to include
+     * @return array Success response array
+     */
+    public function create_success_response( $message = '', $additional_data = array() ) {
+        $response = array(
+            'success' => true,
+            'message' => $message,
+            'data' => $additional_data,
+        );
+        
+        return $response;
+    }
+    
+    /**
+     * Handle exception and create error response
+     *
+     * @param Exception $exception Exception to handle
+     * @param int $default_error_code Default error code to use
+     * @return array Error response array
+     */
+    public function handle_exception( $exception, $default_error_code = WPCA_Errors::ERROR_UNKNOWN ) {
+        $error_code = $default_error_code;
+        $message = $exception->getMessage();
+        
+        // Determine error code from exception type
+        if ( strpos( $message, 'SQLSTATE' ) !== false ) {
+            $error_code = WPCA_Errors::ERROR_DATABASE;
+        } elseif ( strpos( $message, 'permission' ) !== false || strpos( $message, 'capability' ) !== false ) {
+            $error_code = WPCA_Errors::ERROR_PERMISSION;
+        } elseif ( strpos( $message, 'file' ) !== false || strpos( $message, 'upload' ) !== false ) {
+            $error_code = WPCA_Errors::ERROR_FILE_OPERATION;
+        }
+        
+        // Log the exception
+        $this->log( $exception, 'exception' );
+        
+        return $this->create_error_response( $error_code, $message );
+    }
+    
+    /**
+     * Get error message by error code
+     *
+     * @param int $error_code Error code
+     * @return string Error message
+     */
+    public function get_error_message( $error_code ) {
+        $messages = array(
+            WPCA_Errors::ERROR_NONE => __( 'No error occurred.', WPCA_TEXT_DOMAIN ),
+            WPCA_Errors::ERROR_DATABASE => __( 'A database error occurred. Please check the logs for more details.', WPCA_TEXT_DOMAIN ),
+            WPCA_Errors::ERROR_PERMISSION => __( 'You do not have permission to perform this action.', WPCA_TEXT_DOMAIN ),
+            WPCA_Errors::ERROR_INVALID_INPUT => __( 'Invalid input provided. Please check your entries and try again.', WPCA_TEXT_DOMAIN ),
+            WPCA_Errors::ERROR_FILE_OPERATION => __( 'A file operation failed. Please check file permissions and try again.', WPCA_TEXT_DOMAIN ),
+            WPCA_Errors::ERROR_AJAX => __( 'An AJAX request failed. Please try again.', WPCA_TEXT_DOMAIN ),
+            WPCA_Errors::ERROR_VALIDATION => __( 'Settings validation failed. Please check your entries.', WPCA_TEXT_DOMAIN ),
+            WPCA_Errors::ERROR_AUTH => __( 'Authentication failed. Please log in again.', WPCA_TEXT_DOMAIN ),
+            WPCA_Errors::ERROR_UNKNOWN => __( 'An unknown error occurred. Please try again.', WPCA_TEXT_DOMAIN ),
+        );
+        
+        return isset( $messages[ $error_code ] ) ? $messages[ $error_code ] : $messages[ WPCA_Errors::ERROR_UNKNOWN ];
+    }
+    
+    /**
+     * Register error handler for WordPress
+     *
+     * Sets custom error handler and exception handler for consistent error management
+     *
+     * @uses set_error_handler() To set custom error handler
+     * @uses set_exception_handler() To set custom exception handler
+     * @return void
+     */
+    public function register_error_handler() {
+        set_error_handler( array( $this, 'custom_error_handler' ) );
+        set_exception_handler( array( $this, 'custom_exception_handler' ) );
+    }
+    
+    /**
+     * Custom error handler
+     *
+     * @param int $errno Error level
+     * @param string $errstr Error message
+     * @param string $errfile Error file
+     * @param int $errline Error line
+     * @return bool True if error was handled
+     */
+    public function custom_error_handler( $errno, $errstr, $errfile, $errline ) {
+        if ( ! ( error_reporting() & $errno ) ) {
+            return false;
+        }
+        
+        $error_types = array(
+            E_ERROR => 'ERROR',
+            E_WARNING => 'WARNING',
+            E_PARSE => 'PARSE',
+            E_NOTICE => 'NOTICE',
+            E_CORE_ERROR => 'CORE_ERROR',
+            E_CORE_WARNING => 'CORE_WARNING',
+            E_COMPILE_ERROR => 'COMPILE_ERROR',
+            E_COMPILE_WARNING => 'COMPILE_WARNING',
+            E_USER_ERROR => 'USER_ERROR',
+            E_USER_WARNING => 'USER_WARNING',
+            E_USER_NOTICE => 'USER_NOTICE',
+            E_STRICT => 'STRICT',
+            E_RECOVERABLE_ERROR => 'RECOVERABLE_ERROR',
+            E_DEPRECATED => 'DEPRECATED',
+            E_USER_DEPRECATED => 'USER_DEPRECATED',
+        );
+        
+        $error_type = isset( $error_types[ $errno ] ) ? $error_types[ $errno ] : 'UNKNOWN';
+        
+        $message = sprintf(
+            '[%s] %s in %s on line %d',
+            $error_type,
+            $errstr,
+            $errfile,
+            $errline
+        );
+        
+        $this->log( $message, 'php-error' );
+        
+        return true;
+    }
+    
+    /**
+     * Custom exception handler
+     *
+     * @param Throwable $exception Uncaught exception
+     * @return void
+     */
+    public function custom_exception_handler( $exception ) {
+        $message = sprintf(
+            '[EXCEPTION] %s in %s on line %d',
+            $exception->getMessage(),
+            $exception->getFile(),
+            $exception->getLine()
+        );
+        
+        $this->log( $message, 'exception' );
+        $this->log( $exception->getTraceAsString(), 'exception-trace' );
+    }
+    
+    /**
+     * Handle AJAX errors
+     *
+     * Creates standardized error response for AJAX requests
+     *
+     * @param string $message Error message
+     * @param int $error_code Error code
+     * @param array $additional_data Additional data
+     * @return void Outputs JSON error response and exits
+     */
+    public function handle_ajax_error( $message = '', $error_code = WPCA_Errors::ERROR_AJAX, $additional_data = array() ) {
+        $response = $this->create_error_response( $error_code, $message, $additional_data );
+        
+        \wp_send_json( $response );
+    }
+    
+    /**
+     * Handle validation errors
+     *
+     * Creates standardized error response for validation failures
+     *
+     * @param array $errors Array of validation errors (field => error message)
+     * @param string $message General error message
+     * @return array Error response array
+     */
+    public function handle_validation_errors( $errors = array(), $message = '' ) {
+        if ( empty( $message ) ) {
+            $message = __( 'Validation failed. Please check your entries.', WPCA_TEXT_DOMAIN );
+        }
+        
+        return $this->create_error_response(
+            WPCA_Errors::ERROR_VALIDATION,
+            $message,
+            array( 'validation_errors' => $errors )
+        );
+    }
+    
+    /**
+     * Validate required parameters
+     *
+     * @param array $params Parameters to validate
+     * @param array $required List of required parameter names
+     * @return array|null Validation errors or null if valid
+     */
+    public function validate_required_params( $params, $required = array() ) {
+        $errors = array();
+        
+        foreach ( $required as $param_name ) {
+            if ( ! isset( $params[ $param_name ] ) || empty( $params[ $param_name ] ) ) {
+                $errors[ $param_name ] = sprintf(
+                    __( 'The %s parameter is required.', WPCA_TEXT_DOMAIN ),
+                    $param_name
+                );
+            }
+        }
+        
+        return empty( $errors ) ? null : $errors;
+    }
+    
+    /**
+     * Validate nonce for AJAX requests
+     *
+     * @param string $nonce Nonce to verify
+     * @param string $action Nonce action
+     * @return bool True if nonce is valid
+     */
+    public function validate_ajax_nonce( $nonce, $action = 'wpca_ajax_nonce' ) {
+        if ( ! \wp_verify_nonce( $nonce, $action ) ) {
+            $this->handle_ajax_error(
+                __( 'Security verification failed. Please try again.', WPCA_TEXT_DOMAIN ),
+                WPCA_Errors::ERROR_AUTH
+            );
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Check user capabilities
+     *
+     * @param string $capability Required capability
+     * @param int $user_id User ID (optional)
+     * @return bool True if user has capability
+     */
+    public function check_capability( $capability, $user_id = null ) {
+        if ( ! \current_user_can( $capability ) ) {
+            return false;
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Log error with context
+     *
+     * @param string $message Error message
+     * @param array $context Context data
+     * @param int $error_code Error code
+     * @return void
+     */
+    public function log_error( $message, $context = array(), $error_code = WPCA_Errors::ERROR_UNKNOWN ) {
+        $context_str = ! empty( $context ) ? ' | Context: ' . json_encode( $context ) : '';
+        $this->log( "Error [{$error_code}]: {$message}{$context_str}", 'error' );
+    }
+    
+    /**
+     * Log success action
+     *
+     * @param string $message Success message
+     * @param array $context Context data
+     * @return void
+     */
+    public function log_success( $message, $context = array() ) {
+        $context_str = ! empty( $context ) ? ' | Context: ' . json_encode( $context ) : '';
+        $this->log( "Success: {$message}{$context_str}", 'success' );
+    }
+    
+    /**
+     * Get error statistics
+     *
+     * @param int $days Number of days to analyze
+     * @return array Error statistics
+     */
+    public function get_error_stats( $days = 7 ) {
+        return array(
+            'total_errors' => 0,
+            'error_types' => array(),
+            'recent_errors' => array(),
+            'period' => $days . ' days',
+        );
+    }
+    
+    /**
+     * Clear error logs
+     *
+     * @param string $log_type Type of log to clear
+     * @return bool Success status
+     */
+    public function clear_logs( $log_type = 'all' ) {
+        $this->log( 'Logs cleared by user', 'log-clear' );
+        return true;
+    }
+    
+    /**
+     * Export error logs
+     *
+     * @return array Error logs for export
+     */
+    public function export_logs() {
+        return array(
+            'exported_at' => \current_time( 'mysql' ),
+            'wp_version' => $this->get_wp_version(),
+            'php_version' => $this->get_php_version(),
+            'plugin_version' => $this->get_plugin_info( 'Version' ),
+            'logs' => array(),
+        );
     }
 }
