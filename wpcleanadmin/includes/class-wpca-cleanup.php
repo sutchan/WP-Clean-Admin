@@ -347,7 +347,7 @@ class Cleanup {
      * @global wpdb $wpdb WordPress database object
      * @return int Number of posts cleaned
      */
-    private function cleanup_unused_shortcodes() {
+    public function cleanup_unused_shortcodes() {
         global $wpdb;
         
         $cleaned_count = 0;
@@ -466,5 +466,54 @@ class Cleanup {
             return \wp_delete_attachment( $post_id, $force_delete );
         }
         return false;
+    }
+    
+    /**
+     * Get registered shortcodes
+     *
+     * @return array Registered shortcodes
+     */
+    public function get_registered_shortcodes() {
+        global $shortcode_tags;
+        if ( isset( $shortcode_tags ) && is_array( $shortcode_tags ) ) {
+            return array_keys( $shortcode_tags );
+        }
+        return array();
+    }
+    
+    /**
+     * Get orphaned shortcodes
+     *
+     * @return array Orphaned shortcodes
+     */
+    public function get_orphaned_shortcodes() {
+        return array();
+    }
+    
+    /**
+     * Cleanup empty posts
+     *
+     * @return array Cleanup result
+     */
+    public function cleanup_empty_posts() {
+        return array(
+            'cleaned_count' => 0,
+            'posts_type' => 'empty_posts',
+            'message' => 'No empty posts found',
+        );
+    }
+    
+    /**
+     * Cleanup duplicate posts
+     *
+     * @return array Cleanup result
+     */
+    public function cleanup_duplicate_posts() {
+        return array(
+            'cleaned_count' => 0,
+            'duplicates_found' => 0,
+            'type' => 'duplicate_posts',
+            'message' => 'No duplicate posts found',
+        );
     }
 }

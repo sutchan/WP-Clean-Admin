@@ -1,0 +1,295 @@
+name: WP Clean Admin CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+env:
+  PHP_VERSION: '8.0'
+  WP_VERSION: 'latest'
+  WP_ADMIN_DIR: '/tmp/wordpress-admin'
+  WP_PLUGINS_DIR: '/tmp/wordpress-plugins'
+
+jobs:
+  lint:
+    name: Code Linting
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup PHP
+      uses: shivammathur/cache-extensions@v1
+      with:
+        php-version: ${{ env.PHP_VERSION }}
+        extensions: mbstring, xml, curl
+      id: php
+    
+    - name: Install PHP dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libzip-dev
+        sudo pecl install zip
+        composer install --no-interaction --prefer-dist
+    
+    - name: Lint PHP files
+      run: |
+        find wpcleanadmin -name "*.php" -exec php -l {} \; 2>&1 | grep -v "No syntax errors"
+    
+    - name: Check coding standards
+      run: |
+        if [ -f "vendor/bin/phpcs" ]; then
+          vendor/bin/phpcs --standard=PSR12 wpcleanadmin
+        else
+          echo "PHP_CodeSniffer not installed, skipping standards check"
+        fi
+
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_wordpress
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup PHP
+      uses: shivammathur/cache-extensions@v1
+      with:
+        php-version: ${{ env.PHP_VERSION }}
+        extensions: mbstring, xml, curl, mysqli, pdo_mysql
+      id: php
+    
+    - name: Install PHP dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libzip-dev
+        sudo pecl install zip
+        composer install --no-interaction --prefer-dist
+    
+    - name: Install WordPress
+      run: |
+        mkdir -p /tmp/wordpress
+        cd /tmp/wordpress
+        curl -s https://wordpress.org/latest.tar.gz | tar xz --strip-components=1
+    
+    - name: Configure WordPress
+      run: |
+        cp /tmp/wordpress/wp-config-sample.php /tmp/wordpress/wp-config.php
+        sed -i "s/database_name_here/test_wordpress/" /tmp/wordpress/wp-config.php
+        sed -i "s/username_here/root/" /tmp/wordpress/wp-config.php
+        sed -i "s/password_here/root/" /tmp/wordpress/wp-config.php
+        sed -i "s/localhost/127.0.0.1/" /tmp/wordpress/wp-config.php
+    
+    - name: Copy plugin to WordPress
+      run: |
+        mkdir -p /tmp/wordpress/wp-content/plugins/wpcleanadmin
+        cp -r $(pwd)/wpcleanadmin/* /tmp/wordpress/wp-content/plugins/wpcleanadmin/
+    
+    - name: Run PHPUnit Unit Tests
+      run: |
+        cd /tmp/wordpress/wp-content/plugins/wpcleanadmin
+        if [ -f "../../../../vendor/bin/phpunit" ]; then
+          ../../../../vendor/bin/phpunit --testsuite "Unit Tests" --coverage-text
+        else
+          echo "PHPUnit not found, checking local installation"
+          if [ -f "$(pwd)/vendor/bin/phpunit" ]; then
+            vendor/bin/phpunit --testsuite "Unit Tests" --coverage-text
+          else
+            composer install --working-dir=$(pwd)/../../
+            ../../../../vendor/bin/phpunit --testsuite "Unit Tests" --coverage-text
+          fi
+        fi
+      working-directory: /tmp/wordpress/wp-content/plugins/wpcleanadmin
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: test_wordpress
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup PHP
+      uses: shivammathur/cache-extensions@v1
+      with:
+        php-version: ${{ env.PHP_VERSION }}
+        extensions: mbstring, xml, curl, mysqli, pdo_mysql
+      id: php
+    
+    - name: Install PHP dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libzip-dev
+        sudo pecl install zip
+        composer install --no-interaction --prefer-dist
+    
+    - name: Install WordPress
+      run: |
+        mkdir -p /tmp/wordpress
+        cd /tmp/wordpress
+        curl -s https://wordpress.org/latest.tar.gz | tar xz --strip-components=1
+    
+    - name: Configure WordPress
+      run: |
+        cp /tmp/wordpress/wp-config-sample.php /tmp/wordpress/wp-config.php
+        sed -i "s/database_name_here/test_wordpress/" /tmp/wordpress/wp-config.php
+        sed -i "s/username_here/root/" /tmp/wordpress/wp-config.php
+        sed -i "s/password_here/root/" /tmp/wordpress/wp-config.php
+        sed -i "s/localhost/127.0.0.1/" /tmp/wordpress/wp-config.php
+    
+    - name: Copy plugin to WordPress
+      run: |
+        mkdir -p /tmp/wordpress/wp-content/plugins/wpcleanadmin
+        cp -r $(pwd)/wpcleanadmin/* /tmp/wordpress/wp-content/plugins/wpcleanadmin/
+    
+    - name: Run PHPUnit Integration Tests
+      run: |
+        cd /tmp/wordpress/wp-content/plugins/wpcleanadmin
+        if [ -f "../../../../vendor/bin/phpunit" ]; then
+          ../../../../vendor/bin/phpunit --testsuite "Integration Tests" --coverage-text
+        else
+          composer install --working-dir=$(pwd)/../../
+          ../../../../vendor/bin/phpunit --testsuite "Integration Tests" --coverage-text
+        fi
+      working-directory: /tmp/wordpress/wp-content/plugins/wpcleanadmin
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup PHP
+      uses: shivammathur/cache-extensions@v1
+      with:
+        php-version: ${{ env.PHP_VERSION }}
+      id: php
+    
+    - name: Install PHP dependencies
+      run: composer install --no-interaction --prefer-dist
+    
+    - name: Run PHPStan Static Analysis
+      if: env.PHPSTAN_TOKEN
+      run: |
+        if [ -f "vendor/bin/phpstan" ]; then
+          vendor/bin/phpstan analyse wpcleanadmin --level=5
+        else
+          echo "PHPStan not installed, skipping static analysis"
+        fi
+    
+    - name: Check for sensitive data
+      run: |
+        echo "Checking for potential security issues..."
+        # Check for hardcoded passwords/secrets
+        if grep -r "password.*=.*['\"][^'\"]*['\"]" wpcleanadmin --include="*.php" | grep -v "test\|demo\|example" ; then
+          echo "Warning: Potential hardcoded passwords found"
+        fi
+        # Check for eval() usage
+        if grep -r "eval(" wpcleanadmin --include="*.php" ; then
+          echo "Warning: eval() usage detected"
+        fi
+        # Check for base64_decode() usage
+        if grep -r "base64_decode(" wpcleanadmin --include="*.php" | grep -v "test\|stub" ; then
+          echo "Warning: base64_decode() usage detected"
+        fi
+
+  deploy:
+    name: Deploy to Staging
+    needs: [lint, unit-tests, integration-tests, security-scan]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Create deployment package
+      run: |
+        mkdir -p deploy
+        cp -r wpcleanadmin deploy/
+        cp wp-clean-admin.php deploy/
+        cp README.md deploy/
+        cp CHANGELOG.md deploy/
+        cd deploy && tar -czf ../wpcleanadmin.tar.gz .
+    
+    - name: Upload deployment package
+      uses: actions/upload-artifact@v3
+      with:
+        name: wpcleanadmin-deploy
+        path: wpcleanadmin.tar.gz
+    
+    - name: Deploy to staging (example)
+      run: |
+        echo "Deploying to staging environment..."
+        # Add your deployment commands here
+        # Example: scp wpcleanadmin.tar.gz user@staging:/path/to/plugins/
+
+  release:
+    name: Create Release
+    needs: [lint, unit-tests, integration-tests, security-scan]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Get version tag
+      id: version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+    
+    - name: Create release package
+      run: |
+        mkdir -p release
+        cp -r wpcleanadmin release/
+        cp wp-clean-admin.php release/
+        cp README.md release/
+        cp CHANGELOG.md release/
+        cd release && zip -r ../wpcleanadmin-${VERSION}.zip .
+    
+    - name: Upload release asset
+      uses: softprops/action-gh-release@v1
+      with:
+        files: wpcleanadmin-${VERSION}.zip
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  notify:
+    name: Notify on Failure
+    needs: [lint, unit-tests, integration-tests]
+    runs-on: ubuntu-latest
+    if: failure()
+    
+    steps:
+    - name: Send failure notification
+      run: |
+        echo "Workflow failed! Sending notification..."
+        # Add notification logic here (Slack, email, etc.)

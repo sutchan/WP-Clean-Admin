@@ -369,6 +369,10 @@ namespace {
         }
     }
 
+    if ( ! defined( 'ABSPATH' ) ) {
+        define( 'ABSPATH', '' );
+    }
+
     if ( ! class_exists( 'WP_Error' ) ) {
         class WP_Error {
             public $code;
