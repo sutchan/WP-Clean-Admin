@@ -1,3 +1,4 @@
+<!-- OPENSPEC:START -->
 ## 设计参考
 
 ### 架构设计
@@ -85,3 +86,5 @@ wpca_restore_database( $backup_file );
 // 获取数据库表信息
 wpca_get_database_table_info();
 ```
+
+<!-- OPENSPEC:END -->

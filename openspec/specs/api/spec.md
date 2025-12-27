@@ -1,3 +1,4 @@
+<!-- OPENSPEC:START -->
 # WP Clean Admin API 文档
 
 ## 1. 概述
@@ -379,3 +380,5 @@ if ( WPCleanAdmin\Permissions::getInstance()->has_feature_permission( 'manage_op
 ## 15. 许可证
 
 WP Clean Admin API 遵循 GPLv2 或更高版本许可证。
+
+<!-- OPENSPEC:END -->

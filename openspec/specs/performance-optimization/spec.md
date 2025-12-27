@@ -1,3 +1,4 @@
+<!-- OPENSPEC:START -->
 ## 设计参考
 
 ### 架构设计
@@ -128,3 +129,5 @@ wpca_optimize_database();
 // 清理 Transients
 wpca_clean_transients();
 ```
+
+<!-- OPENSPEC:END -->

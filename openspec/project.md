@@ -1,3 +1,4 @@
+<!-- OPENSPEC:START -->
 # 项目上下文
 
 ## 目的
@@ -370,3 +371,5 @@ openspec/
 ## 许可证
 
 WP Clean Admin 插件遵循 GPLv2 或更高版本许可证。
+
+<!-- OPENSPEC:END -->

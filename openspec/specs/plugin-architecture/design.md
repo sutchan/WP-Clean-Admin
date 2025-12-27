@@ -1,3 +1,4 @@
+<!-- OPENSPEC:START -->
 ## Context
 WP Clean Admin 是一个基于模块化设计的 WordPress 插件，旨在提供全面的 WordPress 后台清理和优化功能。插件采用面向对象的设计模式，遵循 WordPress 最佳实践，确保插件的可扩展性、可维护性和安全性。
 
@@ -304,3 +305,5 @@ wpca_restrict_specific_admin_pages();
 - **设置迁移**：支持设置的导入和导出
 - **数据库迁移**：支持数据库备份和恢复
 - **升级迁移**：处理版本升级时的数据迁移
+
+<!-- OPENSPEC:END -->

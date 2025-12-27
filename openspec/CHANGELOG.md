@@ -1,3 +1,4 @@
+<!-- OPENSPEC:START -->
 # Changelog
 
 All notable changes to WP Clean Admin will be documented in this file.
@@ -163,3 +164,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 已知问题的修复计划
 ### Improved
 - 未来的优化计划
+
+<!-- OPENSPEC:END -->

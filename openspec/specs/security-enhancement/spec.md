@@ -1,3 +1,4 @@
+<!-- OPENSPEC:START -->
 ## 设计参考
 
 ### 架构设计
@@ -94,3 +95,5 @@ wpca_restrict_admin_access();
 // 限制特定管理页面访问
 wpca_restrict_specific_admin_pages();
 ```
+
+<!-- OPENSPEC:END -->

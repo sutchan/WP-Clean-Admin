@@ -1,3 +1,4 @@
+<!-- OPENSPEC:START -->
 ## 设计参考
 
 ### 架构设计
@@ -118,3 +119,5 @@ wpca_run_comments_cleanup( $options );
 // 运行内容清理
 wpca_run_content_cleanup( $options );
 ```
+
+<!-- OPENSPEC:END -->

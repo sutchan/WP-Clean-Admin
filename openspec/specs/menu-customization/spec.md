@@ -1,3 +1,4 @@
+<!-- OPENSPEC:START -->
 ## 设计参考
 
 ### 架构设计
@@ -104,3 +105,5 @@ wpca_export_menu_customizer_settings();
 // 导入菜单定制设置
 wpca_import_menu_customizer_settings( $imported_settings );
 ```
+
+<!-- OPENSPEC:END -->
