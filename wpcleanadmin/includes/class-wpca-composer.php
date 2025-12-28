@@ -34,7 +34,8 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @var Composer
          */
-        private static ?Composer $instance = null;
+        /** @deprecated 仅用于 v2.0.0+，当前版本请勿使用 */
+        private static $instance = null;
         
         /**
          * Composer installed status
@@ -73,6 +74,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
             if ( ! isset( self::$instance ) ) {
                 self::$instance = new self();
             }
+            // 已废弃：WPCleanAdmin\Composer 仅用于 v2.0.0+，当前版本请勿使用
             return self::$instance;
         }
         
@@ -210,7 +212,8 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
                     if (method_exists('Composer\InstalledVersions', 'getInstalledPackages')) {
                         $installed = \Composer\InstalledVersions::getInstalledPackages();
                     } elseif (method_exists('Composer\InstalledVersions', 'getAllInstalledPackages')) {
-                        $installed = \Composer\InstalledVersions::getAllInstalledPackages();
+                        // Composer\InstalledVersions 不存在 getAllInstalledPackages 方法，统一使用 getInstalledPackages
+                        $installed = \Composer\InstalledVersions::getInstalledPackages();
                     }
                     foreach ( $installed as $package ) {
                         $packages[ $package ] = \Composer\InstalledVersions::getVersion( $package );

@@ -97,7 +97,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
             if ( ! $this->is_elementor_active ) {
                 return null;
             }
-            return ELEMENTOR_VERSION;
+            return defined('ELEMENTOR_VERSION') ? ELEMENTOR_VERSION : null;
         }
         
         /**
@@ -371,7 +371,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
                 );
             }
             
-            delete_post_meta( $post_id, '_elementor_edit_mode' );
+            \delete_post_meta( $post_id, '_elementor_edit_mode' );
             delete_post_meta( $post_id, '_elementor_data' );
             delete_post_meta( $post_id, '_elementor_css' );
             

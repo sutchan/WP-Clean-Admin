@@ -430,7 +430,7 @@ class Cleanup {
             
             $deleted = 0;
             foreach ( $duplicates as $comment ) {
-                $this->wp_delete_comment( $comment->comment_ID, true );
+                wp_delete_comment( $comment->comment_ID, true );
                 $deleted++;
             }
             

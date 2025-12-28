@@ -34,7 +34,7 @@ class Settings {
      *
      * @var Settings
      */
-    private static $instance;
+    private static ?Settings $instance = null;
     
     /**
      * Get singleton instance
@@ -244,7 +244,7 @@ class Settings {
     /**
      * Render general settings section
      */
-    public function render_general_settings_section() {
+    public function render_general_settings_section(): void {
         echo '<p>' . \__( 'Configure general settings for WP Clean Admin plugin.', WPCA_TEXT_DOMAIN ) . '</p>';
     }
     
@@ -273,14 +273,14 @@ class Settings {
     /**
      * Render cleanup settings section
      */
-    public function render_cleanup_settings_section() {
+    public function render_cleanup_settings_section(): void {
         echo '<p>' . \__( 'Configure cleanup settings for WP Clean Admin plugin.', WPCA_TEXT_DOMAIN ) . '</p>';
     }
     
     /**
      * Render remove dashboard widgets field
      */
-    public function render_remove_dashboard_widgets_field() {
+    public function render_remove_dashboard_widgets_field(): void {
         $settings = \get_option( 'wpca_settings', array() );
         $remove_dashboard_widgets = isset( $settings['menu']['remove_dashboard_widgets'] ) ? $settings['menu']['remove_dashboard_widgets'] : 1;
         
@@ -302,14 +302,14 @@ class Settings {
     /**
      * Render performance settings section
      */
-    public function render_performance_settings_section() {
+    public function render_performance_settings_section(): void {
         echo '<p>' . \__( 'Configure performance optimization settings for WP Clean Admin plugin.', WPCA_TEXT_DOMAIN ) . '</p>';
     }
     
     /**
      * Render optimize database field
      */
-    public function render_optimize_database_field() {
+    public function render_optimize_database_field(): void {
         $settings = \get_option( 'wpca_settings', array() );
         $optimize_database = isset( $settings['performance']['optimize_database'] ) ? $settings['performance']['optimize_database'] : 1;
         
@@ -342,7 +342,7 @@ class Settings {
     /**
      * Render security settings section
      */
-    public function render_security_settings_section() {
+    public function render_security_settings_section(): void {
         echo '<p>' . \__( 'Configure security settings for WP Clean Admin plugin.', WPCA_TEXT_DOMAIN ) . '</p>';
     }
     
@@ -700,7 +700,7 @@ class Settings {
      * @uses \wp_create_nonce() To create security nonce
      * @uses \__() To translate strings
      */
-    public function enqueue_scripts( $hook ) {
+    public function enqueue_scripts( string $hook ): void {
         // Only enqueue on plugin pages
         if ( \strpos( $hook, 'wp-clean-admin' ) === false ) {
             return;
