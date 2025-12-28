@@ -222,7 +222,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
                     foreach ( $installed as $package ) {
                         $packages[ $package ] = \Composer\InstalledVersions::getVersion( $package );
                     }
-                } catch ( \Exception $e ) {
+                } catch ( \Exception ) {
                     // Package not available
                 }
             }
@@ -244,7 +244,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
             if ( class_exists( 'Composer\InstalledVersions' ) ) {
                 try {
                     return \Composer\InstalledVersions::isInstalled( $package );
-                } catch ( \Exception $e ) {
+                } catch ( \Exception ) {
                     return false;
                 }
             }
@@ -266,7 +266,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
             if ( class_exists( 'Composer\InstalledVersions' ) ) {
                 try {
                     return \Composer\InstalledVersions::getVersion( $package );
-                } catch ( \Exception $e ) {
+                } catch ( \Exception ) {
                     return null;
                 }
             }

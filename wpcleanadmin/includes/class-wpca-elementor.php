@@ -549,10 +549,9 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
         /**
          * Remove container support from element
          *
-         * @param \Elementor\Controls_Stack $element Element
          * @return void
          */
-        public function remove_container_support( $element ) {
+        public function remove_container_support() {
             // Remove container controls if needed
         }
         

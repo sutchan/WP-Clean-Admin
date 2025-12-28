@@ -30,7 +30,7 @@ class Dashboard {
      *
      * @var Dashboard
      */
-    private static $instance;
+    private static ?Dashboard $instance = null;
     
     /**
      * Get singleton instance
@@ -121,7 +121,7 @@ class Dashboard {
      *
      * @param string $hook Current admin page hook
      */
-    public function enqueue_dashboard_scripts( $hook ) {
+    public function enqueue_dashboard_scripts( string $hook ): void {
         // Only enqueue on dashboard page
         if ( $hook !== 'index.php' ) {
             return;

@@ -31,7 +31,7 @@ class Login {
      *
      * @return Login
      */
-    public static function getInstance() {
+    public static function getInstance(): Login {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }
@@ -143,7 +143,7 @@ class Login {
      * @param string $title Login header title
      * @return string Modified title
      */
-    public function filter_login_header_title( $title ) {
+    public function filter_login_header_title( string $title ): string {
         // Load settings
         $settings = wpca_get_settings();
         
@@ -189,7 +189,7 @@ class Login {
     /**
      * Customize login page
      */
-    public function customize_login_page() {
+    public function customize_login_page(): void {
         // Load settings
         $settings = wpca_get_settings();
         
@@ -210,7 +210,7 @@ class Login {
     /**
      * Add custom login logo
      */
-    public function add_custom_login_logo() {
+    public function add_custom_login_logo(): void {
         // Load settings
         $settings = wpca_get_settings();
         
@@ -257,7 +257,7 @@ class Login {
     /**
      * Restrict login attempts
      */
-    public function restrict_login_attempts() {
+    public function restrict_login_attempts(): void {
         // Load settings
         $settings = wpca_get_settings();
         

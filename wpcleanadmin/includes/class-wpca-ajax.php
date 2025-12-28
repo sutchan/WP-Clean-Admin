@@ -49,7 +49,7 @@ class AJAX {
      * @since 1.7.15
      * @return AJAX A single instance of this class.
      */
-    public static function getInstance() {
+    public static function getInstance(): AJAX {
         if ( null === self::$instance ) {
             self::$instance = new self();
         }
@@ -136,7 +136,7 @@ class AJAX {
      * @param string $action The AJAX action name.
      * @return bool True if the nonce is valid and user has capabilities, false otherwise.
      */
-    private function verify_ajax_request( $action ) {
+    private function verify_ajax_request( string $action ): bool {
         if ( ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( '\wp_send_json_error' ) ) {
                 echo json_encode( array( 'success' => false, 'data' => \__( 'Invalid nonce', WPCA_TEXT_DOMAIN ) ) );
