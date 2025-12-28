@@ -30,7 +30,7 @@ class Core {
      *
      * @var Core
      */
-    private static $instance;
+    private static ?Core $instance = null;
     
     /**
      * Get singleton instance
@@ -131,7 +131,7 @@ class Core {
     /**
      * Set default plugin settings
      */
-    private function set_default_settings() {
+    private function set_default_settings(): void {
         $default_settings = array(
             'general' => array(
                 'clean_admin_bar' => 1,
