@@ -431,7 +431,10 @@ namespace {
 
     if ( ! function_exists( 'get_post_meta' ) ) {
         function get_post_meta( $post_id, $key = '', $single = false ) {
-            return $single ? null : array();
+            if ( $single ) {
+                return '';
+            }
+            return array();
         }
     }
 

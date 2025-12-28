@@ -33,7 +33,7 @@ class User_Roles {
      *
      * @return User_Roles
      */
-    public static function getInstance() {
+    public static function getInstance(): User_Roles {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }
@@ -103,7 +103,7 @@ class User_Roles {
      * @param array $capabilities Capabilities to update
      * @return bool Update result
      */
-    public function update_role_capabilities( $role_slug, $capabilities ) {
+    public function update_role_capabilities( string $role_slug, array $capabilities ): bool {
         // Get role object
         $role = ( function_exists( 'get_role' ) ? \get_role( $role_slug ) : false );
         
@@ -135,7 +135,7 @@ class User_Roles {
      * @param array $capabilities Capabilities
      * @return array Create result
      */
-    public function create_role( $role_slug, $role_name, $capabilities = array() ) {
+    public function create_role( string $role_slug, string $role_name, array $capabilities = array() ): array {
         $result = array(
             'success' => false,
             'message' => \__( 'Failed to create role', WPCA_TEXT_DOMAIN )

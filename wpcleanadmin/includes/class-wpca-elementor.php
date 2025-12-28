@@ -227,7 +227,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          *
          * @return bool
          */
-        public function optimize_iconsloading(): bool {
+        public function optimize_icons_loading(): bool {
             if ( ! $this->is_elementor_active ) {
                 return false;
             }

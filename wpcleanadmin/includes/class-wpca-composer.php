@@ -72,6 +72,10 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          */
         public static function getInstance() {
             if ( ! isset( self::$instance ) ) {
+                trigger_error(
+                    'WPCleanAdmin\Composer 已废弃，当前版本请勿使用。此功能仅用于 v2.0.0+。',
+                    E_USER_DEPRECATED
+                );
                 self::$instance = new self();
             }
             // 已废弃：WPCleanAdmin\Composer 仅用于 v2.0.0+，当前版本请勿使用

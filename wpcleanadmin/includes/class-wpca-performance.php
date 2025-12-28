@@ -48,7 +48,7 @@ class Performance {
     /**
      * Initialize the performance module
      */
-    public function init() {
+    public function init(): void {
         // Load settings
         $settings = wpca_get_settings();
         
@@ -131,7 +131,7 @@ class Performance {
     /**
      * Disable XML-RPC
      */
-    public function disable_xmlrpc() {
+    public function disable_xmlrpc(): void {
         // Disable XML-RPC methods
         \add_filter( 'xmlrpc_enabled', '__return_false' );
         \add_filter( 'xmlrpc_methods', '__return_empty_array' );
@@ -157,7 +157,7 @@ class Performance {
      * @param WP_Error|bool $result Authentication result
      * @return WP_Error|bool Modified authentication result
      */
-    public function disable_rest_api_authentication( $result ) {
+    public function disable_rest_api_authentication( $result ): \WP_Error|bool {
         if ( function_exists( 'is_user_logged_in' ) && ! is_user_logged_in() ) {
             return new \WP_Error( 'rest_not_logged_in', \__( 'REST API is disabled for non-authenticated users', WPCA_TEXT_DOMAIN ), array( 'status' => 401 ) );
         }

@@ -33,7 +33,7 @@ class Permissions {
      *
      * @return Permissions
      */
-    public static function getInstance() {
+    public static function getInstance(): Permissions {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }
@@ -109,7 +109,7 @@ class Permissions {
      * @param int $user_id User ID
      * @return bool Permission result
      */
-    public function has_feature_permission( $feature, $user_id = null ) {
+    public function has_feature_permission( string $feature, ?int $user_id = null ): bool {
         // Get user ID if not provided
         if ( $user_id === null ) {
             $user_id = ( function_exists( 'get_current_user_id' ) ? \get_current_user_id() : 0 );
