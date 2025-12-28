@@ -24,7 +24,7 @@ class Menu_Manager {
      *
      * @var Menu_Manager
      */
-    private static $instance;
+    private static ?Menu_Manager $instance = null;
     
     /**
      * Get singleton instance
@@ -144,7 +144,7 @@ class Menu_Manager {
      *
      * @param WP_Admin_Bar $wp_admin_bar Admin bar object
      */
-    public function clean_admin_bar( $wp_admin_bar ) {
+    public function clean_admin_bar( \WP_Admin_Bar $wp_admin_bar ): void {
         // Remove default WordPress admin bar items
         $wp_admin_bar->remove_node( 'wp-logo' );
         $wp_admin_bar->remove_node( 'about' );
@@ -225,7 +225,7 @@ class Menu_Manager {
     /**
      * Remove dashboard widgets based on settings
      */
-    public function remove_dashboard_widgets_by_settings() {
+    public function remove_dashboard_widgets_by_settings(): void {
         // Load settings
         $settings = wpca_get_settings();
         
@@ -338,7 +338,7 @@ class Menu_Manager {
     /**
      * Clean up admin menu
      */
-    public function cleanup_admin_menu() {
+    public function cleanup_admin_menu(): void {
         // Load settings
         $settings = wpca_get_settings();
         

@@ -423,6 +423,46 @@ namespace {
         }
     }
 
+    if ( ! function_exists( 'delete_transient' ) ) {
+        function delete_transient( $transient ) {
+            return true;
+        }
+    }
+
+    if ( ! function_exists( 'get_post_meta' ) ) {
+        function get_post_meta( $post_id, $key = '', $single = false ) {
+            return $single ? null : array();
+        }
+    }
+
+    if ( ! function_exists( 'delete_post_meta' ) ) {
+        function delete_post_meta( $post_id, $meta_key, $meta_value = '' ) {
+            return true;
+        }
+    }
+
+    if ( ! function_exists( 'update_post_meta' ) ) {
+        function update_post_meta( $post_id, $meta_key, $meta_value, $prev_value = '' ) {
+            return true;
+        }
+    }
+
+    if ( ! function_exists( 'wp_slash' ) ) {
+        function wp_slash( $value ) {
+            return $value;
+        }
+    }
+
+    if ( ! function_exists( 'wp_json_encode' ) ) {
+        function wp_json_encode( $data, $options = 0, $depth = 512 ) {
+            return json_encode( $data, $options, $depth );
+        }
+    }
+
+    if ( ! defined( 'ELEMENTOR_VERSION' ) ) {
+        define( 'ELEMENTOR_VERSION', '' );
+    }
+
     if ( ! class_exists( 'WP_Error' ) ) {
         class WP_Error {
             public $code;

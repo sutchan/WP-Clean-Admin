@@ -24,7 +24,7 @@ class Database {
      *
      * @var Database
      */
-    private static $instance;
+    private static ?Database $instance = null;
     
     /**
      * Get singleton instance
@@ -60,7 +60,7 @@ class Database {
      *
      * @return array Database information
      */
-    public function get_database_info() {
+    public function get_database_info(): array {
         global $wpdb;
         
         $info = array();
@@ -240,7 +240,7 @@ class Database {
      * @param string $backup_file Backup file name
      * @return array Restore results
      */
-    public function restore_database( $backup_file ) {
+    public function restore_database( string $backup_file ): array {
         global $wpdb;
         
         $results = array(
@@ -287,7 +287,7 @@ class Database {
      *
      * @return array Database backups
      */
-    public function get_database_backups() {
+    public function get_database_backups(): array {
         $backups = array();
         
         // Get backup directory

@@ -15,6 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 // Load Composer stub for IDE support
 require_once __DIR__ . '/composer-stub.php';
 
+// Load Elementor stub for IDE support
+require_once __DIR__ . '/elementor-stub.php';
+
 /**
  * Register autoloader for WPCleanAdmin classes
  */

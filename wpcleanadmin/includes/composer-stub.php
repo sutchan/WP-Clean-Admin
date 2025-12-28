@@ -28,6 +28,10 @@ namespace Composer {
                 return '';
             }
 
+            public static function isInstalled( $packageName ) {
+                return false;
+            }
+
             public static function getRootPackage() {
                 return array(
                     'name' => '',
