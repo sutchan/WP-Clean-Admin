@@ -28,22 +28,22 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          *
          * @var Elementor
          */
-        private static $instance;
+        private static ?Elementor $instance = null;
         
         /**
          * Elementor detected status
          *
          * @var bool
          */
-        private $is_elementor_active = false;
+        private bool $is_elementor_active = false;
         
         /**
          * Get singleton instance
          *
          * @return Elementor
          */
-        public static function getInstance() {
-            if ( ! isset( self::$instance ) ) {
+        public static function getInstance(): Elementor {
+            if ( self::$instance === null ) {
                 self::$instance = new self();
             }
             return self::$instance;
@@ -62,7 +62,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          *
          * @return bool
          */
-        private function check_elementor_status() {
+        private function check_elementor_status(): bool {
             $this->is_elementor_active = defined( 'ELEMENTOR_VERSION' );
             return $this->is_elementor_active;
         }
@@ -72,7 +72,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          *
          * @return void
          */
-        private function register_hooks() {
+        private function register_hooks(): void {
             if ( $this->is_elementor_active ) {
                 add_action( 'wpca_elementor_cleanup', array( $this, 'cleanup_elementor_cache' ) );
                 add_action( 'wpca_elementor_optimize', array( $this, 'optimize_elementor_assets' ) );
@@ -84,7 +84,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          *
          * @return bool
          */
-        public function is_elementor_active() {
+        public function is_elementor_active(): bool {
             return $this->is_elementor_active;
         }
         
@@ -93,7 +93,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          *
          * @return string|null
          */
-        public function get_elementor_version() {
+        public function get_elementor_version(): ?string {
             if ( ! $this->is_elementor_active ) {
                 return null;
             }
@@ -105,7 +105,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          *
          * @return array
          */
-        public function cleanup_elementor_cache() {
+        public function cleanup_elementor_cache(): array {
             if ( ! $this->is_elementor_active ) {
                 return array(
                     'success' => false,
@@ -116,24 +116,20 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
             
             $cleared = 0;
             
-            // Clear Elementor cache
             if ( class_exists( '\Elementor\Plugin' ) ) {
                 $elementor = \Elementor\Plugin::instance();
                 
-                // Clear files cache
                 if ( method_exists( $elementor->files_manager, 'clear_cache' ) ) {
                     $elementor->files_manager->clear_cache();
                     $cleared++;
                 }
                 
-                // Clear element cache
                 if ( method_exists( $elementor->posts_css_manager, 'clear_cache' ) ) {
                     $elementor->posts_css_manager->clear_cache();
                     $cleared++;
                 }
             }
             
-            // Clear transients
             global $wpdb;
             
             $transients = $wpdb->get_col( "
@@ -163,7 +159,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          *
          * @return array
          */
-        public function optimize_elementor_assets() {
+        public function optimize_elementor_assets(): array {
             if ( ! $this->is_elementor_active ) {
                 return array(
                     'success' => false,
@@ -173,14 +169,12 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
             
             $optimizations = array();
             
-            // Disable Elementor Google Fonts loading
             if ( ! $this->disable_google_fonts() ) {
                 $optimizations[] = __( 'Failed to disable Google Fonts.', WPCA_TEXT_DOMAIN );
             } else {
                 $optimizations[] = __( 'Google Fonts loading disabled.', WPCA_TEXT_DOMAIN );
             }
             
-            // Optimize icons loading
             if ( ! $this->optimize_icons_loading() ) {
                 $optimizations[] = __( 'Failed to optimize icons loading.', WPCA_TEXT_DOMAIN );
             } else {
@@ -199,7 +193,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          *
          * @return bool
          */
-        public function disable_google_fonts() {
+        public function disable_google_fonts(): bool {
             if ( ! $this->is_elementor_active ) {
                 return false;
             }
@@ -214,7 +208,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          *
          * @return bool
          */
-        public function enable_google_fonts() {
+        public function enable_google_fonts(): bool {
             if ( ! $this->is_elementor_active ) {
                 return false;
             }
@@ -229,12 +223,11 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          *
          * @return bool
          */
-        public function optimize_iconsloading() {
+        public function optimize_iconsloading(): bool {
             if ( ! $this->is_elementor_active ) {
                 return false;
             }
             
-            // Dequeue unnecessary Elementor icons
             add_action( 'elementor/frontend/after_enqueue_styles', array( $this, 'dequeue_elementor_icons' ) );
             
             return true;
@@ -245,7 +238,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          *
          * @return void
          */
-        public function dequeue_elementor_icons() {
+        public function dequeue_elementor_icons(): void {
             wp_dequeue_style( 'elementor-icons' );
         }
         
@@ -255,12 +248,11 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          * @param array $breakpoints Breakpoints to keep
          * @return array
          */
-        public function get_active_breakpoints( $breakpoints = array() ) {
+        public function get_active_breakpoints( array $breakpoints = array() ): array {
             if ( ! $this->is_elementor_active ) {
                 return $breakpoints;
             }
             
-            // Remove unnecessary breakpoints for better performance
             return apply_filters( 'wpca_elementor_active_breakpoints', $breakpoints );
         }
         
@@ -269,7 +261,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          *
          * @return array
          */
-        public function get_elementor_documents_count() {
+        public function get_elementor_documents_count(): array {
             global $wpdb;
             
             $count = $wpdb->get_var( "
@@ -290,7 +282,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          *
          * @return array
          */
-        private function get_documents_by_post_type() {
+        private function get_documents_by_post_type(): array {
             global $wpdb;
             
             $results = $wpdb->get_results( "
@@ -316,7 +308,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          *
          * @return array
          */
-        public function get_elementor_settings() {
+        public function get_elementor_settings(): array {
             if ( ! $this->is_elementor_active ) {
                 return array();
             }
@@ -336,7 +328,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          * @param int $post_id Post ID
          * @return bool
          */
-        public function is_using_elementor( $post_id ) {
+        public function is_using_elementor( int $post_id ): bool {
             $post_meta = get_post_meta( $post_id, '_elementor_edit_mode', true );
             return 'builder' === $post_meta;
         }
@@ -347,7 +339,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          * @param int $post_id Post ID
          * @return array|null
          */
-        public function get_post_elementor_data( $post_id ) {
+        public function get_post_elementor_data( int $post_id ) {
             if ( ! $this->is_using_elementor( $post_id ) ) {
                 return null;
             }
@@ -367,7 +359,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          * @param int $post_id Post ID
          * @return array
          */
-        public function cleanup_post_elementor_data( $post_id ) {
+        public function cleanup_post_elementor_data( int $post_id ): array {
             if ( ! $this->is_using_elementor( $post_id ) ) {
                 return array(
                     'success' => false,
@@ -392,7 +384,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          * @param int $post_id Post ID
          * @return array
          */
-        public function export_elementor_data( $post_id ) {
+        public function export_elementor_data( int $post_id ): array {
             $data = $this->get_post_elementor_data( $post_id );
             
             if ( empty( $data ) ) {
@@ -417,7 +409,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          * @param array $data Elementor data
          * @return array
          */
-        public function import_elementor_data( $post_id, $data ) {
+        public function import_elementor_data( int $post_id, array $data ): array {
             update_post_meta( $post_id, '_elementor_edit_mode', 'builder' );
             update_post_meta( $post_id, '_elementor_data', wp_slash( wp_json_encode( $data ) ) );
             
@@ -433,7 +425,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          *
          * @return array
          */
-        public function get_widgets_list() {
+        public function get_widgets_list(): array {
             if ( ! $this->is_elementor_active ) {
                 return array();
             }
@@ -463,7 +455,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          * @param array $widgets Widget names to disable
          * @return bool
          */
-        public function disable_widgets( $widgets ) {
+        public function disable_widgets( array $widgets ): bool {
             if ( ! $this->is_elementor_active ) {
                 return false;
             }
@@ -481,7 +473,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          * @param int $post_id Post ID
          * @return int
          */
-        public function get_css_methods_count( $post_id ) {
+        public function get_css_methods_count( int $post_id ): int {
             $data = $this->get_post_elementor_data( $post_id );
             
             if ( empty( $data ) ) {
@@ -497,7 +489,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          * @param array $elements Elements array
          * @return int
          */
-        private function count_css_methods_recursive( $elements ) {
+        private function count_css_methods_recursive( array $elements ): int {
             $count = 0;
             
             foreach ( $elements as $element ) {
@@ -520,7 +512,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          *
          * @return array
          */
-        public function get_template_library_count() {
+        public function get_template_library_count(): array {
             global $wpdb;
             
             $templates = $wpdb->get_var( "
@@ -628,7 +620,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
          *
          * @return array
          */
-        public function get_assets_info() {
+        public function get_assets_info(): array {
             global $wpdb;
             
             $assets = $wpdb->get_results( "

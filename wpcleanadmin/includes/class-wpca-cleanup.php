@@ -24,15 +24,15 @@ class Cleanup {
      *
      * @var Cleanup
      */
-    private static $instance;
+    private static ?Cleanup $instance = null;
     
     /**
      * Get singleton instance
      *
      * @return Cleanup
      */
-    public static function getInstance() {
-        if ( ! isset( self::$instance ) ) {
+    public static function getInstance(): Cleanup {
+        if ( self::$instance === null ) {
             self::$instance = new self();
         }
         return self::$instance;
@@ -48,8 +48,7 @@ class Cleanup {
     /**
      * Initialize the cleanup module
      */
-    public function init() {
-        // Add cleanup hooks
+    public function init(): void {
         if ( function_exists( 'add_action' ) ) {
             \add_action( 'wpca_cleanup_database', array( $this, 'run_database_cleanup' ) );
             \add_action( 'wpca_cleanup_media', array( $this, 'run_media_cleanup' ) );
@@ -63,7 +62,7 @@ class Cleanup {
      *
      * @return array Cleanup statistics
      */
-    public function get_cleanup_stats() {
+    public function get_cleanup_stats(): array {
         global $wpdb;
         
         $stats = array();
@@ -100,11 +99,9 @@ class Cleanup {
      *
      * @return int Orphaned media count
      */
-    private function get_orphaned_media_count() {
+    private function get_orphaned_media_count(): int {
         global $wpdb;
         
-        // Use a single query to get orphaned media count
-        // This is more efficient than looping through all media files and checking each one individually
         $orphaned_count = $wpdb->get_var( "
             SELECT COUNT(*) 
             FROM {$wpdb->posts} p 
@@ -122,13 +119,8 @@ class Cleanup {
      * @param array $options Cleanup options including transients, orphaned_postmeta, orphaned_termmeta, orphaned_relationships, and expired_crons
      * @return array Cleanup results with success status, message, and cleaned item counts
      * @global $wpdb WordPress database object
-     * @uses $wpdb->prepare() To safely prepare SQL queries
-     * @uses $wpdb->query() To execute deletion queries
-     * @uses \_get_cron_array() To get scheduled cron events
-     * @uses \wp_unschedule_event() To remove expired cron events
-     * @uses \__() To translate strings
      */
-    public function run_database_cleanup( $options = array() ) {
+    public function run_database_cleanup( array $options = array() ): array {
         global $wpdb;
         
         $results = array(
@@ -210,7 +202,7 @@ class Cleanup {
      * @return array Cleanup results with success status, message, and cleaned item counts
      * @global $wpdb WordPress database object
      */
-    public function run_media_cleanup( $options = array() ) {
+    public function run_media_cleanup( array $options = array() ): array {
         global $wpdb;
         
         $results = array(
@@ -219,7 +211,6 @@ class Cleanup {
             'cleaned' => array()
         );
         
-        // Set default options
         $default_options = array(
             'orphaned_media' => true,
             'unused_media' => true,
@@ -229,7 +220,6 @@ class Cleanup {
         
         $options = $this->wp_parse_args( $options, $default_options );
         
-        // Clean orphaned media
         if ( $options['orphaned_media'] ) {
             $orphaned_media = $this->get_orphaned_media();
             
@@ -242,7 +232,6 @@ class Cleanup {
             $results['cleaned']['orphaned_media'] = $deleted;
         }
         
-        // Clean unused media
         if ( $options['unused_media'] ) {
             $unused_media = $this->get_unused_media( $options['media_age_days'] );
             
@@ -255,7 +244,6 @@ class Cleanup {
             $results['cleaned']['unused_media'] = $deleted;
         }
         
-        // Clean duplicate media
         if ( $options['duplicate_media'] ) {
             $duplicates = $this->get_duplicate_media();
             
@@ -279,10 +267,9 @@ class Cleanup {
      * @return array Array of orphaned media post objects
      * @global $wpdb WordPress database object
      */
-    private function get_orphaned_media() {
+    private function get_orphaned_media(): array {
         global $wpdb;
         
-        // Find media that has no references in any postmeta
         $orphaned_media = $wpdb->get_results( "
             SELECT p.ID, p.guid, p.post_title, p.post_date
             FROM {$wpdb->posts} p 
@@ -304,7 +291,7 @@ class Cleanup {
      * @return array Array of unused media post objects
      * @global $wpdb WordPress database object
      */
-    private function get_unused_media( $age_days = 0 ) {
+    private function get_unused_media( int $age_days = 0 ): array {
         global $wpdb;
         
         $age_filter = '';
@@ -313,7 +300,6 @@ class Cleanup {
             $age_filter = $wpdb->prepare( " AND p.post_date < %s", $cutoff_date );
         }
         
-        // Find media that is not used in any published post/page content
         $unused_media = $wpdb->get_results( "
             SELECT DISTINCT p.ID, p.guid, p.post_title, p.post_date
             FROM {$wpdb->posts} p 
@@ -344,10 +330,9 @@ class Cleanup {
      * @return array Array of duplicate media post objects (keeping first, marking others for deletion)
      * @global $wpdb WordPress database object
      */
-    private function get_duplicate_media() {
+    private function get_duplicate_media(): array {
         global $wpdb;
         
-        // Find posts with duplicate filenames (guid or post_name)
         $duplicates = $wpdb->get_results( "
             SELECT p1.ID, p1.guid, p1.post_title, p1.post_name
             FROM {$wpdb->posts} p1
@@ -382,7 +367,7 @@ class Cleanup {
      * @return array Cleanup results
      * @global $wpdb WordPress database object
      */
-    public function run_comments_cleanup( $options = array() ) {
+    public function run_comments_cleanup( array $options = array() ): array {
         global $wpdb;
         
         $results = array(
@@ -391,7 +376,6 @@ class Cleanup {
             'cleaned' => array()
         );
         
-        // Set default options
         $default_options = array(
             'spam_comments' => true,
             'unapproved_comments' => false,
@@ -402,7 +386,6 @@ class Cleanup {
         
         $options = $this->wp_parse_args( $options, $default_options );
         
-        // Clean spam comments
         if ( $options['spam_comments'] ) {
             $spam_count = $wpdb->get_var( "
                 SELECT COUNT(*) 
@@ -410,13 +393,11 @@ class Cleanup {
                 WHERE comment_approved = 'spam'
             " );
             
-            // Delete spam comments using WordPress function
             $deleted = $this->wp_delete_comments_with_status( 'spam' );
             
             $results['cleaned']['spam_comments'] = $deleted;
         }
         
-        // Clean unapproved comments
         if ( $options['unapproved_comments'] ) {
             $unapproved_count = $wpdb->get_var( "
                 SELECT COUNT(*) 
@@ -424,13 +405,11 @@ class Cleanup {
                 WHERE comment_approved = '0'
             " );
             
-            // Delete unapproved comments
             $deleted = $this->wp_delete_comments_with_status( 'unapproved' );
             
             $results['cleaned']['unapproved_comments'] = $deleted;
         }
         
-        // Clean old comments
         if ( $options['old_comments'] > 0 ) {
             $cutoff_date = date( 'Y-m-d H:i:s', strtotime( "-{$options['old_comments']} days" ) );
             
@@ -441,13 +420,11 @@ class Cleanup {
                 AND comment_approved = '1'
             ", $cutoff_date ) );
             
-            // Delete old approved comments
             $deleted = $this->wp_delete_old_comments( $options['old_comments'] );
             
             $results['cleaned']['old_comments'] = $deleted;
         }
         
-        // Clean duplicate comments
         if ( $options['duplicate_comments'] ) {
             $duplicates = $this->get_duplicate_comments();
             
@@ -470,7 +447,7 @@ class Cleanup {
      * @return int Number of comments deleted
      * @global $wpdb WordPress database object
      */
-    private function wp_delete_comments_with_status( $status ) {
+    private function wp_delete_comments_with_status( string $status ): int {
         global $wpdb;
         
         $comment_ids = $wpdb->get_col( $wpdb->prepare( "
@@ -495,7 +472,7 @@ class Cleanup {
      * @return int Number of comments deleted
      * @global $wpdb WordPress database object
      */
-    private function wp_delete_old_comments( $days_old ) {
+    private function wp_delete_old_comments( int $days_old ): int {
         global $wpdb;
         
         $cutoff_date = date( 'Y-m-d H:i:s', strtotime( "-{$days_old} days" ) );
@@ -524,10 +501,9 @@ class Cleanup {
      * @return array Array of duplicate comment objects
      * @global $wpdb WordPress database object
      */
-    private function get_duplicate_comments() {
+    private function get_duplicate_comments(): array {
         global $wpdb;
         
-        // Find comments with duplicate content and IP
         $duplicates = $wpdb->get_results( "
             SELECT c1.comment_ID, c1.comment_content, c1.comment_author_IP, c1.comment_date
             FROM {$wpdb->comments} c1
@@ -548,7 +524,7 @@ class Cleanup {
      * @param array $options Cleanup options
      * @return array Cleanup results
      */
-    public function run_content_cleanup( $options = array() ) {
+    public function run_content_cleanup( array $options = array() ): array {
         global $wpdb;
         
         $results = array(

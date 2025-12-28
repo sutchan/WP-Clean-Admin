@@ -34,35 +34,35 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @var Composer
          */
-        private static $instance;
+        private static ?Composer $instance = null;
         
         /**
          * Composer installed status
          *
          * @var bool
          */
-        private $composer_installed = false;
+        private bool $composer_installed = false;
         
         /**
          * Package information
          *
          * @var array
          */
-        private $package_info = array();
+        private array $package_info = array();
         
         /**
          * Required packages
          *
          * @var array
          */
-        private $required_packages = array();
+        private array $required_packages = array();
         
         /**
          * Optional packages
          *
          * @var array
          */
-        private $optional_packages = array();
+        private array $optional_packages = array();
         
         /**
          * Get singleton instance
@@ -89,7 +89,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return bool
          */
-        private function check_composer_installed() {
+        private function check_composer_installed(): bool {
             return defined( 'COMPOSER_VERSION' ) || class_exists( 'Composer\Autoload\ClassLoader' );
         }
         
@@ -169,7 +169,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return array
          */
-        public function get_package_info() {
+        public function get_package_info(): array {
             return $this->package_info;
         }
         
@@ -224,7 +224,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          * @param string $package Package name
          * @return bool
          */
-        public function is_package_installed( $package ) {
+        public function is_package_installed( string $package ): bool {
             if ( ! $this->composer_installed ) {
                 return false;
             }
@@ -267,7 +267,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return bool
          */
-        public function check_php_requirement() {
+        public function check_php_requirement(): bool {
             $required_php = '7.4.0';
             return version_compare( PHP_VERSION, $required_php, '>=' );
         }
@@ -292,7 +292,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return bool
          */
-        public function load_autoloader() {
+        public function load_autoloader(): bool {
             $config = $this->get_composer_config();
             
             if ( ! empty( $config['autoload_file'] ) && file_exists( $config['autoload_file'] ) ) {
@@ -375,7 +375,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          * @param array $packages Packages to remove
          * @return array Result
          */
-        public function remove_dependencies( $packages = array() ) {
+        public function remove_dependencies( array $packages = array() ): array {
             if ( ! $this->is_composer_mode_enabled() ) {
                 return array(
                     'success' => false,
@@ -435,7 +435,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          * @param string $json JSON string
          * @return bool
          */
-        public function validate_composer_json( $json ) {
+        public function validate_composer_json( string $json ): bool {
             $data = json_decode( $json, true );
             
             if ( json_last_error() !== JSON_ERROR_NONE ) {
@@ -541,7 +541,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return array
          */
-        private function get_required_extensions() {
+        private function get_required_extensions(): array {
             return array(
                 'json' => extension_loaded( 'json' ),
                 'mbstring' => extension_loaded( 'mbstring' ),
