@@ -139,7 +139,8 @@ class AJAX {
     private function verify_ajax_request( $action ) {
         if ( ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( \__( 'Invalid nonce', WPCA_TEXT_DOMAIN ) );
+                echo json_encode( array( 'success' => false, 'data' => \__( 'Invalid nonce', WPCA_TEXT_DOMAIN ) ) );
+                wp_die();
             }
             return false;
         }

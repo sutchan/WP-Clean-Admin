@@ -430,7 +430,7 @@ class Cleanup {
             
             $deleted = 0;
             foreach ( $duplicates as $comment ) {
-                wp_delete_comment( $comment->comment_ID, true );
+                $this->wp_delete_comment( $comment->comment_ID, true );
                 $deleted++;
             }
             
@@ -696,15 +696,6 @@ class Cleanup {
         if ( isset( $shortcode_tags ) && is_array( $shortcode_tags ) ) {
             return array_keys( $shortcode_tags );
         }
-        return array();
-    }
-    
-    /**
-     * Get orphaned shortcodes
-     *
-     * @return array Orphaned shortcodes
-     */
-    public function get_orphaned_shortcodes() {
         return array();
     }
     

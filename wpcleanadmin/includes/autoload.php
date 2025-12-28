@@ -12,6 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// Load Composer stub for IDE support
+require_once __DIR__ . '/composer-stub.php';
+
 /**
  * Register autoloader for WPCleanAdmin classes
  */

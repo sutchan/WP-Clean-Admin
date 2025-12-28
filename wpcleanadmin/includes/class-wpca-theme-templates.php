@@ -310,7 +310,7 @@ class Theme_Templates {
         $settings = wpca_get_settings();
         
         $template = array(
-            'id' => sanitize_title_with_dashes( $name ),
+            'id' => sanitize_key( $name ),
             'name' => sanitize_text_field( $name ),
             'description' => sanitize_text_field( $description ),
             'preview_color' => '#4a9dec',

@@ -206,7 +206,12 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
             // Check for installed packages
             if ( class_exists( 'Composer\InstalledVersions' ) ) {
                 try {
-                    $installed = \Composer\InstalledVersions::getAllInstalledPackages();
+                    $installed = array();
+                    if (method_exists('Composer\InstalledVersions', 'getInstalledPackages')) {
+                        $installed = \Composer\InstalledVersions::getInstalledPackages();
+                    } elseif (method_exists('Composer\InstalledVersions', 'getAllInstalledPackages')) {
+                        $installed = \Composer\InstalledVersions::getAllInstalledPackages();
+                    }
                     foreach ( $installed as $package ) {
                         $packages[ $package ] = \Composer\InstalledVersions::getVersion( $package );
                     }

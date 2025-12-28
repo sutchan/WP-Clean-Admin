@@ -117,7 +117,11 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
             $cleared = 0;
             
             if ( class_exists( '\Elementor\Plugin' ) ) {
-                $elementor = \Elementor\Plugin::instance();
+                if ( class_exists( 'Elementor\Plugin' ) ) {
+                    $elementor = \Elementor\Plugin::instance();
+                } else {
+                    $elementor = null;
+                }
                 
                 if ( method_exists( $elementor->files_manager, 'clear_cache' ) ) {
                     $elementor->files_manager->clear_cache();
@@ -140,7 +144,7 @@ if ( ! class_exists( 'WPCleanAdmin\Elementor' ) ) {
             " );
             
             foreach ( $transients as $transient ) {
-                delete_transient( str_replace( '_transient_', '', $transient ) );
+                \delete_transient( str_replace( '_transient_', '', $transient ) );
                 $cleared++;
             }
             

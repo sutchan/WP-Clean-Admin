@@ -89,7 +89,8 @@ function wpca_current_user_can() {
  * @return string Full plugin URL
  */
 function wpca_get_plugin_url( $path = '' ) {
-    return function_exists( 'untrailingslashit' ) ? \untrailingslashit( WPCA_PLUGIN_URL ) . $path : WPCA_PLUGIN_URL . $path;
+    $url = rtrim(WPCA_PLUGIN_URL, '/');
+    return $url . '/' . ltrim($path, '/');
 }
 
 /**
@@ -99,7 +100,8 @@ function wpca_get_plugin_url( $path = '' ) {
  * @return string Full plugin directory path
  */
 function wpca_get_plugin_dir( $path = '' ) {
-    return function_exists( 'untrailingslashit' ) ? \untrailingslashit( WPCA_PLUGIN_DIR ) . $path : WPCA_PLUGIN_DIR . $path;
+    $dir = rtrim( WPCA_PLUGIN_DIR, '/' );
+    return $dir . '/' . ltrim( $path, '/' );
 }
 
 /**
