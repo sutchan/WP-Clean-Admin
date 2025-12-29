@@ -149,19 +149,25 @@ class Cleanup {
         
         // Clean orphaned postmeta
         if ( $options['orphaned_postmeta'] ) {
-            $deleted = $wpdb->query( "DELETE pm FROM {$wpdb->postmeta} pm LEFT JOIN {$wpdb->posts} p ON pm.post_id = p.ID WHERE p.ID IS NULL" );
+            $deleted = $wpdb->query( $wpdb->prepare(
+                "DELETE pm FROM {$wpdb->postmeta} pm LEFT JOIN {$wpdb->posts} p ON pm.post_id = p.ID WHERE p.ID IS NULL"
+            ) );
             $results['cleaned']['orphaned_postmeta'] = $deleted;
         }
         
         // Clean orphaned termmeta
         if ( $options['orphaned_termmeta'] ) {
-            $deleted = $wpdb->query( "DELETE tm FROM {$wpdb->termmeta} tm LEFT JOIN {$wpdb->terms} t ON tm.term_id = t.term_id WHERE t.term_id IS NULL" );
+            $deleted = $wpdb->query( $wpdb->prepare(
+                "DELETE tm FROM {$wpdb->termmeta} tm LEFT JOIN {$wpdb->terms} t ON tm.term_id = t.term_id WHERE t.term_id IS NULL"
+            ) );
             $results['cleaned']['orphaned_termmeta'] = $deleted;
         }
         
         // Clean orphaned relationships
         if ( $options['orphaned_relationships'] ) {
-            $deleted = $wpdb->query( "DELETE tr FROM {$wpdb->term_relationships} tr LEFT JOIN {$wpdb->posts} p ON tr.object_id = p.ID WHERE p.ID IS NULL" );
+            $deleted = $wpdb->query( $wpdb->prepare(
+                "DELETE tr FROM {$wpdb->term_relationships} tr LEFT JOIN {$wpdb->posts} p ON tr.object_id = p.ID WHERE p.ID IS NULL"
+            ) );
             $results['cleaned']['orphaned_relationships'] = $deleted;
         }
         

@@ -26,14 +26,14 @@ class Resources {
      *
      * @var Resources
      */
-    private static $instance;
+    private static ?Resources $instance = null;
     
     /**
      * Get singleton instance
      *
      * @return Resources
      */
-    public static function getInstance() {
+    public static function getInstance(): Resources {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }
@@ -50,7 +50,7 @@ class Resources {
     /**
      * Initialize the resources module
      */
-    public function init() {
+    public function init(): void {
         // Add resources hooks
         if ( function_exists( 'add_action' ) ) {
             \add_action( 'wp_enqueue_scripts', array( $this, 'optimize_frontend_resources' ), 999 );
@@ -61,7 +61,7 @@ class Resources {
     /**
      * Optimize frontend resources
      */
-    public function optimize_frontend_resources() {
+    public function optimize_frontend_resources(): void {
         // Load settings
         $settings = wpca_get_settings();
         
@@ -113,7 +113,7 @@ class Resources {
     /**
      * Optimize admin resources
      */
-    public function optimize_admin_resources() {
+    public function optimize_admin_resources(): void {
         // Load settings
         $settings = wpca_get_settings();
         
@@ -129,7 +129,7 @@ class Resources {
     /**
      * Remove unnecessary admin resources
      */
-    public function remove_unnecessary_admin_resources() {
+    public function remove_unnecessary_admin_resources(): void {
         // Remove WordPress welcome panel
         if ( function_exists( 'remove_action' ) ) {
             \remove_action( 'welcome_panel', 'wp_welcome_panel' );
@@ -153,7 +153,7 @@ class Resources {
      *
      * @return array Resources statistics
      */
-    public function get_resources_stats() {
+    public function get_resources_stats(): array {
         $stats = array();
         
         // Get enqueued scripts count
@@ -179,7 +179,7 @@ class Resources {
      * @param string $type Resource type (scripts or styles)
      * @return array Resource details
      */
-    public function get_resource_details( $type = 'scripts' ) {
+    public function get_resource_details( string $type = 'scripts' ): array {
         $details = array();
         
         if ( $type === 'scripts' ) {
@@ -221,7 +221,7 @@ class Resources {
      * @param array $options Optimization options
      * @return array Optimization results
      */
-    public function optimize_resources( $options = array() ) {
+    public function optimize_resources( array $options = array() ): array {
         $results = array(
             'success' => true,
             'message' => \__( 'Resources optimized successfully', WPCA_TEXT_DOMAIN ),
