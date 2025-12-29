@@ -30,6 +30,9 @@ if ( ! defined( 'WPCA_TEXT_DOMAIN' ) ) {
     define( 'WPCA_TEXT_DOMAIN', 'wp-clean-admin' );
 }
 
+// Include PHPUnit stub for testing
+require_once __DIR__ . '/phpunit-stub.php';
+
 // Include WordPress stubs for testing
 require_once ABSPATH . 'wpcleanadmin/includes/wpca-wordpress-stubs.php';
 

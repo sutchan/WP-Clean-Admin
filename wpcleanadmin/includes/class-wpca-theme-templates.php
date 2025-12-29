@@ -50,7 +50,7 @@ class Theme_Templates {
     /**
      * Constructor
      */
-    private function __construct(): void {
+    private function __construct() {
         $this->register_default_templates();
     }
     

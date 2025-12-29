@@ -35,6 +35,12 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          * @var Composer
          */
         /** @deprecated 仅用于 v2.0.0+，当前版本请勿使用 */
+        /**
+         * Singleton instance
+         *
+         * @var Composer|null
+         * @deprecated 仅用于 v2.0.0+，当前版本请勿使用
+         */
         private static ?Composer $instance = null;
         
         /**
@@ -85,7 +91,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
         /**
          * Constructor
          */
-        private function __construct(): void {
+        private function __construct() {
             $this->composer_installed = $this->check_composer_installed();
             $this->initialize_packages();
         }

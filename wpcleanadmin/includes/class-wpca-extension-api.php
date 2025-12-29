@@ -65,7 +65,7 @@ class Extension_API {
     /**
      * Constructor
      */
-    private function __construct(): void {
+    private function __construct() {
         $this->init();
     }
     
