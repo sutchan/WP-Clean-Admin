@@ -24,14 +24,14 @@ class Database_Settings {
      *
      * @var Database_Settings
      */
-    private static $instance;
+    private static ?Database_Settings $instance = null;
     
     /**
      * Get singleton instance
      *
      * @return Database_Settings
      */
-    public static function getInstance() {
+    public static function getInstance(): Database_Settings {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }
@@ -48,7 +48,7 @@ class Database_Settings {
     /**
      * Initialize the database settings module
      */
-    public function init() {
+    public function init(): void {
         // Register settings
         if ( function_exists( 'add_action' ) ) {
             \add_action( 'admin_init', array( $this, 'register_settings' ) );
@@ -58,7 +58,7 @@ class Database_Settings {
     /**
      * Register database settings
      */
-    public function register_settings() {
+    public function register_settings(): void {
         // Register database settings section
         if ( function_exists( 'add_settings_section' ) ) {
             \add_settings_section(
@@ -107,14 +107,14 @@ class Database_Settings {
     /**
      * Settings section callback
      */
-    public function settings_section_callback() {
+    public function settings_section_callback(): void {
         echo '<p>' . \__( 'Configure database optimization and maintenance settings.', WPCA_TEXT_DOMAIN ) . '</p>';
     }
     
     /**
      * Optimize database field callback
      */
-    public function optimize_database_field_callback() {
+    public function optimize_database_field_callback(): void {
         $settings = $this->get_settings();
         $checked = isset( $settings['optimize_database'] ) && $settings['optimize_database'] ? 'checked' : '';
         echo '<input type="checkbox" name="wpca_database_settings[optimize_database]" id="wpca_optimize_database" value="1" ' . $checked . '>';
@@ -124,7 +124,7 @@ class Database_Settings {
     /**
      * Clean transients field callback
      */
-    public function clean_transients_field_callback() {
+    public function clean_transients_field_callback(): void {
         $settings = $this->get_settings();
         $checked = isset( $settings['clean_transients'] ) && $settings['clean_transients'] ? 'checked' : '';
         echo '<input type="checkbox" name="wpca_database_settings[clean_transients]" id="wpca_clean_transients" value="1" ' . $checked . '>';
@@ -134,7 +134,7 @@ class Database_Settings {
     /**
      * Enable backups field callback
      */
-    public function enable_backups_field_callback() {
+    public function enable_backups_field_callback(): void {
         $settings = $this->get_settings();
         $checked = isset( $settings['enable_backups'] ) && $settings['enable_backups'] ? 'checked' : '';
         echo '<input type="checkbox" name="wpca_database_settings[enable_backups]" id="wpca_enable_backups" value="1" ' . $checked . '>';
@@ -146,7 +146,7 @@ class Database_Settings {
      *
      * @return array Database settings
      */
-    public function get_settings() {
+    public function get_settings(): array {
         $settings = ( function_exists( 'get_option' ) ? \get_option( 'wpca_database_settings', array() ) : array() );
         
         $default_settings = array(
@@ -164,7 +164,7 @@ class Database_Settings {
      * @param array $settings Settings to save
      * @return bool Save result
      */
-    public function save_settings( $settings ) {
+    public function save_settings( array $settings ): bool {
         return ( function_exists( 'update_option' ) ? \update_option( 'wpca_database_settings', $settings ) : false );
     }
     
@@ -173,7 +173,7 @@ class Database_Settings {
      *
      * @return bool Reset result
      */
-    public function reset_settings() {
+    public function reset_settings(): bool {
         return ( function_exists( 'delete_option' ) ? \delete_option( 'wpca_database_settings' ) : false );
     }
 }

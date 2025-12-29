@@ -26,7 +26,7 @@ class Theme_Templates {
      *
      * @var Theme_Templates
      */
-    private static $instance;
+    private static ?Theme_Templates $instance = null;
     
     /**
      * Registered templates
@@ -40,7 +40,7 @@ class Theme_Templates {
      *
      * @return Theme_Templates
      */
-    public static function getInstance() {
+    public static function getInstance(): Theme_Templates {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }
@@ -50,7 +50,7 @@ class Theme_Templates {
     /**
      * Constructor
      */
-    private function __construct() {
+    private function __construct(): void {
         $this->register_default_templates();
     }
     
@@ -59,7 +59,7 @@ class Theme_Templates {
      *
      * @return void
      */
-    private function register_default_templates() {
+    private function register_default_templates(): void {
         $this->templates = array(
             'minimal' => array(
                 'id' => 'minimal',
@@ -235,7 +235,7 @@ class Theme_Templates {
             ),
         );
         
-        $this->templates = apply_filters( 'wpca_register_templates', $this->templates );
+        $this->templates = \apply_filters( 'wpca_register_templates', $this->templates );
     }
     
     /**
@@ -243,7 +243,7 @@ class Theme_Templates {
      *
      * @return array Registered templates
      */
-    public function get_templates() {
+    public function get_templates(): array {
         return $this->templates;
     }
     
@@ -253,7 +253,7 @@ class Theme_Templates {
      * @param string $template_id Template ID
      * @return array|null Template data or null
      */
-    public function get_template( $template_id ) {
+    public function get_template( string $template_id ): ?array {
         $template_id = sanitize_key( $template_id );
         
         return isset( $this->templates[ $template_id ] ) ? $this->templates[ $template_id ] : null;
@@ -265,7 +265,7 @@ class Theme_Templates {
      * @param string $template_id Template ID
      * @return array Result with success status
      */
-    public function apply_template( $template_id ) {
+    public function apply_template( string $template_id ): array {
         $template = $this->get_template( $template_id );
         
         if ( ! $template ) {
@@ -306,7 +306,7 @@ class Theme_Templates {
      * @param string $description Template description
      * @return array Exported template data
      */
-    public function export_current_as_template( $name, $description = '' ) {
+    public function export_current_as_template( string $name, string $description = '' ): array {
         $settings = wpca_get_settings();
         
         $template = array(
@@ -328,7 +328,7 @@ class Theme_Templates {
      * @param array $template_data Template data to import
      * @return array Result with success status
      */
-    public function import_template( $template_data ) {
+    public function import_template( array $template_data ): array {
         if ( ! isset( $template_data['settings'] ) || ! is_array( $template_data['settings'] ) ) {
             return array(
                 'success' => false,
@@ -362,7 +362,7 @@ class Theme_Templates {
      *
      * @return array Template categories
      */
-    public function get_categories() {
+    public function get_categories(): array {
         return array(
             'all' => array(
                 'id' => 'all',
@@ -392,7 +392,7 @@ class Theme_Templates {
      *
      * @return array Featured templates
      */
-    public function get_featured() {
+    public function get_featured(): array {
         return array( 'developer', 'business', 'security_first' );
     }
     
@@ -401,7 +401,7 @@ class Theme_Templates {
      *
      * @return int Template count
      */
-    public function get_count() {
+    public function get_count(): int {
         return count( $this->templates );
     }
     
@@ -411,7 +411,7 @@ class Theme_Templates {
      * @param string $query Search query
      * @return array Matching templates
      */
-    public function search_templates( $query ) {
+    public function search_templates( string $query ): array {
         $query = strtolower( sanitize_text_field( $query ) );
         $results = array();
         
@@ -432,7 +432,7 @@ class Theme_Templates {
      * @param array $data Template data to validate
      * @return bool True if valid
      */
-    public function validate_template( $data ) {
+    public function validate_template( array $data ): bool {
         if ( ! isset( $data['settings'] ) || ! is_array( $data['settings'] ) ) {
             return false;
         }
@@ -449,7 +449,7 @@ class Theme_Templates {
      *
      * @return string Default template ID
      */
-    public function get_default_template() {
+    public function get_default_template(): string {
         return 'minimal';
     }
     
@@ -459,7 +459,7 @@ class Theme_Templates {
      * @param string $template_id Template ID
      * @return string CSS styles
      */
-    public function get_preview_styles( $template_id ) {
+    public function get_preview_styles( string $template_id ): string {
         $template = $this->get_template( $template_id );
         
         if ( ! $template ) {
@@ -478,7 +478,7 @@ class Theme_Templates {
      * @param int $percent Adjustment percentage
      * @return string Adjusted hex color
      */
-    private function adjust_color_brightness( $color, $percent ) {
+    private function adjust_color_brightness( string $color, int $percent ): string {
         $color = ltrim( $color, '#' );
         $num = hexdec( $color );
         
@@ -501,7 +501,7 @@ class Theme_Templates {
  * @param string $template_id Template ID to apply
  * @return array Result
  */
-function wpca_apply_template( $template_id ) {
+function wpca_apply_template( string $template_id ): array {
     $templates = Theme_Templates::getInstance();
     return $templates->apply_template( $template_id );
 }
@@ -511,6 +511,6 @@ function wpca_apply_template( $template_id ) {
  *
  * @return Theme_Templates
  */
-function wpca_get_theme_templates() {
+function wpca_get_theme_templates(): Theme_Templates {
     return Theme_Templates::getInstance();
 }

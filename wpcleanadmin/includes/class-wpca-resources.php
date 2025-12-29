@@ -43,7 +43,7 @@ class Resources {
     /**
      * Constructor
      */
-    private function __construct() {
+    private function __construct(): void {
         $this->init();
     }
     
@@ -273,7 +273,7 @@ class Resources {
      * @param string $tag CSS tag
      * @return string Modified tag
      */
-    public function minify_css( $tag ) {
+    public function minify_css( string $tag ): string {
         // This is a placeholder for actual CSS minification
         return $tag;
     }
@@ -284,7 +284,7 @@ class Resources {
      * @param string $tag JS tag
      * @return string Modified tag
      */
-    public function minify_js( $tag ) {
+    public function minify_js( string $tag ): string {
         // This is a placeholder for actual JS minification
         return $tag;
     }
@@ -296,7 +296,7 @@ class Resources {
      * @param string $handle Script handle
      * @return string Modified tag
      */
-    public function add_defer_attribute( $tag, $handle ) {
+    public function add_defer_attribute( string $tag, string $handle ): string {
         // Add defer attribute to all scripts except jQuery
         if ( 'jquery' !== $handle ) {
             return str_replace( ' src', ' defer src', $tag );
@@ -311,7 +311,7 @@ class Resources {
      * @param string $handle Script handle
      * @return string Modified tag
      */
-    public function add_async_attribute( $tag, $handle ) {
+    public function add_async_attribute( string $tag, string $handle ): string {
         // Add async attribute to all scripts except jQuery
         if ( 'jquery' !== $handle ) {
             return str_replace( ' src', ' async src', $tag );
@@ -326,7 +326,7 @@ class Resources {
      * @param string $handle Resource handle
      * @return array Disable result
      */
-    public function disable_resource( $type, $handle ) {
+    public function disable_resource( string $type, string $handle ): array {
         $results = array(
             'success' => true,
             'message' => \__( 'Resource disabled successfully', WPCA_TEXT_DOMAIN )
@@ -358,7 +358,7 @@ class Resources {
      * @param string $handle Resource handle
      * @return array Enable result
      */
-    public function enable_resource( $type, $handle ) {
+    public function enable_resource( string $type, string $handle ): array {
         $results = array(
             'success' => true,
             'message' => \__( 'Resource enabled successfully', WPCA_TEXT_DOMAIN )

@@ -35,7 +35,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          * @var Composer
          */
         /** @deprecated 仅用于 v2.0.0+，当前版本请勿使用 */
-        private static $instance = null;
+        private static ?Composer $instance = null;
         
         /**
          * Composer installed status
@@ -70,7 +70,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return Composer
          */
-        public static function getInstance() {
+        public static function getInstance(): Composer {
             if ( ! isset( self::$instance ) ) {
                 trigger_error(
                     'WPCleanAdmin\Composer 已废弃，当前版本请勿使用。此功能仅用于 v2.0.0+。',
@@ -85,7 +85,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
         /**
          * Constructor
          */
-        private function __construct() {
+        private function __construct(): void {
             $this->composer_installed = $this->check_composer_installed();
             $this->initialize_packages();
         }
@@ -104,7 +104,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return void
          */
-        private function initialize_packages() {
+        private function initialize_packages(): void {
             $this->required_packages = array(
                 'php' => array(
                     'version' => '>=7.4',
@@ -157,8 +157,8 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return bool
          */
-        public function is_composer_mode_enabled() {
-            return apply_filters( 'wpca_composer_mode_enabled', false );
+        public function is_composer_mode_enabled(): bool {
+            return \apply_filters( 'wpca_composer_mode_enabled', false );
         }
         
         /**
@@ -166,7 +166,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return bool
          */
-        public function is_composer_available() {
+        public function is_composer_available(): bool {
             return $this->composer_installed;
         }
         
@@ -184,7 +184,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return array
          */
-        public function get_required_packages() {
+        public function get_required_packages(): array {
             return $this->required_packages;
         }
         
@@ -193,7 +193,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return array
          */
-        public function get_optional_packages() {
+        public function get_optional_packages(): array {
             return $this->optional_packages;
         }
         
@@ -202,7 +202,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return array
          */
-        public function get_installed_packages() {
+        public function get_installed_packages(): array {
             if ( ! $this->composer_installed ) {
                 return array();
             }
@@ -258,7 +258,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          * @param string $package Package name
          * @return string|null
          */
-        public function get_package_version( $package ) {
+        public function get_package_version( string $package ): ?string {
             if ( ! $this->is_package_installed( $package ) ) {
                 return null;
             }
@@ -289,14 +289,14 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return array
          */
-        public function get_composer_config() {
+        public function get_composer_config(): array {
             $config = array(
                 'vendor_dir' => defined( 'WPCA_COMPOSER_VENDOR_DIR' ) ? WPCA_COMPOSER_VENDOR_DIR : WP_CONTENT_DIR . '/vendor',
                 'autoload_file' => defined( 'WPCA_COMPOSER_AUTOLOADER' ) ? WPCA_COMPOSER_AUTOLOADER : null,
                 'bin_dir' => defined( 'WPCA_COMPOSER_BIN_DIR' ) ? WPCA_COMPOSER_BIN_DIR : null,
             );
             
-            return apply_filters( 'wpca_composer_config', $config );
+            return \apply_filters( 'wpca_composer_config', $config );
         }
         
         /**
@@ -320,7 +320,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return string
          */
-        public function generate_composer_json() {
+        public function generate_composer_json(): string {
             $json = array(
                 'name' => $this->package_info['name'],
                 'description' => $this->package_info['description'],
@@ -359,7 +359,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          * @param array $packages Packages to install
          * @return array Result
          */
-        public function install_dependencies( $packages = array() ) {
+        public function install_dependencies( array $packages = array() ): array {
             if ( ! $this->is_composer_mode_enabled() ) {
                 return array(
                     'success' => false,
@@ -408,7 +408,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          * @param array $packages Packages to update
          * @return array Result
          */
-        public function update_dependencies( $packages = array() ) {
+        public function update_dependencies( array $packages = array() ): array {
             if ( ! $this->is_composer_mode_enabled() ) {
                 return array(
                     'success' => false,
@@ -428,7 +428,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return array
          */
-        public function get_dependency_status() {
+        public function get_dependency_status(): array {
             $status = array(
                 'composer_mode_enabled' => $this->is_composer_mode_enabled(),
                 'composer_available' => $this->composer_installed,
@@ -438,7 +438,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
                 'optional_packages' => $this->optional_packages,
             );
             
-            return apply_filters( 'wpca_dependency_status', $status );
+            return \apply_filters( 'wpca_dependency_status', $status );
         }
         
         /**
@@ -470,7 +470,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return string
          */
-        public function generate_lock_content() {
+        public function generate_lock_content(): string {
             $lock = array(
                 '_readme' => 'This file is generated by WPCleanAdmin. Do not edit directly.',
                 'content-hash' => md5( $this->generate_composer_json() ),
@@ -491,8 +491,8 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return int
          */
-        public function get_optimization_level() {
-            return (int) apply_filters( 'wpca_composer_optimization_level', 1 );
+        public function get_optimization_level(): int {
+            return (int) \apply_filters( 'wpca_composer_optimization_level', 1 );
         }
         
         /**
@@ -500,7 +500,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return array Result
          */
-        public function dump_autoloader() {
+        public function dump_autoloader(): array {
             if ( ! $this->is_composer_mode_enabled() ) {
                 return array(
                     'success' => false,
@@ -520,7 +520,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @return array
          */
-        public function get_compatibility_report() {
+        public function get_compatibility_report(): array {
             $report = array(
                 'php_version' => PHP_VERSION,
                 'php_compatible' => $this->check_php_requirement(),

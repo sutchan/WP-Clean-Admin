@@ -30,14 +30,14 @@ class Performance_Settings {
      *
      * @var Performance_Settings
      */
-    private static $instance;
+    private static ?Performance_Settings $instance = null;
     
     /**
      * Get singleton instance
      *
      * @return Performance_Settings
      */
-    public static function getInstance() {
+    public static function getInstance(): Performance_Settings {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }
@@ -54,7 +54,7 @@ class Performance_Settings {
     /**
      * Initialize the performance settings module
      */
-    public function init() {
+    public function init(): void {
         // Register settings
         \add_action( 'admin_init', array( $this, 'register_settings' ) );
     }
@@ -62,7 +62,7 @@ class Performance_Settings {
     /**
      * Register performance settings
      */
-    public function register_settings() {
+    public function register_settings(): void {
         // Register performance settings section
         \add_settings_section(
             'wpca_performance_settings',
@@ -132,14 +132,14 @@ class Performance_Settings {
     /**
      * Settings section callback
      */
-    public function settings_section_callback() {
+    public function settings_section_callback(): void {
         echo '<p>' . \__( 'Configure performance optimization settings to improve your website speed.', WPCA_TEXT_DOMAIN ) . '</p>';
     }
     
     /**
      * Disable emojis field callback
      */
-    public function disable_emojis_field_callback() {
+    public function disable_emojis_field_callback(): void {
         $settings = $this->get_settings();
         $checked = isset( $settings['disable_emojis'] ) && $settings['disable_emojis'] ? 'checked' : '';
         echo '<input type="checkbox" name="wpca_performance_settings[disable_emojis]" id="wpca_disable_emojis" value="1" ' . $checked . '>';
@@ -149,7 +149,7 @@ class Performance_Settings {
     /**
      * Disable embeds field callback
      */
-    public function disable_embeds_field_callback() {
+    public function disable_embeds_field_callback(): void {
         $settings = $this->get_settings();
         $checked = isset( $settings['disable_embeds'] ) && $settings['disable_embeds'] ? 'checked' : '';
         echo '<input type="checkbox" name="wpca_performance_settings[disable_embeds]" id="wpca_disable_embeds" value="1" ' . $checked . '>';
@@ -159,7 +159,7 @@ class Performance_Settings {
     /**
      * Disable XML-RPC field callback
      */
-    public function disable_xmlrpc_field_callback() {
+    public function disable_xmlrpc_field_callback(): void {
         $settings = $this->get_settings();
         $checked = isset( $settings['disable_xmlrpc'] ) && $settings['disable_xmlrpc'] ? 'checked' : '';
         echo '<input type="checkbox" name="wpca_performance_settings[disable_xmlrpc]" id="wpca_disable_xmlrpc" value="1" ' . $checked . '>';
@@ -169,7 +169,7 @@ class Performance_Settings {
     /**
      * Disable REST API field callback
      */
-    public function disable_rest_api_field_callback() {
+    public function disable_rest_api_field_callback(): void {
         $settings = $this->get_settings();
         $checked = isset( $settings['disable_rest_api'] ) && $settings['disable_rest_api'] ? 'checked' : '';
         echo '<input type="checkbox" name="wpca_performance_settings[disable_rest_api]" id="wpca_disable_rest_api" value="1" ' . $checked . '>';
@@ -179,7 +179,7 @@ class Performance_Settings {
     /**
      * Disable jQuery migrate field callback
      */
-    public function disable_jquery_migrate_field_callback() {
+    public function disable_jquery_migrate_field_callback(): void {
         $settings = $this->get_settings();
         $checked = isset( $settings['disable_jquery_migrate'] ) && $settings['disable_jquery_migrate'] ? 'checked' : '';
         echo '<input type="checkbox" name="wpca_performance_settings[disable_jquery_migrate]" id="wpca_disable_jquery_migrate" value="1" ' . $checked . '>';
@@ -189,7 +189,7 @@ class Performance_Settings {
     /**
      * Lazy load images field callback
      */
-    public function lazy_load_images_field_callback() {
+    public function lazy_load_images_field_callback(): void {
         $settings = $this->get_settings();
         $checked = isset( $settings['lazy_load_images'] ) && $settings['lazy_load_images'] ? 'checked' : '';
         echo '<input type="checkbox" name="wpca_performance_settings[lazy_load_images]" id="wpca_lazy_load_images" value="1" ' . $checked . '>';
@@ -201,7 +201,7 @@ class Performance_Settings {
      *
      * @return array Performance settings
      */
-    public function get_settings() {
+    public function get_settings(): array {
         $settings = \get_option( 'wpca_performance_settings', array() );
         
         $default_settings = array(
@@ -222,7 +222,7 @@ class Performance_Settings {
      * @param array $settings Settings to save
      * @return bool Save result
      */
-    public function save_settings( $settings ) {
+    public function save_settings( array $settings ): bool {
         return \update_option( 'wpca_performance_settings', $settings );
     }
     
@@ -231,7 +231,7 @@ class Performance_Settings {
      *
      * @return bool Reset result
      */
-    public function reset_settings() {
+    public function reset_settings(): bool {
         return \delete_option( 'wpca_performance_settings' );
     }
 }
