@@ -61,7 +61,7 @@ class Helpers {
      *
      * @return Helpers
      */
-    public static function getInstance() {
+    public static function getInstance(): Helpers {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }
@@ -100,7 +100,7 @@ class Helpers {
      * @param int $seconds Seconds to format
      * @return string Human readable time
      */
-    public function format_seconds( $seconds ) {
+    public function format_seconds( int $seconds ): string {
         $days = floor( $seconds / 86400 );
         $hours = floor( ( $seconds % 86400 ) / 3600 );
         $minutes = floor( ( $seconds % 3600 ) / 60 );
@@ -159,7 +159,7 @@ class Helpers {
      *
      * @return string WordPress version
      */
-    public function get_wp_version() {
+    public function get_wp_version(): string {
         global $wp_version;
         return $wp_version;
     }
@@ -169,7 +169,7 @@ class Helpers {
      *
      * @return string PHP version
      */
-    public function get_php_version() {
+    public function get_php_version(): string {
         return PHP_VERSION;
     }
     
@@ -188,7 +188,7 @@ class Helpers {
      *
      * @return string Server information
      */
-    public function get_server_info() {
+    public function get_server_info(): string {
         return $_SERVER['SERVER_SOFTWARE'];
     }
     
@@ -228,7 +228,7 @@ class Helpers {
      * @param array $data Data to sanitize
      * @return array Sanitized data
      */
-    public function sanitize_array( $data ) {
+    public function sanitize_array( array $data ): array {
         if ( ! is_array( $data ) ) {
             return \sanitize_text_field( $data );
         }

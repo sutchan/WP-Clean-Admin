@@ -31,7 +31,7 @@ class Reset {
      *
      * @return Reset
      */
-    public static function getInstance() {
+    public static function getInstance(): Reset {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }
@@ -139,7 +139,7 @@ class Reset {
      * @param string $module Module name
      * @return array Reset results
      */
-    public function reset_module_settings( $module ) {
+    public function reset_module_settings( string $module ): array {
         $results = array(
             'success' => true,
             'message' => sprintf( \__( '%s module settings reset successfully', WPCA_TEXT_DOMAIN ), ucfirst( $module ) )

@@ -34,7 +34,7 @@ class i18n {
      *
      * @var i18n
      */
-    private static $instance;
+    private static ?i18n $instance = null;
     
     /**
      * Get singleton instance
@@ -58,7 +58,7 @@ class i18n {
     /**
      * Initialize the i18n module
      */
-    public function init() {
+    public function init(): void {
         // Add i18n hooks
         if ( function_exists( 'add_action' ) ) {
             \add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
@@ -101,7 +101,7 @@ class i18n {
      * @param int $number Number
      * @return string Translated string
      */
-    public function translate_plural( $single, $plural, $number ) {
+    public function translate_plural( string $single, string $plural, int $number ): string {
         return ( function_exists( '_n' ) ? \_n( $single, $plural, $number, WPCA_TEXT_DOMAIN ) : ( $number === 1 ? $single : $plural ) );
     }
     
@@ -143,7 +143,7 @@ class i18n {
      *
      * @return string Current language
      */
-    public function get_current_language() {
+    public function get_current_language(): string {
         $locale = ( function_exists( 'get_locale' ) ? \get_locale() : 'en_US' );
         return substr( $locale, 0, 2 );
     }

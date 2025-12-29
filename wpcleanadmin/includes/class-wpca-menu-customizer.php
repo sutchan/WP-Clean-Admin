@@ -67,7 +67,7 @@ class Menu_Customizer {
     /**
      * Customize admin menu
      */
-    public function customize_admin_menu() {
+    public function customize_admin_menu(): void {
         global $menu, $submenu;
         
         // Load settings
