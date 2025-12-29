@@ -228,9 +228,9 @@ class Helpers {
      * @param array $data Data to sanitize
      * @return array Sanitized data
      */
-    public function sanitize_array( array $data ): array {
+    public function sanitize_array( $data ): array {
         if ( ! is_array( $data ) ) {
-            return \sanitize_text_field( $data );
+            return array();
         }
         
         foreach ( $data as &$value ) {
@@ -527,10 +527,9 @@ class Helpers {
      * Check user capabilities
      *
      * @param string $capability Required capability
-     * @param int $user_id User ID (optional)
      * @return bool True if user has capability
      */
-    public function check_capability( $capability, $user_id = null ) {
+    public function check_capability( $capability ) {
         if ( ! \current_user_can( $capability ) ) {
             return false;
         }
@@ -581,10 +580,9 @@ class Helpers {
     /**
      * Clear error logs
      *
-     * @param string $log_type Type of log to clear
      * @return bool Success status
      */
-    public function clear_logs( $log_type = 'all' ) {
+    public function clear_logs() {
         $this->log( 'Logs cleared by user', 'log-clear' );
         return true;
     }
