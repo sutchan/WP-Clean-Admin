@@ -3,10 +3,10 @@
  * WP Clean Admin - WordPress Admin Cleanup and Optimization Plugin
  *
  * @package WPCleanAdmin
- * @version 1.7.15
+ * @version 1.8.0
  * @author Sut
  * @author URI: https://github.com/sutchan
- * @since 1.7.15
+ * @since 1.8.0
  */
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants
-define( 'WPCA_VERSION', '1.7.15' );
+define( 'WPCA_VERSION', '1.8.0' );
 define( 'WPCA_PLUGIN_DIR', ( function_exists( 'plugin_dir_path' ) ? plugin_dir_path( __FILE__ ) : dirname( __FILE__ ) . '/' ) );
 define( 'WPCA_PLUGIN_URL', ( function_exists( 'plugin_dir_url' ) ? plugin_dir_url( __FILE__ ) : '' ) );
 define( 'WPCA_TEXT_DOMAIN', 'wp-clean-admin' );

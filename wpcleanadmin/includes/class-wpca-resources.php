@@ -43,7 +43,7 @@ class Resources {
     /**
      * Constructor
      */
-    private function __construct(): void {
+    private function __construct() {
         $this->init();
     }
     
