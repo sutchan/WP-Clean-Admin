@@ -8,9 +8,7 @@
  * @author URI: https://github.com/sutchan
  * @since 1.7.15
  */
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+// ABSPATH check removed to ensure stub functions are always available for IDE
 
 // WordPress core constants for database query results
 define( 'OBJECT', 'OBJECT' );
@@ -389,6 +387,91 @@ function is_plugin_active( $plugin ) {
  * @param array $callback_args Callback arguments
  */
 function wp_add_dashboard_widget( $widget_id, $widget_name, $callback, $control_callback = null, $callback_args = null ) {
+}
+
+/**
+ * Remove action hook
+ *
+ * @param string $tag Action tag
+ * @param callable $function_to_remove Function to remove
+ * @param int $priority Priority
+ */
+function remove_action( $tag, $function_to_remove, $priority = 10 ) {
+}
+
+/**
+ * Remove filter hook
+ *
+ * @param string $tag Filter tag
+ * @param callable $function_to_remove Function to remove
+ * @param int $priority Priority
+ */
+function remove_filter( $tag, $function_to_remove, $priority = 10 ) {
+}
+
+/**
+ * Remove meta box
+ *
+ * @param string $id Meta box ID
+ * @param string|array $screen Screen(s)
+ * @param string $context Context
+ */
+function remove_meta_box( $id, $screen, $context ) {
+}
+
+/**
+ * Parse arguments
+ *
+ * @param array $args Arguments to parse
+ * @param array $defaults Default arguments
+ * @return array Parsed arguments
+ */
+function wp_parse_args( $args, $defaults = array() ) {
+    return array();
+}
+
+/**
+ * Deregister script
+ *
+ * @param string $handle Script handle
+ */
+function wp_deregister_script( $handle ) {
+}
+
+/**
+ * Dequeue script
+ *
+ * @param string $handle Script handle
+ */
+function wp_dequeue_script( $handle ) {
+}
+
+/**
+ * Deregister style
+ *
+ * @param string $handle Style handle
+ */
+function wp_deregister_style( $handle ) {
+}
+
+/**
+ * Dequeue style
+ *
+ * @param string $handle Style handle
+ */
+function wp_dequeue_style( $handle ) {
+}
+
+/**
+ * Enqueue style
+ *
+ * @param string $handle Style handle
+ * @param string $src Style source URL
+ * @param array $deps Dependencies
+ * @param string|bool|null $ver Version
+ * @param string $media Media type
+ */
+function wp_enqueue_style( $handle, $src = '', $deps = array(), $ver = false, $media = 'all' ) {
 }
 
 /**

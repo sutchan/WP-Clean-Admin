@@ -12,6 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// Load WordPress stubs for IDE support
+require_once __DIR__ . '/wpca-wordpress-stubs.php';
+
 // Load Composer stub for IDE support
 require_once __DIR__ . '/composer-stub.php';
 
