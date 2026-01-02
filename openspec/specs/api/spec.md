@@ -8,10 +8,10 @@ WP Clean Admin API 提供了一系列用于管理和配置 WP Clean Admin 插件
 ## 2. 基本信息
 
 ### 2.1 API 版本
-当前 API 版本：1.7.15
+当前 API 版本：1.8.0
 
 ### 2.2 命名空间
-所有 API 函数都位于 `WPCleanAdmin` 命名空间下。
+核心类位于 `WPCleanAdmin` 命名空间下，全局函数直接可用。
 
 ### 2.3 前缀
 全局函数使用 `wpca_` 前缀，例如 `wpca_get_settings()`。
@@ -28,7 +28,7 @@ WP Clean Admin API 提供了一系列用于管理和配置 WP Clean Admin 插件
  * @param mixed $default 可选，默认值
  * @return mixed 插件设置值或数组
  */
-function wpca_get_settings( $key = null, $default = null ) {}
+function wpca_get_settings( $key = '', $default = false ) {}
 ```
 
 **参数**：
@@ -58,6 +58,348 @@ function wpca_update_settings( $settings ) {}
 **返回值**：
 - `true`：更新成功
 - `false`：更新失败
+
+### 3.3 获取数据库设置
+
+```php
+/**
+ * 获取数据库设置
+ *
+ * @param string $key 可选，设置键名
+ * @param mixed $default 可选，默认值
+ * @return mixed 数据库设置值或数组
+ */
+function wpca_get_database_settings( $key = '', $default = false ) {}
+```
+
+**参数**：
+- `$key`：可选，要获取的设置键名
+- `$default`：可选，当设置不存在时返回的默认值
+
+**返回值**：
+- 如果提供了 `$key`，返回对应设置值
+- 如果未提供 `$key`，返回包含所有数据库设置的关联数组
+- 如果设置不存在且提供了默认值，返回默认值
+
+### 3.4 获取性能设置
+
+```php
+/**
+ * 获取性能设置
+ *
+ * @param string $key 可选，设置键名
+ * @param mixed $default 可选，默认值
+ * @return mixed 性能设置值或数组
+ */
+function wpca_get_performance_settings( $key = '', $default = false ) {}
+```
+
+**参数**：
+- `$key`：可选，要获取的设置键名
+- `$default`：可选，当设置不存在时返回的默认值
+
+**返回值**：
+- 如果提供了 `$key`，返回对应设置值
+- 如果未提供 `$key`，返回包含所有性能设置的关联数组
+- 如果设置不存在且提供了默认值，返回默认值
+
+### 3.5 检查用户权限
+
+```php
+/**
+ * 检查当前用户是否有访问 WPCA 功能的权限
+ *
+ * @return bool True if user has access, false otherwise
+ */
+function wpca_current_user_can() {}
+```
+
+**返回值**：
+- `true`：用户有访问权限
+- `false`：用户没有访问权限
+
+### 3.6 获取插件 URL
+
+```php
+/**
+ * 获取插件 URL
+ *
+ * @param string $path 可选，插件目录相对路径
+ * @return string 完整插件 URL
+ */
+function wpca_get_plugin_url( $path = '' ) {}
+```
+
+**参数**：
+- `$path`：可选，插件目录相对路径
+
+**返回值**：
+- 完整的插件 URL，包含可选的路径
+
+### 3.7 获取插件目录路径
+
+```php
+/**
+ * 获取插件目录路径
+ *
+ * @param string $path 可选，插件目录相对路径
+ * @return string 完整插件目录路径
+ */
+function wpca_get_plugin_dir( $path = '' ) {}
+```
+
+**参数**：
+- `$path`：可选，插件目录相对路径
+
+**返回值**：
+- 完整的插件目录路径，包含可选的路径
+
+### 3.8 获取资源 URL
+
+```php
+/**
+ * 获取资源 URL
+ *
+ * @param string $asset_path 可选，资源相对路径
+ * @return string 完整资源 URL
+ */
+function wpca_get_asset_url( $asset_path = '' ) {}
+```
+
+**参数**：
+- `$asset_path`：可选，资源相对路径
+
+**返回值**：
+- 完整的资源 URL
+
+### 3.9 获取模板路径
+
+```php
+/**
+ * 获取模板路径
+ *
+ * @param string $template_name 模板名称
+ * @return string 完整模板路径
+ */
+function wpca_get_template_path( $template_name ) {}
+```
+
+**参数**：
+- `$template_name`：模板名称
+
+**返回值**：
+- 完整的模板路径
+
+### 3.10 加载模板
+
+```php
+/**
+ * 加载模板
+ *
+ * @param string $template_name 模板名称
+ * @param array $args 可选，传递给模板的参数
+ */
+function wpca_load_template( $template_name, $args = array() ) {}
+```
+
+**参数**：
+- `$template_name`：模板名称
+- `$args`：可选，传递给模板的参数
+
+### 3.11 显示管理通知
+
+```php
+/**
+ * 显示管理通知
+ *
+ * @param string $message 通知消息
+ * @param string $type 通知类型（success, error, warning, info）
+ */
+function wpca_admin_notice( $message, $type = 'info' ) {}
+```
+
+**参数**：
+- `$message`：通知消息
+- `$type`：通知类型，可选值：success, error, warning, info
+
+### 3.12 获取插件版本
+
+```php
+/**
+ * 获取插件版本
+ *
+ * @return string 插件版本号
+ */
+function wpca_get_version() {}
+```
+
+**返回值**：
+- 插件版本号
+
+### 3.13 检查调试模式
+
+```php
+/**
+ * 检查插件是否处于调试模式
+ *
+ * @return bool True if debug mode is enabled, false otherwise
+ */
+function wpca_is_debug() {}
+```
+
+**返回值**：
+- `true`：调试模式已启用
+- `false`：调试模式未启用
+
+### 3.14 记录日志
+
+```php
+/**
+ * 记录调试日志
+ *
+ * @param mixed $message 要记录的消息
+ * @param string $context 日志上下文
+ */
+function wpca_log( $message, $context = 'general' ) {}
+```
+
+**参数**：
+- `$message`：要记录的消息
+- `$context`：日志上下文
+
+### 3.15 净化数组数据
+
+```php
+/**
+ * 净化数组数据
+ *
+ * @param array $data 要净化的数据
+ * @return array 净化后的数据
+ */
+function wpca_sanitize_array( $data ) {}
+```
+
+**参数**：
+- `$data`：要净化的数据
+
+**返回值**：
+- 净化后的数据
+
+### 3.16 获取当前标签
+
+```php
+/**
+ * 获取当前标签
+ *
+ * @param string $default 可选，默认标签
+ * @return string 当前标签
+ */
+function wpca_get_current_tab( $default = 'dashboard' ) {}
+```
+
+**参数**：
+- `$default`：可选，默认标签
+
+**返回值**：
+- 当前标签
+
+### 3.17 获取设置页面 URL
+
+```php
+/**
+ * 获取设置页面 URL
+ *
+ * @param string $tab 可选，标签
+ * @return string 设置页面 URL
+ */
+function wpca_get_settings_url( $tab = '' ) {}
+```
+
+**参数**：
+- `$tab`：可选，标签
+
+**返回值**：
+- 设置页面 URL
+
+### 3.18 检查当前页面是否为设置页面
+
+```php
+/**
+ * 检查当前页面是否为 WPCA 设置页面
+ *
+ * @return bool True if current page is WPCA settings page, false otherwise
+ */
+function wpca_is_settings_page() {}
+```
+
+**返回值**：
+- `true`：当前页面是 WPCA 设置页面
+- `false`：当前页面不是 WPCA 设置页面
+
+### 3.19 获取插件菜单 slug
+
+```php
+/**
+ * 获取插件菜单 slug
+ *
+ * @return string 插件菜单 slug
+ */
+function wpca_get_menu_slug() {}
+```
+
+**返回值**：
+- 插件菜单 slug
+
+### 3.20 获取插件文本域
+
+```php
+/**
+ * 获取插件文本域
+ *
+ * @return string 插件文本域
+ */
+function wpca_get_text_domain() {}
+```
+
+**返回值**：
+- 插件文本域
+
+### 3.21 检查 WordPress 版本
+
+```php
+/**
+ * 检查 WordPress 版本是否大于或等于指定版本
+ *
+ * @param string $version 要检查的版本
+ * @return bool True if WordPress version is greater than or equal to specified version, false otherwise
+ */
+function wpca_is_wp_version_gte( $version ) {}
+```
+
+**参数**：
+- `$version`：要检查的版本
+
+**返回值**：
+- `true`：WordPress 版本大于或等于指定版本
+- `false`：WordPress 版本小于指定版本
+
+### 3.22 获取管理页面标题
+
+```php
+/**
+ * 获取管理页面标题
+ *
+ * @param string $tab 当前标签
+ * @return string 管理页面标题
+ */
+function wpca_get_admin_page_title( $tab = '' ) {}
+```
+
+**参数**：
+- `$tab`：当前标签
+
+**返回值**：
+- 管理页面标题
 
 ## 4. 菜单管理 API
 
@@ -344,6 +686,7 @@ if ( WPCleanAdmin\Permissions::getInstance()->has_feature_permission( 'manage_op
 
 | 版本 | 日期 | 变更内容 |
 |------|------|----------|
+| 1.8.0 | 2026-01-02 | 更新了API文档，添加了所有实际存在的函数 |
 | 1.7.15 | 2025-11-30 | 初始 API 文档 |
 
 ## 13. 常见问题

@@ -52,9 +52,9 @@ WP Clean Admin 是一个基于模块化设计的 WordPress 插件，旨在提供
 | 层次 | 描述 | 主要组件 |
 | --- | --- | --- |
 | 核心层 | 插件的基础架构，负责初始化和协调其他模块 | Core、Autoloader、Core Functions |
-| 功能层 | 实现具体功能的模块 | Cleanup、Performance、Permissions、Menu Manager、Menu Customizer、Database、Login、Dashboard、Resources |
+| 功能层 | 实现具体功能的模块 | Settings、Dashboard、Cleanup、Performance、Permissions、User_Roles、Menu_Manager、Menu_Customizer、Login、Database、Resources、Reset、AJAX、i18n、Extension_API、Composer、Elementor、Theme_Templates |
 | 资源层 | 静态资源文件 | CSS、JavaScript、语言文件 |
-| 配置层 | 插件设置和配置 | Settings、Database Settings、Performance Settings、Menu Customizer Settings |
+| 配置层 | 插件设置和配置 | Settings、Database Settings、Performance Settings |
 | 扩展层 | 插件扩展机制 | Hooks、API |
 
 ### 核心组件
@@ -93,7 +93,21 @@ WP Clean Admin 是一个基于模块化设计的 WordPress 插件，旨在提供
 
 ### 功能模块
 
-#### 后台清理模块 (Cleanup)
+#### 1. 设置管理模块 (Settings)
+- **功能**: 管理插件的所有设置
+- **主要职责**:
+  - 提供设置页面和表单处理
+  - 设置验证和保存
+  - 管理设置的导入和导出
+
+#### 2. 仪表盘模块 (Dashboard)
+- **功能**: 优化 WordPress 仪表盘
+- **主要职责**:
+  - 提供插件的主要管理界面
+  - 显示系统信息和统计数据
+  - 隐藏不需要的仪表盘小工具
+
+#### 3. 清理模块 (Cleanup)
 - **功能**: 提供数据库、媒体、评论和内容清理功能
 - **主要职责**:
   - 清理过期的transients
@@ -104,7 +118,7 @@ WP Clean Admin 是一个基于模块化设计的 WordPress 插件，旨在提供
   - 清理未使用的短代码和空帖子
 - **详细规范**: [admin-cleanup/spec.md](../admin-cleanup/spec.md)
 
-#### 性能优化模块 (Performance)
+#### 4. 性能优化模块 (Performance)
 - **功能**: 优化 WordPress 网站性能
 - **主要职责**:
   - 禁用不必要的功能（Emojis、XML-RPC、REST API、Heartbeat）
@@ -114,7 +128,7 @@ WP Clean Admin 是一个基于模块化设计的 WordPress 插件，旨在提供
   - 提供性能统计信息
 - **详细规范**: [performance-optimization/spec.md](../performance-optimization/spec.md)
 
-#### 权限管理模块 (Permissions)
+#### 5. 权限管理模块 (Permissions)
 - **功能**: 管理用户权限和访问控制
 - **主要职责**:
   - 过滤用户权限
@@ -123,13 +137,20 @@ WP Clean Admin 是一个基于模块化设计的 WordPress 插件，旨在提供
   - 限制特定管理页面访问
 - **详细规范**: [permission-management/spec.md](../permission-management/spec.md)
 
-#### 菜单管理模块 (Menu Manager)
-- **功能**: 管理 WordPress 后台菜单
+#### 6. 用户角色模块 (User_Roles)
+- **功能**: 管理用户角色和权限
 - **主要职责**:
-  - 隐藏不必要的菜单
-  - 优化菜单显示
+  - 允许创建、编辑和删除角色
+  - 提供角色权限编辑器
+  - 管理角色的创建、编辑和删除
 
-#### 菜单定制模块 (Menu Customizer)
+#### 7. 菜单管理模块 (Menu_Manager)
+- **功能**: 管理 WordPress 后台菜单结构
+- **主要职责**:
+  - 提供菜单信息和结构
+  - 支持菜单的隐藏和显示
+
+#### 8. 菜单定制模块 (Menu_Customizer)
 - **功能**: 自定义 WordPress 后台菜单和管理栏
 - **主要职责**:
   - 自定义菜单顺序
@@ -139,7 +160,13 @@ WP Clean Admin 是一个基于模块化设计的 WordPress 插件，旨在提供
   - 提供设置导出/导入功能
 - **详细规范**: [menu-customization/spec.md](../menu-customization/spec.md)
 
-#### 数据库管理模块 (Database)
+#### 9. 登录页面模块 (Login)
+- **功能**: 自定义 WordPress 登录页面
+- **主要职责**:
+  - 自定义登录页面样式
+  - 增强登录页面安全性
+
+#### 10. 数据库管理模块 (Database)
 - **功能**: 管理和优化 WordPress 数据库
 - **主要职责**:
   - 清理数据库
@@ -148,23 +175,55 @@ WP Clean Admin 是一个基于模块化设计的 WordPress 插件，旨在提供
   - 恢复数据库
 - **详细规范**: [database-management/spec.md](../database-management/spec.md)
 
-#### 登录页面模块 (Login)
-- **功能**: 自定义 WordPress 登录页面
+#### 11. 资源管理模块 (Resources)
+- **功能**: 管理和优化 WordPress 资源
 - **主要职责**:
-  - 自定义登录页面样式
-  - 增强登录页面安全性
+  - 优化 CSS 和 JavaScript 加载
+  - 处理静态资源
+  - 管理资源的加载顺序和方式
 
-#### 仪表盘模块 (Dashboard)
-- **功能**: 优化 WordPress 仪表盘
+#### 12. 重置模块 (Reset)
+- **功能**: 提供插件设置的重置功能
 - **主要职责**:
-  - 隐藏不需要的仪表盘小工具
-  - 优化仪表盘显示
+  - 允许重置特定模块或全部设置
+  - 提供重置确认和安全检查
 
-#### 资源管理模块 (Resources)
-- **功能**: 管理插件的静态资源
+#### 13. AJAX 模块 (AJAX)
+- **功能**: 处理插件的 AJAX 请求
 - **主要职责**:
-  - 加载插件的 CSS 和 JavaScript 文件
-  - 优化资源加载
+  - 提供 AJAX 回调函数
+  - 处理异步请求和响应
+
+#### 14. 国际化模块 (i18n)
+- **功能**: 处理插件的国际化和本地化
+- **主要职责**:
+  - 加载翻译文件
+  - 提供国际化支持
+  - 处理多语言内容
+
+#### 15. 扩展 API 模块 (Extension_API)
+- **功能**: 提供插件扩展 API
+- **主要职责**:
+  - 允许第三方扩展插件功能
+  - 提供扩展注册和管理
+
+#### 16. Composer 集成模块 (Composer)
+- **功能**: 提供 Composer 依赖管理
+- **主要职责**:
+  - 处理依赖冲突和版本管理
+  - 支持 Composer 依赖的加载
+
+#### 17. Elementor 集成模块 (Elementor)
+- **功能**: 集成和优化 Elementor 页面构建器
+- **主要职责**:
+  - 清理 Elementor 缓存和数据
+  - 优化 Elementor 资源加载
+
+#### 18. 主题模板模块 (Theme_Templates)
+- **功能**: 管理和优化主题模板
+- **主要职责**:
+  - 检测和清理未使用的主题文件
+  - 优化主题资源加载
 
 ## Hooks System
 

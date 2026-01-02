@@ -475,6 +475,16 @@ function wp_enqueue_style( $handle, $src = '', $deps = array(), $ver = false, $m
 }
 
 /**
+ * Create directory recursively
+ *
+ * @param string $path Directory path to create
+ * @return bool True on success, false on failure
+ */
+function wp_mkdir_p( $path ) {
+    return false;
+}
+
+/**
  * Enqueue script
  *
  * @param string $handle Script handle
