@@ -33,6 +33,9 @@ if ( ! defined( 'WPCA_TEXT_DOMAIN' ) ) {
     define( 'WPCA_TEXT_DOMAIN', 'wp-clean-admin' );
 }
 
+// Include PHPUnit stubs for IDE support
+require_once __DIR__ . '/phpunit-stub.php';
+
 // Include autoloader
 require_once WPCA_PLUGIN_DIR . 'includes/autoload.php';
 

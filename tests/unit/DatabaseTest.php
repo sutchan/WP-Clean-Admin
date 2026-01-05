@@ -81,9 +81,9 @@ class DatabaseTest extends TestCase {
         $wpdb->method( 'get_row' )->willReturn( array( 'size' => 1024 * 1024 ) );
         $wpdb->method( 'get_results' )->willReturn( array( array( 'wp_posts' ), array( 'wp_users' ) ) );
         $wpdb->method( 'query' )->willReturn( true );
-        $wpdb->method( 'prepare' )->will( $this->returnCallback( function( $query, $param ) {
+        $wpdb->method( 'prepare' )->willReturnCallback( function( $query, $param ) {
             return str_replace( '%s', $param, $query );
-        } ) );
+        } );
         
         // Mock file functions
         $this->mockFileFunctions();

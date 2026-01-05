@@ -3,10 +3,11 @@
  * WPCleanAdmin Extension API Class
  *
  * @package WPCleanAdmin
- * @version 1.7.15
+ * @version 1.8.0
  * @author Sut
  * @author URI: https://github.com/sutchan
- * @since 1.7.15
+ * @since 1.8.0
+ * @description Extension API for third-party developers to extend WP Clean Admin functionality
  */
 namespace WPCleanAdmin;
 
@@ -540,6 +541,334 @@ class Extension_API {
             'active_count' => $this->get_extension_count( 'active' ),
         );
     }
+    
+    /**
+     * Save extension settings
+     *
+     * @param string $extension_id Extension ID
+     * @param array $settings Extension settings
+     * @return bool Success status
+     */
+    public function save_extension_settings( string $extension_id, array $settings ): bool {
+        $extension_id = \sanitize_key( $extension_id );
+        
+        if ( ! $this->get_extension( $extension_id ) ) {
+            return false;
+        }
+        
+        $option_name = 'wpca_ext_' . $extension_id . '_settings';
+        
+        // Validate settings
+        $validated_settings = \apply_filters( 'wpca_extension_settings_validate_' . $extension_id, $settings, $extension_id );
+        
+        // Save settings
+        $result = \update_option( $option_name, $validated_settings );
+        
+        // Trigger action
+        if ( $result ) {
+            \do_action( 'wpca_ext_settings_saved', $extension_id, $validated_settings );
+            \do_action( 'wpca_ext_settings_saved_' . $extension_id, $validated_settings );
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Get extension settings
+     *
+     * @param string $extension_id Extension ID
+     * @return array Extension settings
+     */
+    public function get_extension_settings( string $extension_id ): array {
+        $extension_id = \sanitize_key( $extension_id );
+        $option_name = 'wpca_ext_' . $extension_id . '_settings';
+        
+        $settings = \get_option( $option_name, array() );
+        
+        // Filter the settings before returning
+        return \apply_filters( 'wpca_extension_settings_get_' . $extension_id, $settings, $extension_id );
+    }
+    
+    /**
+     * Reset extension settings
+     *
+     * @param string $extension_id Extension ID
+     * @return bool Success status
+     */
+    public function reset_extension_settings( string $extension_id ): bool {
+        $extension_id = \sanitize_key( $extension_id );
+        $option_name = 'wpca_ext_' . $extension_id . '_settings';
+        
+        // Get default settings
+        $default_settings = \apply_filters( 'wpca_extension_default_settings_' . $extension_id, array(), $extension_id );
+        
+        // Save default settings
+        $result = \update_option( $option_name, $default_settings );
+        
+        // Trigger action
+        if ( $result ) {
+            \do_action( 'wpca_ext_settings_reset', $extension_id, $default_settings );
+            \do_action( 'wpca_ext_settings_reset_' . $extension_id, $default_settings );
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Install extension
+     *
+     * @param string $extension_id Extension ID
+     * @param array $extension_data Extension data
+     * @return bool Success status
+     */
+    public function install_extension( string $extension_id, array $extension_data = array() ): bool {
+        $extension_id = \sanitize_key( $extension_id );
+        
+        // Check if extension already exists
+        if ( $this->get_extension( $extension_id ) ) {
+            return false;
+        }
+        
+        // Validate extension data
+        $required_fields = array( 'name', 'version', 'file' );
+        foreach ( $required_fields as $field ) {
+            if ( ! isset( $extension_data[ $field ] ) || empty( $extension_data[ $field ] ) ) {
+                return false;
+            }
+        }
+        
+        // Set default data
+        $extension_data['id'] = $extension_id;
+        $extension_data['installed_at'] = current_time( 'mysql' );
+        $extension_data['active'] = false;
+        
+        // Register the extension
+        if ( ! $this->register_extension( $extension_data ) ) {
+            return false;
+        }
+        
+        // Trigger install action
+        \do_action( 'wpca_extension_installed', $extension_id, $extension_data );
+        \do_action( 'wpca_extension_installed_' . $extension_id, $extension_data );
+        
+        return true;
+    }
+    
+    /**
+     * Uninstall extension
+     *
+     * @param string $extension_id Extension ID
+     * @return bool Success status
+     */
+    public function uninstall_extension( string $extension_id ): bool {
+        $extension_id = \sanitize_key( $extension_id );
+        
+        if ( ! $this->get_extension( $extension_id ) ) {
+            return false;
+        }
+        
+        // Deactivate extension first
+        $this->deactivate_extension( $extension_id );
+        
+        // Remove extension settings
+        $option_name = 'wpca_ext_' . $extension_id . '_settings';
+        \delete_option( $option_name );
+        
+        // Unregister extension
+        $this->unregister_extension( $extension_id );
+        
+        // Trigger action
+        \do_action( 'wpca_extension_uninstalled', $extension_id );
+        
+        return true;
+    }
+    
+    /**
+     * Get extension lifecycle hooks
+     *
+     * @param string $extension_id Extension ID
+     * @return array Lifecycle hooks
+     */
+    public function get_lifecycle_hooks( string $extension_id ): array {
+        return array(
+            'install' => 'wpca_extension_installed_' . $extension_id,
+            'activate' => 'wpca_extension_activated_' . $extension_id,
+            'deactivate' => 'wpca_extension_deactivated_' . $extension_id,
+            'uninstall' => 'wpca_extension_uninstalled_' . $extension_id,
+        );
+    }
+    
+    /**
+     * Extension sandbox execution result
+     */
+    private function create_sandbox_result( bool $success, $result = null, string $error = '' ): array {
+        return array(
+            'success' => $success,
+            'result' => $result,
+            'error' => $error,
+        );
+    }
+    
+    /**
+     * Execute extension code in sandbox
+     *
+     * @param string $extension_code Extension code to execute
+     * @param array $options Sandbox options
+     * @return array Sandbox execution result
+     */
+    public function execute_in_sandbox( string $extension_code, array $options = array() ): array {
+        // Set default options
+        $defaults = array(
+            'memory_limit' => '64M',
+            'time_limit' => 5,
+            'allowed_functions' => array('wpca_*', 'wp_*', 'add_*'),
+            'blocked_functions' => array('eval', 'exec', 'shell_exec', 'passthru', 'proc_open', 'popen', 'system'),
+            'extension_id' => '',
+        );
+        
+        $options = \wp_parse_args( $options, $defaults );
+        
+        // Check if sandbox execution is enabled
+        if ( ! \apply_filters( 'wpca_sandbox_enabled', true ) ) {
+            return $this->create_sandbox_result( false, null, '沙箱执行已禁用' );
+        }
+        
+        // Validate memory limit
+        $memory_limit = $this->parse_memory_limit( $options['memory_limit'] );
+        if ( $memory_limit <= 0 ) {
+            return $this->create_sandbox_result( false, null, '无效的内存限制' );
+        }
+        
+        // Get original memory and time limits
+        $original_memory_limit = \ini_get( 'memory_limit' );
+        $original_time_limit = \ini_get( 'max_execution_time' );
+        $original_error_reporting = \error_reporting();
+        $original_display_errors = \ini_get( 'display_errors' );
+        
+        $result = null;
+        $error = '';
+        $success = false;
+        
+        try {
+            // Set memory and time limits
+            \ini_set( 'memory_limit', $options['memory_limit'] );
+            \set_time_limit( $options['time_limit'] );
+            \error_reporting( E_ALL & ~E_DEPRECATED & ~E_STRICT );
+            \ini_set( 'display_errors', '0' );
+            
+            // Create function whitelist/blacklist
+            $this->setup_sandbox_environment( $options );
+            
+            // Execute the code
+            ob_start();
+            $result = eval( '?>' . $extension_code );
+            $output = ob_get_clean();
+            
+            // Combine output and result
+            if ( ! empty( $output ) ) {
+                $result = $output;
+            }
+            
+            $success = true;
+        } catch ( \Throwable $e ) {
+            $error = $e->getMessage();
+            $success = false;
+        } finally {
+            // Restore original limits
+            \ini_set( 'memory_limit', $original_memory_limit );
+            \set_time_limit( $original_time_limit );
+            \error_reporting( $original_error_reporting );
+            \ini_set( 'display_errors', $original_display_errors );
+            
+            // Clean up sandbox environment
+            $this->cleanup_sandbox_environment();
+        }
+        
+        return $this->create_sandbox_result( $success, $result, $error );
+    }
+    
+    /**
+     * Parse memory limit string to bytes
+     *
+     * @param string $limit Memory limit string (e.g., '64M', '1G')
+     * @return int Memory limit in bytes
+     */
+    private function parse_memory_limit( string $limit ): int {
+        $limit = trim( $limit );
+        $last_char = strtolower( substr( $limit, -1 ) );
+        
+        $value = substr( $limit, 0, -1 );
+        
+        switch ( $last_char ) {
+            case 'g':
+                $value *= 1024;
+                // Fallthrough
+            case 'm':
+                $value *= 1024;
+                // Fallthrough
+            case 'k':
+                $value *= 1024;
+                break;
+        }
+        
+        return (int) $value;
+    }
+    
+    /**
+     * Setup sandbox environment
+     *
+     * @param array $options Sandbox options
+     * @return void
+     */
+    private function setup_sandbox_environment( array $options ): void {
+        // Setup function whitelist/blacklist
+        $this->disable_dangerous_functions( $options['blocked_functions'] );
+    }
+    
+    /**
+     * Disable dangerous functions
+     *
+     * @param array $blocked_functions List of functions to block
+     * @return void
+     */
+    private function disable_dangerous_functions( array $blocked_functions ): void {
+        foreach ( $blocked_functions as $function ) {
+            if ( function_exists( $function ) ) {
+                $this->override_function( $function, function() use ( $function ) {
+                    throw new \Exception( "函数 {$function} 已被禁止在沙箱中使用" );
+                });
+            }
+        }
+    }
+    
+    /**
+     * Override a function
+     *
+     * @param string $function_name Function name to override
+     * @param callable $callback New function callback
+     * @return void
+     */
+    private function override_function( string $function_name, callable $callback ): void {
+        if ( function_exists( 'override_function' ) ) {
+            // If APD extension is available
+            override_function( $function_name, '', 'return call_user_func($callback, func_get_args());' );
+        } elseif ( function_exists( 'runkit_function_redefine' ) ) {
+            // If runkit extension is available
+            runkit_function_redefine( $function_name, '', $callback );
+        } else {
+            // Fallback: Define a constant to indicate the function is blocked
+            define( 'WPCA_FUNCTION_BLOCKED_' . strtoupper( $function_name ), true );
+        }
+    }
+    
+    /**
+     * Cleanup sandbox environment
+     *
+     * @return void
+     */
+    private function cleanup_sandbox_environment(): void {
+        // No specific cleanup needed for current implementation
+    }
 }
 
 /**
@@ -562,4 +891,71 @@ function wpca_register_extension( array $extension ): bool {
  */
 function wpca_get_extension_api(): Extension_API {
     return Extension_API::getInstance();
+}
+
+/**
+ * Save extension settings
+ *
+ * Helper function for third-party developers to save extension settings
+ *
+ * @param string $extension_id Extension ID
+ * @param array $settings Extension settings
+ * @return bool Success status
+ */
+function wpca_save_extension_settings( string $extension_id, array $settings ): bool {
+    $api = Extension_API::getInstance();
+    return $api->save_extension_settings( $extension_id, $settings );
+}
+
+/**
+ * Get extension settings
+ *
+ * Helper function for third-party developers to get extension settings
+ *
+ * @param string $extension_id Extension ID
+ * @return array Extension settings
+ */
+function wpca_get_extension_settings( string $extension_id ): array {
+    $api = Extension_API::getInstance();
+    return $api->get_extension_settings( $extension_id );
+}
+
+/**
+ * Reset extension settings
+ *
+ * Helper function for third-party developers to reset extension settings
+ *
+ * @param string $extension_id Extension ID
+ * @return bool Success status
+ */
+function wpca_reset_extension_settings( string $extension_id ): bool {
+    $api = Extension_API::getInstance();
+    return $api->reset_extension_settings( $extension_id );
+}
+
+/**
+ * Install extension
+ *
+ * Helper function for third-party developers to install extensions
+ *
+ * @param string $extension_id Extension ID
+ * @param array $extension_data Extension data
+ * @return bool Success status
+ */
+function wpca_install_extension( string $extension_id, array $extension_data = array() ): bool {
+    $api = Extension_API::getInstance();
+    return $api->install_extension( $extension_id, $extension_data );
+}
+
+/**
+ * Uninstall extension
+ *
+ * Helper function for third-party developers to uninstall extensions
+ *
+ * @param string $extension_id Extension ID
+ * @return bool Success status
+ */
+function wpca_uninstall_extension( string $extension_id ): bool {
+    $api = Extension_API::getInstance();
+    return $api->uninstall_extension( $extension_id );
 }

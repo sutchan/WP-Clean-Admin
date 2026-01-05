@@ -107,6 +107,9 @@ class Core {
         
         // Load i18n module
         i18n::getInstance();
+        
+        // Load extension API module
+        Extension_API::getInstance();
     }
     
     /**

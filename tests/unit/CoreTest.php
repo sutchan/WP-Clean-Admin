@@ -82,7 +82,7 @@ class CoreTest extends TestCase {
         }
         
         if ( ! function_exists( 'wp_parse_args' ) ) {
-            function wp_parse_args( $args, $defaults = '' ) {
+            function wp_parse_args( $args, $defaults = array() ) {
                 return array_merge( $defaults, $args );
             }
         }
