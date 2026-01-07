@@ -1,4 +1,4 @@
-# WP Clean Admin
+﻿# WP Clean Admin
 
 一个全面的 WordPress 后台管理和优化插件。
 

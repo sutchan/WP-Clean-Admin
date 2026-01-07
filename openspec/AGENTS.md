@@ -1,4 +1,4 @@
-<!-- OPENSPEC:START -->
+﻿<!-- OPENSPEC:START -->
 # OpenSpec 指令
 
 这些指令适用于在本项目中工作的 AI 助手。

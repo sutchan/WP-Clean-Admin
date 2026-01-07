@@ -1,4 +1,4 @@
-<!-- OPENSPEC:START -->
+﻿<!-- OPENSPEC:START -->
 # 规范改进与功能增强计划
 
 ## 变更原因

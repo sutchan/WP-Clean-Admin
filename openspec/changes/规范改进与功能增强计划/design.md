@@ -1,4 +1,4 @@
-<!-- OPENSPEC:START -->
+﻿<!-- OPENSPEC:START -->
 # 技术决策：规范改进与功能增强计划
 
 ## 决策记录

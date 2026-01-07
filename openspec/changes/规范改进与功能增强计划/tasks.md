@@ -1,4 +1,4 @@
-<!-- OPENSPEC:START -->
+﻿<!-- OPENSPEC:START -->
 # 实施清单：规范改进与功能增强计划
 
 ## 实施阶段

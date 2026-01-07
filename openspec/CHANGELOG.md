@@ -1,4 +1,4 @@
-<!-- OPENSPEC:START -->
+﻿<!-- OPENSPEC:START -->
 # Changelog
 
 All notable changes to WP Clean Admin will be documented in this file.

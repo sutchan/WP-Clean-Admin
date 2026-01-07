@@ -1,4 +1,4 @@
-<!-- OPENSPEC:START -->
+﻿<!-- OPENSPEC:START -->
 # WP Clean Admin API 文档
 
 ## 1. 概述
