@@ -485,6 +485,85 @@ function wp_mkdir_p( $path ) {
 }
 
 /**
+ * Apply filters to a value
+ *
+ * @param string $tag Filter tag
+ * @param mixed $value Value to filter
+ * @return mixed Filtered value
+ */
+function apply_filters( $tag, $value ) {
+    return $value;
+}
+
+/**
+ * Execute action hooks
+ *
+ * @param string $tag Action tag
+ * @param mixed $arg,... Additional arguments
+ */
+function do_action( $tag, ...$args ) {
+}
+
+/**
+ * Sanitize key
+ *
+ * @param string $key Key to sanitize
+ * @return string Sanitized key
+ */
+function sanitize_key( $key ) {
+    return $key;
+}
+
+/**
+ * Get current time
+ *
+ * @param string $type Type of time to get
+ * @param bool $gmt Whether to use GMT time
+ * @return string|int Current time
+ */
+function current_time( $type = 'mysql', $gmt = false ) {
+    return time();
+}
+
+/**
+ * Add submenu page
+ *
+ * @param string $parent_slug Parent menu slug
+ * @param string $page_title Page title
+ * @param string $menu_title Menu title
+ * @param string $capability Capability required
+ * @param string $menu_slug Menu slug
+ * @param callable $function Function to render page
+ * @return string Hook suffix
+ */
+function add_submenu_page( $parent_slug, $page_title, $menu_title, $capability, $menu_slug, $function = '' ) {
+    return $menu_slug;
+}
+
+/**
+ * Override function
+ *
+ * @param string $function Function name
+ * @param callable $callback Callback function
+ * @return bool True on success, false on failure
+ */
+function override_function( $function, $callback ) {
+    return false;
+}
+
+/**
+ * Redefine function
+ *
+ * @param string $function_name Function name
+ * @param string $argument_list Argument list
+ * @param string $code Function code
+ * @return bool True on success, false on failure
+ */
+function runkit_function_redefine( $function_name, $argument_list, $code ) {
+    return false;
+}
+
+/**
  * Enqueue script
  *
  * @param string $handle Script handle
