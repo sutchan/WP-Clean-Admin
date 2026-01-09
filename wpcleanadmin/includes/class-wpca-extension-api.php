@@ -753,7 +753,7 @@ class Extension_API {
             // Set memory and time limits
             \ini_set( 'memory_limit', $options['memory_limit'] );
             \set_time_limit( $options['time_limit'] );
-            \error_reporting( E_ALL & ~E_DEPRECATED & ~E_STRICT );
+            \error_reporting( E_ALL & ~E_DEPRECATED );
             \ini_set( 'display_errors', '0' );
             
             // Create function whitelist/blacklist
