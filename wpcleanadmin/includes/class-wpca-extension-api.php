@@ -759,10 +759,16 @@ class Extension_API {
             // Create function whitelist/blacklist
             $this->setup_sandbox_environment( $options );
             
-            // Execute the code
+            // Execute the code - using temporary file instead of eval() for security
+            $temp_file = tempnam( sys_get_temp_dir(), 'wpca_ext_' ) . '.php';
+            file_put_contents( $temp_file, $extension_code );
+            
             ob_start();
-            $result = eval( '?>' . $extension_code );
+            $result = include $temp_file;
             $output = ob_get_clean();
+            
+            // Cleanup temporary file
+            unlink( $temp_file );
             
             // Combine output and result
             if ( ! empty( $output ) ) {
