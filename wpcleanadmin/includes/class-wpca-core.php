@@ -58,8 +58,50 @@ class Core {
         // Load core functions
         require_once WPCA_PLUGIN_DIR . 'includes/wpca-core-functions.php';
         
+        // Add security headers
+        $this->add_security_headers();
+        
         // Initialize modules
         $this->init_modules();
+    }
+    
+    /**
+     * Add security HTTP headers
+     */
+    private function add_security_headers() {
+        if ( function_exists( 'add_action' ) ) {
+            \add_action( 'send_headers', array( $this, 'send_security_headers' ) );
+        }
+    }
+    
+    /**
+     * Send security HTTP headers
+     */
+    public function send_security_headers() {
+        // X-Frame-Options: Prevent clickjacking
+        if ( ! \headers_sent() ) {
+            \header( 'X-Frame-Options: SAMEORIGIN' );
+        }
+        
+        // X-XSS-Protection: Enable browser XSS filter
+        if ( ! \headers_sent() ) {
+            \header( 'X-XSS-Protection: 1; mode=block' );
+        }
+        
+        // X-Content-Type-Options: Prevent MIME type sniffing
+        if ( ! \headers_sent() ) {
+            \header( 'X-Content-Type-Options: nosniff' );
+        }
+        
+        // Referrer-Policy: Control referrer information
+        if ( ! \headers_sent() ) {
+            \header( 'Referrer-Policy: strict-origin-when-cross-origin' );
+        }
+        
+        // Content-Security-Policy: Restrict resource loading (basic configuration)
+        if ( ! \headers_sent() ) {
+            \header( "Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self';" );
+        }
     }
     
     /**
@@ -107,6 +149,12 @@ class Core {
         
         // Load i18n module
         i18n::getInstance();
+        
+        // Load error handler module
+        Error_Handler::getInstance();
+        
+        // Load cache module
+        Cache::getInstance();
         
         // Load extension API module
         Extension_API::getInstance();

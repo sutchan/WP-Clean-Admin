@@ -3,7 +3,7 @@
  * WPCleanAdmin Core Functions
  *
  * @package WPCleanAdmin
- * @version 1.7.15
+ * @version 1.8.0
  * @author Sut
  * @author URI: https://github.com/sutchan
  * @since 1.7.15
@@ -302,3 +302,4 @@ function wpca_get_admin_page_title( $tab = '' ) {
     
     return isset( $titles[ $tab ] ) ? $titles[ $tab ] : $translate( 'WP Clean Admin', WPCA_TEXT_DOMAIN );
 }
+

@@ -3,7 +3,7 @@
  * WPCleanAdmin Composer Dependency Management Class
  *
  * @package WPCleanAdmin
- * @version 1.7.15
+ * @version 1.8.0
  * @author Sut
  * @author URI: https://github.com/sutchan
  * @since 1.7.15
@@ -34,13 +34,12 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
          *
          * @var Composer
          */
-        /** @deprecated 仅用于 v2.0.0+，当前版本请勿使用 */
+        /** @deprecated 仅用�?v2.0.0+，当前版本请勿使�?*/
         /**
          * Singleton instance
          *
          * @var Composer|null
-         * @deprecated 仅用于 v2.0.0+，当前版本请勿使用
-         */
+         * @deprecated 仅用�?v2.0.0+，当前版本请勿使�?         */
         private static ?Composer $instance = null;
         
         /**
@@ -79,13 +78,12 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
         public static function getInstance(): Composer {
             if ( ! isset( self::$instance ) ) {
                 trigger_error(
-                    'WPCleanAdmin\Composer 已废弃，当前版本请勿使用。此功能仅用于 v2.0.0+。',
+                    'WPCleanAdmin\Composer 已废弃，当前版本请勿使用。此功能仅用�?v2.0.0+�?,
                     E_USER_DEPRECATED
                 );
                 self::$instance = new self();
             }
-            // 已废弃：WPCleanAdmin\Composer 仅用于 v2.0.0+，当前版本请勿使用
-            return self::$instance;
+            // 已废弃：WPCleanAdmin\Composer 仅用�?v2.0.0+，当前版本请勿使�?            return self::$instance;
         }
         
         /**
@@ -222,7 +220,7 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
                     if (method_exists('Composer\InstalledVersions', 'getInstalledPackages')) {
                         $installed = \Composer\InstalledVersions::getInstalledPackages();
                     } elseif (method_exists('Composer\InstalledVersions', 'getAllInstalledPackages')) {
-                        // Composer\InstalledVersions 不存在 getAllInstalledPackages 方法，统一使用 getInstalledPackages
+                        // Composer\InstalledVersions 不存�?getAllInstalledPackages 方法，统一使用 getInstalledPackages
                         $installed = \Composer\InstalledVersions::getInstalledPackages();
                     }
                     foreach ( $installed as $package ) {
@@ -569,3 +567,4 @@ if ( ! class_exists( 'WPCleanAdmin\Composer' ) ) {
     }
 
 }
+

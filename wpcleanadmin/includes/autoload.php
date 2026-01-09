@@ -3,7 +3,7 @@
  * WPCleanAdmin PSR-4 Autoloader
  *
  * @package WPCleanAdmin
- * @version 1.7.15
+ * @version 1.8.0
  * @author Sut
  * @author URI: https://github.com/sutchan
  * @since 1.7.15
@@ -44,3 +44,4 @@ spl_autoload_register( function( $class ) {
         require_once $file;
     }
 } );
+

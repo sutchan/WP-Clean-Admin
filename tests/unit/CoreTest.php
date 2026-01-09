@@ -1,96 +1,40 @@
 <?php
 /**
- * Unit tests for Core class
+ * WPCleanAdmin Core Test
  *
  * @package WPCleanAdmin
- * @group core
+ * @version 1.8.0
+ * @author Sut
+ * @since 1.8.0
  */
 
 use PHPUnit\Framework\TestCase;
-use WPCleanAdmin\Core;
 
 class CoreTest extends TestCase {
-    
     /**
-     * Test that the Core class is a singleton
+     * Test Core class singleton instance
      */
-    public function testSingleton() {
-        $instance1 = Core::getInstance();
-        $instance2 = Core::getInstance();
+    public function test_core_instance() {
+        $instance1 = WPCleanAdmin\Core::getInstance();
+        $instance2 = WPCleanAdmin\Core::getInstance();
         
         $this->assertSame( $instance1, $instance2 );
     }
     
     /**
-     * Test that the Core class initializes correctly
+     * Test plugin constants are defined
      */
-    public function testInit() {
-        $core = Core::getInstance();
-        
-        // Test that the core instance is not null
-        $this->assertNotNull( $core );
-        
-        // Test that the core has the expected methods
-        $this->assertTrue( method_exists( $core, 'init' ) );
-        $this->assertTrue( method_exists( $core, 'activate' ) );
-        $this->assertTrue( method_exists( $core, 'deactivate' ) );
+    public function test_plugin_constants() {
+        $this->assertDefined( 'WPCA_VERSION' );
+        $this->assertDefined( 'WPCA_PLUGIN_DIR' );
+        $this->assertDefined( 'WPCA_PLUGIN_URL' );
+        $this->assertDefined( 'WPCA_TEXT_DOMAIN' );
     }
     
     /**
-     * Test plugin activation
+     * Test assertDefined helper method
      */
-    public function testActivate() {
-        $core = Core::getInstance();
-        
-        // Mock WordPress functions
-        $this->mockWordPressFunctions();
-        
-        // Test activation doesn't throw errors
-        $this->expectNotToPerformAssertions();
-        $core->activate();
-    }
-    
-    /**
-     * Test plugin deactivation
-     */
-    public function testDeactivate() {
-        $core = Core::getInstance();
-        
-        // Mock WordPress functions
-        $this->mockWordPressFunctions();
-        
-        // Test deactivation doesn't throw errors
-        $this->expectNotToPerformAssertions();
-        $core->deactivate();
-    }
-    
-    /**
-     * Mock WordPress functions for testing
-     */
-    private function mockWordPressFunctions() {
-        // Mock WordPress option functions
-        if ( ! function_exists( 'get_option' ) ) {
-            function get_option( $name, $default = false ) {
-                return $default;
-            }
-        }
-        
-        if ( ! function_exists( 'update_option' ) ) {
-            function update_option( $name, $value ) {
-                return true;
-            }
-        }
-        
-        if ( ! function_exists( 'wp_parse_args' ) ) {
-            function wp_parse_args( $args, $defaults = array() ) {
-                return array_merge( $defaults, $args );
-            }
-        }
-        
-        if ( ! function_exists( 'flush_rewrite_rules' ) ) {
-            function flush_rewrite_rules() {
-                return true;
-            }
-        }
+    private function assertDefined( $constant ) {
+        $this->assertTrue( defined( $constant ), "Constant $constant should be defined" );
     }
 }

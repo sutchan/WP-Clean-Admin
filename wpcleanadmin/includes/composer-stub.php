@@ -6,7 +6,7 @@
  * to enable proper IDE auto-completion and error checking.
  *
  * @package WPCleanAdmin
- * @version 1.7.15
+ * @version 1.8.0
  */
 
 namespace Composer {
@@ -64,3 +64,4 @@ namespace {
         define( 'COMPOSER_VERSION', '' );
     }
 }
+

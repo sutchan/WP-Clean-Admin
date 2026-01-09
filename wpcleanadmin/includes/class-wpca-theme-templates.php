@@ -3,7 +3,7 @@
  * WPCleanAdmin Theme Templates Class
  *
  * @package WPCleanAdmin
- * @version 1.7.15
+ * @version 1.8.0
  * @author Sut
  * @author URI: https://github.com/sutchan
  * @since 1.7.15
@@ -514,3 +514,4 @@ function wpca_apply_template( string $template_id ): array {
 function wpca_get_theme_templates(): Theme_Templates {
     return Theme_Templates::getInstance();
 }
+

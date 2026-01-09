@@ -1,12 +1,36 @@
-.vscode
-.gitattributes
-wpca-logo.fw.png
-wpca-logo.png
-*.7z
-*.ffs_lock
-/backup_*
-update_*
-check_*
-fix_*
-convert_*
-/test
+# Dependencies
+vendor/
+composer.lock
+
+# PHPUnit
+phpunit.xml
+.phpunit.result.cache
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+temp/
+test/
+*.tmp
+*.temp
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build files
+build/
+dist/
+
+# WordPress files
+wp-config.php
+wp-content/uploads/
