@@ -716,8 +716,8 @@ if ( WPCleanAdmin\Permissions::getInstance()->has_feature_permission( 'manage_op
 
 如果您在使用 WP Clean Admin API 时遇到问题或有任何建议，欢迎通过以下方式联系我们：
 
-- GitHub Issues：https://github.com/sutchan/WPCleanAdmin/issues
-- 项目文档：https://github.com/sutchan/WPCleanAdmin/tree/main/openspec
+- GitHub Issues：https://github.com/sutchan/WP-Clean-Admin/issues
+- 项目文档：https://github.com/sutchan/WP-Clean-Admin/tree/main/openspec
 - 电子邮件：[您的电子邮件地址]
 
 ## 15. 许可证

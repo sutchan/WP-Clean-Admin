@@ -33,8 +33,9 @@ spl_autoload_register( function( $class ) {
     // Remove namespace prefix
     $class_name = str_replace( 'WPCleanAdmin\\', '', $class );
     
-    // Convert camelCase to kebab-case
+    // Convert camelCase to kebab-case and replace underscores with hyphens
     $file_path = strtolower( preg_replace( '/(?<!^)[A-Z]/', '-$0', $class_name ) );
+    $file_path = str_replace( '_', '-', $file_path );
     
     // Build full file path
     $file = WPCA_PLUGIN_DIR . 'includes/class-wpca-' . $file_path . '.php';

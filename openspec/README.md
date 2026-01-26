@@ -61,11 +61,12 @@ openspec/
 
 ## 相关链接
 
-- GitHub: https://github.com/sutchan/WPCleanAdmin
-- 项目文档: https://github.com/sutchan/WPCleanAdmin/tree/main/openspec
+- GitHub: https://github.com/sutchan/WP-Clean-Admin
+- 项目文档: https://github.com/sutchan/WP-Clean-Admin/tree/main/openspec
 
 ## 许可证
 
 本文档遵循 GPLv2 或更高版本许可证。
 
 <!-- OPENSPEC:END -->
+

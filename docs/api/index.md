@@ -1,110 +1,95 @@
-# WP Clean Admin API 文档
+﻿# WP Clean Admin API 鏂囨。
 
-## 1. 概述
+## 1. 姒傝堪
 
-WP Clean Admin 提供了丰富的 API 接口，允许开发者扩展和定制插件功能。本文档详细介绍了插件的核心 API、钩子和扩展机制。
-
-## 2. 核心类
-
+WP Clean Admin 鎻愪緵浜嗕赴瀵岀殑 API 鎺ュ彛锛屽厑璁稿紑鍙戣€呮墿灞曞拰瀹氬埗鎻掍欢鍔熻兘銆傛湰鏂囨。璇︾粏浠嬬粛浜嗘彃浠剁殑鏍稿績 API銆侀挬瀛愬拰鎵╁睍鏈哄埗銆?
+## 2. 鏍稿績绫?
 ### 2.1 WPCleanAdmin\Core
 
-核心类是插件的入口点，负责初始化所有模块。
+鏍稿績绫绘槸鎻掍欢鐨勫叆鍙ｇ偣锛岃礋璐ｅ垵濮嬪寲鎵€鏈夋ā鍧椼€?
+#### 鏂规硶
 
-#### 方法
+- **getInstance()**: 鑾峰彇鍗曚緥瀹炰緥
+  - 杩斿洖: `WPCleanAdmin\Core` 瀹炰緥
 
-- **getInstance()**: 获取单例实例
-  - 返回: `WPCleanAdmin\Core` 实例
+- **init()**: 鍒濆鍖栨彃浠?  - 杩斿洖: `void`
 
-- **init()**: 初始化插件
-  - 返回: `void`
+- **activate()**: 鎻掍欢婵€娲诲洖璋?  - 杩斿洖: `void`
 
-- **activate()**: 插件激活回调
-  - 返回: `void`
-
-- **deactivate()**: 插件停用回调
-  - 返回: `void`
+- **deactivate()**: 鎻掍欢鍋滅敤鍥炶皟
+  - 杩斿洖: `void`
 
 ### 2.2 WPCleanAdmin\Settings
 
-设置管理类，负责处理插件设置。
+璁剧疆绠＄悊绫伙紝璐熻矗澶勭悊鎻掍欢璁剧疆銆?
+#### 鏂规硶
 
-#### 方法
+- **getInstance()**: 鑾峰彇鍗曚緥瀹炰緥
+  - 杩斿洖: `WPCleanAdmin\Settings` 瀹炰緥
 
-- **getInstance()**: 获取单例实例
-  - 返回: `WPCleanAdmin\Settings` 实例
-
-- **get_settings()**: 获取插件设置
-  - 参数: `$key` (可选) - 设置键名
-  - 返回: `array|mixed` 设置值
-
-- **update_settings()**: 更新插件设置
-  - 参数: `$settings` - 设置数组
-  - 返回: `bool` 更新结果
+- **get_settings()**: 鑾峰彇鎻掍欢璁剧疆
+  - 鍙傛暟: `$key` (鍙€? - 璁剧疆閿悕
+  - 杩斿洖: `array|mixed` 璁剧疆鍊?
+- **update_settings()**: 鏇存柊鎻掍欢璁剧疆
+  - 鍙傛暟: `$settings` - 璁剧疆鏁扮粍
+  - 杩斿洖: `bool` 鏇存柊缁撴灉
 
 ### 2.3 WPCleanAdmin\Extension_API
 
-扩展 API 类，允许开发者创建插件扩展。
+鎵╁睍 API 绫伙紝鍏佽寮€鍙戣€呭垱寤烘彃浠舵墿灞曘€?
+#### 鏂规硶
 
-#### 方法
+- **getInstance()**: 鑾峰彇鍗曚緥瀹炰緥
+  - 杩斿洖: `WPCleanAdmin\Extension_API` 瀹炰緥
 
-- **getInstance()**: 获取单例实例
-  - 返回: `WPCleanAdmin\Extension_API` 实例
+- **register_extension()**: 娉ㄥ唽鎵╁睍
+  - 鍙傛暟: `$extension_data` - 鎵╁睍鏁版嵁
+  - 杩斿洖: `bool` 娉ㄥ唽缁撴灉
 
-- **register_extension()**: 注册扩展
-  - 参数: `$extension_data` - 扩展数据
-  - 返回: `bool` 注册结果
-
-- **execute_in_sandbox()**: 在沙箱中执行扩展代码
-  - 参数: `$extension_code` - 扩展代码
-  - 参数: `$options` (可选) - 沙箱选项
-  - 返回: `array` 执行结果
+- **execute_in_sandbox()**: 鍦ㄦ矙绠变腑鎵ц鎵╁睍浠ｇ爜
+  - 鍙傛暟: `$extension_code` - 鎵╁睍浠ｇ爜
+  - 鍙傛暟: `$options` (鍙€? - 娌欑閫夐」
+  - 杩斿洖: `array` 鎵ц缁撴灉
 
 ### 2.4 WPCleanAdmin\Error_Handler
 
-错误处理类，负责统一的错误处理和日志记录。
+閿欒澶勭悊绫伙紝璐熻矗缁熶竴鐨勯敊璇鐞嗗拰鏃ュ織璁板綍銆?
+#### 鏂规硶
 
-#### 方法
+- **getInstance()**: 鑾峰彇鍗曚緥瀹炰緥
+  - 杩斿洖: `WPCleanAdmin\Error_Handler` 瀹炰緥
 
-- **getInstance()**: 获取单例实例
-  - 返回: `WPCleanAdmin\Error_Handler` 实例
+- **log_message()**: 璁板綍鏃ュ織娑堟伅
+  - 鍙傛暟: `$message` - 鏃ュ織娑堟伅
+  - 鍙傛暟: `$level` (鍙€? - 鏃ュ織绾у埆
+  - 杩斿洖: `void`
 
-- **log_message()**: 记录日志消息
-  - 参数: `$message` - 日志消息
-  - 参数: `$level` (可选) - 日志级别
-  - 返回: `void`
+## 3. 閽╁瓙鍜岃繃婊ゅ櫒
 
-## 3. 钩子和过滤器
+### 3.1 鍔ㄤ綔閽╁瓙
 
-### 3.1 动作钩子
+- **wpca_init**: 鎻掍欢鍒濆鍖栧畬鎴愬悗瑙﹀彂
+- **wpca_settings_saved**: 璁剧疆淇濆瓨鍚庤Е鍙?- **wpca_extension_activated**: 鎵╁睍婵€娲诲悗瑙﹀彂
+- **wpca_extension_deactivated**: 鎵╁睍鍋滅敤鏃惰Е鍙?
+### 3.2 杩囨护鍣ㄩ挬瀛?
+- **wpca_settings**: 杩囨护鎻掍欢璁剧疆
+- **wpca_menu_items**: 杩囨护鍚庡彴鑿滃崟椤?- **wpca_dashboard_widgets**: 杩囨护浠〃鐩樺皬宸ュ叿
+- **wpca_sandbox_enabled**: 鎺у埗娌欑鏄惁鍚敤
 
-- **wpca_init**: 插件初始化完成后触发
-- **wpca_settings_saved**: 设置保存后触发
-- **wpca_extension_activated**: 扩展激活后触发
-- **wpca_extension_deactivated**: 扩展停用时触发
+## 4. 鎵╁睍寮€鍙?
+### 4.1 鍒涘缓鎵╁睍
 
-### 3.2 过滤器钩子
-
-- **wpca_settings**: 过滤插件设置
-- **wpca_menu_items**: 过滤后台菜单项
-- **wpca_dashboard_widgets**: 过滤仪表盘小工具
-- **wpca_sandbox_enabled**: 控制沙箱是否启用
-
-## 4. 扩展开发
-
-### 4.1 创建扩展
-
-扩展是 WP Clean Admin 的功能模块，可以通过以下方式创建：
-
+鎵╁睍鏄?WP Clean Admin 鐨勫姛鑳芥ā鍧楋紝鍙互閫氳繃浠ヤ笅鏂瑰紡鍒涘缓锛?
 ```php
-// 注册扩展
+// 娉ㄥ唽鎵╁睍
 $extension_api = WPCleanAdmin\Extension_API::getInstance();
 
 $extension_data = array(
     'id' => 'my_extension',
-    'name' => '我的扩展',
+    'name' => '鎴戠殑鎵╁睍',
     'version' => '1.0.0',
-    'description' => '这是一个示例扩展',
-    'author' => '开发者名称',
+    'description' => '杩欐槸涓€涓ず渚嬫墿灞?,
+    'author' => '寮€鍙戣€呭悕绉?,
     'file' => __FILE__,
     'active' => true
 );
@@ -112,12 +97,11 @@ $extension_data = array(
 $extension_api->register_extension($extension_data);
 ```
 
-### 4.2 扩展沙箱
+### 4.2 鎵╁睍娌欑
 
-扩展代码在安全的沙箱环境中执行，限制了内存使用和执行时间：
-
+鎵╁睍浠ｇ爜鍦ㄥ畨鍏ㄧ殑娌欑鐜涓墽琛岋紝闄愬埗浜嗗唴瀛樹娇鐢ㄥ拰鎵ц鏃堕棿锛?
 ```php
-// 在沙箱中执行代码
+// 鍦ㄦ矙绠变腑鎵ц浠ｇ爜
 $result = $extension_api->execute_in_sandbox(
     'echo "Hello from sandbox!";',
     array(
@@ -126,89 +110,77 @@ $result = $extension_api->execute_in_sandbox(
     )
 );
 
-// 检查执行结果
-if ($result['success']) {
-    echo '执行成功: ' . $result['result'];
+// 妫€鏌ユ墽琛岀粨鏋?if ($result['success']) {
+    echo '鎵ц鎴愬姛: ' . $result['result'];
 } else {
-    echo '执行失败: ' . $result['error'];
+    echo '鎵ц澶辫触: ' . $result['error'];
 }
 ```
 
-## 5. 核心函数
+## 5. 鏍稿績鍑芥暟
 
 ### 5.1 wpca_get_settings()
 
-获取插件设置。
-
-**参数**:
-- `$key` (可选): 设置键名
-- `$default` (可选): 默认值
-
-**返回**:
-- `mixed`: 设置值
-
+鑾峰彇鎻掍欢璁剧疆銆?
+**鍙傛暟**:
+- `$key` (鍙€?: 璁剧疆閿悕
+- `$default` (鍙€?: 榛樿鍊?
+**杩斿洖**:
+- `mixed`: 璁剧疆鍊?
 ### 5.2 wpca_update_settings()
 
-更新插件设置。
+鏇存柊鎻掍欢璁剧疆銆?
+**鍙傛暟**:
+- `$settings`: 璁剧疆鏁扮粍
 
-**参数**:
-- `$settings`: 设置数组
-
-**返回**:
-- `bool`: 更新结果
+**杩斿洖**:
+- `bool`: 鏇存柊缁撴灉
 
 ### 5.3 wpca_clean_admin_bar()
 
-清理管理栏。
-
-**参数**:
-- 无
-
-**返回**:
+娓呯悊绠＄悊鏍忋€?
+**鍙傛暟**:
+- 鏃?
+**杩斿洖**:
 - `void`
 
 ### 5.4 wpca_clean_dashboard()
 
-清理仪表盘。
-
-**参数**:
-- 无
-
-**返回**:
+娓呯悊浠〃鐩樸€?
+**鍙傛暟**:
+- 鏃?
+**杩斿洖**:
 - `void`
 
-## 6. 示例代码
+## 6. 绀轰緥浠ｇ爜
 
-### 6.1 创建简单扩展
-
+### 6.1 鍒涘缓绠€鍗曟墿灞?
 ```php
 <?php
 /**
- * 示例扩展
+ * 绀轰緥鎵╁睍
  *
  * @package WPCleanAdmin
  * @version 1.0.0
  */
 
-// 确保插件已加载
-if (class_exists('WPCleanAdmin\Extension_API')) {
-    // 注册扩展
+// 纭繚鎻掍欢宸插姞杞?if (class_exists('WPCleanAdmin\Extension_API')) {
+    // 娉ㄥ唽鎵╁睍
     $extension_api = WPCleanAdmin\Extension_API::getInstance();
     
     $extension_data = array(
         'id' => 'example_extension',
-        'name' => '示例扩展',
+        'name' => '绀轰緥鎵╁睍',
         'version' => '1.0.0',
-        'description' => '一个简单的示例扩展',
-        'author' => '开发者',
+        'description' => '涓€涓畝鍗曠殑绀轰緥鎵╁睍',
+        'author' => '寮€鍙戣€?,
         'file' => __FILE__,
         'active' => true
     );
     
     $extension_api->register_extension($extension_data);
     
-    // 添加设置项
-    add_filter('wpca_settings', function($settings) {
+    // 娣诲姞璁剧疆椤?    add_filter('wpca_settings', function($settings) {
         $settings['example'] = array(
             'enabled' => true,
             'option1' => 'value1'
@@ -216,10 +188,9 @@ if (class_exists('WPCleanAdmin\Extension_API')) {
         return $settings;
     });
     
-    // 添加菜单项
-    add_filter('wpca_menu_items', function($items) {
+    // 娣诲姞鑿滃崟椤?    add_filter('wpca_menu_items', function($items) {
         $items['example'] = array(
-            'title' => '示例菜单项',
+            'title' => '绀轰緥鑿滃崟椤?,
             'capability' => 'manage_options',
             'menu_slug' => 'wpca-example',
             'callback' => 'example_menu_callback'
@@ -227,74 +198,61 @@ if (class_exists('WPCleanAdmin\Extension_API')) {
         return $items;
     });
     
-    // 菜单项回调
-    function example_menu_callback() {
+    // 鑿滃崟椤瑰洖璋?    function example_menu_callback() {
         echo '<div class="wrap">';
-        echo '<h1>示例页面</h1>';
-        echo '<p>这是示例扩展的页面</p>';
+        echo '<h1>绀轰緥椤甸潰</h1>';
+        echo '<p>杩欐槸绀轰緥鎵╁睍鐨勯〉闈?/p>';
         echo '</div>';
     }
 }
 ```
 
-### 6.2 使用错误处理
+### 6.2 浣跨敤閿欒澶勭悊
 
 ```php
 <?php
-// 获取错误处理器实例
-$error_handler = WPCleanAdmin\Error_Handler::getInstance();
+// 鑾峰彇閿欒澶勭悊鍣ㄥ疄渚?$error_handler = WPCleanAdmin\Error_Handler::getInstance();
 
-// 记录不同级别的日志
-$error_handler->log_message('这是一条调试信息', 'debug');
-$error_handler->log_message('这是一条信息', 'info');
-$error_handler->log_message('这是一条警告', 'warning');
-$error_handler->log_message('这是一条错误', 'error');
-$error_handler->log_message('这是一条严重错误', 'critical');
+// 璁板綍涓嶅悓绾у埆鐨勬棩蹇?$error_handler->log_message('杩欐槸涓€鏉¤皟璇曚俊鎭?, 'debug');
+$error_handler->log_message('杩欐槸涓€鏉′俊鎭?, 'info');
+$error_handler->log_message('杩欐槸涓€鏉¤鍛?, 'warning');
+$error_handler->log_message('杩欐槸涓€鏉￠敊璇?, 'error');
+$error_handler->log_message('杩欐槸涓€鏉′弗閲嶉敊璇?, 'critical');
 
-// 设置日志级别
+// 璁剧疆鏃ュ織绾у埆
 $error_handler->set_log_level('info');
 
-// 获取当前日志级别
+// 鑾峰彇褰撳墠鏃ュ織绾у埆
 $current_level = $error_handler->get_log_level();
-echo '当前日志级别: ' . $current_level;
+echo '褰撳墠鏃ュ織绾у埆: ' . $current_level;
 ```
 
-## 7. 最佳实践
+## 7. 鏈€浣冲疄璺?
+1. **浣跨敤鍛藉悕绌洪棿**: 鎵€鏈夋墿灞曚唬鐮佸簲浣跨敤鍛藉悕绌洪棿锛岄伩鍏嶅啿绐?2. **閬靛惊缂栫爜瑙勮寖**: 閬靛惊 WordPress 鍜?PHP 缂栫爜瑙勮寖
+3. **瀹夊叏绗竴**: 涓嶈鍦ㄦ墿灞曚腑浣跨敤鍗遍櫓鍑芥暟锛屽 `eval()`銆乣exec()` 绛?4. **鎬ц兘浼樺寲**: 閬垮厤闀挎椂闂磋繍琛岀殑鎿嶄綔锛屼娇鐢ㄧ紦瀛樻満鍒?5. **閿欒澶勭悊**: 浣跨敤鎻掍欢鐨勯敊璇鐞嗘満鍒惰褰曢敊璇?6. **鏂囨。瀹屽杽**: 涓烘墿灞曠紪鍐欒缁嗙殑鏂囨。
 
-1. **使用命名空间**: 所有扩展代码应使用命名空间，避免冲突
-2. **遵循编码规范**: 遵循 WordPress 和 PHP 编码规范
-3. **安全第一**: 不要在扩展中使用危险函数，如 `eval()`、`exec()` 等
-4. **性能优化**: 避免长时间运行的操作，使用缓存机制
-5. **错误处理**: 使用插件的错误处理机制记录错误
-6. **文档完善**: 为扩展编写详细的文档
+## 8. 鏁呴殰鎺掗櫎
 
-## 8. 故障排除
+### 8.1 甯歌闂
 
-### 8.1 常见问题
+- **鎵╁睍娉ㄥ唽澶辫触**: 妫€鏌ユ墿灞曟暟鎹槸鍚﹀畬鏁达紝鐗瑰埆鏄?`id` 鍜?`file` 瀛楁
+- **娌欑鎵ц澶辫触**: 妫€鏌ヤ唬鐮佹槸鍚︽湁璇硶閿欒锛屾垨鏄惁瓒呭嚭浜嗗唴瀛樺拰鏃堕棿闄愬埗
+- **鏉冮檺闂**: 纭繚鐢ㄦ埛鏈夎冻澶熺殑鏉冮檺鎵ц鎿嶄綔
 
-- **扩展注册失败**: 检查扩展数据是否完整，特别是 `id` 和 `file` 字段
-- **沙箱执行失败**: 检查代码是否有语法错误，或是否超出了内存和时间限制
-- **权限问题**: 确保用户有足够的权限执行操作
+### 8.2 璋冭瘯鎶€宸?
+- **鍚敤璋冭瘯妯″紡**: 鍦?`wp-config.php` 涓缃?`WP_DEBUG` 鍜?`WP_DEBUG_LOG`
+- **鏌ョ湅鏃ュ織**: 妫€鏌?`wp-content/debug.log` 鍜屾彃浠剁殑 `logs` 鐩綍
+- **浣跨敤閿欒澶勭悊鍣?*: 浣跨敤 `Error_Handler` 璁板綍璇︾粏鐨勯敊璇俊鎭?
+## 9. 鐗堟湰鍘嗗彶
 
-### 8.2 调试技巧
+- **1.8.0**: 娣诲姞浜嗘墿灞?API 鍜屾矙绠辨墽琛岀幆澧?- **1.7.0**: 閲嶆瀯浜嗚缃鐞嗙郴缁?- **1.6.0**: 娣诲姞浜嗛敊璇鐞嗗拰鏃ュ織璁板綍鍔熻兘
+- **1.5.0**: 瀹炵幇浜嗘ā鍧楀寲鏋舵瀯
 
-- **启用调试模式**: 在 `wp-config.php` 中设置 `WP_DEBUG` 和 `WP_DEBUG_LOG`
-- **查看日志**: 检查 `wp-content/debug.log` 和插件的 `logs` 目录
-- **使用错误处理器**: 使用 `Error_Handler` 记录详细的错误信息
-
-## 9. 版本历史
-
-- **1.8.0**: 添加了扩展 API 和沙箱执行环境
-- **1.7.0**: 重构了设置管理系统
-- **1.6.0**: 添加了错误处理和日志记录功能
-- **1.5.0**: 实现了模块化架构
-
-## 10. 联系与支持
-
-- **GitHub 仓库**: https://github.com/sutchan/WPCleanAdmin
-- **问题反馈**: https://github.com/sutchan/WPCleanAdmin/issues
-- **贡献代码**: 欢迎提交 Pull Request
+## 10. 鑱旂郴涓庢敮鎸?
+- **GitHub 浠撳簱**: https://github.com/sutchan/WP-Clean-Admin
+- **闂鍙嶉**: https://github.com/sutchan/WP-Clean-Admin/issues
+- **璐＄尞浠ｇ爜**: 娆㈣繋鎻愪氦 Pull Request
 
 ---
 
-本文档由 WP Clean Admin 团队维护，如有任何疑问或建议，请随时反馈。
+鏈枃妗ｇ敱 WP Clean Admin 鍥㈤槦缁存姢锛屽鏈変换浣曠枒闂垨寤鸿锛岃闅忔椂鍙嶉銆?

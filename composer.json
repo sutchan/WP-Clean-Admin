@@ -1,4 +1,4 @@
-{
+﻿{
     "name": "sutchan/wp-clean-admin",
     "description": "WordPress Admin Cleanup and Optimization Plugin",
     "type": "wordpress-plugin",
@@ -10,7 +10,7 @@
         "optimization",
         "security"
     ],
-    "homepage": "https://github.com/sutchan/WPCleanAdmin",
+    "homepage": "https://github.com/sutchan/WP-Clean-Admin",
     "license": "GPL-2.0-or-later",
     "authors": [
         {
@@ -55,3 +55,4 @@
         ]
     }
 }
+

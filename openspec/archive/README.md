@@ -72,7 +72,7 @@ WP Clean Admin 是一个功能强大的 WordPress 插件，旨在帮助管理员
 
 ### 方法 3：GitHub 克隆
 ```bash
-git clone https://github.com/sutchan/WPCleanAdmin.git wp-content/plugins/wp-clean-admin
+git clone https://github.com/sutchan/WP-Clean-Admin.git wp-content/plugins/wp-clean-admin
 ```
 
 ## 使用说明
@@ -134,11 +134,11 @@ A: 插件经过测试，与大多数主流 WordPress 插件兼容。如果您遇
 欢迎您为 WP Clean Admin 做出贡献，请查看 [贡献指南](05-技术文档/贡献指南.md) 了解如何参与。
 
 ## 许可证
-WP Clean Admin 使用 GPL-2.0+ 许可证，详情请查看 [LICENSE](https://github.com/sutchan/WPCleanAdmin/blob/main/LICENSE) 文件。
+WP Clean Admin 使用 GPL-2.0+ 许可证，详情请查看 [LICENSE](https://github.com/sutchan/WP-Clean-Admin/blob/main/LICENSE) 文件。
 
 ## 联系方式
 
-- 项目地址：https://github.com/sutchan/WPCleanAdmin
+- 项目地址：https://github.com/sutchan/WP-Clean-Admin
 - 作者：Sut
 - 邮箱：请通过 GitHub Issues 联系
 

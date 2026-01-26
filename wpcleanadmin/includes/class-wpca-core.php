@@ -176,13 +176,13 @@ class Core {
      */
     public function deactivate() {
         // Flush rewrite rules
-        flush_rewrite_rules();
+        \flush_rewrite_rules();
     }
     
     /**
      * Set default plugin settings
      */
-    private function set_default_settings(): void {
+    private function set_default_settings() {
         $default_settings = array(
             'general' => array(
                 'clean_admin_bar' => 1,

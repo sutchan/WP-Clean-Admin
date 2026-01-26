@@ -1,7 +1,7 @@
-<?php
+﻿<?php
 /**
  * Plugin Name: WP Clean Admin
- * Plugin URI: https://github.com/sutchan/WPCleanAdmin
+ * Plugin URI: https://github.com/sutchan/WP-Clean-Admin
  * Description: WordPress Admin Cleanup and Optimization Plugin
  * Version: 1.8.0
  * Author: Sut
@@ -66,3 +66,4 @@ if ( function_exists( 'register_deactivation_hook' ) ) {
         WPCleanAdmin\Core::getInstance()->deactivate();
     });
 }
+
