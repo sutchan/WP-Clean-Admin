@@ -1,4 +1,4 @@
-﻿<!-- OPENSPEC:START -->
+<!-- OPENSPEC:START -->
 # WP Clean Admin OpenSpec 文档
 
 本文档包含 WP Clean Admin 项目的所有 OpenSpec 规范文档，用于指导项目开发和维护。
@@ -61,8 +61,8 @@ openspec/
 
 ## 相关链接
 
-- GitHub: https://github.com/sutchan/WP-Clean-Admin
-- 项目文档: https://github.com/sutchan/WP-Clean-Admin/tree/main/openspec
+- GitHub: https://github.com/sutchan/Open-PNR
+- 项目文档: https://github.com/sutchan/Open-PNR/tree/main/openspec
 
 ## 许可证
 

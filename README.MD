@@ -1,4 +1,4 @@
-﻿# WP Clean Admin
+# WP Clean Admin
 
 涓€涓叏闈㈢殑 WordPress 鍚庡彴娓呯悊鍜屼紭鍖栨彃浠躲€?
 
@@ -58,7 +58,7 @@ WP Clean Admin 鏄竴涓姛鑳藉己澶х殑 WordPress 鎻掍欢锛屾棬�
 
 ### 鏂规硶 3锛欸itHub 鍏嬮殕
 ```bash
-git clone https://github.com/sutchan/WP-Clean-Admin.git wp-content/plugins/wp-clean-admin
+git clone https://github.com/sutchan/Open-PNR.git wp-content/plugins/wp-clean-admin
 ```
 
 ## 浣跨敤璇存槑
@@ -76,11 +76,11 @@ git clone https://github.com/sutchan/WP-Clean-Admin.git wp-content/plugins/wp-cl
 
 ## 璁稿彲璇?
 
-WP Clean Admin 浣跨敤 GPL-2.0+ 璁稿彲璇侊紝璇︽儏璇锋煡鐪?[LICENSE](https://github.com/sutchan/WP-Clean-Admin/blob/main/LICENSE) 鏂囦欢銆?
+WP Clean Admin 浣跨敤 GPL-2.0+ 璁稿彲璇侊紝璇︽儏璇锋煡鐪?[LICENSE](https://github.com/sutchan/Open-PNR/blob/main/LICENSE) 鏂囦欢銆?
 
 ## 鑱旂郴鏂瑰紡
 
-- 椤圭洰鍦板潃锛歨ttps://github.com/sutchan/WPCleanAdmin
+- 椤圭洰鍦板潃锛歨ttps://github.com/sutchan/Open-PNR
 - 浣滆€咃細Sut
 - 閭锛氳閫氳繃 GitHub Issues 鑱旂郴
 

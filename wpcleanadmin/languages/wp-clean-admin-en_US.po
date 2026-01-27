@@ -201,8 +201,7 @@ msgstr "Hide Frontend Admin Bar"
 msgid "Hide the admin bar on the frontend for all users."
 msgstr "Hide the admin bar on the frontend for all users."
 
-msgid "Hide the \"Thank you for creating with WordPress\" text in the admin footer."
-msgstr "Hide the \"Thank you for creating with WordPress\" text in the admin footer."
+
 
 msgid "Hide the WordPress version number from the footer."
 msgstr "Hide the WordPress version number from the footer."
