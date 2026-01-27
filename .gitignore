@@ -37,3 +37,6 @@ wp-content/uploads/
 
 
 *报告*.md
+.github/
+.qwen/
+.trae/
