@@ -111,94 +111,45 @@ class Core {
      * Initialize all plugin modules
      */
     private function init_modules() {
-        try {
-            // Load settings module
-            if ( class_exists( 'WPCleanAdmin\Settings' ) ) {
-                Settings::getInstance();
-            }
+        // Module initialization order matters - load core modules first
+        $modules = array(
+            'Settings',
+            'Dashboard',
+            'Database',
+            'Performance',
+            'Menu_Manager',
+            'Menu_Customizer',
+            'Permissions',
+            'User_Roles',
+            'Login',
+            'Cleanup',
+            'Resources',
+            'Reset',
+            'AJAX',
+            'i18n',
+            'Error_Handler',
+            'Cache',
+            'Extension_API'
+        );
+        
+        foreach ( $modules as $module ) {
+            $class_name = 'WPCleanAdmin\\' . $module;
             
-            // Load dashboard module
-            if ( class_exists( 'WPCleanAdmin\Dashboard' ) ) {
-                Dashboard::getInstance();
+            try {
+                if ( class_exists( $class_name ) ) {
+                    // Check if getInstance method exists
+                    if ( method_exists( $class_name, 'getInstance' ) ) {
+                        $class_name::getInstance();
+                    }
+                }
+            } catch ( \Exception $e ) {
+                // Silently catch exceptions during module initialization
+                // This prevents the entire plugin from failing if one module has an issue
+                // Log error for debugging if needed
+                if ( function_exists( 'error_log' ) ) {
+                    \error_log( 'WPCA Module Init Error: ' . $e->getMessage() );
+                }
             }
-            
-            // Load database module
-            if ( class_exists( 'WPCleanAdmin\Database' ) ) {
-                Database::getInstance();
-            }
-            
-            // Load performance module
-            if ( class_exists( 'WPCleanAdmin\Performance' ) ) {
-                Performance::getInstance();
-            }
-            
-            // Load menu manager module
-            if ( class_exists( 'WPCleanAdmin\Menu_Manager' ) ) {
-                Menu_Manager::getInstance();
-            }
-            
-            // Load menu customizer module
-            if ( class_exists( 'WPCleanAdmin\Menu_Customizer' ) ) {
-                Menu_Customizer::getInstance();
-            }
-            
-            // Load permissions module
-            if ( class_exists( 'WPCleanAdmin\Permissions' ) ) {
-                Permissions::getInstance();
-            }
-            
-            // Load user roles module
-            if ( class_exists( 'WPCleanAdmin\User_Roles' ) ) {
-                User_Roles::getInstance();
-            }
-            
-            // Load login module
-            if ( class_exists( 'WPCleanAdmin\Login' ) ) {
-                Login::getInstance();
-            }
-            
-            // Load cleanup module
-            if ( class_exists( 'WPCleanAdmin\Cleanup' ) ) {
-                Cleanup::getInstance();
-            }
-            
-            // Load resources module
-            if ( class_exists( 'WPCleanAdmin\Resources' ) ) {
-                Resources::getInstance();
-            }
-            
-            // Load reset module
-            if ( class_exists( 'WPCleanAdmin\Reset' ) ) {
-                Reset::getInstance();
-            }
-            
-            // Load AJAX module
-            if ( class_exists( 'WPCleanAdmin\AJAX' ) ) {
-                AJAX::getInstance();
-            }
-            
-            // Load i18n module
-            if ( class_exists( 'WPCleanAdmin\i18n' ) ) {
-                i18n::getInstance();
-            }
-            
-            // Load error handler module
-            if ( class_exists( 'WPCleanAdmin\Error_Handler' ) ) {
-                Error_Handler::getInstance();
-            }
-            
-            // Load cache module
-            if ( class_exists( 'WPCleanAdmin\Cache' ) ) {
-                Cache::getInstance();
-            }
-            
-            // Load extension API module
-            if ( class_exists( 'WPCleanAdmin\Extension_API' ) ) {
-                Extension_API::getInstance();
-            }
-        } catch ( Exception $e ) {
-            // Silently catch exceptions during module initialization
-            // This prevents the entire plugin from failing if one module has an issue
         }
     }
     

@@ -38,257 +38,257 @@ msgid "Remove unnecessary items from the admin bar."
 msgstr "从管理栏中移除不必要的项目。"
 
 msgid "Save Changes"
-msgstr "淇濆瓨鏇存敼"
+msgstr "保存更改"
 
 msgid "Settings saved successfully!"
-msgstr "璁剧疆淇濆瓨鎴愬姛锛?
+msgstr "设置保存成功！"
 
 msgid "An error occurred while saving settings."
-msgstr "淇濆瓨璁剧疆鏃跺彂鐢熼敊璇€?
+msgstr "保存设置时发生错误。"
 
 # ===========================================================
 # Dashboard Module
 # ===========================================================
 msgid "Dashboard Overview"
-msgstr "浠〃鐩樻瑙?
+msgstr "仪表板概览"
 
 msgid "Database Size"
-msgstr "鏁版嵁搴撳ぇ灏?
+msgstr "数据库大小"
 
 msgid "Transients"
-msgstr "涓存椂鏁版嵁"
+msgstr "临时数据"
 
 msgid "Orphaned Postmeta"
-msgstr "瀛ょ珛鐨勬枃绔犲厓鏁版嵁"
+msgstr "孤立的文章元数据"
 
 msgid "Orphaned Termmeta"
-msgstr "瀛ょ珛鐨勫垎绫诲厓鏁版嵁"
+msgstr "孤立的分类元数据"
 
 msgid "Quick Database Cleanup"
-msgstr "蹇€熸暟鎹簱娓呯悊"
+msgstr "快速数据库清理"
 
 msgid "Optimize Database"
-msgstr "浼樺寲鏁版嵁搴?
+msgstr "优化数据库"
 
 msgid "Multisite"
-msgstr "澶氱珯鐐?
+msgstr "多站点"
 
 msgid "Debug Mode"
-msgstr "璋冭瘯妯″紡"
+msgstr "调试模式"
 
 msgid "Active"
-msgstr "宸叉縺娲?
+msgstr "已激活"
 
 msgid "Yes"
-msgstr "鏄?
+msgstr "是"
 
 msgid "No"
-msgstr "鍚?
+msgstr "否"
 
 msgid "Invalid action"
-msgstr "鏃犳晥鎿嶄綔"
+msgstr "无效操作"
 
 msgid "Database cleanup completed successfully"
-msgstr "鏁版嵁搴撴竻鐞嗘垚鍔熷畬鎴?
+msgstr "数据库清理成功完成"
 
 msgid "Database optimization completed successfully"
-msgstr "鏁版嵁搴撲紭鍖栨垚鍔熷畬鎴?
+msgstr "数据库优化成功完成"
 
 # ===========================================================
 # Database Module
 # ===========================================================
 msgid "Database optimization completed successfully"
-msgstr "鏁版嵁搴撲紭鍖栨垚鍔熷畬鎴?
+msgstr "数据库优化成功完成"
 
 msgid "Database backup failed"
-msgstr "鏁版嵁搴撳浠藉け璐?
+msgstr "数据库备份失败"
 
 msgid "Database backup created successfully"
-msgstr "鏁版嵁搴撳浠藉垱寤烘垚鍔?
+msgstr "数据库备份创建成功"
 
 msgid "Database restore failed"
-msgstr "鏁版嵁搴撴仮澶嶅け璐?
+msgstr "数据库恢复失败"
 
 msgid "Backup file not found"
-msgstr "鏈壘鍒板浠芥枃浠?
+msgstr "未找到备份文件"
 
 msgid "Database restore completed successfully"
-msgstr "鏁版嵁搴撴仮澶嶆垚鍔熷畬鎴?
+msgstr "数据库恢复成功完成"
 
 msgid "Failed to delete backup file"
-msgstr "鍒犻櫎澶囦唤鏂囦欢澶辫触"
+msgstr "删除备份文件失败"
 
 msgid "Backup file deleted successfully"
-msgstr "澶囦唤鏂囦欢鍒犻櫎鎴愬姛"
+msgstr "备份文件删除成功"
 
 # ===========================================================
 # Cleanup Module
 # ===========================================================
 msgid "Database cleanup completed successfully"
-msgstr "鏁版嵁搴撴竻鐞嗘垚鍔熷畬鎴?
+msgstr "数据库清理成功完成"
 
 msgid "Media cleanup completed successfully"
-msgstr "濯掍綋娓呯悊鎴愬姛瀹屾垚"
+msgstr "媒体清理成功完成"
 
 msgid "Comments cleanup completed successfully"
-msgstr "璇勮娓呯悊鎴愬姛瀹屾垚"
+msgstr "评论清理成功完成"
 
 msgid "Content cleanup completed successfully"
-msgstr "鍐呭娓呯悊鎴愬姛瀹屾垚"
+msgstr "内容清理成功完成"
 
 # ===========================================================
 # Performance Module
 # ===========================================================
 msgid "REST API is disabled for non-authenticated users"
-msgstr "REST API 瀵归潪璁よ瘉鐢ㄦ埛绂佺敤"
+msgstr "REST API 对非认证用户禁用"
 
 msgid "Cache cleared successfully"
-msgstr "缂撳瓨娓呯悊鎴愬姛"
+msgstr "缓存清理成功"
 
 msgid "WordPress Object Cache"
-msgstr "WordPress 瀵硅薄缂撳瓨"
+msgstr "WordPress 对象缓存"
 
 msgid "Transients"
-msgstr "涓存椂鏁版嵁"
+msgstr "临时数据"
 
 msgid "OPcache"
 msgstr "OPcache"
 
 msgid "Enabled"
-msgstr "宸插惎鐢?
+msgstr "已启用"
 
 msgid "Disabled"
-msgstr "宸茬鐢?
+msgstr "已禁用"
 
 # ===========================================================
 # Resources Module
 # ===========================================================
 msgid "Resources optimized successfully"
-msgstr "璧勬簮浼樺寲鎴愬姛"
+msgstr "资源优化成功"
 
 msgid "Resource disabled successfully"
-msgstr "璧勬簮绂佺敤鎴愬姛"
+msgstr "资源禁用成功"
 
 msgid "Invalid resource type"
-msgstr "鏃犳晥鐨勮祫婧愮被鍨?
+msgstr "无效的资源类型"
 
 msgid "Resource enabled successfully"
-msgstr "璧勬簮鍚敤鎴愬姛"
+msgstr "资源启用成功"
 
 # ===========================================================
 # Reset Module
 # ===========================================================
 msgid "Settings reset successfully"
-msgstr "璁剧疆閲嶇疆鎴愬姛"
+msgstr "设置重置成功"
 
 msgid "Plugin reset successfully"
-msgstr "鎻掍欢閲嶇疆鎴愬姛"
+msgstr "插件重置成功"
 
 msgid "%s module settings reset successfully"
-msgstr "%s 妯″潡璁剧疆閲嶇疆鎴愬姛"
+msgstr "%s 模块设置重置成功"
 
 msgid "Invalid module: %s"
-msgstr "鏃犳晥妯″潡锛?s"
+msgstr "无效模块: %s"
 
 msgid "Dashboard widgets reset successfully"
-msgstr "浠〃鐩樺皬閮ㄤ欢閲嶇疆鎴愬姛"
+msgstr "仪表板小部件重置成功"
 
 msgid "Admin menu reset successfully"
-msgstr "绠＄悊鑿滃崟閲嶇疆鎴愬姛"
+msgstr "管理菜单重置成功"
 
 msgid "Login settings reset successfully"
-msgstr "鐧诲綍璁剧疆閲嶇疆鎴愬姛"
+msgstr "登录设置重置成功"
 
 msgid "Performance settings reset successfully"
-msgstr "鎬ц兘璁剧疆閲嶇疆鎴愬姛"
+msgstr "性能设置重置成功"
 
 # ===========================================================
 # User Roles Module
 # ===========================================================
 msgid "Failed to create role"
-msgstr "鍒涘缓瑙掕壊澶辫触"
+msgstr "创建角色失败"
 
 msgid "Role already exists"
-msgstr "瑙掕壊宸插瓨鍦?
+msgstr "角色已存在"
 
 msgid "Role created successfully"
-msgstr "瑙掕壊鍒涘缓鎴愬姛"
+msgstr "角色创建成功"
 
 msgid "Failed to delete role"
-msgstr "鍒犻櫎瑙掕壊澶辫触"
+msgstr "删除角色失败"
 
 msgid "Role does not exist"
-msgstr "瑙掕壊涓嶅瓨鍦?
+msgstr "角色不存在"
 
 msgid "Role deleted successfully"
-msgstr "瑙掕壊鍒犻櫎鎴愬姛"
+msgstr "角色删除成功"
 
 msgid "Failed to duplicate role"
-msgstr "澶嶅埗瑙掕壊澶辫触"
+msgstr "复制角色失败"
 
 msgid "Source role does not exist"
-msgstr "婧愯鑹蹭笉瀛樺湪"
+msgstr "源角色不存在"
 
 msgid "New role already exists"
-msgstr "鏂拌鑹插凡瀛樺湪"
+msgstr "新角色已存在"
 
 msgid "Role duplicated successfully"
-msgstr "瑙掕壊澶嶅埗鎴愬姛"
+msgstr "角色复制成功"
 
 # ===========================================================
 # AJAX Responses
 # ===========================================================
 msgid "Invalid nonce"
-msgstr "鏃犳晥鐨勫畨鍏ㄩ獙璇?
+msgstr "无效的安全验证"
 
 msgid "Insufficient permissions"
-msgstr "鏉冮檺涓嶈冻"
+msgstr "权限不足"
 
 msgid "Settings saved successfully"
-msgstr "璁剧疆淇濆瓨鎴愬姛"
+msgstr "设置保存成功"
 
 msgid "Failed to save settings"
-msgstr "淇濆瓨璁剧疆澶辫触"
+msgstr "保存设置失败"
 
 msgid "Menu customizer settings saved successfully"
-msgstr "鑿滃崟瀹氬埗鍣ㄨ缃繚瀛樻垚鍔?
+msgstr "菜单定制器设置保存成功"
 
 msgid "Failed to save menu customizer settings"
-msgstr "淇濆瓨鑿滃崟瀹氬埗鍣ㄨ缃け璐?
+msgstr "保存菜单定制器设置失败"
 
 msgid "Menu customizer settings reset to default"
-msgstr "鑿滃崟瀹氬埗鍣ㄨ缃凡閲嶇疆涓洪粯璁ゅ€?
+msgstr "菜单定制器设置已重置为默认值"
 
 msgid "Failed to reset menu customizer settings"
-msgstr "閲嶇疆鑿滃崟瀹氬埗鍣ㄨ缃け璐?
+msgstr "重置菜单定制器设置失败"
 
 msgid "Database settings saved successfully"
-msgstr "鏁版嵁搴撹缃繚瀛樻垚鍔?
+msgstr "数据库设置保存成功"
 
 msgid "Failed to save database settings"
-msgstr "淇濆瓨鏁版嵁搴撹缃け璐?
+msgstr "保存数据库设置失败"
 
 msgid "Database settings reset to default"
-msgstr "鏁版嵁搴撹缃凡閲嶇疆涓洪粯璁ゅ€?
+msgstr "数据库设置已重置为默认值"
 
 msgid "Failed to reset database settings"
-msgstr "閲嶇疆鏁版嵁搴撹缃け璐?
+msgstr "重置数据库设置失败"
 
 msgid "Performance settings saved successfully"
-msgstr "鎬ц兘璁剧疆淇濆瓨鎴愬姛"
+msgstr "性能设置保存成功"
 
 msgid "Failed to save performance settings"
-msgstr "淇濆瓨鎬ц兘璁剧疆澶辫触"
+msgstr "保存性能设置失败"
 
 msgid "Performance settings reset to default"
-msgstr "鎬ц兘璁剧疆宸查噸缃负榛樿鍊?
+msgstr "性能设置已重置为默认值"
 
 msgid "Failed to reset performance settings"
-msgstr "閲嶇疆鎬ц兘璁剧疆澶辫触"
+msgstr "重置性能设置失败"
 
 # ===========================================================
 # Login Module
 # ===========================================================
 msgid "Too many login attempts. Please try again later."
-msgstr "鐧诲綍灏濊瘯娆℃暟杩囧銆傝绋嶅悗鍐嶈瘯銆?
+msgstr "登录尝试次数过多。请稍后再试。"
 
