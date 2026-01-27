@@ -1,27 +1,16 @@
-﻿msgid ""
+msgid ""
 msgstr ""
-"Project-Id-Version: WP Clean Admin 1.7.15
-"
-"Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin
-"
-"POT-Creation-Date: 2025-11-29 00:00+0000
-"
-"PO-Revision-Date: 2025-11-29 00:00+0000
-"
-"Last-Translator: Sut
-"
-"Language-Team: 
-"
-"Language: zh_CN
-"
-"MIME-Version: 1.0
-"
-"Content-Type: text/plain; charset=UTF-8
-"
-"Content-Transfer-Encoding: 8bit
-"
-"X-Generator: Manual
-"
+"Project-Id-Version: WP Clean Admin 1.8.0\n"
+"Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"
+"POT-Creation-Date: 2026-01-27 00:00+0000\n"
+"PO-Revision-Date: 2026-01-27 00:00+0000\n"
+"Last-Translator: Sut\n"
+"Language-Team: \n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Manual\n"
 
 
 # ===========================================================
@@ -34,19 +23,19 @@ msgid "Clean Admin"
 msgstr "Clean Admin"
 
 msgid "Settings"
-msgstr "璁剧疆"
+msgstr "设置"
 
 msgid "General Settings"
-msgstr "閫氱敤璁剧疆"
+msgstr "通用设置"
 
 msgid "Clean Admin Bar"
-msgstr "娓呯悊绠＄悊鏍?
+msgstr "清理管理栏"
 
 msgid "Configure general settings for WP Clean Admin plugin."
-msgstr "閰嶇疆 WP Clean Admin 鎻掍欢鐨勯€氱敤璁剧疆銆?
+msgstr "配置 WP Clean Admin 插件的通用设置。"
 
 msgid "Remove unnecessary items from the admin bar."
-msgstr "浠庣鐞嗘爮涓Щ闄や笉蹇呰鐨勯」鐩€?
+msgstr "从管理栏中移除不必要的项目。"
 
 msgid "Save Changes"
 msgstr "淇濆瓨鏇存敼"

@@ -2,7 +2,7 @@
 /**
  * File Name: wp-clean-admin.php
  * Version: 1.8.0
- * Update Date: 2026-01-26
+ * Update Date: 2026-01-27
  * Plugin Name: WP Clean Admin
  * Plugin URI: https://github.com/sutchan/WP-Clean-Admin
  * Description: WordPress Admin Cleanup and Optimization Plugin
@@ -62,5 +62,27 @@ if ( function_exists( 'register_deactivation_hook' ) ) {
     register_deactivation_hook( __FILE__, function() {
         WPCleanAdmin\Core::getInstance()->deactivate();
     });
+}
+
+/**
+ * Add settings link to plugin management page
+ *
+ * @param array $links Existing plugin action links
+ * @return array Modified plugin action links with settings link
+ * @since 1.8.0
+ */
+function wpca_add_plugin_action_links( $links ) {
+    if ( function_exists( 'admin_url' ) && function_exists( 'esc_url' ) && function_exists( 'esc_html' ) && function_exists( '__' ) ) {
+        $settings_link = array(
+            '<a href="' . esc_url( admin_url( 'admin.php?page=wp-clean-admin' ) ) . '">' . esc_html( __( 'Settings', WPCA_TEXT_DOMAIN ) ) . '</a>'
+        );
+        return array_merge( $settings_link, $links );
+    }
+    return $links;
+}
+
+// Hook into plugin action links
+if ( function_exists( 'add_filter' ) ) {
+    add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'wpca_add_plugin_action_links' );
 }
 

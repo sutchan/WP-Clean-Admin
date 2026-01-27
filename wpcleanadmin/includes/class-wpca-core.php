@@ -111,56 +111,95 @@ class Core {
      * Initialize all plugin modules
      */
     private function init_modules() {
-        // Load settings module
-        Settings::getInstance();
-        
-        // Load dashboard module
-        Dashboard::getInstance();
-        
-        // Load database module
-        Database::getInstance();
-        
-        // Load performance module
-        Performance::getInstance();
-        
-        // Load menu manager module
-        Menu_Manager::getInstance();
-        
-        // Load menu customizer module
-        Menu_Customizer::getInstance();
-        
-        // Load permissions module
-        Permissions::getInstance();
-        
-        // Load user roles module
-        User_Roles::getInstance();
-        
-        // Load login module
-        Login::getInstance();
-        
-        // Load cleanup module
-        Cleanup::getInstance();
-        
-        // Load resources module
-        Resources::getInstance();
-        
-        // Load reset module
-        Reset::getInstance();
-        
-        // Load AJAX module
-        AJAX::getInstance();
-        
-        // Load i18n module
-        i18n::getInstance();
-        
-        // Load error handler module
-        Error_Handler::getInstance();
-        
-        // Load cache module
-        Cache::getInstance();
-        
-        // Load extension API module
-        Extension_API::getInstance();
+        try {
+            // Load settings module
+            if ( class_exists( 'WPCleanAdmin\Settings' ) ) {
+                Settings::getInstance();
+            }
+            
+            // Load dashboard module
+            if ( class_exists( 'WPCleanAdmin\Dashboard' ) ) {
+                Dashboard::getInstance();
+            }
+            
+            // Load database module
+            if ( class_exists( 'WPCleanAdmin\Database' ) ) {
+                Database::getInstance();
+            }
+            
+            // Load performance module
+            if ( class_exists( 'WPCleanAdmin\Performance' ) ) {
+                Performance::getInstance();
+            }
+            
+            // Load menu manager module
+            if ( class_exists( 'WPCleanAdmin\Menu_Manager' ) ) {
+                Menu_Manager::getInstance();
+            }
+            
+            // Load menu customizer module
+            if ( class_exists( 'WPCleanAdmin\Menu_Customizer' ) ) {
+                Menu_Customizer::getInstance();
+            }
+            
+            // Load permissions module
+            if ( class_exists( 'WPCleanAdmin\Permissions' ) ) {
+                Permissions::getInstance();
+            }
+            
+            // Load user roles module
+            if ( class_exists( 'WPCleanAdmin\User_Roles' ) ) {
+                User_Roles::getInstance();
+            }
+            
+            // Load login module
+            if ( class_exists( 'WPCleanAdmin\Login' ) ) {
+                Login::getInstance();
+            }
+            
+            // Load cleanup module
+            if ( class_exists( 'WPCleanAdmin\Cleanup' ) ) {
+                Cleanup::getInstance();
+            }
+            
+            // Load resources module
+            if ( class_exists( 'WPCleanAdmin\Resources' ) ) {
+                Resources::getInstance();
+            }
+            
+            // Load reset module
+            if ( class_exists( 'WPCleanAdmin\Reset' ) ) {
+                Reset::getInstance();
+            }
+            
+            // Load AJAX module
+            if ( class_exists( 'WPCleanAdmin\AJAX' ) ) {
+                AJAX::getInstance();
+            }
+            
+            // Load i18n module
+            if ( class_exists( 'WPCleanAdmin\i18n' ) ) {
+                i18n::getInstance();
+            }
+            
+            // Load error handler module
+            if ( class_exists( 'WPCleanAdmin\Error_Handler' ) ) {
+                Error_Handler::getInstance();
+            }
+            
+            // Load cache module
+            if ( class_exists( 'WPCleanAdmin\Cache' ) ) {
+                Cache::getInstance();
+            }
+            
+            // Load extension API module
+            if ( class_exists( 'WPCleanAdmin\Extension_API' ) ) {
+                Extension_API::getInstance();
+            }
+        } catch ( Exception $e ) {
+            // Silently catch exceptions during module initialization
+            // This prevents the entire plugin from failing if one module has an issue
+        }
     }
     
     /**
@@ -171,7 +210,9 @@ class Core {
         $this->set_default_settings();
         
         // Flush rewrite rules
-        \flush_rewrite_rules();
+        if ( function_exists( 'flush_rewrite_rules' ) ) {
+            \flush_rewrite_rules();
+        }
     }
     
     /**
@@ -179,7 +220,9 @@ class Core {
      */
     public function deactivate() {
         // Flush rewrite rules
-        \flush_rewrite_rules();
+        if ( function_exists( 'flush_rewrite_rules' ) ) {
+            \flush_rewrite_rules();
+        }
     }
     
     /**
