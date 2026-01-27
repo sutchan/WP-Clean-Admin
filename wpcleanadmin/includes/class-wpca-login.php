@@ -14,6 +14,41 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// Declare WordPress functions for IDE compatibility
+if ( ! function_exists( 'set_transient' ) ) {
+    function set_transient() {}
+}
+if ( ! function_exists( 'get_transient' ) ) {
+    function get_transient() {}
+}
+if ( ! function_exists( 'is_ssl' ) ) {
+    function is_ssl() {}
+}
+if ( ! function_exists( 'is_wp_error' ) ) {
+    function is_wp_error() {}
+}
+if ( ! function_exists( 'wp_kses_post' ) ) {
+    function wp_kses_post() {}
+}
+if ( ! function_exists( 'sanitize_html_class' ) ) {
+    function sanitize_html_class() {}
+}
+if ( ! function_exists( 'update_user_meta' ) ) {
+    function update_user_meta() {}
+}
+if ( ! function_exists( 'get_user_meta' ) ) {
+    function get_user_meta() {}
+}
+if ( ! function_exists( 'get_userdata' ) ) {
+    function get_userdata() {}
+}
+if ( ! function_exists( 'wp_verify_nonce' ) ) {
+    function wp_verify_nonce() {}
+}
+if ( ! function_exists( 'wp_login_url' ) ) {
+    function wp_login_url() {}
+}
+
 /**
  * Login class
  */
@@ -31,7 +66,7 @@ class Login {
      *
      * @return Login
      */
-    public static function getInstance(): Login {
+    public static function getInstance() {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }
@@ -101,16 +136,10 @@ class Login {
             $code .= $characters[rand( 0, strlen( $characters ) - 1 )];
         }
         
-        // Store in session
-        if ( function_exists( 'wp_session' ) ) {
-            $session = wp_session();
-            $session['wpca_captcha'] = $code;
-        } else {
-            // Fallback to transient
-            if ( function_exists( 'set_transient' ) ) {
-                $user_ip = $_SERVER['REMOTE_ADDR'];
-                set_transient( 'wpca_captcha_' . $user_ip, $code, 300 ); // 5 minutes
-            }
+        // Store in transient (wp_session doesn't exist in WordPress core)
+        if ( function_exists( '\set_transient' ) && isset( $_SERVER['REMOTE_ADDR'] ) ) {
+            $user_ip = $_SERVER['REMOTE_ADDR'];
+            \set_transient( 'wpca_captcha_' . $user_ip, $code, 300 ); // 5 minutes
         }
         
         return $code;
@@ -163,13 +192,13 @@ class Login {
      */
     public function render_captcha() {
         // Get current URL
-        $current_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        $current_url = ( function_exists( '\is_ssl' ) && \is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
         
         // Generate CAPTCHA image URL
-        $captcha_url = add_query_arg( array( 'wpca_captcha' => '1' ), $current_url );
+        $captcha_url = function_exists( '\add_query_arg' ) ? \add_query_arg( array( 'wpca_captcha' => '1' ), $current_url ) : $current_url;
         
         // Add cache buster
-        $captcha_url = add_query_arg( array( 't' => time() ), $captcha_url );
+        $captcha_url = function_exists( '\add_query_arg' ) ? \add_query_arg( array( 't' => time() ), $captcha_url ) : $captcha_url;
         
         ?>        
         <div class="wpca-captcha-form">
@@ -189,35 +218,28 @@ class Login {
     /**
      * Verify CAPTCHA
      *
-     * @param WP_User|WP_Error $user User object or error
+     * @param object $user User object or error
      * @param string $username Username
      * @param string $password Password
-     * @return WP_User|WP_Error Modified user or error
+     * @return object Modified user or error
      */
     public function verify_captcha( $user, $username, $password ) {
         // Skip if user is already an error
-        if ( is_wp_error( $user ) ) {
+        if ( function_exists( '\is_wp_error' ) && \is_wp_error( $user ) ) {
             return $user;
         }
         
         // Check if CAPTCHA is submitted
         if ( isset( $_POST['wpca_captcha'] ) ) {
-            $submitted_code = sanitize_text_field( $_POST['wpca_captcha'] );
+            $submitted_code = function_exists( '\sanitize_text_field' ) ? \sanitize_text_field( $_POST['wpca_captcha'] ) : $_POST['wpca_captcha'];
             
             // Get stored CAPTCHA code
             $stored_code = '';
             
-            if ( function_exists( 'wp_session' ) ) {
-                $session = wp_session();
-                if ( isset( $session['wpca_captcha'] ) ) {
-                    $stored_code = $session['wpca_captcha'];
-                }
-            } else {
-                // Fallback to transient
-                if ( function_exists( 'get_transient' ) && isset( $_SERVER['REMOTE_ADDR'] ) ) {
-                    $user_ip = $_SERVER['REMOTE_ADDR'];
-                    $stored_code = get_transient( 'wpca_captcha_' . $user_ip );
-                }
+            // Use transient for storage (wp_session doesn't exist in WordPress core)
+            if ( function_exists( '\get_transient' ) && isset( $_SERVER['REMOTE_ADDR'] ) ) {
+                $user_ip = $_SERVER['REMOTE_ADDR'];
+                $stored_code = \get_transient( 'wpca_captcha_' . $user_ip );
             }
             
             // Verify CAPTCHA code
@@ -441,10 +463,10 @@ class Login {
     /**
      * Check login attempts
      *
-     * @param WP_User|WP_Error $user User object or error
+     * @param object $user User object or error
      * @param string $username Username
      * @param string $password Password
-     * @return WP_User|WP_Error Modified user or error
+     * @return object Modified user or error
      */
     public function check_login_attempts( $user, $username, $password ) {
         // Load settings
@@ -687,9 +709,9 @@ class Login {
     /**
      * Check two-factor authentication during login
      *
-     * @param WP_User $user User object
+     * @param object $user User object
      * @param string $password Password
-     * @return WP_User|WP_Error Modified user or error
+     * @return object Modified user or error
      */
     public function check_two_factor_auth( $user, $password ) {
         // Check if this is a two-factor authentication request

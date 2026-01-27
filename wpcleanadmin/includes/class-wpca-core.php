@@ -1,5 +1,8 @@
 <?php
 /**
+ * File Name: class-wpca-core.php
+ * Version: 1.8.0
+ * Update Date: 2026-01-26
  * WPCleanAdmin Core Class
  *
  * @package WPCleanAdmin
@@ -30,7 +33,7 @@ class Core {
      *
      * @var Core
      */
-    private static ?Core $instance = null;
+    private static $instance = null;
     
     /**
      * Get singleton instance

@@ -24,15 +24,15 @@ class Cleanup {
      *
      * @var Cleanup
      */
-    private static ?Cleanup $instance = null;
+    private static $instance = null;
     
     /**
      * Get singleton instance
      *
      * @return Cleanup
      */
-    public static function getInstance(): Cleanup {
-        if ( self::$instance === null ) {
+    public static function getInstance() {
+        if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }
         return self::$instance;

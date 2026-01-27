@@ -7,11 +7,34 @@
  * @author Sut
  * @author URI: https://github.com/sutchan
  * @since 1.7.15
+ *
+ * @noinspection PhpUndefinedFunctionInspection WordPress functions are available in WP environment
  */
+
 namespace WPCleanAdmin;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
+}
+
+// Declare WordPress functions for IDE compatibility
+if ( ! function_exists( 'wp_next_scheduled' ) ) {
+    function wp_next_scheduled() {}
+}
+if ( ! function_exists( 'wp_unschedule_event' ) ) {
+    function wp_unschedule_event() {}
+}
+if ( ! function_exists( 'remove_role' ) ) {
+    function remove_role() {}
+}
+if ( ! function_exists( 'delete_option' ) ) {
+    function delete_option() {}
+}
+if ( ! function_exists( 'update_option' ) ) {
+    function update_option() {}
+}
+if ( ! function_exists( 'add_action' ) ) {
+    function add_action() {}
 }
 
 /**
@@ -31,7 +54,7 @@ class Reset {
      *
      * @return Reset
      */
-    public static function getInstance(): Reset {
+    public static function getInstance() {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }
@@ -266,8 +289,8 @@ class Reset {
      * @return int|false Timestamp or false
      */
     private function wp_next_scheduled( $event ) {
-        if ( function_exists( '\wp_next_scheduled' ) ) {
-            return \wp_next_scheduled( $event );
+        if ( function_exists( 'wp_next_scheduled' ) ) {
+            return wp_next_scheduled( $event );
         }
         return false;
     }
@@ -280,8 +303,8 @@ class Reset {
      * @param array $args Event arguments
      */
     private function wp_unschedule_event( $timestamp, $event, $args = array() ) {
-        if ( function_exists( '\wp_unschedule_event' ) ) {
-            \wp_unschedule_event( $timestamp, $event, $args );
+        if ( function_exists( 'wp_unschedule_event' ) ) {
+            wp_unschedule_event( $timestamp, $event, $args );
         }
     }
     
@@ -291,8 +314,8 @@ class Reset {
      * @param string $role Role slug
      */
     private function remove_role( $role ) {
-        if ( function_exists( '\remove_role' ) ) {
-            \remove_role( $role );
+        if ( function_exists( 'remove_role' ) ) {
+            remove_role( $role );
         }
     }
 }

@@ -30,7 +30,7 @@ class Dashboard {
      *
      * @var Dashboard
      */
-    private static ?Dashboard $instance = null;
+    private static $instance = null;
     
     /**
      * Get singleton instance

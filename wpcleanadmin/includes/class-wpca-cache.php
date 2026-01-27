@@ -19,28 +19,28 @@ class Cache {
      *
      * @var Cache
      */
-    private static ?Cache $instance = null;
+    private static $instance = null;
     
     /**
      * Memory cache
      *
      * @var array
      */
-    private array $memory_cache = array();
+    private $memory_cache = array();
     
     /**
      * Cache enabled status
      *
      * @var bool
      */
-    private bool $cache_enabled = true;
+    private $cache_enabled = true;
     
     /**
      * Cache expiration time (in seconds)
      *
      * @var int
      */
-    private int $cache_expiration = 3600;
+    private $cache_expiration = 3600;
     
     /**
      * Get singleton instance

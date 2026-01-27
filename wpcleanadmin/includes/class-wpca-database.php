@@ -24,7 +24,7 @@ class Database {
      *
      * @var Database
      */
-    private static ?Database $instance = null;
+    private static $instance = null;
     
     /**
      * Get singleton instance

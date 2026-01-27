@@ -10,6 +10,36 @@
  */
 namespace WPCleanAdmin;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+// Declare WordPress functions for IDE compatibility
+if ( ! function_exists( 'wp_verify_nonce' ) ) {
+    function wp_verify_nonce() {}
+}
+if ( ! function_exists( 'wp_send_json_error' ) ) {
+    function wp_send_json_error() {}
+}
+if ( ! function_exists( 'wp_send_json_success' ) ) {
+    function wp_send_json_success() {}
+}
+if ( ! function_exists( 'current_user_can' ) ) {
+    function current_user_can() {}
+}
+if ( ! function_exists( 'wp_unslash' ) ) {
+    function wp_unslash() {}
+}
+if ( ! function_exists( 'add_query_arg' ) ) {
+    function add_query_arg() {}
+}
+if ( ! function_exists( 'get_option' ) ) {
+    function get_option() {}
+}
+if ( ! function_exists( 'update_option' ) ) {
+    function update_option() {}
+}
+
 /**
  * WPCleanAdmin AJAX Handler
  *
@@ -19,10 +49,6 @@ namespace WPCleanAdmin;
  * @subpackage AJAX
  * @since 1.7.15
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
 
 class AJAX {
 
@@ -49,7 +75,7 @@ class AJAX {
      * @since 1.7.15
      * @return AJAX A single instance of this class.
      */
-    public static function getInstance(): AJAX {
+    public static function getInstance() {
         if ( null === self::$instance ) {
             self::$instance = new self();
         }
@@ -833,9 +859,13 @@ class AJAX {
         $result = $menu_customizer->save_settings( $settings );
         
         if ( $result ) {
-            \wp_send_json_success( array( 'message' => \__( 'Menu customizer settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( array( 'message' => \__( 'Menu customizer settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
+            }
         } else {
-            \wp_send_json_error( \__( 'Failed to save menu customizer settings', WPCA_TEXT_DOMAIN ) );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Failed to save menu customizer settings', WPCA_TEXT_DOMAIN ) );
+            }
         }
     }
 
@@ -870,9 +900,13 @@ class AJAX {
         $result = $menu_customizer->reset_settings();
         
         if ( $result ) {
-            \wp_send_json_success( array( 'message' => \__( 'Menu customizer settings reset to default', WPCA_TEXT_DOMAIN ) ) );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( array( 'message' => \__( 'Menu customizer settings reset to default', WPCA_TEXT_DOMAIN ) ) );
+            }
         } else {
-            \wp_send_json_error( \__( 'Failed to reset menu customizer settings', WPCA_TEXT_DOMAIN ) );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Failed to reset menu customizer settings', WPCA_TEXT_DOMAIN ) );
+            }
         }
     }
 
@@ -888,13 +922,21 @@ class AJAX {
         
         $settings = isset( $_POST['settings'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
         
-        $database_settings = new Database_Settings();
-        $result = $database_settings->save_settings( $settings );
+        // Get current settings
+        $current_settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
+        
+        // Update database settings
+        $current_settings['database'] = $settings;
+        $result = function_exists( '\update_option' ) ? \update_option( 'wpca_settings', $current_settings ) : false;
         
         if ( $result ) {
-            \wp_send_json_success( array( 'message' => \__( 'Database settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( array( 'message' => \__( 'Database settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
+            }
         } else {
-            \wp_send_json_error( \__( 'Failed to save database settings', WPCA_TEXT_DOMAIN ) );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Failed to save database settings', WPCA_TEXT_DOMAIN ) );
+            }
         }
     }
 
@@ -908,10 +950,12 @@ class AJAX {
             return;
         }
         
-        $database_settings = new Database_Settings();
-        $settings = $database_settings->get_settings();
+        // Get database settings
+        $settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
+        $database_settings = isset( $settings['database'] ) ? $settings['database'] : array();
+        
         if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $settings );
+            \wp_send_json_success( $database_settings );
         }
     }
 
@@ -925,13 +969,21 @@ class AJAX {
             return;
         }
         
-        $database_settings = new Database_Settings();
-        $result = $database_settings->reset_settings();
+        // Get current settings
+        $current_settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
+        
+        // Remove database settings (reset to default)
+        unset( $current_settings['database'] );
+        $result = function_exists( '\update_option' ) ? \update_option( 'wpca_settings', $current_settings ) : false;
         
         if ( $result ) {
-            \wp_send_json_success( array( 'message' => \__( 'Database settings reset to default', WPCA_TEXT_DOMAIN ) ) );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( array( 'message' => \__( 'Database settings reset to default', WPCA_TEXT_DOMAIN ) ) );
+            }
         } else {
-            \wp_send_json_error( \__( 'Failed to reset database settings', WPCA_TEXT_DOMAIN ) );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Failed to reset database settings', WPCA_TEXT_DOMAIN ) );
+            }
         }
     }
 
@@ -947,13 +999,21 @@ class AJAX {
         
         $settings = isset( $_POST['settings'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
         
-        $performance_settings = new Performance_Settings();
-        $result = $performance_settings->save_settings( $settings );
+        // Get current settings
+        $current_settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
+        
+        // Update performance settings
+        $current_settings['performance'] = $settings;
+        $result = function_exists( '\update_option' ) ? \update_option( 'wpca_settings', $current_settings ) : false;
         
         if ( $result ) {
-            \wp_send_json_success( array( 'message' => \__( 'Performance settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( array( 'message' => \__( 'Performance settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
+            }
         } else {
-            \wp_send_json_error( \__( 'Failed to save performance settings', WPCA_TEXT_DOMAIN ) );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Failed to save performance settings', WPCA_TEXT_DOMAIN ) );
+            }
         }
     }
 
@@ -967,10 +1027,12 @@ class AJAX {
             return;
         }
         
-        $performance_settings = new Performance_Settings();
-        $settings = $performance_settings->get_settings();
+        // Get performance settings
+        $settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
+        $performance_settings = isset( $settings['performance'] ) ? $settings['performance'] : array();
+        
         if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $settings );
+            \wp_send_json_success( $performance_settings );
         }
     }
 
@@ -984,13 +1046,21 @@ class AJAX {
             return;
         }
         
-        $performance_settings = new Performance_Settings();
-        $result = $performance_settings->reset_settings();
+        // Get current settings
+        $current_settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
+        
+        // Remove performance settings (reset to default)
+        unset( $current_settings['performance'] );
+        $result = function_exists( '\update_option' ) ? \update_option( 'wpca_settings', $current_settings ) : false;
         
         if ( $result ) {
-            \wp_send_json_success( array( 'message' => \__( 'Performance settings reset to default', WPCA_TEXT_DOMAIN ) ) );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( array( 'message' => \__( 'Performance settings reset to default', WPCA_TEXT_DOMAIN ) ) );
+            }
         } else {
-            \wp_send_json_error( \__( 'Failed to reset performance settings', WPCA_TEXT_DOMAIN ) );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Failed to reset performance settings', WPCA_TEXT_DOMAIN ) );
+            }
         }
     }
 }

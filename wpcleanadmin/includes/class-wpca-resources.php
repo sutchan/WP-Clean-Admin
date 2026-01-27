@@ -26,14 +26,14 @@ class Resources {
      *
      * @var Resources
      */
-    private static ?Resources $instance = null;
+    private static $instance = null;
     
     /**
      * Get singleton instance
      *
      * @return Resources
      */
-    public static function getInstance(): Resources {
+    public static function getInstance() {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }

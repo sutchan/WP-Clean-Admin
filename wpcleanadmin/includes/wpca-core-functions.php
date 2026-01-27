@@ -36,7 +36,68 @@ function wpca_get_settings( $key = '', $default = false ) {
  * @return bool Update result
  */
 function wpca_update_settings( $settings ) {
-    return function_exists( 'update_option' ) ? \update_option( 'wpca_settings', $settings ) : false;
+    // Validate input is an array
+    if ( ! is_array( $settings ) ) {
+        return false;
+    }
+    
+    // Filter settings to ensure they are valid
+    $validated_settings = array();
+    
+    foreach ( $settings as $key => $value ) {
+        // Sanitize key
+        $sanitized_key = function_exists( 'sanitize_key' ) ? \sanitize_key( $key ) : $key;
+        
+        // Validate and sanitize value based on type
+        if ( is_array( $value ) ) {
+            // Recursively validate nested arrays
+            $sanitized_value = wpca_sanitize_nested_array( $value );
+        } elseif ( is_string( $value ) ) {
+            $sanitized_value = function_exists( 'sanitize_text_field' ) ? \sanitize_text_field( $value ) : $value;
+        } elseif ( is_numeric( $value ) ) {
+            $sanitized_value = floatval( $value );
+        } elseif ( is_bool( $value ) ) {
+            $sanitized_value = $value;
+        } else {
+            // Skip invalid types
+            continue;
+        }
+        
+        $validated_settings[ $sanitized_key ] = $sanitized_value;
+    }
+    
+    // Allow other plugins to modify settings before saving
+    if ( function_exists( 'apply_filters' ) ) {
+        $validated_settings = apply_filters( 'wpca_update_settings', $validated_settings, $settings );
+    }
+    
+    return function_exists( 'update_option' ) ? \update_option( 'wpca_settings', $validated_settings ) : false;
+}
+
+/**
+ * Sanitize nested array recursively
+ *
+ * @param array $array Array to sanitize
+ * @return array Sanitized array
+ */
+function wpca_sanitize_nested_array( $array ) {
+    $sanitized = array();
+    
+    foreach ( $array as $key => $value ) {
+        $sanitized_key = function_exists( 'sanitize_key' ) ? \sanitize_key( $key ) : $key;
+        
+        if ( is_array( $value ) ) {
+            $sanitized[ $sanitized_key ] = wpca_sanitize_nested_array( $value );
+        } elseif ( is_string( $value ) ) {
+            $sanitized[ $sanitized_key ] = function_exists( 'sanitize_text_field' ) ? \sanitize_text_field( $value ) : $value;
+        } elseif ( is_numeric( $value ) ) {
+            $sanitized[ $sanitized_key ] = floatval( $value );
+        } elseif ( is_bool( $value ) ) {
+            $sanitized[ $sanitized_key ] = $value;
+        }
+    }
+    
+    return $sanitized;
 }
 
 /**
@@ -149,8 +210,8 @@ function wpca_admin_notice( $message, $type = 'info' ) {
     $allowed_types = array( 'success', 'error', 'warning', 'info' );
     $type = in_array( $type, $allowed_types ) ? $type : 'info';
     
-    echo '<div class="notice notice-' . esc_attr( $type ) . ' is-dismissible">';
-    echo '<p>' . esc_html( $message ) . '</p>';
+    echo '<div class="notice notice-' . ( function_exists( 'esc_attr' ) ? \esc_attr( $type ) : htmlspecialchars( $type, ENT_QUOTES, 'UTF-8' ) ) . ' is-dismissible">';
+    echo '<p>' . ( function_exists( 'esc_html' ) ? \esc_html( $message ) : htmlspecialchars( $message, ENT_QUOTES, 'UTF-8' ) ) . '</p>';
     echo '</div>';
 }
 

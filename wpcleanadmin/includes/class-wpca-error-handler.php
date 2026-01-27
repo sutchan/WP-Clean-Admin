@@ -19,7 +19,7 @@ class Error_Handler {
      *
      * @var Error_Handler
      */
-    private static ?Error_Handler $instance = null;
+    private static $instance = null;
     
     /**
      * Log levels
@@ -38,7 +38,7 @@ class Error_Handler {
      *
      * @var string
      */
-    private string $log_level = 'notice';
+    private $log_level = 'notice';
     
     /**
      * Get singleton instance
@@ -179,11 +179,14 @@ class Error_Handler {
             case E_NOTICE:
             case E_USER_NOTICE:
                 return 'notice';
-            case E_STRICT:
             case E_DEPRECATED:
             case E_USER_DEPRECATED:
                 return 'info';
             default:
+                // Handle E_STRICT if it exists (deprecated in PHP 5.4+, removed in PHP 7.0+)
+                if ( defined( 'E_STRICT' ) && $errno === E_STRICT ) {
+                    return 'info';
+                }
                 return 'debug';
         }
     }
@@ -236,7 +239,12 @@ class Error_Handler {
         
         // Create log directory if it doesn't exist
         if ( ! \is_dir( $log_dir ) ) {
-            \wp_mkdir_p( $log_dir );
+            if ( function_exists( 'wp_mkdir_p' ) ) {
+                \wp_mkdir_p( $log_dir );
+            } else {
+                // Fallback to mkdir if wp_mkdir_p is not available
+                \mkdir( $log_dir, 0755, true );
+            }
         }
         
         $log_file = $log_dir . '/wpca-' . \date( 'Y-m-d' ) . '.log';

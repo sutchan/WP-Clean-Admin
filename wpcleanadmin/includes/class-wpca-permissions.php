@@ -33,7 +33,7 @@ class Permissions {
      *
      * @return Permissions
      */
-    public static function getInstance(): Permissions {
+    public static function getInstance() {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }

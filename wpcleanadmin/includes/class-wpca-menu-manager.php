@@ -14,6 +14,23 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// Declare WordPress functions for IDE compatibility
+if ( ! function_exists( 'wp_get_current_user' ) ) {
+    function wp_get_current_user() {}
+}
+if ( ! function_exists( 'add_action' ) ) {
+    function add_action() {}
+}
+if ( ! function_exists( 'remove_meta_box' ) ) {
+    function remove_meta_box() {}
+}
+if ( ! function_exists( 'remove_action' ) ) {
+    function remove_action() {}
+}
+if ( ! function_exists( 'update_option' ) ) {
+    function update_option() {}
+}
+
 /**
  * Menu_Manager class
  */
@@ -24,7 +41,7 @@ class Menu_Manager {
      *
      * @var Menu_Manager
      */
-    private static ?Menu_Manager $instance = null;
+    private static $instance = null;
     
     /**
      * Get singleton instance

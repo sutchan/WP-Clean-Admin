@@ -34,3 +34,6 @@ dist/
 # WordPress files
 wp-config.php
 wp-content/uploads/
+
+
+*报告*.md

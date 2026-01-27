@@ -28,7 +28,7 @@ class Extension_API {
      *
      * @var Extension_API
      */
-    private static ?Extension_API $instance = null;
+    private static $instance = null;
     
     /**
      * Registered extensions
@@ -56,7 +56,7 @@ class Extension_API {
      *
      * @return Extension_API
      */
-    public static function getInstance(): Extension_API {
+    public static function getInstance() {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }
@@ -76,7 +76,7 @@ class Extension_API {
      * @uses \add_action() To register initialization action
      * @return void
      */
-    private function init(): void {
+    private function init() {
         \add_action( 'wpca_init', array( $this, 'load_extensions' ) );
     }
     
@@ -86,7 +86,7 @@ class Extension_API {
      * @uses \apply_filters() To get loaded extensions
      * @return void
      */
-    public function load_extensions(): void {
+    public function load_extensions() {
         $extensions = \apply_filters( 'wpca_register_extensions', array() );
         
         foreach ( $extensions as $extension ) {
@@ -102,7 +102,7 @@ class Extension_API {
      * @param array $extension Extension configuration
      * @return bool Success status
      */
-    public function register_extension( array $extension ): bool {
+    public function register_extension( $extension ) {
         if ( ! is_array( $extension ) ) {
             return false;
         }
@@ -138,7 +138,7 @@ class Extension_API {
      * @param string $extension_id Extension ID
      * @return bool Success status
      */
-    public function unregister_extension( string $extension_id ): bool {
+    public function unregister_extension( $extension_id ) {
         $extension_id = sanitize_key( $extension_id );
         
         if ( ! isset( $this->extensions[ $extension_id ] ) ) {
@@ -166,7 +166,7 @@ class Extension_API {
      * @param string $extension_id Extension ID
      * @return bool Success status
      */
-    public function activate_extension( string $extension_id ): bool {
+    public function activate_extension( $extension_id ) {
         $extension_id = sanitize_key( $extension_id );
         
         if ( ! isset( $this->extensions[ $extension_id ] ) ) {
@@ -200,7 +200,7 @@ class Extension_API {
      * @param string $extension_id Extension ID
      * @return bool Success status
      */
-    public function deactivate_extension( string $extension_id ): bool {
+    public function deactivate_extension( $extension_id ) {
         $extension_id = sanitize_key( $extension_id );
         
         if ( ! isset( $this->extensions[ $extension_id ] ) ) {
@@ -229,7 +229,7 @@ class Extension_API {
      * @param string $status Filter by status (all, active, inactive)
      * @return array Registered extensions
      */
-    public function get_extensions( string $status = 'all' ): array {
+    public function get_extensions( $status = 'all' ) {
         if ( $status === 'all' ) {
             return $this->extensions;
         }
@@ -253,7 +253,7 @@ class Extension_API {
      * @param string $extension_id Extension ID
      * @return array|null Extension data or null if not found
      */
-    public function get_extension( string $extension_id ): ?array {
+    public function get_extension( $extension_id ) {
         $extension_id = \sanitize_key( $extension_id );
         
         return isset( $this->extensions[ $extension_id ] ) ? $this->extensions[ $extension_id ] : null;
@@ -268,7 +268,7 @@ class Extension_API {
      * @param int $accepted_args Number of accepted arguments
      * @return bool Success status
      */
-    public function add_hook( string $hook, callable $callback, int $priority = 10, int $accepted_args = 1 ): bool {
+    public function add_hook( $hook, $callback, $priority = 10, $accepted_args = 1 ) {
         if ( ! is_callable( $callback ) ) {
             return false;
         }
@@ -295,7 +295,7 @@ class Extension_API {
      * @param int $accepted_args Number of accepted arguments
      * @return bool Success status
      */
-    public function add_filter( string $filter, callable $callback, int $priority = 10, int $accepted_args = 1 ): bool {
+    public function add_filter( $filter, $callback, $priority = 10, $accepted_args = 1 ) {
         if ( ! is_callable( $callback ) ) {
             return false;
         }
@@ -320,7 +320,7 @@ class Extension_API {
      * @param mixed $arg Optional argument
      * @return mixed Result
      */
-    public function execute_hook( string $hook, $arg = '' ) {
+    public function execute_hook( $hook, $arg = '' ) {
         if ( ! isset( $this->hooks[ $hook ] ) ) {
             return $arg;
         }
@@ -348,7 +348,7 @@ class Extension_API {
      * @param mixed $value Value to filter
      * @return mixed Filtered value
      */
-    public function apply_filter( string $filter, $value ) {
+    public function apply_filter( $filter, $value ) {
         if ( ! isset( $this->filters[ $filter ] ) ) {
             return $value;
         }
@@ -369,7 +369,7 @@ class Extension_API {
      * @param array $menu_item Menu item configuration
      * @return bool Success status
      */
-    public function register_menu_item( array $menu_item ): bool {
+    public function register_menu_item( $menu_item ) {
         $required = array( 'title', 'slug', 'callback' );
         
         foreach ( $required as $field ) {
@@ -408,7 +408,7 @@ class Extension_API {
      * @param array $section Section configuration
      * @return bool Success status
      */
-    public function register_settings_section( array $section ): bool {
+    public function register_settings_section( $section ) {
         $required = array( 'id', 'title', 'callback' );
         
         foreach ( $required as $field ) {
@@ -441,7 +441,7 @@ class Extension_API {
      * @param array $field Field configuration
      * @return bool Success status
      */
-    public function register_settings_field( array $field ): bool {
+    public function register_settings_field( $field ) {
         $required = array( 'id', 'title', 'callback', 'section' );
         
         foreach ( $required as $key ) {
@@ -476,7 +476,7 @@ class Extension_API {
      *
      * @return string API version
      */
-    public function get_api_version(): string {
+    public function get_api_version() {
         return '1.0.0';
     }
     
@@ -486,7 +486,7 @@ class Extension_API {
      * @param string $extension_id Extension ID
      * @return array Extension information
      */
-    public function get_extension_info( string $extension_id ): array {
+    public function get_extension_info( $extension_id ) {
         $extension = $this->get_extension( $extension_id );
         
         if ( ! $extension ) {
@@ -510,7 +510,7 @@ class Extension_API {
      * @param string $extension_id Extension ID
      * @return bool True if active
      */
-    public function is_extension_active( string $extension_id ): bool {
+    public function is_extension_active( $extension_id ) {
         $extension = $this->get_extension( $extension_id );
         
         return $extension && $extension['active'];
@@ -522,7 +522,7 @@ class Extension_API {
      * @param string $status Filter by status
      * @return int Extension count
      */
-    public function get_extension_count( string $status = 'all' ): int {
+    public function get_extension_count( $status = 'all' ) {
         $extensions = $this->get_extensions( $status );
         return count( $extensions );
     }
@@ -532,7 +532,7 @@ class Extension_API {
      *
      * @return array Exported data
      */
-    public function export_extensions(): array {
+    public function export_extensions() {
         return array(
             'exported_at' => \current_time( 'mysql' ),
             'api_version' => $this->get_api_version(),
@@ -549,7 +549,7 @@ class Extension_API {
      * @param array $settings Extension settings
      * @return bool Success status
      */
-    public function save_extension_settings( string $extension_id, array $settings ): bool {
+    public function save_extension_settings( $extension_id, $settings ) {
         $extension_id = \sanitize_key( $extension_id );
         
         if ( ! $this->get_extension( $extension_id ) ) {
@@ -579,7 +579,7 @@ class Extension_API {
      * @param string $extension_id Extension ID
      * @return array Extension settings
      */
-    public function get_extension_settings( string $extension_id ): array {
+    public function get_extension_settings( $extension_id ) {
         $extension_id = \sanitize_key( $extension_id );
         $option_name = 'wpca_ext_' . $extension_id . '_settings';
         
@@ -595,7 +595,7 @@ class Extension_API {
      * @param string $extension_id Extension ID
      * @return bool Success status
      */
-    public function reset_extension_settings( string $extension_id ): bool {
+    public function reset_extension_settings( $extension_id ) {
         $extension_id = \sanitize_key( $extension_id );
         $option_name = 'wpca_ext_' . $extension_id . '_settings';
         
@@ -621,7 +621,7 @@ class Extension_API {
      * @param array $extension_data Extension data
      * @return bool Success status
      */
-    public function install_extension( string $extension_id, array $extension_data = array() ): bool {
+    public function install_extension( $extension_id, $extension_data = array() ) {
         $extension_id = \sanitize_key( $extension_id );
         
         // Check if extension already exists
@@ -660,7 +660,7 @@ class Extension_API {
      * @param string $extension_id Extension ID
      * @return bool Success status
      */
-    public function uninstall_extension( string $extension_id ): bool {
+    public function uninstall_extension( $extension_id ) {
         $extension_id = \sanitize_key( $extension_id );
         
         if ( ! $this->get_extension( $extension_id ) ) {
@@ -689,22 +689,7 @@ class Extension_API {
      * @param string $extension_id Extension ID
      * @return array Lifecycle hooks
      */
-    public function get_lifecycle_hooks( string $extension_id ): array {
-        return array(
-            'install' => 'wpca_extension_installed_' . $extension_id,
-            'activate' => 'wpca_extension_activated_' . $extension_id,
-            'deactivate' => 'wpca_extension_deactivated_' . $extension_id,
-            'uninstall' => 'wpca_extension_uninstalled_' . $extension_id,
-        );
-    }
-    
-    /**
-     * Get extension lifecycle hooks
-     *
-     * @param string $extension_id Extension ID
-     * @return array Lifecycle hooks
-     */
-    public function get_lifecycle_hooks( string $extension_id ): array {
+    public function get_lifecycle_hooks( $extension_id ) {
         return array(
             'install' => 'wpca_extension_installed_' . $extension_id,
             'activate' => 'wpca_extension_activated_' . $extension_id,
@@ -722,7 +707,7 @@ class Extension_API {
  * @param array $extension Extension configuration
  * @return bool Success status
  */
-function wpca_register_extension( array $extension ): bool {
+function wpca_register_extension( $extension ) {
     $api = Extension_API::getInstance();
     return $api->register_extension( $extension );
 }
@@ -732,7 +717,7 @@ function wpca_register_extension( array $extension ): bool {
  *
  * @return Extension_API
  */
-function wpca_get_extension_api(): Extension_API {
+function wpca_get_extension_api() {
     return Extension_API::getInstance();
 }
 
@@ -745,7 +730,7 @@ function wpca_get_extension_api(): Extension_API {
  * @param array $settings Extension settings
  * @return bool Success status
  */
-function wpca_save_extension_settings( string $extension_id, array $settings ): bool {
+function wpca_save_extension_settings( $extension_id, $settings ) {
     $api = Extension_API::getInstance();
     return $api->save_extension_settings( $extension_id, $settings );
 }
@@ -758,7 +743,7 @@ function wpca_save_extension_settings( string $extension_id, array $settings ): 
  * @param string $extension_id Extension ID
  * @return array Extension settings
  */
-function wpca_get_extension_settings( string $extension_id ): array {
+function wpca_get_extension_settings( $extension_id ) {
     $api = Extension_API::getInstance();
     return $api->get_extension_settings( $extension_id );
 }
@@ -771,7 +756,7 @@ function wpca_get_extension_settings( string $extension_id ): array {
  * @param string $extension_id Extension ID
  * @return bool Success status
  */
-function wpca_reset_extension_settings( string $extension_id ): bool {
+function wpca_reset_extension_settings( $extension_id ) {
     $api = Extension_API::getInstance();
     return $api->reset_extension_settings( $extension_id );
 }
@@ -785,7 +770,7 @@ function wpca_reset_extension_settings( string $extension_id ): bool {
  * @param array $extension_data Extension data
  * @return bool Success status
  */
-function wpca_install_extension( string $extension_id, array $extension_data = array() ): bool {
+function wpca_install_extension( $extension_id, $extension_data = array() ) {
     $api = Extension_API::getInstance();
     return $api->install_extension( $extension_id, $extension_data );
 }
@@ -798,7 +783,7 @@ function wpca_install_extension( string $extension_id, array $extension_data = a
  * @param string $extension_id Extension ID
  * @return bool Success status
  */
-function wpca_uninstall_extension( string $extension_id ): bool {
+function wpca_uninstall_extension( $extension_id ) {
     $api = Extension_API::getInstance();
     return $api->uninstall_extension( $extension_id );
 }

@@ -14,7 +14,26 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// Declare WordPress functions and classes for IDE compatibility
+if ( ! function_exists( 'add_role' ) ) {
+    function add_role() {}
+}
+if ( ! function_exists( 'get_role' ) ) {
+    function get_role() {}
+}
+if ( ! function_exists( 'remove_role' ) ) {
+    function remove_role() {}
+}
+if ( ! function_exists( 'add_action' ) ) {
+    function add_action() {}
+}
 
+// Declare WP_Roles class for IDE compatibility
+if ( ! class_exists( 'WP_Roles' ) ) {
+    class WP_Roles {
+        public $roles = array();
+    }
+}
 
 /**
  * User_Roles class
@@ -33,7 +52,7 @@ class User_Roles {
      *
      * @return User_Roles
      */
-    public static function getInstance(): User_Roles {
+    public static function getInstance() {
         if ( ! isset( self::$instance ) ) {
             self::$instance = new self();
         }

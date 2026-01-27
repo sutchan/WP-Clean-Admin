@@ -12,15 +12,74 @@
  */
 namespace WPCleanAdmin;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
+// Declare WordPress functions for IDE compatibility
+if ( ! function_exists( 'add_menu_page' ) ) {
+    function add_menu_page() {}
+}
+if ( ! function_exists( 'add_submenu_page' ) ) {
+    function add_submenu_page() {}
+}
+if ( ! function_exists( 'add_settings_section' ) ) {
+    function add_settings_section() {}
+}
+if ( ! function_exists( 'add_settings_field' ) ) {
+    function add_settings_field() {}
+}
+if ( ! function_exists( 'register_setting' ) ) {
+    function register_setting() {}
+}
+if ( ! function_exists( 'checked' ) ) {
+    function checked() {}
+}
+if ( ! function_exists( 'get_admin_page_title' ) ) {
+    function get_admin_page_title() {}
+}
+if ( ! function_exists( 'settings_fields' ) ) {
+    function settings_fields() {}
+}
+if ( ! function_exists( 'do_settings_sections' ) ) {
+    function do_settings_sections() {}
+}
+if ( ! function_exists( 'submit_button' ) ) {
+    function submit_button() {}
+}
+if ( ! function_exists( 'get_option' ) ) {
+    function get_option() {}
+}
+if ( ! function_exists( 'add_action' ) ) {
+    function add_action() {}
+}
+if ( ! function_exists( 'admin_url' ) ) {
+    function admin_url() {}
+}
+if ( ! function_exists( 'wp_create_nonce' ) ) {
+    function wp_create_nonce() {}
+}
+if ( ! function_exists( 'wp_enqueue_style' ) ) {
+    function wp_enqueue_style() {}
+}
+if ( ! function_exists( 'wp_enqueue_script' ) ) {
+    function wp_enqueue_script() {}
+}
+if ( ! function_exists( 'wp_localize_script' ) ) {
+    function wp_localize_script() {}
+}
+if ( ! function_exists( 'strpos' ) ) {
+    function strpos() {}
+}
+if ( ! function_exists( 'wp_roles' ) ) {
+    function wp_roles() {}
+}
+
 /**
  * Settings class for WP Clean Admin plugin
  *
  * @package WPCleanAdmin
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
 
 /**
  * Settings class
@@ -34,7 +93,7 @@ class Settings {
      *
      * @var Settings
      */
-    private static ?Settings $instance = null;
+    private static $instance = null;
     
     /**
      * Get singleton instance

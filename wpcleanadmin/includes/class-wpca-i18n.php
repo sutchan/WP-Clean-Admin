@@ -34,7 +34,7 @@ class i18n {
      *
      * @var i18n
      */
-    private static ?i18n $instance = null;
+    private static $instance = null;
     
     /**
      * Get singleton instance

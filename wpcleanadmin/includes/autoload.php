@@ -12,14 +12,19 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Load WordPress stubs for IDE support
-require_once __DIR__ . '/wpca-wordpress-stubs.php';
-
-// Load Composer stub for IDE support
-require_once __DIR__ . '/composer-stub.php';
-
-// Load Elementor stub for IDE support
-require_once __DIR__ . '/elementor-stub.php';
+// Skip loading stubs in WordPress runtime environment
+// These stubs are only for IDE support during development
+// They can cause conflicts with actual WordPress functions
+// if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+//     // Load WordPress stubs for IDE support
+//     require_once __DIR__ . '/wpca-wordpress-stubs.php';
+//     
+//     // Load Composer stub for IDE support
+//     require_once __DIR__ . '/composer-stub.php';
+//     
+//     // Load Elementor stub for IDE support
+//     require_once __DIR__ . '/elementor-stub.php';
+// }
 
 /**
  * Register autoloader for WPCleanAdmin classes

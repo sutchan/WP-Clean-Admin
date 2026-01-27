@@ -1,9 +1,11 @@
-﻿<?php
+<?php
 /**
+ * File Name: wp-clean-admin.php
+ * Version: 1.8.0
+ * Update Date: 2026-01-26
  * Plugin Name: WP Clean Admin
  * Plugin URI: https://github.com/sutchan/WP-Clean-Admin
  * Description: WordPress Admin Cleanup and Optimization Plugin
- * Version: 1.8.0
  * Author: Sut
  * Author URI: https://github.com/sutchan
  * Text Domain: wp-clean-admin
@@ -21,11 +23,6 @@ define( 'WPCA_VERSION', '1.8.0' );
 define( 'WPCA_PLUGIN_DIR', ( function_exists( 'plugin_dir_path' ) ? plugin_dir_path( __FILE__ ) : dirname( __FILE__ ) . '/' ) );
 define( 'WPCA_PLUGIN_URL', ( function_exists( 'plugin_dir_url' ) ? plugin_dir_url( __FILE__ ) : '' ) );
 define( 'WPCA_TEXT_DOMAIN', 'wp-clean-admin' );
-
-// Load WordPress function stubs for IDE support
-if ( file_exists( WPCA_PLUGIN_DIR . 'includes/wpca-wordpress-stubs.php' ) ) {
-    require_once WPCA_PLUGIN_DIR . 'includes/wpca-wordpress-stubs.php';
-}
 
 // Load autoloader
 require_once WPCA_PLUGIN_DIR . 'includes/autoload.php';
