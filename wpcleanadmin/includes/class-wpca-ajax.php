@@ -250,7 +250,7 @@ class AJAX {
             return;
         }
         
-        $options = isset( $_POST['options'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
+        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
         
         $cleanup = new Cleanup();
         $result = $cleanup->run_database_cleanup( $options );
@@ -269,7 +269,7 @@ class AJAX {
             return;
         }
         
-        $options = isset( $_POST['options'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
+        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
         
         $cleanup = new Cleanup();
         $result = $cleanup->run_media_cleanup( $options );
@@ -288,7 +288,7 @@ class AJAX {
             return;
         }
         
-        $options = isset( $_POST['options'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
+        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
         
         $cleanup = new Cleanup();
         $result = $cleanup->run_comments_cleanup( $options );
@@ -307,7 +307,7 @@ class AJAX {
             return;
         }
         
-        $options = isset( $_POST['options'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
+        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
         
         $cleanup = new Cleanup();
         $result = $cleanup->run_content_cleanup( $options );
@@ -343,7 +343,7 @@ class AJAX {
             return;
         }
         
-        $settings = isset( $_POST['settings'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
+        $settings = isset( $_POST['settings'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
         
         $settings_manager = new Settings();
         $result = wpca_update_settings( $settings );
@@ -427,7 +427,7 @@ class AJAX {
         }
         
         $role_slug = isset( $_POST['role_slug'] ) ? sanitize_text_field( $_POST['role_slug'] ) : '';
-        $capabilities = isset( $_POST['capabilities'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['capabilities'] ) : $_POST['capabilities'] ) : array();
+        $capabilities = isset( $_POST['capabilities'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['capabilities'] ) : $_POST['capabilities'] ) : array();
         
         $user_roles = new User_Roles();
         $result = $user_roles->update_role_capabilities( $role_slug, $capabilities );
@@ -448,7 +448,7 @@ class AJAX {
         
         $role_name = isset( $_POST['role_name'] ) ? sanitize_text_field( $_POST['role_name'] ) : '';
         $role_slug = isset( $_POST['role_slug'] ) ? sanitize_text_field( $_POST['role_slug'] ) : '';
-        $capabilities = isset( $_POST['capabilities'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['capabilities'] ) : $_POST['capabilities'] ) : array();
+        $capabilities = isset( $_POST['capabilities'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['capabilities'] ) : $_POST['capabilities'] ) : array();
         
         $user_roles = new User_Roles();
         $result = $user_roles->create_role( $role_slug, $role_name, $capabilities );
@@ -545,7 +545,7 @@ class AJAX {
             return;
         }
         
-        $menu_items = isset( $_POST['menu_items'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['menu_items'] ) : $_POST['menu_items'] ) : array();
+        $menu_items = isset( $_POST['menu_items'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['menu_items'] ) : $_POST['menu_items'] ) : array();
         
         $menu_manager = new Menu_Manager();
         $result = $menu_manager->save_menu_items( $menu_items );
@@ -663,7 +663,7 @@ class AJAX {
             return;
         }
         
-        $options = isset( $_POST['options'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
+        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
         
         $database = new Database();
         $result = $database->backup_database( $options );
@@ -794,7 +794,7 @@ class AJAX {
             return;
         }
         
-        $options = isset( $_POST['options'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
+        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
         
         $resources = new Resources();
         $result = $resources->optimize_resources( $options );
@@ -853,7 +853,7 @@ class AJAX {
             return;
         }
         
-        $settings = isset( $_POST['settings'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
+        $settings = isset( $_POST['settings'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
         
         $menu_customizer = new Menu_Customizer();
         $result = $menu_customizer->save_settings( $settings );
@@ -920,7 +920,7 @@ class AJAX {
             return;
         }
         
-        $settings = isset( $_POST['settings'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
+        $settings = isset( $_POST['settings'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
         
         // Get current settings
         $current_settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
@@ -997,7 +997,7 @@ class AJAX {
             return;
         }
         
-        $settings = isset( $_POST['settings'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
+        $settings = isset( $_POST['settings'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
         
         // Get current settings
         $current_settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();

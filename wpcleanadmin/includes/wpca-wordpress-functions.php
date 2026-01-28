@@ -326,6 +326,11 @@ if ( ! function_exists( 'wp_mail' ) ) {
     function wp_mail() {}
 }
 
+// General WordPress functions
+if ( ! function_exists( 'wp_unslash' ) ) {
+    function wp_unslash() {}
+}
+
 // Performance-related WordPress functions
 if ( ! function_exists( 'wp_next_scheduled' ) ) {
     function wp_next_scheduled() {}

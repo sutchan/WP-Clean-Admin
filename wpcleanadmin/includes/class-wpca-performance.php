@@ -613,6 +613,8 @@ class Performance {
                 $response = \wp_remote_get( $url );
                 if ( ! \is_wp_error( $response ) && \wp_remote_retrieve_response_code( $response ) === 200 ) {
                     $content = \wp_remote_retrieve_body( $response );
+                    // Ensure $content is a string
+                    $content = is_string( $content ) ? $content : '';
                     // Add semicolon if needed between files
                     if ( ! empty( $combined_content ) ) {
                         $content = ';' . trim( $content );
