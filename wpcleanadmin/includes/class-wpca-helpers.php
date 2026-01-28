@@ -14,6 +14,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// Load WordPress stubs for IDE compatibility
+require_once __DIR__ . '/wpca-wordpress-stubs.php';
+
 /**
  * Error codes for WPCleanAdmin plugin
  */
@@ -478,11 +481,11 @@ class Helpers {
      */
     public function handle_validation_errors( $errors = array(), $message = '' ) {
         if ( empty( $message ) ) {
-            $message = __( 'Validation failed. Please check your entries.', WPCA_TEXT_DOMAIN );
+            $message = __( 'Validation failed. Please check your entries.', \WPCA_TEXT_DOMAIN );
         }
         
         return $this->create_error_response(
-            WPCA_Errors::ERROR_VALIDATION,
+            \WPCA_Errors::ERROR_VALIDATION,
             $message,
             array( 'validation_errors' => $errors )
         );
@@ -501,7 +504,7 @@ class Helpers {
         foreach ( $required as $param_name ) {
             if ( ! isset( $params[ $param_name ] ) || empty( $params[ $param_name ] ) ) {
                 $errors[ $param_name ] = sprintf(
-                    __( 'The %s parameter is required.', WPCA_TEXT_DOMAIN ),
+                    __( 'The %s parameter is required.', \WPCA_TEXT_DOMAIN ),
                     $param_name
                 );
             }
@@ -520,8 +523,8 @@ class Helpers {
     public function validate_ajax_nonce( $nonce, $action = 'wpca_ajax_nonce' ) {
         if ( function_exists( '\wp_verify_nonce' ) && ! \wp_verify_nonce( $nonce, $action ) ) {
             $this->handle_ajax_error(
-                __( 'Security verification failed. Please try again.', WPCA_TEXT_DOMAIN ),
-                WPCA_Errors::ERROR_AUTH
+                __( 'Security verification failed. Please try again.', \WPCA_TEXT_DOMAIN ),
+                \WPCA_Errors::ERROR_AUTH
             );
         }
         

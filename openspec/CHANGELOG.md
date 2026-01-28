@@ -6,6 +6,16 @@ All notable changes to WP Clean Admin will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2026-01-28
+
+### Fixed
+- 修复了未定义常量和函数的全局命名空间引用问题
+- 在多个文件中添加反斜杠前缀以正确引用全局命名空间中的常量和函数
+
+### Changed
+- 更新了插件版本号到 1.8.0
+- 优化了错误处理机制
+
 ## [1.7.15] - 2025-11-29
 
 ### Fixed

@@ -1,16 +1,5 @@
 <?php
 /**
- * Plugin Name: WP Clean Admin
- * Plugin URI: https://github.com/sutchan/WP-Clean-Admin
- * Description: WordPress Admin Cleanup and Optimization Plugin
- * Version: 1.8.0
- * Author: Sut
- * Author URI: https://github.com/sutchan
- * Text Domain: wp-clean-admin
- * Domain Path: /languages
- */
-
-/**
  * File Name: wp-clean-admin.php
  * Update Date: 2026-01-28
  * @package WPCleanAdmin

@@ -43,6 +43,91 @@ function get_plugin_data( $plugin_file ) {
 }
 
 /**
+ * Send JSON response and exit
+ *
+ * @param mixed $response Response data
+ */
+function wp_send_json( $response ) {
+}
+
+/**
+ * Verify nonce
+ *
+ * @param string $nonce Nonce to verify
+ * @param string $action Nonce action
+ * @return bool True if nonce is valid, false otherwise
+ */
+function wp_verify_nonce( $nonce, $action = -1 ) {
+    return false;
+}
+
+/**
+ * Add options page
+ *
+ * @param string $page_title Page title
+ * @param string $menu_title Menu title
+ * @param string $capability Capability required
+ * @param string $menu_slug Menu slug
+ * @param callable $function Function to call
+ * @param int $position Menu position
+ * @return string|false Hook name or false
+ */
+function add_options_page( $page_title, $menu_title, $capability, $menu_slug, $function = '', $position = null ) {
+    return false;
+}
+
+/**
+ * Output HTML for checked attribute
+ *
+ * @param mixed $checked Checked value
+ * @param mixed $current Current value
+ * @param bool $echo Whether to echo
+ * @return string Checked attribute or empty string
+ */
+function checked( $checked, $current = true, $echo = true ) {
+    return '';
+}
+
+/**
+ * Get admin page title
+ *
+ * @return string Admin page title
+ */
+function get_admin_page_title() {
+    return '';
+}
+
+/**
+ * Output settings fields
+ *
+ * @param string $option_group Option group
+ */
+function settings_fields( $option_group ) {
+}
+
+/**
+ * Output settings sections
+ *
+ * @param string $page Page slug
+ */
+function do_settings_sections( $page ) {
+}
+
+/**
+ * Output submit button
+ *
+ * @param string $text Button text
+ * @param string $type Button type
+ * @param string $name Button name
+ * @param bool $wrap Whether to wrap
+ * @param array $other_attributes Other attributes
+ * @return string Submit button HTML
+ */
+function submit_button( $text = null, $type = 'primary', $name = 'submit', $wrap = true, $other_attributes = array() ) {
+    return '';
+}
+
+/**
  * Check if current user has capability
  *
  * @param string $capability Capability to check

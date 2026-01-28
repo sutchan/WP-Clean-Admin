@@ -16,6 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// Load WordPress stubs for IDE compatibility
+require_once __DIR__ . '/wpca-wordpress-stubs.php';
+
 class Settings {
     
     private static $instance = null;
@@ -857,7 +860,7 @@ class Settings {
             }
             
             .wpca-settings-section h3:after {
-                content: '鈻?;
+                content: '▼';
                 font-size: 12px;
                 color: #666;
                 transition: transform 0.3s ease;
