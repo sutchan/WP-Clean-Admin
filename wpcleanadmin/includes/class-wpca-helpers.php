@@ -145,7 +145,7 @@ class Helpers {
      * @return mixed Plugin information
      */
     public function get_plugin_info( $field = '' ) {
-        $plugin_data = \get_plugin_data( WPCA_PLUGIN_DIR . 'wp-clean-admin.php' );
+        $plugin_data = \get_plugin_data( \WPCA_PLUGIN_DIR . 'wp-clean-admin.php' );
         
         if ( empty( $field ) ) {
             return $plugin_data;

@@ -42,8 +42,8 @@ class Settings {
     public function register_settings_page() {
         if ( function_exists( 'add_options_page' ) ) {
             \add_options_page(
-                \__( 'WP Clean Admin', WPCA_TEXT_DOMAIN ),
-                \__( 'Clean Admin', WPCA_TEXT_DOMAIN ),
+                \__( 'WP Clean Admin', \WPCA_TEXT_DOMAIN ),
+                \__( 'Clean Admin', \WPCA_TEXT_DOMAIN ),
                 'manage_options',
                 'wp-clean-admin',
                 array( $this, 'render_settings_page' )
