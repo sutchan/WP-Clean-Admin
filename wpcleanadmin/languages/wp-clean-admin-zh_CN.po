@@ -1,4 +1,4 @@
-﻿msgid ""
+msgid ""
 msgstr ""
 "Project-Id-Version: WP Clean Admin 1.8.0\n"
 "Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"
@@ -12,55 +12,609 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Manual\n"
 
-
 # ===========================================================
 # Plugin Core Strings
 # ===========================================================
 msgid "WP Clean Admin"
 msgstr "WP Clean Admin"
 
+msgid "WP Clean Admin Settings"
+msgstr "WP Clean Admin 设置"
+
 msgid "Settings"
 msgstr "设置"
+
+# ===========================================================
+# Database Optimization Module
+# ===========================================================
+msgid "Cleanup action completed successfully."
+msgstr "清理操作成功完成。"
+
+msgid "Cleanup action failed."
+msgstr "清理操作失败。"
+
+msgid "Database cleanup error: %s"
+msgstr "数据库清理错误：%s"
+
+msgid "Database cleanup error"
+msgstr "数据库清理错误"
+
+msgid "Database optimization completed successfully."
+msgstr "数据库优化成功完成。"
+
+msgid "Database optimization failed."
+msgstr "数据库优化失败。"
+
+msgid "Optimize database tables"
+msgstr "优化数据库表"
+
+msgid "Remove auto-saved drafts"
+msgstr "删除自动保存的草稿"
+
+msgid "Remove expired transients"
+msgstr "删除过期的临时数据"
+
+msgid "Remove old post revisions"
+msgstr "删除旧的文章修订版本"
+
+msgid "Remove orphan comment meta"
+msgstr "删除孤立的评论元数据"
+
+msgid "Remove orphan post meta"
+msgstr "删除孤立的文章元数据"
+
+msgid "Remove orphan term meta"
+msgstr "删除孤立的分类元数据"
+
+msgid "Remove orphan user meta"
+msgstr "删除孤立的用户元数据"
+
+msgid "Remove pingbacks and trackbacks"
+msgstr "删除引用和回溯"
+
+msgid "Remove spam comments"
+msgstr "删除垃圾评论"
+
+msgid "Remove trashed comments"
+msgstr "删除已回收站的评论"
+
+msgid "Remove trashed posts"
+msgstr "删除已回收站的文章"
+
+msgid "Remove unapproved comments"
+msgstr "删除未批准的评论"
+
+# ===========================================================
+# New Database Optimization Strings
+# ===========================================================
+msgid "Database Settings"
+msgstr "数据库设置"
+
+msgid "Database"
+msgstr "数据库"
+
+msgid "Database Cleanup Settings"
+msgstr "数据库清理设置"
+
+msgid "Database Optimization Settings"
+msgstr "数据库优化设置"
+
+msgid "Scheduled Cleanup Settings"
+msgstr "定时清理设置"
+
+msgid "Clean up post revisions"
+msgstr "清理文章修订版本"
+
+msgid "Clean up auto drafts"
+msgstr "清理自动草稿"
+
+msgid "Clean up trashed posts"
+msgstr "清理已回收站的文章"
+
+msgid "Clean up spam comments"
+msgstr "清理垃圾评论"
+
+msgid "Clean up trashed comments"
+msgstr "清理已回收站的评论"
+
+msgid "Clean up orphaned data"
+msgstr "清理孤立数据"
+
+msgid "Clean up expired transients"
+msgstr "清理过期的临时数据"
+
+msgid "Clean up oEmbed cache"
+msgstr "清理 oEmbed 缓存"
+
+msgid "Configure which types of data to clean up from your WordPress database."
+msgstr "配置要从 WordPress 数据库中清理的数据类型。"
+
+msgid "Configure database table optimization settings."
+msgstr "配置数据库表优化设置。"
+
+msgid "Configure automatic scheduled database cleanup."
+msgstr "配置自动定时数据库清理。"
+
+msgid "Remove old post revisions"
+msgstr "删除旧的文章修订版本"
+
+msgid "Remove auto drafts"
+msgstr "删除自动草稿"
+
+msgid "Remove trashed posts"
+msgstr "删除已回收站的文章"
+
+msgid "Remove spam comments"
+msgstr "删除垃圾评论"
+
+msgid "Remove trashed comments"
+msgstr "删除已回收站的评论"
+
+msgid "Remove orphaned data (postmeta, commentmeta, etc.)"
+msgstr "删除孤立数据（文章元数据、评论元数据等）"
+
+msgid "Remove expired transients"
+msgstr "删除过期的临时数据"
+
+msgid "Remove old oEmbed cache"
+msgstr "删除旧的 oEmbed 缓存"
+
+msgid "Automatically optimize database tables after cleanup"
+msgstr "清理后自动优化数据库表"
+
+msgid "Disabled"
+msgstr "已禁用"
+
+msgid "Daily"
+msgstr "每天"
+
+msgid "Weekly"
+msgstr "每周"
+
+msgid "Monthly"
+msgstr "每月"
+
+msgid "WP Clean Admin - Database Settings"
+msgstr "WP Clean Admin - 数据库设置"
+
+msgid "Database Information"
+msgstr "数据库信息"
+
+msgid "Loading database information..."
+msgstr "正在加载数据库信息..."
+
+msgid "Database Actions"
+msgstr "数据库操作"
+
+msgid "Run Database Cleanup"
+msgstr "运行数据库清理"
+
+msgid "Optimize Database Tables"
+msgstr "优化数据库表"
+
+msgid "Cleanup Statistics"
+msgstr "清理统计"
+
+msgid "Loading cleanup statistics..."
+msgstr "正在加载清理统计..."
+
+msgid "Clean up post revisions"
+msgstr "清理文章修订版本"
+
+msgid "Clean up auto drafts"
+msgstr "清理自动草稿"
+
+msgid "Clean up trashed posts"
+msgstr "清理已回收站的文章"
+
+msgid "Clean up spam comments"
+msgstr "清理垃圾评论"
+
+msgid "Clean up trashed comments"
+msgstr "清理已回收站的评论"
+
+msgid "Clean up orphan postmeta"
+msgstr "清理孤立的文章元数据"
+
+msgid "Clean up orphan commentmeta"
+msgstr "清理孤立的评论元数据"
+
+msgid "Clean up orphan term relationships"
+msgstr "清理孤立的分类关系"
+
+msgid "Clean up orphan usermeta"
+msgstr "清理孤立的用户元数据"
+
+msgid "Clean up expired transients"
+msgstr "清理过期的临时数据"
+
+msgid "Clean up oEmbed cache"
+msgstr "清理 oEmbed 缓存"
+
+msgid "Insufficient permissions"
+msgstr "权限不足"
+
+msgid "Database tables optimized successfully"
+msgstr "数据库表优化成功"
+
+msgid "Failed to optimize tables"
+msgstr "优化表失败"
+
+msgid "Database cleanup completed successfully"
+msgstr "数据库清理成功完成"
+
+msgid "Failed to run database cleanup"
+msgstr "运行数据库清理失败"
+
+# ===========================================================
+# Settings Module
+# ===========================================================
+msgid "About"
+msgstr "关于"
+
+msgid "About WP Clean Admin"
+msgstr "关于 WP Clean Admin"
+
+msgid "Accent"
+msgstr "强调色"
+
+msgid "Activity"
+msgstr "活动"
+
+msgid "Add custom CSS to the login page."
+msgstr "向登录页面添加自定义 CSS。"
+
+msgid "A powerful WordPress admin cleanup and optimization plugin."
+msgstr "一个强大的 WordPress 后台清理和优化插件。"
+
+msgid "Are you sure you want to reset about page settings to default?"
+msgstr "您确定要将关于页面设置重置为默认值吗？"
+
+msgid "Are you sure you want to reset all settings to default?"
+msgstr "您确定要将所有设置重置为默认值吗？"
+
+msgid "Are you sure you want to reset general settings to default?"
+msgstr "您确定要将通用设置重置为默认值吗？"
+
+msgid "Are you sure you want to reset login page settings to default?"
+msgstr "您确定要将登录页面设置重置为默认值吗？"
+
+msgid "Are you sure you want to reset the menu order to default?"
+msgstr "您确定要将菜单顺序重置为默认值吗？"
+
+msgid "Are you sure you want to reset visual style settings to default?"
+msgstr "您确定要将视觉样式设置重置为默认值吗？"
+
+msgid "At a Glance"
+msgstr "概览"
+
+msgid "Author"
+msgstr "作者"
+
+msgid "Blue"
+msgstr "蓝色"
+
+msgid "Compact"
+msgstr "紧凑"
+
+msgid "Dark"
+msgstr "深色"
+
+msgid "Default"
+msgstr "默认"
+
+msgid "Description"
+msgstr "描述"
+
+msgid "Donate"
+msgstr "捐赠"
+
+msgid "Documentation"
+msgstr "文档"
+
+msgid "Error"
+msgstr "错误"
+
+msgid "Failed to reset menu order"
+msgstr "重置菜单顺序失败"
+
+msgid "Failed to reset settings"
+msgstr "重置设置失败"
+
+msgid "Feature Request"
+msgstr "功能请求"
+
+msgid "Font Awesome"
+msgstr "Font Awesome"
+
+msgid "Found a bug? Please report it on GitHub."
+msgstr "发现 bug？请在 GitHub 上报告。"
+
+msgid "General"
+msgstr "通用"
 
 msgid "General Settings"
 msgstr "通用设置"
 
-# ===========================================================
-# Dashboard Module
-# ===========================================================
-# ===========================================================
-# Database Module
-# ===========================================================
-# ===========================================================
-# Cleanup Module
-# ===========================================================
-msgid "Database cleanup completed successfully"
-msgstr "数据库清理成功完成"
+msgid "Get help and support for WP Clean Admin."
+msgstr "获取 WP Clean Admin 的帮助和支持。"
 
-# ===========================================================
-# Performance Module
-# ===========================================================
-msgid "Disabled"
-msgstr "已禁用"
+msgid "Green"
+msgstr "绿色"
 
-# ===========================================================
-# Resources Module
-# ===========================================================
-# ===========================================================
-# Reset Module
-# ===========================================================
+msgid "Have a feature idea? Suggest it on GitHub."
+msgstr "有功能想法？在 GitHub 上提出建议。"
+
+msgid "Hide Admin Bar Items"
+msgstr "隐藏管理栏项目"
+
+msgid "Hide Admin Menu Items"
+msgstr "隐藏管理菜单项目"
+
+msgid "Hide Dashboard Widgets"
+msgstr "隐藏仪表盘小部件"
+
+msgid "Hide Frontend Admin Bar"
+msgstr "隐藏前端管理栏"
+
+msgid "Hide the admin bar on the frontend for all users."
+msgstr "为所有用户隐藏前端的管理栏。"
+
+msgid "Hide the "Thank you for creating with WordPress" text in the admin footer."
+msgstr "隐藏管理页脚中的"感谢使用 WordPress 创建"文本。"
+
+msgid "Hide the WordPress version number from the footer."
+msgstr "从页脚隐藏 WordPress 版本号。"
+
+msgid "Hide WordPress Footer"
+msgstr "隐藏 WordPress 页脚"
+
+msgid "Hide WordPress Version"
+msgstr "隐藏 WordPress 版本"
+
+msgid "Home Link"
+msgstr "首页链接"
+
+msgid "If you enjoy using this plugin, please consider leaving a 5-star review on WordPress.org."
+msgstr "如果您喜欢使用此插件，请考虑在 WordPress.org 上留下 5 星评价。"
+
+msgid "Info"
+msgstr "信息"
+
+msgid "Invalid action."
+msgstr "无效操作。"
+
+msgid "Invalid request"
+msgstr "无效请求"
+
+msgid "Invalid tab specified"
+msgstr "指定的标签无效"
+
+msgid "Language Switcher"
+msgstr "语言切换器"
+
+msgid "Large"
+msgstr "大"
+
+msgid "Login Background"
+msgstr "登录背景"
+
+msgid "Login Custom CSS"
+msgstr "登录自定义 CSS"
+
+msgid "Login Elements"
+msgstr "登录元素"
+
+msgid "Login Logo"
+msgstr "登录徽标"
+
+msgid "Login Page"
+msgstr "登录页面"
+
+msgid "Login Page Customization"
+msgstr "登录页面自定义"
+
+msgid "Login Page Settings"
+msgstr "登录页面设置"
+
+msgid "Login Style"
+msgstr "登录样式"
+
+msgid "Medium"
+msgstr "中等"
+
+msgid "Menu Customization"
+msgstr "菜单自定义"
+
+msgid "Menu Customization Settings"
+msgstr "菜单自定义设置"
+
+msgid "Menu order reset successfully"
+msgstr "菜单顺序重置成功"
+
+msgid "Minimal"
+msgstr "最小化"
+
+msgid "Monospace"
+msgstr "等宽"
+
+msgid "Moderate"
+msgstr "适中"
+
+msgid "Modern"
+msgstr "现代"
+
+msgid "No Icons"
+msgstr "无图标"
+
+msgid "Nonce verification failed."
+msgstr "Nonce 验证失败。"
+
+msgid "None"
+msgstr "无"
+
+msgid "Permission denied."
+msgstr "权限被拒绝。"
+
+msgid "Primary"
+msgstr "主要"
+
+msgid "Pronounced"
+msgstr "明显"
+
+msgid "Purple"
+msgstr "紫色"
+
+msgid "Quick Draft"
+msgstr "快速草稿"
+
+msgid "Read the official documentation."
+msgstr "阅读官方文档。"
+
+msgid "Register Link"
+msgstr "注册链接"
+
+msgid "Remember Me"
+msgstr "记住我"
+
+msgid "Report a Bug"
+msgstr "报告 Bug"
+
+msgid "Reset About Page"
+msgstr "重置关于页面"
+
+msgid "Reset General Settings"
+msgstr "重置通用设置"
+
+msgid "Reset Login Page"
+msgstr "重置登录页面"
+
+msgid "Reset Menu Order"
+msgstr "重置菜单顺序"
+
+msgid "Reset to Default Order"
+msgstr "重置为默认顺序"
+
+msgid "Reset to Defaults"
+msgstr "重置为默认值"
+
+msgid "Reset Visual Style"
+msgstr "重置视觉样式"
+
+msgid "Sans Serif"
+msgstr "无衬线"
+
+msgid "Secondary"
+msgstr "次要"
+
+msgid "Select a style for the WordPress login page."
+msgstr "为 WordPress 登录页面选择样式。"
+
+msgid "Select a theme style for the admin area."
+msgstr "为管理区域选择主题样式。"
+
+msgid "Select which admin bar items to hide."
+msgstr "选择要隐藏的管理栏项目。"
+
+msgid "Select which admin menu items to hide."
+msgstr "选择要隐藏的管理菜单项目。"
+
+msgid "Select which dashboard widgets to hide."
+msgstr "选择要隐藏的仪表盘小部件。"
+
+msgid "Select which elements to display on the login page."
+msgstr "选择要在登录页面上显示的元素。"
+
+msgid "Select the background color for the admin interface."
+msgstr "选择管理界面的背景颜色。"
+
+msgid "Select the base font size for the admin interface."
+msgstr "选择管理界面的基础字体大小。"
+
+msgid "Select the border radius style for elements."
+msgstr "选择元素的边框半径样式。"
+
+msgid "Select the font stack for the admin interface."
+msgstr "选择管理界面的字体堆栈。"
+
+msgid "Select the icon style for the admin interface."
+msgstr "选择管理界面的图标样式。"
+
+msgid "Select the layout density."
+msgstr "选择布局密度。"
+
+msgid "Select the primary color for links, buttons, and active states."
+msgstr "选择链接、按钮和活动状态的主颜色。"
+
+msgid "Select the shadow style for elements."
+msgstr "选择元素的阴影样式。"
+
+msgid "Select the text color for the admin interface."
+msgstr "选择管理界面的文本颜色。"
+
+msgid "Serif"
+msgstr "衬线"
+
 msgid "Settings reset successfully"
 msgstr "设置重置成功"
 
-# ===========================================================
-# User Roles Module
-# ===========================================================
-# ===========================================================
-# AJAX Responses
-# ===========================================================
-msgid "Insufficient permissions"
-msgstr "权限不足"
+msgid "Site Health Status"
+msgstr "站点健康状态"
 
-# ===========================================================
-# Login Module
-# ===========================================================
+msgid "Small"
+msgstr "小"
+
+msgid "Spacious"
+msgstr "宽敞"
+
+msgid "Standard"
+msgstr "标准"
+
+msgid "Subtle"
+msgstr "细微"
+
+msgid "Support"
+msgstr "支持"
+
+msgid "Support the development of WP Clean Admin."
+msgstr "支持 WP Clean Admin 的开发。"
+
+msgid "System Default"
+msgstr "系统默认"
+
+msgid "Thank you for using WP Clean Admin!"
+msgstr "感谢您使用 WP Clean Admin！"
+
+msgid "This plugin helps you keep your WordPress admin area clean, fast, and secure."
+msgstr "此插件帮助您保持 WordPress 管理区域干净、快速和安全。"
+
+msgid "Upload a custom background image for the login page."
+msgstr "为登录页面上传自定义背景图片。"
+
+msgid "Upload a custom logo for the login page."
+msgstr "为登录页面上传自定义徽标。"
+
+msgid "Version"
+msgstr "版本"
+
+msgid "Visual Style"
+msgstr "视觉样式"
+
+msgid "Visual Style Settings"
+msgstr "视觉样式设置"
+
+msgid "Warning"
+msgstr "警告"
+
+msgid "Welcome"
+msgstr "欢迎"
+
+msgid "WordPress Dashicons"
+msgstr "WordPress Dashicons"
+
+msgid "WordPress Events and News"
+msgstr "WordPress 事件和新闻"
+
+msgid "Your support helps us continue to develop and improve WP Clean Admin."
+msgstr "您的支持帮助我们继续开发和改进 WP Clean Admin。"
+

@@ -3,17 +3,14 @@ msgstr ""
 "Project-Id-Version: WP Clean Admin 1.8.0\n"
 "Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"
 "POT-Creation-Date: 2026-01-27 00:00+0000\n"
-"PO-Revision-Date: 2025-06-18 00:00+0000\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2026-01-27 00:00+0000\n"
+"Last-Translator: Sut\n"
 "Language-Team: \n"
 "Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.7\n"
-"X-Poedit-Basepath: ..\n"
-"X-Poedit-KeywordsList: __;_e;_x\n"
-"X-Poedit-SearchPath-0: .\n"
+"X-Generator: Manual\n"
 
 # ===========================================================
 # Plugin Core Strings
@@ -86,6 +83,168 @@ msgstr "Remove trashed posts"
 
 msgid "Remove unapproved comments"
 msgstr "Remove unapproved comments"
+
+# ===========================================================
+# New Database Optimization Strings
+# ===========================================================
+msgid "Database Settings"
+msgstr "Database Settings"
+
+msgid "Database"
+msgstr "Database"
+
+msgid "Database Cleanup Settings"
+msgstr "Database Cleanup Settings"
+
+msgid "Database Optimization Settings"
+msgstr "Database Optimization Settings"
+
+msgid "Scheduled Cleanup Settings"
+msgstr "Scheduled Cleanup Settings"
+
+msgid "Clean up post revisions"
+msgstr "Clean up post revisions"
+
+msgid "Clean up auto drafts"
+msgstr "Clean up auto drafts"
+
+msgid "Clean up trashed posts"
+msgstr "Clean up trashed posts"
+
+msgid "Clean up spam comments"
+msgstr "Clean up spam comments"
+
+msgid "Clean up trashed comments"
+msgstr "Clean up trashed comments"
+
+msgid "Clean up orphaned data"
+msgstr "Clean up orphaned data"
+
+msgid "Clean up expired transients"
+msgstr "Clean up expired transients"
+
+msgid "Clean up oEmbed cache"
+msgstr "Clean up oEmbed cache"
+
+msgid "Configure which types of data to clean up from your WordPress database."
+msgstr "Configure which types of data to clean up from your WordPress database."
+
+msgid "Configure database table optimization settings."
+msgstr "Configure database table optimization settings."
+
+msgid "Configure automatic scheduled database cleanup."
+msgstr "Configure automatic scheduled database cleanup."
+
+msgid "Remove old post revisions"
+msgstr "Remove old post revisions"
+
+msgid "Remove auto drafts"
+msgstr "Remove auto drafts"
+
+msgid "Remove trashed posts"
+msgstr "Remove trashed posts"
+
+msgid "Remove spam comments"
+msgstr "Remove spam comments"
+
+msgid "Remove trashed comments"
+msgstr "Remove trashed comments"
+
+msgid "Remove orphaned data (postmeta, commentmeta, etc.)"
+msgstr "Remove orphaned data (postmeta, commentmeta, etc.)"
+
+msgid "Remove expired transients"
+msgstr "Remove expired transients"
+
+msgid "Remove old oEmbed cache"
+msgstr "Remove old oEmbed cache"
+
+msgid "Automatically optimize database tables after cleanup"
+msgstr "Automatically optimize database tables after cleanup"
+
+msgid "Disabled"
+msgstr "Disabled"
+
+msgid "Daily"
+msgstr "Daily"
+
+msgid "Weekly"
+msgstr "Weekly"
+
+msgid "Monthly"
+msgstr "Monthly"
+
+msgid "WP Clean Admin - Database Settings"
+msgstr "WP Clean Admin - Database Settings"
+
+msgid "Database Information"
+msgstr "Database Information"
+
+msgid "Loading database information..."
+msgstr "Loading database information..."
+
+msgid "Database Actions"
+msgstr "Database Actions"
+
+msgid "Run Database Cleanup"
+msgstr "Run Database Cleanup"
+
+msgid "Optimize Database Tables"
+msgstr "Optimize Database Tables"
+
+msgid "Cleanup Statistics"
+msgstr "Cleanup Statistics"
+
+msgid "Loading cleanup statistics..."
+msgstr "Loading cleanup statistics..."
+
+msgid "Clean up post revisions"
+msgstr "Clean up post revisions"
+
+msgid "Clean up auto drafts"
+msgstr "Clean up auto drafts"
+
+msgid "Clean up trashed posts"
+msgstr "Clean up trashed posts"
+
+msgid "Clean up spam comments"
+msgstr "Clean up spam comments"
+
+msgid "Clean up trashed comments"
+msgstr "Clean up trashed comments"
+
+msgid "Clean up orphan postmeta"
+msgstr "Clean up orphan postmeta"
+
+msgid "Clean up orphan commentmeta"
+msgstr "Clean up orphan commentmeta"
+
+msgid "Clean up orphan term relationships"
+msgstr "Clean up orphan term relationships"
+
+msgid "Clean up orphan usermeta"
+msgstr "Clean up orphan usermeta"
+
+msgid "Clean up expired transients"
+msgstr "Clean up expired transients"
+
+msgid "Clean up oEmbed cache"
+msgstr "Clean up oEmbed cache"
+
+msgid "Insufficient permissions"
+msgstr "Insufficient permissions"
+
+msgid "Database tables optimized successfully"
+msgstr "Database tables optimized successfully"
+
+msgid "Failed to optimize tables"
+msgstr "Failed to optimize tables"
+
+msgid "Database cleanup completed successfully"
+msgstr "Database cleanup completed successfully"
+
+msgid "Failed to run database cleanup"
+msgstr "Failed to run database cleanup"
 
 # ===========================================================
 # Settings Module
@@ -201,7 +360,8 @@ msgstr "Hide Frontend Admin Bar"
 msgid "Hide the admin bar on the frontend for all users."
 msgstr "Hide the admin bar on the frontend for all users."
 
-
+msgid "Hide the "Thank you for creating with WordPress" text in the admin footer."
+msgstr "Hide the "Thank you for creating with WordPress" text in the admin footer."
 
 msgid "Hide the WordPress version number from the footer."
 msgstr "Hide the WordPress version number from the footer."
@@ -457,3 +617,4 @@ msgstr "WordPress Events and News"
 
 msgid "Your support helps us continue to develop and improve WP Clean Admin."
 msgstr "Your support helps us continue to develop and improve WP Clean Admin."
+

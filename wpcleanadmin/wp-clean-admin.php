@@ -4,7 +4,7 @@
  * Version: 1.8.0
  * Update Date: 2026-01-27
  * Plugin Name: WP Clean Admin
- * Plugin URI: https://github.com/sutchan/Open-PNR
+ * Plugin URI: https://github.com/sutchan/WP-Clean-Admin
  * Description: WordPress Admin Cleanup and Optimization Plugin
  * Author: Sut
  * Author URI: https://github.com/sutchan
