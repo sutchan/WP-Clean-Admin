@@ -711,6 +711,50 @@ class WP_Admin_Bar {
 }
 
 /**
+ * WP_Error class for IDE support
+ */
+class WP_Error {
+    /**
+     * Constructor
+     *
+     * @param string $code Error code
+     * @param string $message Error message
+     * @param mixed $data Error data
+     */
+    public function __construct( $code = '', $message = '', $data = '' ) {
+    }
+    
+    /**
+     * Get error code
+     *
+     * @return string Error code
+     */
+    public function get_error_code() {
+        return '';
+    }
+    
+    /**
+     * Get error message
+     *
+     * @param string $code Error code
+     * @return string Error message
+     */
+    public function get_error_message( $code = '' ) {
+        return '';
+    }
+    
+    /**
+     * Get all error messages
+     *
+     * @param string $code Error code
+     * @return array Error messages
+     */
+    public function get_error_messages( $code = '' ) {
+        return array();
+    }
+}
+
+/**
  * WPDB class for IDE support
  */
 class wpdb {
@@ -785,4 +829,160 @@ class wpdb {
     public function get_var( $query, $x = 0, $y = 0 ) {
         return null;
     }
+}
+
+/**
+ * Check if user is logged in
+ *
+ * @return bool True if user is logged in, false otherwise
+ */
+function is_user_logged_in() {
+    return false;
+}
+
+/**
+ * Check if next scheduled event exists
+ *
+ * @param string $hook Hook name
+ * @param array $args Arguments
+ * @return int|false Timestamp if event exists, false otherwise
+ */
+function wp_next_scheduled( $hook, $args = array() ) {
+    return false;
+}
+
+/**
+ * Schedule event
+ *
+ * @param int $timestamp Timestamp
+ * @param string $recurrence Recurrence
+ * @param string $hook Hook name
+ * @param array $args Arguments
+ * @return bool True on success, false on failure
+ */
+function wp_schedule_event( $timestamp, $recurrence, $hook, $args = array() ) {
+    return false;
+}
+
+/**
+ * Flush object cache
+ *
+ * @return bool True on success, false on failure
+ */
+function wp_cache_flush() {
+    return false;
+}
+
+/**
+ * Get number of queries
+ *
+ * @return int Number of queries
+ */
+function get_num_queries() {
+    return 0;
+}
+
+/**
+ * Stop timer
+ *
+ * @param int $echo Whether to echo
+ * @param int $precision Precision
+ * @return float Page load time
+ */
+function timer_stop( $echo = 0, $precision = 3 ) {
+    return 0.0;
+}
+
+/**
+ * Make HTTP request
+ *
+ * @param string $url URL
+ * @param array $args Arguments
+ * @return array|WP_Error Response or error
+ */
+function wp_remote_get( $url, $args = array() ) {
+    return array();
+}
+
+/**
+ * Check if variable is WP_Error
+ *
+ * @param mixed $thing Variable to check
+ * @return bool True if WP_Error, false otherwise
+ */
+function is_wp_error( $thing ) {
+    return false;
+}
+
+/**
+ * Get response code from HTTP response
+ *
+ * @param array|WP_Error $response Response
+ * @return int Response code
+ */
+function wp_remote_retrieve_response_code( $response ) {
+    return 200;
+}
+
+/**
+ * Get body from HTTP response
+ *
+ * @param array|WP_Error $response Response
+ * @return string Response body
+ */
+function wp_remote_retrieve_body( $response ) {
+    return '';
+}
+
+/**
+ * Get upload directory
+ *
+ * @param string $time Time
+ * @param bool $create Whether to create directory
+ * @return array Upload directory info
+ */
+function wp_upload_dir( $time = null, $create = true ) {
+    return array();
+}
+
+/**
+ * Get includes URL
+ *
+ * @param string $path Path
+ * @return string Includes URL
+ */
+function includes_url( $path = '' ) {
+    return '';
+}
+
+/**
+ * Get cache value
+ *
+ * @param int|string $key Cache key
+ * @param string $group Cache group
+ * @param bool $force Whether to force refresh
+ * @param bool $found Whether found
+ * @return mixed Cache value
+ */
+function wp_cache_get( $key, $group = '', $force = false, &$found = null ) {
+    return false;
+}
+
+/**
+ * Check OPcache status
+ *
+ * @param bool $force Whether to force refresh
+ * @return array|false OPcache status
+ */
+function opcache_get_status( $force = false ) {
+    return false;
+}
+
+/**
+ * Reset OPcache
+ *
+ * @return bool True on success, false on failure
+ */
+function opcache_reset() {
+    return false;
 }

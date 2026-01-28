@@ -8,7 +8,11 @@
  * @author URI: https://github.com/sutchan
  * @since 1.7.15
  */
+
 namespace WPCleanAdmin;
+
+// Load WordPress stubs for IDE compatibility
+require_once __DIR__ . '/wpca-wordpress-stubs.php';
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -158,8 +162,8 @@ class Performance {
      * @return mixed Modified authentication result
      */
     public function disable_rest_api_authentication( $result ) {
-        if ( function_exists( 'is_user_logged_in' ) && ! is_user_logged_in() ) {
-            if ( class_exists( 'WP_Error' ) ) {
+        if ( function_exists( '\is_user_logged_in' ) && ! \is_user_logged_in() ) {
+            if ( class_exists( '\WP_Error' ) ) {
                 return new \WP_Error( 'rest_not_logged_in', \__( 'REST API is disabled for non-authenticated users', WPCA_TEXT_DOMAIN ), array( 'status' => 401 ) );
             }
         }
@@ -182,7 +186,7 @@ class Performance {
      */
     public function optimize_database() {
         // Schedule database optimization
-        if ( function_exists( 'wp_next_scheduled' ) && function_exists( 'wp_schedule_event' ) ) {
+        if ( function_exists( '\wp_next_scheduled' ) && function_exists( '\wp_schedule_event' ) ) {
             if ( ! \wp_next_scheduled( 'wpca_optimize_database' ) ) {
                 \wp_schedule_event( time(), 'weekly', 'wpca_optimize_database' );
             }
@@ -194,7 +198,7 @@ class Performance {
      */
     public function clean_transients() {
         // Schedule transient cleanup
-        if ( function_exists( 'wp_next_scheduled' ) && function_exists( 'wp_schedule_event' ) ) {
+        if ( function_exists( '\wp_next_scheduled' ) && function_exists( '\wp_schedule_event' ) ) {
             if ( ! \wp_next_scheduled( 'wpca_clean_transients' ) ) {
                 \wp_schedule_event( time(), 'daily', 'wpca_clean_transients' );
             }
@@ -228,7 +232,7 @@ class Performance {
         );
         
         // Clear WordPress object cache
-        if ( function_exists( 'wp_cache_flush' ) ) {
+        if ( function_exists( '\wp_cache_flush' ) ) {
             \wp_cache_flush();
             $results['caches'][] = array(
                 'name' => \__( 'WordPress Object Cache', WPCA_TEXT_DOMAIN ),
@@ -273,10 +277,10 @@ class Performance {
         );
         
         // Get database query count
-        $stats['query_count'] = function_exists( 'get_num_queries' ) ? \get_num_queries() : 0;
+        $stats['query_count'] = function_exists( '\get_num_queries' ) ? \get_num_queries() : 0;
         
         // Get page load time
-        $stats['load_time'] = function_exists( 'timer_stop' ) ? \timer_stop( 0, 3 ) . 's' : '0.000s';
+        $stats['load_time'] = function_exists( '\timer_stop' ) ? \timer_stop( 0, 3 ) . 's' : '0.000s';
         
         // Get transients count
         $stats['transients_count'] = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE '%transient%'" );
@@ -534,7 +538,7 @@ class Performance {
         $content_hash = '';
         
         foreach ( $css_urls as $url ) {
-            if ( function_exists( 'wp_remote_get' ) && function_exists( 'is_wp_error' ) && function_exists( 'wp_remote_retrieve_response_code' ) && function_exists( 'wp_remote_retrieve_body' ) ) {
+            if ( function_exists( '\wp_remote_get' ) && function_exists( '\is_wp_error' ) && function_exists( '\wp_remote_retrieve_response_code' ) && function_exists( '\wp_remote_retrieve_body' ) ) {
                 $response = \wp_remote_get( $url );
                 if ( ! \is_wp_error( $response ) && \wp_remote_retrieve_response_code( $response ) === 200 ) {
                     $content = \wp_remote_retrieve_body( $response );
@@ -553,13 +557,13 @@ class Performance {
         // Create combined filename
         $hash = md5( implode( ',', $css_urls ) );
         $combined_filename = 'wpca-combined-' . $hash . '.css';
-        if ( function_exists( 'wp_upload_dir' ) ) {
+        if ( function_exists( '\wp_upload_dir' ) ) {
             $upload_dir = \wp_upload_dir();
             $combined_dir = $upload_dir['basedir'] . '/wpca-cache';
             
             // Create directory if it doesn't exist
             if ( ! file_exists( $combined_dir ) ) {
-                if ( function_exists( 'wp_mkdir_p' ) ) {
+                if ( function_exists( '\wp_mkdir_p' ) ) {
                     \wp_mkdir_p( $combined_dir );
                 }
             }
@@ -609,7 +613,7 @@ class Performance {
         $combined_content = '';
         
         foreach ( $js_urls as $url ) {
-            if ( function_exists( 'wp_remote_get' ) && function_exists( 'is_wp_error' ) && function_exists( 'wp_remote_retrieve_response_code' ) && function_exists( 'wp_remote_retrieve_body' ) ) {
+            if ( function_exists( '\wp_remote_get' ) && function_exists( '\is_wp_error' ) && function_exists( '\wp_remote_retrieve_response_code' ) && function_exists( '\wp_remote_retrieve_body' ) ) {
                 $response = \wp_remote_get( $url );
                 if ( ! \is_wp_error( $response ) && \wp_remote_retrieve_response_code( $response ) === 200 ) {
                     $content = \wp_remote_retrieve_body( $response );
@@ -631,13 +635,13 @@ class Performance {
         // Create combined filename
         $hash = md5( implode( ',', $js_urls ) );
         $combined_filename = 'wpca-combined-' . $hash . '.js';
-        if ( function_exists( 'wp_upload_dir' ) ) {
+        if ( function_exists( '\wp_upload_dir' ) ) {
             $upload_dir = \wp_upload_dir();
             $combined_dir = $upload_dir['basedir'] . '/wpca-cache';
             
             // Create directory if it doesn't exist
             if ( ! file_exists( $combined_dir ) ) {
-                if ( function_exists( 'wp_mkdir_p' ) ) {
+                if ( function_exists( '\wp_mkdir_p' ) ) {
                     \wp_mkdir_p( $combined_dir );
                 }
             }
@@ -686,7 +690,7 @@ class Performance {
         
         // Preload critical admin assets
         $preload_resources = array();
-        if ( function_exists( 'includes_url' ) ) {
+        if ( function_exists( '\includes_url' ) ) {
             $preload_resources = array(
                 'admin-css' => array(
                     'href' => \includes_url( 'css/common.css' ),

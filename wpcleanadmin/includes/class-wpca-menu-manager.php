@@ -76,10 +76,8 @@ class Menu_Manager {
                 \add_action( 'wp_dashboard_setup', array( $this, 'remove_dashboard_widgets' ) );
             }
             
-            // Simplify admin menu
-            if ( isset( $settings['menu']['simplify_admin_menu'] ) && $settings['menu']['simplify_admin_menu'] ) {
-                \add_action( 'admin_menu', array( $this, 'simplify_admin_menu' ), 999 );
-            }
+            // Apply menu customizations
+            $this->simplify_admin_menu_by_settings();
             
             // Clean admin bar
             if ( isset( $settings['general']['clean_admin_bar'] ) && $settings['general']['clean_admin_bar'] ) {
@@ -267,30 +265,74 @@ class Menu_Manager {
         // Load settings
         $settings = wpca_get_settings();
         
-        if ( isset( $settings['menu']['menu_items'] ) && function_exists( 'add_action' ) ) {
-            $menu_items_to_remove = $settings['menu']['menu_items'];
-            
-            // Add action to remove menu items
-            \add_action( 'admin_menu', function() use ( $menu_items_to_remove ) {
+        if ( isset( $settings['menu'] ) && function_exists( 'add_action' ) ) {
+            // Add action to customize menu
+            \add_action( 'admin_menu', function() use ( $settings ) {
                 global $menu, $submenu;
                 
-                // Remove top-level menu items
-                foreach ( $menu as $key => $menu_item ) {
-                    if ( isset( $menu_item[2] ) && isset( $menu_items_to_remove[$menu_item[2]] ) && $menu_items_to_remove[$menu_item[2]] ) {
-                        unset( $menu[$key] );
-                    }
+                // Apply menu order if specified
+                if ( isset( $settings['menu']['menu_order'] ) && is_array( $settings['menu']['menu_order'] ) ) {
+                    $this->reorder_menu( $menu, $settings['menu']['menu_order'] );
                 }
                 
-                // Remove submenu items
-                foreach ( $submenu as $parent_slug => $submenu_items ) {
-                    foreach ( $submenu_items as $key => $submenu_item ) {
-                        if ( isset( $submenu_item[2] ) && isset( $menu_items_to_remove[$submenu_item[2]] ) && $menu_items_to_remove[$submenu_item[2]] ) {
-                            unset( $submenu[$parent_slug][$key] );
+                // Remove menu items if specified
+                if ( isset( $settings['menu']['menu_items'] ) ) {
+                    $menu_items_to_remove = $settings['menu']['menu_items'];
+                    
+                    // Remove top-level menu items
+                    foreach ( $menu as $key => $menu_item ) {
+                        if ( isset( $menu_item[2] ) && isset( $menu_items_to_remove[$menu_item[2]] ) && $menu_items_to_remove[$menu_item[2]] ) {
+                            unset( $menu[$key] );
+                        }
+                    }
+                    
+                    // Remove submenu items
+                    foreach ( $submenu as $parent_slug => $submenu_items ) {
+                        foreach ( $submenu_items as $key => $submenu_item ) {
+                            if ( isset( $submenu_item[2] ) && isset( $menu_items_to_remove[$submenu_item[2]] ) && $menu_items_to_remove[$submenu_item[2]] ) {
+                                unset( $submenu[$parent_slug][$key] );
+                            }
                         }
                     }
                 }
             }, 999 );
         }
+    }
+    
+    /**
+     * Reorder menu items based on specified order
+     *
+     * @param array &$menu Menu array reference
+     * @param array $menu_order Desired menu order
+     */
+    private function reorder_menu( &$menu, $menu_order ) {
+        $new_menu = array();
+        $menu_index = 5;
+        
+        // Add menu items in the specified order
+        foreach ( $menu_order as $menu_slug ) {
+            foreach ( $menu as $key => $menu_item ) {
+                if ( isset( $menu_item[2] ) && $menu_item[2] === $menu_slug ) {
+                    $menu_item[5] = $menu_index;
+                    $new_menu[$key] = $menu_item;
+                    $menu_index += 5;
+                    break;
+                }
+            }
+        }
+        
+        // Add remaining menu items
+        foreach ( $menu as $key => $menu_item ) {
+            $menu_slug = isset( $menu_item[2] ) ? $menu_item[2] : '';
+            if ( ! in_array( $menu_slug, $menu_order ) ) {
+                $menu_item[5] = $menu_index;
+                $new_menu[$key] = $menu_item;
+                $menu_index += 5;
+            }
+        }
+        
+        // Replace original menu with reordered menu
+        $menu = $new_menu;
     }
     
     /**
