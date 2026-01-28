@@ -1,8 +1,5 @@
 <?php
 /**
- * File Name: class-wpca-core.php
- * Version: 1.8.0
- * Update Date: 2026-01-26
  * WPCleanAdmin Core Class
  *
  * @package WPCleanAdmin
@@ -12,12 +9,6 @@
  * @since 1.7.15
  */
 namespace WPCleanAdmin;
-
-/**
- * Core class for WP Clean Admin plugin
- *
- * @package WPCleanAdmin
- */
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;

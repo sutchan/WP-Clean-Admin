@@ -10,6 +10,10 @@
  */
 namespace WPCleanAdmin;
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 /**
  * Error codes for WPCleanAdmin plugin
  */
@@ -32,16 +36,6 @@ abstract class WPCA_Errors {
     const ERROR_AUTH = 1007;
     /** @var int Unknown error */
     const ERROR_UNKNOWN = 9999;
-}
-
-/**
- * Helpers class for WP Clean Admin plugin
- *
- * @package WPCleanAdmin
- */
-
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
 }
 
 /**
@@ -109,16 +103,16 @@ class Helpers {
         $result = array();
         
         if ( $days > 0 ) {
-            $result[] = sprintf( \_n( '%d day', '%d days', $days, WPCA_TEXT_DOMAIN ), $days );
+            $result[] = sprintf( \_n( '%d day', '%d days', $days, \WPCA_TEXT_DOMAIN ), $days );
         }
         if ( $hours > 0 ) {
-            $result[] = sprintf( \_n( '%d hour', '%d hours', $hours, WPCA_TEXT_DOMAIN ), $hours );
+            $result[] = sprintf( \_n( '%d hour', '%d hours', $hours, \WPCA_TEXT_DOMAIN ), $hours );
         }
         if ( $minutes > 0 ) {
-            $result[] = sprintf( \_n( '%d minute', '%d minutes', $minutes, WPCA_TEXT_DOMAIN ), $minutes );
+            $result[] = sprintf( \_n( '%d minute', '%d minutes', $minutes, \WPCA_TEXT_DOMAIN ), $minutes );
         }
         if ( $seconds > 0 ) {
-            $result[] = sprintf( \_n( '%d second', '%d seconds', $seconds, WPCA_TEXT_DOMAIN ), $seconds );
+            $result[] = sprintf( \_n( '%d second', '%d seconds', $seconds, \WPCA_TEXT_DOMAIN ), $seconds );
         }
         
         return implode( ', ', $result );
@@ -145,6 +139,10 @@ class Helpers {
      * @return mixed Plugin information
      */
     public function get_plugin_info( $field = '' ) {
+        if ( ! function_exists( '\get_plugin_data' ) ) {
+            return '';
+        }
+        
         $plugin_data = \get_plugin_data( \WPCA_PLUGIN_DIR . 'wp-clean-admin.php' );
         
         if ( empty( $field ) ) {
@@ -459,7 +457,14 @@ class Helpers {
     public function handle_ajax_error( $message = '', $error_code = WPCA_Errors::ERROR_AJAX, $additional_data = array() ) {
         $response = $this->create_error_response( $error_code, $message, $additional_data );
         
-        \wp_send_json( $response );
+        if ( function_exists( '\wp_send_json' ) ) {
+            \wp_send_json( $response );
+        } else {
+            // Fallback for non-WordPress environments
+            header( 'Content-Type: application/json' );
+            echo json_encode( $response );
+            exit;
+        }
     }
     
     /**
@@ -513,7 +518,7 @@ class Helpers {
      * @return bool True if nonce is valid
      */
     public function validate_ajax_nonce( $nonce, $action = 'wpca_ajax_nonce' ) {
-        if ( ! \wp_verify_nonce( $nonce, $action ) ) {
+        if ( function_exists( '\wp_verify_nonce' ) && ! \wp_verify_nonce( $nonce, $action ) ) {
             $this->handle_ajax_error(
                 __( 'Security verification failed. Please try again.', WPCA_TEXT_DOMAIN ),
                 WPCA_Errors::ERROR_AUTH

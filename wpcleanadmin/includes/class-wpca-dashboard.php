@@ -10,12 +10,6 @@
  */
 namespace WPCleanAdmin;
 
-/**
- * Dashboard class for WP Clean Admin plugin
- *
- * @package WPCleanAdmin
- */
-
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }

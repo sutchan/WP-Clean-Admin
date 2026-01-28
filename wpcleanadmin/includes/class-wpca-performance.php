@@ -490,8 +490,7 @@ class Performance {
         }
         
         // Remove single-line comments (but not http:// URLs)
-        $js = preg_replace( '/\/\/(?![a-zA-Z]+:\/\/)(.*?)[
-]/', '$1', $js );
+        $js = preg_replace( '/\/\/(?![a-zA-Z]+:\/\/)(.*?)[\r\n]/', '$1', $js );
         
         // Remove multi-line comments
         $js = preg_replace( '/\/\*[\s\S]*?\*\//', '', $js );

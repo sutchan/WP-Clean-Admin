@@ -13,16 +13,9 @@
  */
 namespace WPCleanAdmin;
 
-/**
- * @see get_available_languages() WordPress core function
- * @see is_rtl() WordPress core function
- */
-
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
-
-
 
 /**
  * i18n class
