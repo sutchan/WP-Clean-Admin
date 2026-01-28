@@ -419,3 +419,4 @@ class Menu_Manager {
         }
     }
 }
+

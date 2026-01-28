@@ -986,3 +986,4 @@ function opcache_get_status( $force = false ) {
 function opcache_reset() {
     return false;
 }
+

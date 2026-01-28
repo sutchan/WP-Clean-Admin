@@ -316,3 +316,4 @@ class Error_Handler {
         return $this->log_level;
     }
 }
+

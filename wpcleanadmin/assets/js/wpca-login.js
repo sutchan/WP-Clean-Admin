@@ -1,1 +1,90 @@
-﻿/**\r\n * WP Clean Admin Login JavaScript\r\n *\r\n * @package WPCA\r\n * @version 1.8.0\r\n * @author Sut\r\n * @author URI: https://github.com/sutchan\r\n * @since 1.7.15\r\n */\r\n// Use IIFE to encapsulate the login functionality\r\n(function($) {\r\n    'use strict';\r\n    \r\n    /**\r\n     * Login functionality for WPCA\r\n     */\r\n    const WPCALogin = {\r\n        /**\r\n         * Initialize login functionality\r\n         */\r\n        init: function() {\r\n            this.bindEvents();\r\n            this.initLoginForm();\r\n        },\r\n        \r\n        /**\r\n         * Bind events for login\r\n         */\r\n        bindEvents: function() {\r\n            // Handle login form submission\r\n            $(document).on('submit', '#wpca-login-form', this.handleLoginSubmit.bind(this));\r\n            \r\n            // Handle password visibility toggles\r\n            $(document).on('click', '.wpca-password-toggle', this.handlePasswordToggle.bind(this));\r\n        },\r\n        \r\n        /**\r\n         * Initialize login form\r\n         */\r\n        initLoginForm: function() {\r\n            // Add visual enhancements to login form\r\n            const $loginForm = $('#wpca-login-form');\r\n            if ($loginForm.length) {\r\n                $loginForm.addClass('wpca-login-form-enhanced');\r\n            }\r\n        },\r\n        \r\n        /**\r\n         * Handle login form submission\r\n         * @param {Event} e - The submit event\r\n         */\r\n        handleLoginSubmit: function(e) {\r\n            const $form = $(e.currentTarget);\r\n            const $submitBtn = $form.find('input[type="submit"]');\r\n            \r\n            if ($submitBtn.length) {\r\n                $submitBtn.prop('disabled', true).val($submitBtn.data('loading-text') || 'Logging in...');\r\n            }\r\n        },\r\n        \r\n        /**\r\n         * Handle password visibility toggles\r\n         * @param {Event} e - The click event\r\n         */\r\n        handlePasswordToggle: function(e) {\r\n            e.preventDefault();\r\n            \r\n            const $toggle = $(e.currentTarget);\r\n            const $passwordField = $toggle.prev('input[type="password"]');\r\n            \r\n            if ($passwordField.length) {\r\n                const type = $passwordField.attr('type');\r\n                const newType = type === 'password' ? 'text' : 'password';\r\n                const newIcon = type === 'password' ? 'hide' : 'show';\r\n                \r\n                $passwordField.attr('type', newType);\r\n                $toggle.text($toggle.data(newIcon + '-text') || (newType === 'password' ? 'Show' : 'Hide'));\r\n            }\r\n        }\r\n    };\r\n    \r\n    // Initialize login functionality when DOM is ready\r\n    $(document).ready(function() {\r\n        WPCALogin.init();\r\n    });\r\n    \r\n    // Expose to global scope for potential external use\r\n    window.WPCALogin = WPCALogin;\r\n})(jQuery);\r\n
+/**
+ * WP Clean Admin Login JavaScript
+ *
+ * @package WPCA
+ * @version 1.8.0
+ * @author Sut
+ * @author URI: https://github.com/sutchan
+ * @since 1.7.15
+ */
+// Use IIFE to encapsulate the login functionality
+(function($) {
+    'use strict';
+    
+    /**
+     * Login functionality for WPCA
+     */
+    const WPCALogin = {
+        /**
+         * Initialize login functionality
+         */
+        init: function() {
+            this.bindEvents();
+            this.initLoginForm();
+        },
+        
+        /**
+         * Bind events for login
+         */
+        bindEvents: function() {
+            // Handle login form submission
+            $(document).on('submit', '#wpca-login-form', this.handleLoginSubmit.bind(this));
+            
+            // Handle password visibility toggles
+            $(document).on('click', '.wpca-password-toggle', this.handlePasswordToggle.bind(this));
+        },
+        
+        /**
+         * Initialize login form
+         */
+        initLoginForm: function() {
+            // Add visual enhancements to login form
+            const $loginForm = $('#wpca-login-form');
+            if ($loginForm.length) {
+                $loginForm.addClass('wpca-login-form-enhanced');
+            }
+        },
+        
+        /**
+         * Handle login form submission
+         * @param {Event} e - The submit event
+         */
+        handleLoginSubmit: function(e) {
+            const $form = $(e.currentTarget);
+            const $submitBtn = $form.find('input[type="submit"]');
+            
+            if ($submitBtn.length) {
+                $submitBtn.prop('disabled', true).val($submitBtn.data('loading-text') || 'Logging in...');
+            }
+        },
+        
+        /**
+         * Handle password visibility toggles
+         * @param {Event} e - The click event
+         */
+        handlePasswordToggle: function(e) {
+            e.preventDefault();
+            
+            const $toggle = $(e.currentTarget);
+            const $passwordField = $toggle.prev('input[type="password"]');
+            
+            if ($passwordField.length) {
+                const type = $passwordField.attr('type');
+                const newType = type === 'password' ? 'text' : 'password';
+                const newIcon = type === 'password' ? 'hide' : 'show';
+                
+                $passwordField.attr('type', newType);
+                $toggle.text($toggle.data(newIcon + '-text') || (newType === 'password' ? 'Show' : 'Hide'));
+            }
+        }
+    };
+    
+    // Initialize login functionality when DOM is ready
+    $(document).ready(function() {
+        WPCALogin.init();
+    });
+    
+    // Expose to global scope for potential external use
+    window.WPCALogin = WPCALogin;
+})(jQuery);
+

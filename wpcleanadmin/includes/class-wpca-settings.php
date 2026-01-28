@@ -295,7 +295,7 @@ class Settings {
                                 <input type="checkbox" name="wpca_settings[menu][menu_items][<?php echo \esc_attr( $menu_item['slug'] ); ?>]" value="1" <?php echo ( isset( $menu_items_settings[$menu_item['slug']] ) && $menu_items_settings[$menu_item['slug']] ) ? 'checked="checked"' : ''; ?> />
                                 <label><?php echo \esc_html( $menu_item['title'] ); ?></label>
                                 <span class="wpca-menu-item-slug"><?php echo \esc_html( $menu_item['slug'] ); ?></span>
-                                <span class="wpca-menu-item-toggle">▼</span>
+                                <span class="wpca-menu-item-toggle">鈻?/span>
                             </div>
                             
                             <?php if ( ! empty( $menu_item['submenu'] ) ) : ?>
@@ -327,7 +327,7 @@ class Settings {
                 <div class="wpca-menu-order-list" id="wpca-menu-order-list">
                     <?php foreach ( $menu_items as $menu_item ) : ?>
                         <div class="wpca-menu-order-item" data-menu-slug="<?php echo \esc_attr( $menu_item['slug'] ); ?>">
-                            <span class="wpca-menu-order-handle">☰</span>
+                            <span class="wpca-menu-order-handle">鈽?/span>
                             <span class="wpca-menu-order-title"><?php echo \esc_html( $menu_item['title'] ); ?></span>
                             <input type="hidden" name="wpca_settings[menu][menu_order][]" value="<?php echo \esc_attr( $menu_item['slug'] ); ?>" />
                         </div>
@@ -857,7 +857,7 @@ class Settings {
             }
             
             .wpca-settings-section h3:after {
-                content: '▼';
+                content: '鈻?;
                 font-size: 12px;
                 color: #666;
                 transition: transform 0.3s ease;
@@ -1094,3 +1094,4 @@ class Settings {
         }
     }
 }
+

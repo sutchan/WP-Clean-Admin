@@ -54,7 +54,7 @@ class Performance {
      */
     public function init(): void {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Apply performance optimizations based on settings
         if ( isset( $settings['performance'] ) ) {
@@ -164,7 +164,7 @@ class Performance {
     public function disable_rest_api_authentication( $result ) {
         if ( function_exists( '\is_user_logged_in' ) && ! \is_user_logged_in() ) {
             if ( class_exists( '\WP_Error' ) ) {
-                return new \WP_Error( 'rest_not_logged_in', \__( 'REST API is disabled for non-authenticated users', WPCA_TEXT_DOMAIN ), array( 'status' => 401 ) );
+                return new \WP_Error( 'rest_not_logged_in', \__( 'REST API is disabled for non-authenticated users', \WPCA_TEXT_DOMAIN ), array( 'status' => 401 ) );
             }
         }
         return $result;
@@ -227,7 +227,7 @@ class Performance {
     public function clear_cache() {
         $results = array(
             'success' => true,
-            'message' => \__( 'Cache cleared successfully', WPCA_TEXT_DOMAIN ),
+            'message' => \__( 'Cache cleared successfully', \WPCA_TEXT_DOMAIN ),
             'caches' => array()
         );
         
@@ -235,7 +235,7 @@ class Performance {
         if ( function_exists( '\wp_cache_flush' ) ) {
             \wp_cache_flush();
             $results['caches'][] = array(
-                'name' => \__( 'WordPress Object Cache', WPCA_TEXT_DOMAIN ),
+                'name' => \__( 'WordPress Object Cache', \WPCA_TEXT_DOMAIN ),
                 'cleared' => true
             );
         }
@@ -243,7 +243,7 @@ class Performance {
         // Clear transients
         $this->run_transient_cleanup();
         $results['caches'][] = array(
-            'name' => \__( 'Transients', WPCA_TEXT_DOMAIN ),
+            'name' => \__( 'Transients', \WPCA_TEXT_DOMAIN ),
             'cleared' => true
         );
         
@@ -251,7 +251,7 @@ class Performance {
         if ( function_exists( '\opcache_reset' ) ) {
             \opcache_reset();
             $results['caches'][] = array(
-                'name' => \__( 'OPcache', WPCA_TEXT_DOMAIN ),
+                'name' => \__( 'OPcache', \WPCA_TEXT_DOMAIN ),
                 'cleared' => true
             );
         }
@@ -287,8 +287,8 @@ class Performance {
         
         // Get cache status
         $stats['cache_status'] = array(
-            'object_cache' => function_exists( '\wp_cache_get' ) ? \__( 'Enabled', WPCA_TEXT_DOMAIN ) : \__( 'Disabled', WPCA_TEXT_DOMAIN ),
-            'opcache' => function_exists( '\opcache_get_status' ) ? \__( 'Enabled', WPCA_TEXT_DOMAIN ) : \__( 'Disabled', WPCA_TEXT_DOMAIN )
+            'object_cache' => function_exists( '\wp_cache_get' ) ? \__( 'Enabled', \WPCA_TEXT_DOMAIN ) : \__( 'Disabled', \WPCA_TEXT_DOMAIN ),
+            'opcache' => function_exists( '\opcache_get_status' ) ? \__( 'Enabled', \WPCA_TEXT_DOMAIN ) : \__( 'Disabled', \WPCA_TEXT_DOMAIN )
         );
         
         return $stats;
@@ -490,7 +490,8 @@ class Performance {
         }
         
         // Remove single-line comments (but not http:// URLs)
-        $js = preg_replace( '/\/\/(?![a-zA-Z]+:\/\/)(.*?)[\r\n]/', '$1', $js );
+        $js = preg_replace( '/\/\/(?![a-zA-Z]+:\/\/)(.*?)[
+]/', '$1', $js );
         
         // Remove multi-line comments
         $js = preg_replace( '/\/\*[\s\S]*?\*\//', '', $js );
@@ -831,3 +832,4 @@ class Performance {
         );
     }
 }
+

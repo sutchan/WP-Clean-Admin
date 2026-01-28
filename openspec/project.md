@@ -1,4 +1,4 @@
-﻿<!-- OPENSPEC:START -->
+<!-- OPENSPEC:START -->
 # 项目上下文
 
 ## 目的

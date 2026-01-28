@@ -413,3 +413,4 @@ class User_Roles {
         return isset( $default_capabilities[$role_slug] ) ? $default_capabilities[$role_slug] : array();
     }
 }
+

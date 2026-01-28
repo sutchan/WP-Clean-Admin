@@ -787,3 +787,4 @@ function wpca_uninstall_extension( $extension_id ) {
     $api = Extension_API::getInstance();
     return $api->uninstall_extension( $extension_id );
 }
+

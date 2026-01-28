@@ -249,3 +249,4 @@ class Dashboard {
         return $result;
     }
 }
+

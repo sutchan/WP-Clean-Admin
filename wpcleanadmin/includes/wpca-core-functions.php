@@ -364,3 +364,4 @@ function wpca_get_admin_page_title( $tab = '' ) {
     return isset( $titles[ $tab ] ) ? $titles[ $tab ] : $translate( 'WP Clean Admin', WPCA_TEXT_DOMAIN );
 }
 
+

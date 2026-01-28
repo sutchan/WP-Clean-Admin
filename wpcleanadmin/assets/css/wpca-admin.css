@@ -1,1 +1,160 @@
-/**\r\n * WP Clean Admin Main CSS\r\n *\r\n * @package WPCA\r\n */\r\n\r\n/* Admin container */\r\n.wpca-admin-container {\r\n    max-width: 1200px;\r\n    margin: 0 auto;\r\n    padding: 20px;\r\n}\r\n\r\n/* Tabs styles */\r\n.wpca-tabs {\r\n    margin: 20px 0;\r\n}\r\n\r\n.wpca-tabs-nav {\r\n    list-style: none;\r\n    padding: 0;\r\n    margin: 0 0 20px 0;\r\n    border-bottom: 1px solid #ccc;\r\n}\r\n\r\n.wpca-tabs-nav li {\r\n    display: inline-block;\r\n    margin-right: 5px;\r\n}\r\n\r\n.wpca-tabs-nav li a {\r\n    display: block;\r\n    padding: 10px 15px;\r\n    text-decoration: none;\r\n    background: #f1f1f1;\r\n    color: #333;\r\n    border: 1px solid #ccc;\r\n    border-bottom: none;\r\n    border-radius: 3px 3px 0 0;\r\n}\r\n\r\n.wpca-tabs-nav li.active a {\r\n    background: #fff;\r\n    color: #0073aa;\r\n    font-weight: bold;\r\n}\r\n\r\n.wpca-tab-content {\r\n    display: none;\r\n    padding: 20px;\r\n    border: 1px solid #ccc;\r\n    border-radius: 0 3px 3px 3px;\r\n    background: #fff;\r\n}\r\n\r\n.wpca-tab-content.active {\r\n    display: block;\r\n}\r\n\r\n/* Settings form styles */\r\n.wpca-settings-form {\r\n    background: #fff;\r\n    padding: 20px;\r\n    border: 1px solid #ccc;\r\n    border-radius: 3px;\r\n}\r\n\r\n.wpca-settings-section {\r\n    margin-bottom: 30px;\r\n}\r\n\r\n.wpca-settings-section h3 {\r\n    margin-top: 0;\r\n    padding-bottom: 10px;\r\n    border-bottom: 1px solid #eee;\r\n}\r\n\r\n.wpca-settings-field {\r\n    margin-bottom: 20px;\r\n}\r\n\r\n.wpca-settings-field label {\r\n    display: block;\r\n    margin-bottom: 5px;\r\n    font-weight: bold;\r\n}\r\n\r\n.wpca-settings-field input[type="text"],\r\n.wpca-settings-field select,\r\n.wpca-settings-field textarea {\r\n    width: 100%;\r\n    max-width: 500px;\r\n    padding: 8px;\r\n    border: 1px solid #ddd;\r\n    border-radius: 3px;\r\n}\r\n\r\n/* Button styles */\r\n.wpca-button {\r\n    display: inline-block;\r\n    padding: 8px 15px;\r\n    text-decoration: none;\r\n    background: #0073aa;\r\n    color: #fff;\r\n    border: none;\r\n    border-radius: 3px;\r\n    cursor: pointer;\r\n    transition: background 0.3s;\r\n}\r\n\r\n.wpca-button:hover {\r\n    background: #005a87;\r\n}\r\n\r\n.wpca-button-secondary {\r\n    background: #6c757d;\r\n}\r\n\r\n.wpca-button-secondary:hover {\r\n    background: #545b62;\r\n}\r\n\r\n.wpca-button-danger {\r\n    background: #dc3545;\r\n}\r\n\r\n.wpca-button-danger:hover {\r\n    background: #c82333;\r\n}\r\n\r\n/* Status messages */\r\n.wpca-status-message {\r\n    padding: 10px 15px;\r\n    margin-bottom: 20px;\r\n    border-radius: 3px;\r\n}\r\n\r\n.wpca-status-message.success {\r\n    background: #d4edda;\r\n    color: #155724;\r\n    border: 1px solid #c3e6cb;\r\n}\r\n\r\n.wpca-status-message.error {\r\n    background: #f8d7da;\r\n    color: #721c24;\r\n    border: 1px solid #f5c6cb;\r\n}\r\n\r\n.wpca-status-message.warning {\r\n    background: #fff3cd;\r\n    color: #856404;\r\n    border: 1px solid #ffeeba;\r\n}\r\n\r\n.wpca-status-message.info {\r\n    background: #d1ecf1;\r\n    color: #0c5460;\r\n    border: 1px solid #bee5eb;\r\n}\r\n
+/**
+ * WP Clean Admin Main CSS
+ *
+ * @package WPCA
+ */
+
+/* Admin container */
+.wpca-admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Tabs styles */
+.wpca-tabs {
+    margin: 20px 0;
+}
+
+.wpca-tabs-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.wpca-tabs-nav li {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.wpca-tabs-nav li a {
+    display: block;
+    padding: 10px 15px;
+    text-decoration: none;
+    background: #f1f1f1;
+    color: #333;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    border-radius: 3px 3px 0 0;
+}
+
+.wpca-tabs-nav li.active a {
+    background: #fff;
+    color: #0073aa;
+    font-weight: bold;
+}
+
+.wpca-tab-content {
+    display: none;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 0 3px 3px 3px;
+    background: #fff;
+}
+
+.wpca-tab-content.active {
+    display: block;
+}
+
+/* Settings form styles */
+.wpca-settings-form {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.wpca-settings-section {
+    margin-bottom: 30px;
+}
+
+.wpca-settings-section h3 {
+    margin-top: 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.wpca-settings-field {
+    margin-bottom: 20px;
+}
+
+.wpca-settings-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.wpca-settings-field input[type="text"],
+.wpca-settings-field select,
+.wpca-settings-field textarea {
+    width: 100%;
+    max-width: 500px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+}
+
+/* Button styles */
+.wpca-button {
+    display: inline-block;
+    padding: 8px 15px;
+    text-decoration: none;
+    background: #0073aa;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.wpca-button:hover {
+    background: #005a87;
+}
+
+.wpca-button-secondary {
+    background: #6c757d;
+}
+
+.wpca-button-secondary:hover {
+    background: #545b62;
+}
+
+.wpca-button-danger {
+    background: #dc3545;
+}
+
+.wpca-button-danger:hover {
+    background: #c82333;
+}
+
+/* Status messages */
+.wpca-status-message {
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    border-radius: 3px;
+}
+
+.wpca-status-message.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.wpca-status-message.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.wpca-status-message.warning {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+.wpca-status-message.info {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}

@@ -159,3 +159,4 @@ class i18n {
         return ( function_exists( $func ) ? $func() : false );
     }
 }
+

@@ -407,7 +407,7 @@ class Helpers {
             E_USER_ERROR => 'USER_ERROR',
             E_USER_WARNING => 'USER_WARNING',
             E_USER_NOTICE => 'USER_NOTICE',
-            // E_STRICT 常量已在 PHP 7.4 起被弃用，移除映射以避免警告
+            // E_STRICT 甯搁噺宸插湪 PHP 7.4 璧疯寮冪敤锛岀Щ闄ゆ槧灏勪互閬垮厤璀﹀憡
             E_RECOVERABLE_ERROR => 'RECOVERABLE_ERROR',
             E_DEPRECATED => 'DEPRECATED',
             E_USER_DEPRECATED => 'USER_DEPRECATED',
@@ -602,3 +602,4 @@ class Helpers {
         );
     }
 }
+

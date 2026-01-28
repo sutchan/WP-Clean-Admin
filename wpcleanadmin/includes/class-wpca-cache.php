@@ -532,3 +532,4 @@ class Cache {
         return $this->cache_expiration;
     }
 }
+
