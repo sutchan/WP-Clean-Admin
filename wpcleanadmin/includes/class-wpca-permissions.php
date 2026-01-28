@@ -66,9 +66,9 @@ class Permissions {
      * @return array Modified capabilities
      * @uses wpca_get_settings() To retrieve plugin settings
      */
-    public function filter_user_capabilities( $allcaps, $caps, $args ) {
+    public function filter_user_capabilities( $allcaps ) {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Apply permission filters based on settings
         if ( isset( $settings['permissions'] ) ) {
@@ -122,7 +122,7 @@ class Permissions {
         }
         
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Check if feature is restricted
         if ( isset( $settings['permissions']['feature_restrictions'] ) && isset( $settings['permissions']['feature_restrictions'][$feature] ) ) {
@@ -174,7 +174,7 @@ class Permissions {
         $roles = $user->roles;
         
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Get feature permissions
         $feature_permissions = array();
@@ -197,7 +197,7 @@ class Permissions {
      */
     public function restrict_admin_access() {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Check if admin access restriction is enabled
         if ( isset( $settings['permissions']['restrict_admin_access'] ) && $settings['permissions']['restrict_admin_access'] ) {
@@ -217,7 +217,7 @@ class Permissions {
      */
     public function restrict_specific_admin_pages() {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Check if specific admin page restriction is enabled
         if ( isset( $settings['permissions']['restrict_specific_pages'] ) && $settings['permissions']['restrict_specific_pages'] ) {

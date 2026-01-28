@@ -61,7 +61,7 @@ class Resources {
      */
     public function optimize_frontend_resources(): void {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Apply frontend resource optimizations based on settings
         if ( isset( $settings['resources'] ) ) {
@@ -109,7 +109,7 @@ class Resources {
      */
     public function optimize_admin_resources(): void {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Apply admin resource optimizations based on settings
         if ( isset( $settings['resources'] ) ) {
@@ -145,7 +145,7 @@ class Resources {
     public function disable_rest_api( $result ) {
         if ( function_exists( 'is_user_logged_in' ) && ! \is_user_logged_in() ) {
             if ( class_exists( 'WP_Error' ) ) {
-                return new \WP_Error( 'rest_not_logged_in', \__( 'REST API is disabled for non-authenticated users', WPCA_TEXT_DOMAIN ), array( 'status' => 401 ) );
+                return new \WP_Error( 'rest_not_logged_in', \__( 'REST API is disabled for non-authenticated users', \WPCA_TEXT_DOMAIN ), array( 'status' => 401 ) );
             }
         }
         return $result;
@@ -170,8 +170,8 @@ class Resources {
         $usage['php_version'] = PHP_VERSION;
         
         // Get WordPress version
-        if ( defined( 'WP_VERSION' ) ) {
-            $usage['wp_version'] = WP_VERSION;
+        if ( defined( '\WP_VERSION' ) ) {
+            $usage['wp_version'] = \WP_VERSION;
         }
         
         // Get active plugins count
@@ -189,7 +189,7 @@ class Resources {
      * @return array Resource optimization status
      */
     public function get_optimization_status(): array {
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         return array(
             'emojis_disabled' => isset( $settings['resources']['disable_emojis'] ) ? $settings['resources']['disable_emojis'] : false,

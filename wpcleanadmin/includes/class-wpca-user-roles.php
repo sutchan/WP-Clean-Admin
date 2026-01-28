@@ -157,12 +157,12 @@ class User_Roles {
     public function create_role( string $role_slug, string $role_name, array $capabilities = array() ): array {
         $result = array(
             'success' => false,
-            'message' => \__( 'Failed to create role', WPCA_TEXT_DOMAIN )
+            'message' => \__( 'Failed to create role', \WPCA_TEXT_DOMAIN )
         );
         
         // Check if role already exists
         if ( function_exists( 'get_role' ) && \get_role( $role_slug ) ) {
-            $result['message'] = \__( 'Role already exists', WPCA_TEXT_DOMAIN );
+            $result['message'] = \__( 'Role already exists', \WPCA_TEXT_DOMAIN );
             return $result;
         }
         
@@ -171,7 +171,7 @@ class User_Roles {
         
         if ( $role ) {
             $result['success'] = true;
-            $result['message'] = \__( 'Role created successfully', WPCA_TEXT_DOMAIN );
+            $result['message'] = \__( 'Role created successfully', \WPCA_TEXT_DOMAIN );
         }
         
         return $result;
@@ -186,19 +186,19 @@ class User_Roles {
     public function delete_role( $role_slug ) {
         $result = array(
             'success' => false,
-            'message' => \__( 'Failed to delete role', WPCA_TEXT_DOMAIN )
+            'message' => \__( 'Failed to delete role', \WPCA_TEXT_DOMAIN )
         );
         
         // Check if role exists
         if ( ! ( function_exists( 'get_role' ) && \get_role( $role_slug ) ) ) {
-            $result['message'] = \__( 'Role does not exist', WPCA_TEXT_DOMAIN );
+            $result['message'] = \__( 'Role does not exist', \WPCA_TEXT_DOMAIN );
             return $result;
         }
         
         // Delete role
         if ( function_exists( 'remove_role' ) && \remove_role( $role_slug ) ) {
             $result['success'] = true;
-            $result['message'] = \__( 'Role deleted successfully', WPCA_TEXT_DOMAIN );
+            $result['message'] = \__( 'Role deleted successfully', \WPCA_TEXT_DOMAIN );
         }
         
         return $result;
@@ -215,19 +215,19 @@ class User_Roles {
     public function duplicate_role( $role_slug, $new_role_name, $new_role_slug ) {
         $result = array(
             'success' => false,
-            'message' => \__( 'Failed to duplicate role', WPCA_TEXT_DOMAIN )
+            'message' => \__( 'Failed to duplicate role', \WPCA_TEXT_DOMAIN )
         );
         
         // Check if source role exists
         $source_role = ( function_exists( 'get_role' ) ? \get_role( $role_slug ) : false );
         if ( ! $source_role ) {
-            $result['message'] = \__( 'Source role does not exist', WPCA_TEXT_DOMAIN );
+            $result['message'] = \__( 'Source role does not exist', \WPCA_TEXT_DOMAIN );
             return $result;
         }
         
         // Check if new role already exists
         if ( function_exists( 'get_role' ) && \get_role( $new_role_slug ) ) {
-            $result['message'] = \__( 'New role already exists', WPCA_TEXT_DOMAIN );
+            $result['message'] = \__( 'New role already exists', \WPCA_TEXT_DOMAIN );
             return $result;
         }
         
@@ -236,7 +236,7 @@ class User_Roles {
         
         if ( $new_role ) {
             $result['success'] = true;
-            $result['message'] = \__( 'Role duplicated successfully', WPCA_TEXT_DOMAIN );
+            $result['message'] = \__( 'Role duplicated successfully', \WPCA_TEXT_DOMAIN );
         }
         
         return $result;

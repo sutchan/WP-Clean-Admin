@@ -208,7 +208,7 @@ class Helpers {
         }
         
         if ( function_exists( 'plugin_basename' ) ) {
-            return \is_plugin_active_for_network( \plugin_basename( WPCA_PLUGIN_DIR . 'wp-clean-admin.php' ) );
+            return \is_plugin_active_for_network( \plugin_basename( \WPCA_PLUGIN_DIR . 'wp-clean-admin.php' ) );
         }
         
         return false;
@@ -354,18 +354,18 @@ class Helpers {
      */
     public function get_error_message( $error_code ) {
         $messages = array(
-            WPCA_Errors::ERROR_NONE => __( 'No error occurred.', WPCA_TEXT_DOMAIN ),
-            WPCA_Errors::ERROR_DATABASE => __( 'A database error occurred. Please check the logs for more details.', WPCA_TEXT_DOMAIN ),
-            WPCA_Errors::ERROR_PERMISSION => __( 'You do not have permission to perform this action.', WPCA_TEXT_DOMAIN ),
-            WPCA_Errors::ERROR_INVALID_INPUT => __( 'Invalid input provided. Please check your entries and try again.', WPCA_TEXT_DOMAIN ),
-            WPCA_Errors::ERROR_FILE_OPERATION => __( 'A file operation failed. Please check file permissions and try again.', WPCA_TEXT_DOMAIN ),
-            WPCA_Errors::ERROR_AJAX => __( 'An AJAX request failed. Please try again.', WPCA_TEXT_DOMAIN ),
-            WPCA_Errors::ERROR_VALIDATION => __( 'Settings validation failed. Please check your entries.', WPCA_TEXT_DOMAIN ),
-            WPCA_Errors::ERROR_AUTH => __( 'Authentication failed. Please log in again.', WPCA_TEXT_DOMAIN ),
-            WPCA_Errors::ERROR_UNKNOWN => __( 'An unknown error occurred. Please try again.', WPCA_TEXT_DOMAIN ),
+            \WPCA_Errors::ERROR_NONE => \__( 'No error occurred.', \WPCA_TEXT_DOMAIN ),
+            \WPCA_Errors::ERROR_DATABASE => \__( 'A database error occurred. Please check the logs for more details.', \WPCA_TEXT_DOMAIN ),
+            \WPCA_Errors::ERROR_PERMISSION => \__( 'You do not have permission to perform this action.', \WPCA_TEXT_DOMAIN ),
+            \WPCA_Errors::ERROR_INVALID_INPUT => \__( 'Invalid input provided. Please check your entries and try again.', \WPCA_TEXT_DOMAIN ),
+            \WPCA_Errors::ERROR_FILE_OPERATION => \__( 'A file operation failed. Please check file permissions and try again.', \WPCA_TEXT_DOMAIN ),
+            \WPCA_Errors::ERROR_AJAX => \__( 'An AJAX request failed. Please try again.', \WPCA_TEXT_DOMAIN ),
+            \WPCA_Errors::ERROR_VALIDATION => \__( 'Settings validation failed. Please check your entries.', \WPCA_TEXT_DOMAIN ),
+            \WPCA_Errors::ERROR_AUTH => \__( 'Authentication failed. Please log in again.', \WPCA_TEXT_DOMAIN ),
+            \WPCA_Errors::ERROR_UNKNOWN => \__( 'An unknown error occurred. Please try again.', \WPCA_TEXT_DOMAIN ),
         );
         
-        return isset( $messages[ $error_code ] ) ? $messages[ $error_code ] : $messages[ WPCA_Errors::ERROR_UNKNOWN ];
+        return isset( $messages[ $error_code ] ) ? $messages[ $error_code ] : $messages[ \WPCA_Errors::ERROR_UNKNOWN ];
     }
     
     /**
@@ -378,8 +378,8 @@ class Helpers {
      * @return void
      */
     public function register_error_handler() {
-        set_error_handler( array( $this, 'custom_error_handler' ) );
-        set_exception_handler( array( $this, 'custom_exception_handler' ) );
+        \set_error_handler( array( $this, 'custom_error_handler' ) );
+        \set_exception_handler( array( $this, 'custom_exception_handler' ) );
     }
     
     /**
@@ -481,7 +481,7 @@ class Helpers {
      */
     public function handle_validation_errors( $errors = array(), $message = '' ) {
         if ( empty( $message ) ) {
-            $message = __( 'Validation failed. Please check your entries.', \WPCA_TEXT_DOMAIN );
+            $message = \__( 'Validation failed. Please check your entries.', \WPCA_TEXT_DOMAIN );
         }
         
         return $this->create_error_response(
@@ -504,7 +504,7 @@ class Helpers {
         foreach ( $required as $param_name ) {
             if ( ! isset( $params[ $param_name ] ) || empty( $params[ $param_name ] ) ) {
                 $errors[ $param_name ] = sprintf(
-                    __( 'The %s parameter is required.', \WPCA_TEXT_DOMAIN ),
+                    \__( 'The %s parameter is required.', \WPCA_TEXT_DOMAIN ),
                     $param_name
                 );
             }
@@ -523,7 +523,7 @@ class Helpers {
     public function validate_ajax_nonce( $nonce, $action = 'wpca_ajax_nonce' ) {
         if ( function_exists( '\wp_verify_nonce' ) && ! \wp_verify_nonce( $nonce, $action ) ) {
             $this->handle_ajax_error(
-                __( 'Security verification failed. Please try again.', \WPCA_TEXT_DOMAIN ),
+                \__( 'Security verification failed. Please try again.', \WPCA_TEXT_DOMAIN ),
                 \WPCA_Errors::ERROR_AUTH
             );
         }

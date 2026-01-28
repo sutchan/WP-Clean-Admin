@@ -1072,3 +1072,190 @@ function opcache_reset() {
     return false;
 }
 
+/**
+ * Set transient
+ *
+ * @param string $transient Transient name
+ * @param mixed $value Transient value
+ * @param int $expiration Expiration in seconds
+ * @return bool True on success, false on failure
+ */
+function set_transient( $transient, $value, $expiration = 0 ) {
+    return false;
+}
+
+/**
+ * Get transient
+ *
+ * @param string $transient Transient name
+ * @return mixed Transient value or false if not set
+ */
+function get_transient( $transient ) {
+    return false;
+}
+
+/**
+ * Check if SSL is being used
+ *
+ * @return bool True if SSL is being used, false otherwise
+ */
+function is_ssl() {
+    return false;
+}
+
+/**
+ * Sanitize HTML content for allowed HTML tags
+ *
+ * @param string $data Content to sanitize
+ * @return string Sanitized content
+ */
+function wp_kses_post( $data ) {
+    return '';
+}
+
+/**
+ * Sanitize HTML class name
+ *
+ * @param string $class Class name to sanitize
+ * @return string Sanitized class name
+ */
+function sanitize_html_class( $class ) {
+    return '';
+}
+
+/**
+ * Update user meta
+ *
+ * @param int $user_id User ID
+ * @param string $meta_key Meta key
+ * @param mixed $meta_value Meta value
+ * @return bool True on success, false on failure
+ */
+function update_user_meta( $user_id, $meta_key, $meta_value ) {
+    return false;
+}
+
+/**
+ * Get user meta
+ *
+ * @param int $user_id User ID
+ * @param string $meta_key Meta key
+ * @param bool $single Whether to return single value
+ * @return mixed User meta value
+ */
+function get_user_meta( $user_id, $meta_key = '', $single = false ) {
+    return false;
+}
+
+/**
+ * Get user data
+ *
+ * @param int $user_id User ID
+ * @return object|false User data object or false if not found
+ */
+function get_userdata( $user_id ) {
+    return false;
+}
+
+/**
+ * Get login URL
+ *
+ * @param string $redirect Redirect URL
+ * @param bool $force_reauth Whether to force reauthentication
+ * @return string Login URL
+ */
+function wp_login_url( $redirect = '', $force_reauth = false ) {
+    return '';
+}
+
+/**
+ * Add user role
+ *
+ * @param string $role Role name
+ * @param string $display_name Display name
+ * @param array $capabilities Capabilities
+ * @return object|null Role object or null if role already exists
+ */
+function add_role( $role, $display_name, $capabilities = array() ) {
+    return null;
+}
+
+/**
+ * Get user role
+ *
+ * @param string $role Role name
+ * @return object|null Role object or null if not found
+ */
+function get_role( $role ) {
+    return null;
+}
+
+/**
+ * Remove user role
+ *
+ * @param string $role Role name
+ * @return bool True on success, false on failure
+ */
+function remove_role( $role ) {
+    return false;
+}
+
+/**
+ * WP_Roles class for IDE support
+ */
+class WP_Roles {
+    /**
+     * Get role
+     *
+     * @param string $role Role name
+     * @return object|false Role object or false if not found
+     */
+    public function get_role( $role ) {
+        return false;
+    }
+}
+
+/**
+ * WPCA_Errors class for IDE support
+ */
+class WPCA_Errors {
+    /**
+     * Add error
+     *
+     * @param string $code Error code
+     * @param string $message Error message
+     */
+    public function add( $code, $message ) {
+    }
+    
+    /**
+     * Get errors
+     *
+     * @param string $code Error code
+     * @return array Errors
+     */
+    public function get( $code = '' ) {
+        return array();
+    }
+    
+    /**
+     * Check if error exists
+     *
+     * @param string $code Error code
+     * @return bool True if error exists, false otherwise
+     */
+    public function has( $code = '' ) {
+        return false;
+    }
+    
+    /**
+     * Get error messages
+     *
+     * @param string $code Error code
+     * @return array Error messages
+     */
+    public function get_error_messages( $code = '' ) {
+        return array();
+    }
+}
+

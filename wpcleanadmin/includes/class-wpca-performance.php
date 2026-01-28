@@ -103,16 +103,16 @@ class Performance {
     public function disable_emojis() {
         // Remove emoji actions
         if ( function_exists( 'remove_action' ) ) {
-            remove_action( 'admin_print_styles', 'print_emoji_styles' );
-            remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
-            remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
-            remove_action( 'wp_print_styles', 'print_emoji_styles' );
+            \remove_action( 'admin_print_styles', 'print_emoji_styles' );
+            \remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+            \remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+            \remove_action( 'wp_print_styles', 'print_emoji_styles' );
         }
         
         if ( function_exists( 'remove_filter' ) ) {
-            remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
-            remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
-            remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
+            \remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
+            \remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
+            \remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
         }
         
         // Disable emoji TinyMCE plugin
@@ -142,8 +142,8 @@ class Performance {
         
         // Remove XML-RPC headers
         if ( function_exists( 'remove_action' ) ) {
-            remove_action( 'wp_head', 'rsd_link' );
-            remove_action( 'wp_head', 'wlwmanifest_link' );
+            \remove_action( 'wp_head', 'rsd_link' );
+            \remove_action( 'wp_head', 'wlwmanifest_link' );
         }
     }
     
@@ -176,8 +176,8 @@ class Performance {
     public function disable_heartbeat() {
         // Remove heartbeat actions
         if ( function_exists( 'remove_action' ) ) {
-            remove_action( 'admin_enqueue_scripts', 'wp_enqueue_heartbeat' );
-            remove_action( 'wp_enqueue_scripts', 'wp_enqueue_heartbeat' );
+            \remove_action( 'admin_enqueue_scripts', 'wp_enqueue_heartbeat' );
+            \remove_action( 'wp_enqueue_scripts', 'wp_enqueue_heartbeat' );
         }
     }
     
@@ -299,7 +299,7 @@ class Performance {
      */
     public function optimize_resources() {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         if ( isset( $settings['performance'] ) ) {
             // Minify CSS and JS
@@ -324,7 +324,7 @@ class Performance {
      */
     public function minify_css( $tag ) {
         // Check if minification is enabled
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         if ( ! isset( $settings['performance']['minify_css'] ) || ! $settings['performance']['minify_css'] ) {
             return $tag;
         }
@@ -367,7 +367,7 @@ class Performance {
         
         if ( file_exists( $full_path ) ) {
             // Build the full URL
-            $site_url = function_exists( '\site_url' ) ? \site_url() : get_option( 'siteurl' );
+            $site_url = function_exists( '\site_url' ) ? \site_url() : \get_option( 'siteurl' );
             $minified_url = $site_url . $minified_path;
             
             // Preserve query string
@@ -418,7 +418,7 @@ class Performance {
      */
     public function minify_js( $tag ) {
         // Check if minification is enabled
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         if ( ! isset( $settings['performance']['minify_js'] ) || ! $settings['performance']['minify_js'] ) {
             return $tag;
         }
@@ -461,7 +461,7 @@ class Performance {
         
         if ( file_exists( $full_path ) ) {
             // Build the full URL
-            $site_url = function_exists( '\site_url' ) ? \site_url() : get_option( 'siteurl' );
+            $site_url = function_exists( '\site_url' ) ? \site_url() : \get_option( 'siteurl' );
             $minified_url = $site_url . $minified_path;
             
             // Preserve query string
@@ -515,7 +515,7 @@ class Performance {
      */
     public function combine_css( $uri ) {
         // Check if combination is enabled
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         if ( ! isset( $settings['performance']['combine_css'] ) || ! $settings['performance']['combine_css'] ) {
             return $uri;
         }
@@ -591,7 +591,7 @@ class Performance {
      */
     public function combine_js( $uri ) {
         // Check if combination is enabled
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         if ( ! isset( $settings['performance']['combine_js'] ) || ! $settings['performance']['combine_js'] ) {
             return $uri;
         }
@@ -682,7 +682,7 @@ class Performance {
      * @return array Modified resource hints
      */
     public function add_resource_hints( $hints, $type ) {
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         if ( ! isset( $settings['performance']['resource_preloading'] ) || ! $settings['performance']['resource_preloading'] ) {
             return $hints;
@@ -821,7 +821,7 @@ class Performance {
      * @return array Preloading status information
      */
     public function get_preloading_status() {
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         return array(
             'enabled' => isset( $settings['performance']['resource_preloading'] ) ? $settings['performance']['resource_preloading'] : false,

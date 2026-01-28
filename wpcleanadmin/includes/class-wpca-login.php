@@ -110,7 +110,7 @@ class Login {
      */
     private function init_captcha() {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Check if CAPTCHA is enabled
         if ( isset( $settings['login'] ) && isset( $settings['login']['login_captcha'] ) && $settings['login']['login_captcha'] ) {
@@ -203,13 +203,13 @@ class Login {
         ?>        
         <div class="wpca-captcha-form">
             <p>
-                <label for="wpca_captcha"><?php echo \esc_html( \__( 'CAPTCHA', WPCA_TEXT_DOMAIN ) ); ?></label>
+                <label for="wpca_captcha"><?php echo \esc_html( \__( 'CAPTCHA', \WPCA_TEXT_DOMAIN ) ); ?></label>
                 <br />
                 <img src="<?php echo \esc_url( $captcha_url ); ?>" alt="CAPTCHA" class="wpca-captcha-image" />
                 <br />
-                <input type="text" name="wpca_captcha" id="wpca_captcha" class="input" value="" size="20" maxlength="6" autocomplete="off" placeholder="<?php echo \esc_attr( \__( 'Enter CAPTCHA code', WPCA_TEXT_DOMAIN ) ); ?>" />
+                <input type="text" name="wpca_captcha" id="wpca_captcha" class="input" value="" size="20" maxlength="6" autocomplete="off" placeholder="<?php echo \esc_attr( \__( 'Enter CAPTCHA code', \WPCA_TEXT_DOMAIN ) ); ?>" />
                 <br />
-                <small><a href="<?php echo \esc_url( $current_url ); ?>" class="wpca-refresh-captcha"><?php echo \esc_html( \__( 'Refresh CAPTCHA', WPCA_TEXT_DOMAIN ) ); ?></a></small>
+                <small><a href="<?php echo \esc_url( $current_url ); ?>" class="wpca-refresh-captcha"><?php echo \esc_html( \__( 'Refresh CAPTCHA', \WPCA_TEXT_DOMAIN ) ); ?></a></small>
             </p>
         </div>
         <?php
@@ -244,7 +244,7 @@ class Login {
             
             // Verify CAPTCHA code
             if ( empty( $submitted_code ) || strtoupper( $submitted_code ) !== strtoupper( $stored_code ) ) {
-                return new \WP_Error( 'invalid_captcha', \__( 'Invalid CAPTCHA code. Please try again.', WPCA_TEXT_DOMAIN ) );
+                return new \WP_Error( 'invalid_captcha', \__( 'Invalid CAPTCHA code. Please try again.', \WPCA_TEXT_DOMAIN ) );
             }
         }
         
@@ -256,7 +256,7 @@ class Login {
      */
     private function init_two_factor_auth() {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Check if two-factor authentication is enabled
         if ( isset( $settings['security'] ) && isset( $settings['security']['two_factor_auth'] ) && $settings['security']['two_factor_auth'] ) {
@@ -281,7 +281,7 @@ class Login {
      */
     public function enqueue_login_scripts() {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Enqueue custom login styles if enabled
         if ( isset( $settings['login'] ) && isset( $settings['login']['custom_login_styles'] ) && $settings['login']['custom_login_styles'] ) {
@@ -316,7 +316,7 @@ class Login {
      */
     public function filter_login_header_url( $url ) {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Change login header URL if custom URL is set
         if ( isset( $settings['login'] ) && isset( $settings['login']['login_header_url'] ) && ! empty( $settings['login']['login_header_url'] ) ) {
@@ -334,7 +334,7 @@ class Login {
      */
     public function filter_login_header_title( string $title ): string {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Change login header title if custom title is set
         if ( isset( $settings['login'] ) && isset( $settings['login']['login_header_title'] ) && ! empty( $settings['login']['login_header_title'] ) ) {
@@ -349,7 +349,7 @@ class Login {
      */
     public function add_login_footer_content() {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Add custom footer content if set
         if ( isset( $settings['login'] ) && isset( $settings['login']['login_footer_content'] ) && ! empty( $settings['login']['login_footer_content'] ) ) {
@@ -365,7 +365,7 @@ class Login {
      */
     public function filter_login_body_class( $classes ) {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Add custom body class if set
         if ( isset( $settings['login'] ) && isset( $settings['login']['login_body_class'] ) && ! empty( $settings['login']['login_body_class'] ) ) {
@@ -380,7 +380,7 @@ class Login {
      */
     public function customize_login_page(): void {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Customize login page based on settings
         if ( isset( $settings['login'] ) && function_exists( 'add_action' ) ) {
@@ -401,7 +401,7 @@ class Login {
      */
     public function add_custom_login_logo(): void {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         if ( isset( $settings['login'] ) && isset( $settings['login']['login_logo_url'] ) && ! empty( $settings['login']['login_logo_url'] ) ) {
             $logo_url = ( function_exists( 'esc_url' ) ? \esc_url( $settings['login']['login_logo_url'] ) : $settings['login']['login_logo_url'] );
@@ -424,7 +424,7 @@ class Login {
      */
     public function add_custom_login_background() {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         if ( isset( $settings['login'] ) && isset( $settings['login']['login_background_url'] ) && ! empty( $settings['login']['login_background_url'] ) ) {
             $background_url = ( function_exists( 'esc_url' ) ? \esc_url( $settings['login']['login_background_url'] ) : $settings['login']['login_background_url'] );
@@ -448,7 +448,7 @@ class Login {
      */
     public function restrict_login_attempts(): void {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Restrict login attempts if enabled
         if ( isset( $settings['login'] ) && isset( $settings['login']['restrict_login_attempts'] ) && $settings['login']['restrict_login_attempts'] ) {
@@ -470,7 +470,7 @@ class Login {
      */
     public function check_login_attempts( $user, $username, $password ) {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Get max login attempts
         $max_attempts = isset( $settings['login']['max_login_attempts'] ) ? intval( $settings['login']['max_login_attempts'] ) : 5;
@@ -486,7 +486,7 @@ class Login {
         
         // Check if user is locked out
         if ( $login_attempts >= $max_attempts ) {
-            return new \WP_Error( 'too_many_attempts', \__( 'Too many login attempts. Please try again later.', WPCA_TEXT_DOMAIN ) );
+            return new \WP_Error( 'too_many_attempts', \__( 'Too many login attempts. Please try again later.', \WPCA_TEXT_DOMAIN ) );
         }
         
         return $user;
@@ -566,11 +566,11 @@ class Login {
      * @return string QR code URL
      */
     public function get_qr_code_url( $user_id ) {
-        if ( ! function_exists( '\get_userdata' ) ) {
-            return '';
+        if ( function_exists( '\get_userdata' ) ) {
+            $user = \get_userdata( $user_id );
+        } else {
+            $user = false;
         }
-        
-        $user = \get_userdata( $user_id );
         if ( ! $user ) {
             return '';
         }
@@ -693,10 +693,10 @@ class Login {
         if ( isset( $_REQUEST['wpca_two_factor'] ) && $_REQUEST['wpca_two_factor'] === '1' ) {
             ?>
             <div class="wpca-two-factor-form">
-                <h2><?php echo \esc_html( \__( 'Two-Factor Authentication', WPCA_TEXT_DOMAIN ) ); ?></h2>
-                <p><?php echo \esc_html( \__( 'Please enter the 6-digit code from your authenticator app.', WPCA_TEXT_DOMAIN ) ); ?></p>
+                <h2><?php echo \esc_html( \__( 'Two-Factor Authentication', \WPCA_TEXT_DOMAIN ) ); ?></h2>
+                <p><?php echo \esc_html( \__( 'Please enter the 6-digit code from your authenticator app.', \WPCA_TEXT_DOMAIN ) ); ?></p>
                 
-                <label for="wpca_two_factor_code"><?php echo \esc_html( \__( 'Authentication Code', WPCA_TEXT_DOMAIN ) ); ?></label>
+                <label for="wpca_two_factor_code"><?php echo \esc_html( \__( 'Authentication Code', \WPCA_TEXT_DOMAIN ) ); ?></label>
                 <input type="text" name="wpca_two_factor_code" id="wpca_two_factor_code" class="input" value="" size="20" maxlength="6" autocomplete="off" placeholder="123456" />
                 
                 <input type="hidden" name="wpca_user_id" value="<?php echo \esc_attr( $_REQUEST['wpca_user_id'] ); ?>" />
@@ -718,7 +718,7 @@ class Login {
         if ( isset( $_POST['wpca_two_factor_code'] ) && isset( $_POST['wpca_user_id'] ) && isset( $_POST['wpca_nonce'] ) ) {
             // Verify nonce
             if ( ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['wpca_nonce'], 'wpca_two_factor' ) ) {
-                return new \WP_Error( 'invalid_nonce', \__( 'Invalid nonce.', WPCA_TEXT_DOMAIN ) );
+                return new \WP_Error( 'invalid_nonce', \__( 'Invalid nonce.', \WPCA_TEXT_DOMAIN ) );
             }
             
             // Get user ID
@@ -726,12 +726,12 @@ class Login {
             
             // Get user object
             if ( ! function_exists( '\get_userdata' ) ) {
-                return new \WP_Error( 'no_user_data', \__( 'No user data function available.', WPCA_TEXT_DOMAIN ) );
+                return new \WP_Error( 'no_user_data', \__( 'No user data function available.', \WPCA_TEXT_DOMAIN ) );
             }
             
             $user = \get_userdata( $user_id );
             if ( ! $user ) {
-                return new \WP_Error( 'invalid_user', \__( 'Invalid user.', WPCA_TEXT_DOMAIN ) );
+                return new \WP_Error( 'invalid_user', \__( 'Invalid user.', \WPCA_TEXT_DOMAIN ) );
             }
             
             // Get two-factor code
@@ -739,7 +739,7 @@ class Login {
             
             // Verify code
             if ( ! $this->verify_two_factor_code( $code, $user_id ) ) {
-                return new \WP_Error( 'invalid_code', \__( 'Invalid authentication code.', WPCA_TEXT_DOMAIN ) );
+                return new \WP_Error( 'invalid_code', \__( 'Invalid authentication code.', \WPCA_TEXT_DOMAIN ) );
             }
             
             // Code is valid, allow login
@@ -776,7 +776,7 @@ class Login {
             // Add error message
             if ( function_exists( '\add_action' ) ) {
                 \add_action( 'login_message', function() {
-                    return '<div id="login_error">' . \__( '<strong>ERROR:</strong> Invalid authentication code.', WPCA_TEXT_DOMAIN ) . '</div>';
+                    return '<div id="login_error">' . \__( '<strong>ERROR:</strong> Invalid authentication code.', \WPCA_TEXT_DOMAIN ) . '</div>';
                 } );
             }
         }

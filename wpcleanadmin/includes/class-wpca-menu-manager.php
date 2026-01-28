@@ -67,7 +67,7 @@ class Menu_Manager {
      */
     public function init() {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Apply menu optimizations based on settings
         if ( isset( $settings['menu'] ) && function_exists( 'add_action' ) ) {
@@ -226,7 +226,7 @@ class Menu_Manager {
     public function save_menu_items( $menu_items ) {
         $results = array(
             'success' => true,
-            'message' => \__( 'Menu items saved successfully', WPCA_TEXT_DOMAIN )
+            'message' => \__( 'Menu items saved successfully', \WPCA_TEXT_DOMAIN )
         );
         
         // Save menu items to options
@@ -242,7 +242,7 @@ class Menu_Manager {
      */
     public function remove_dashboard_widgets_by_settings(): void {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         if ( isset( $settings['menu']['dashboard_widgets'] ) && function_exists( '\remove_meta_box' ) ) {
             $widgets_to_remove = $settings['menu']['dashboard_widgets'];
@@ -263,7 +263,7 @@ class Menu_Manager {
      */
     public function simplify_admin_menu_by_settings() {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         if ( isset( $settings['menu'] ) && function_exists( 'add_action' ) ) {
             // Add action to customize menu
@@ -354,7 +354,7 @@ class Menu_Manager {
         $user_roles = $current_user->roles;
         
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         // Check if role-based menu restrictions are enabled
         if ( ! isset( $settings['menu']['role_based_restrictions'] ) || ! $settings['menu']['role_based_restrictions'] ) {
@@ -399,7 +399,7 @@ class Menu_Manager {
      */
     public function cleanup_admin_menu(): void {
         // Load settings
-        $settings = wpca_get_settings();
+        $settings = \wpca_get_settings();
         
         if ( isset( $settings['menu'] ) ) {
             // Remove dashboard widgets

@@ -65,7 +65,7 @@ class i18n {
         // Load plugin textdomain
         if ( function_exists( 'load_plugin_textdomain' ) && function_exists( 'plugin_basename' ) ) {
             \load_plugin_textdomain(
-                WPCA_TEXT_DOMAIN,
+                \WPCA_TEXT_DOMAIN,
                 false,
                 \dirname( \plugin_basename( __FILE__ ) ) . '/../languages/'
             );
@@ -81,9 +81,9 @@ class i18n {
      */
     public function translate( $string, $context = '' ) {
         if ( ! empty( $context ) ) {
-            return ( function_exists( '_x' ) ? \_x( $string, $context, WPCA_TEXT_DOMAIN ) : $string );
+            return ( function_exists( '_x' ) ? \_x( $string, $context, \WPCA_TEXT_DOMAIN ) : $string );
         }
-        return ( function_exists( '__' ) ? \__( $string, WPCA_TEXT_DOMAIN ) : $string );
+        return ( function_exists( '__' ) ? \__( $string, \WPCA_TEXT_DOMAIN ) : $string );
     }
     
     /**
@@ -95,7 +95,7 @@ class i18n {
      * @return string Translated string
      */
     public function translate_plural( string $single, string $plural, int $number ): string {
-        return ( function_exists( '_n' ) ? \_n( $single, $plural, $number, WPCA_TEXT_DOMAIN ) : ( $number === 1 ? $single : $plural ) );
+        return ( function_exists( '_n' ) ? \_n( $single, $plural, $number, \WPCA_TEXT_DOMAIN ) : ( $number === 1 ? $single : $plural ) );
     }
     
     /**
@@ -108,7 +108,7 @@ class i18n {
      * @return string Translated string
      */
     public function translate_plural_with_context( $single, $plural, $number, $context ) {
-        return ( function_exists( '_nx' ) ? \_nx( $single, $plural, $number, $context, WPCA_TEXT_DOMAIN ) : ( $number === 1 ? $single : $plural ) );
+        return ( function_exists( '_nx' ) ? \_nx( $single, $plural, $number, $context, \WPCA_TEXT_DOMAIN ) : ( $number === 1 ? $single : $plural ) );
     }
     
     /**
@@ -128,7 +128,7 @@ class i18n {
      */
     public function get_available_languages() {
         $func = 'get_available_languages';
-        return ( function_exists( $func ) ? $func( WPCA_PLUGIN_DIR . 'languages/' ) : array() );
+        return ( function_exists( $func ) ? $func( \WPCA_PLUGIN_DIR . 'languages/' ) : array() );
     }
     
     /**
