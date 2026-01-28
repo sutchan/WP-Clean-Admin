@@ -158,6 +158,30 @@ class Settings {
                 'wp-clean-admin',
                 'wpca_security_settings'
             );
+            
+            \add_settings_field(
+                'wpca_disable_xmlrpc',
+                \__( 'Disable XML-RPC', WPCA_TEXT_DOMAIN ),
+                array( $this, 'render_disable_xmlrpc_field' ),
+                'wp-clean-admin',
+                'wpca_security_settings'
+            );
+            
+            \add_settings_field(
+                'wpca_restrict_rest_api',
+                \__( 'Restrict REST API Access', WPCA_TEXT_DOMAIN ),
+                array( $this, 'render_restrict_rest_api_field' ),
+                'wp-clean-admin',
+                'wpca_security_settings'
+            );
+            
+            \add_settings_field(
+                'wpca_restrict_admin_access',
+                \__( 'Restrict Admin Access', WPCA_TEXT_DOMAIN ),
+                array( $this, 'render_restrict_admin_access_field' ),
+                'wp-clean-admin',
+                'wpca_security_settings'
+            );
         }
         
         // Register setting
@@ -259,6 +283,39 @@ class Settings {
         echo '<label for="wpca_hide_wp_version"> ' . \__( 'Hide WordPress version information.', WPCA_TEXT_DOMAIN ) . '</label>';
     }
     
+    public function render_disable_xmlrpc_field() {
+        $settings = array();
+        if ( function_exists( 'get_option' ) ) {
+            $settings = \get_option( 'wpca_settings', array() );
+        }
+        $disable_xmlrpc = isset( $settings['security']['disable_xmlrpc'] ) ? $settings['security']['disable_xmlrpc'] : 1;
+        
+        echo '<input type="checkbox" name="wpca_settings[security][disable_xmlrpc]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $disable_xmlrpc, 1, false ) : ( $disable_xmlrpc ? 'checked="checked"' : '' ) ) . ' />';
+        echo '<label for="wpca_disable_xmlrpc"> ' . \__( 'Disable XML-RPC functionality.', WPCA_TEXT_DOMAIN ) . '</label>';
+    }
+    
+    public function render_restrict_rest_api_field() {
+        $settings = array();
+        if ( function_exists( 'get_option' ) ) {
+            $settings = \get_option( 'wpca_settings', array() );
+        }
+        $restrict_rest_api = isset( $settings['security']['restrict_rest_api'] ) ? $settings['security']['restrict_rest_api'] : 1;
+        
+        echo '<input type="checkbox" name="wpca_settings[security][restrict_rest_api]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $restrict_rest_api, 1, false ) : ( $restrict_rest_api ? 'checked="checked"' : '' ) ) . ' />';
+        echo '<label for="wpca_restrict_rest_api"> ' . \__( 'Restrict REST API access to authenticated users only.', WPCA_TEXT_DOMAIN ) . '</label>';
+    }
+    
+    public function render_restrict_admin_access_field() {
+        $settings = array();
+        if ( function_exists( 'get_option' ) ) {
+            $settings = \get_option( 'wpca_settings', array() );
+        }
+        $restrict_admin_access = isset( $settings['security']['restrict_admin_access'] ) ? $settings['security']['restrict_admin_access'] : 1;
+        
+        echo '<input type="checkbox" name="wpca_settings[security][restrict_admin_access]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $restrict_admin_access, 1, false ) : ( $restrict_admin_access ? 'checked="checked"' : '' ) ) . ' />';
+        echo '<label for="wpca_restrict_admin_access"> ' . \__( 'Restrict admin area access to users with proper permissions.', WPCA_TEXT_DOMAIN ) . '</label>';
+    }
+    
     public function render_settings_page() {
         ?>
         <div class="wrap wpca-settings-wrap">
@@ -298,6 +355,36 @@ class Settings {
                             <?php
                             if ( function_exists( 'do_settings_sections' ) ) {
                                 // Render only general settings
+                                \do_settings_sections( 'wp-clean-admin' );
+                            }
+                            ?>
+                        </div>
+                        
+                        <!-- Cleanup Tab -->
+                        <div class="wpca-tab-content" id="wpca-tab-cleanup">
+                            <?php
+                            if ( function_exists( 'do_settings_sections' ) ) {
+                                // Render only cleanup settings
+                                \do_settings_sections( 'wp-clean-admin' );
+                            }
+                            ?>
+                        </div>
+                        
+                        <!-- Performance Tab -->
+                        <div class="wpca-tab-content" id="wpca-tab-performance">
+                            <?php
+                            if ( function_exists( 'do_settings_sections' ) ) {
+                                // Render only performance settings
+                                \do_settings_sections( 'wp-clean-admin' );
+                            }
+                            ?>
+                        </div>
+                        
+                        <!-- Security Tab -->
+                        <div class="wpca-tab-content" id="wpca-tab-security">
+                            <?php
+                            if ( function_exists( 'do_settings_sections' ) ) {
+                                // Render only security settings
                                 \do_settings_sections( 'wp-clean-admin' );
                             }
                             ?>
@@ -644,6 +731,15 @@ class Settings {
             
             // Validate hide WordPress version setting
             $validated['security']['hide_wp_version'] = isset( $input['security']['hide_wp_version'] ) ? 1 : 0;
+            
+            // Validate disable XML-RPC setting
+            $validated['security']['disable_xmlrpc'] = isset( $input['security']['disable_xmlrpc'] ) ? 1 : 0;
+            
+            // Validate restrict REST API setting
+            $validated['security']['restrict_rest_api'] = isset( $input['security']['restrict_rest_api'] ) ? 1 : 0;
+            
+            // Validate restrict admin access setting
+            $validated['security']['restrict_admin_access'] = isset( $input['security']['restrict_admin_access'] ) ? 1 : 0;
         }
         
         return $validated;
