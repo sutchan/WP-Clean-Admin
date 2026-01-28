@@ -342,7 +342,7 @@ class Menu_Manager {
         global $menu, $submenu;
         
         // Get current user
-        if ( ! function_exists( 'wp_get_current_user' ) ) {
+        if ( ! function_exists( '\wp_get_current_user' ) ) {
             return;
         }
         

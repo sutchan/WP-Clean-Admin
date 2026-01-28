@@ -354,18 +354,18 @@ class Helpers {
      */
     public function get_error_message( $error_code ) {
         $messages = array(
-            \WPCA_Errors::ERROR_NONE => \__( 'No error occurred.', \WPCA_TEXT_DOMAIN ),
-            \WPCA_Errors::ERROR_DATABASE => \__( 'A database error occurred. Please check the logs for more details.', \WPCA_TEXT_DOMAIN ),
-            \WPCA_Errors::ERROR_PERMISSION => \__( 'You do not have permission to perform this action.', \WPCA_TEXT_DOMAIN ),
-            \WPCA_Errors::ERROR_INVALID_INPUT => \__( 'Invalid input provided. Please check your entries and try again.', \WPCA_TEXT_DOMAIN ),
-            \WPCA_Errors::ERROR_FILE_OPERATION => \__( 'A file operation failed. Please check file permissions and try again.', \WPCA_TEXT_DOMAIN ),
-            \WPCA_Errors::ERROR_AJAX => \__( 'An AJAX request failed. Please try again.', \WPCA_TEXT_DOMAIN ),
-            \WPCA_Errors::ERROR_VALIDATION => \__( 'Settings validation failed. Please check your entries.', \WPCA_TEXT_DOMAIN ),
-            \WPCA_Errors::ERROR_AUTH => \__( 'Authentication failed. Please log in again.', \WPCA_TEXT_DOMAIN ),
-            \WPCA_Errors::ERROR_UNKNOWN => \__( 'An unknown error occurred. Please try again.', \WPCA_TEXT_DOMAIN ),
+            WPCA_Errors::ERROR_NONE => \__( 'No error occurred.', \WPCA_TEXT_DOMAIN ),
+            WPCA_Errors::ERROR_DATABASE => \__( 'A database error occurred. Please check the logs for more details.', \WPCA_TEXT_DOMAIN ),
+            WPCA_Errors::ERROR_PERMISSION => \__( 'You do not have permission to perform this action.', \WPCA_TEXT_DOMAIN ),
+            WPCA_Errors::ERROR_INVALID_INPUT => \__( 'Invalid input provided. Please check your entries and try again.', \WPCA_TEXT_DOMAIN ),
+            WPCA_Errors::ERROR_FILE_OPERATION => \__( 'A file operation failed. Please check file permissions and try again.', \WPCA_TEXT_DOMAIN ),
+            WPCA_Errors::ERROR_AJAX => \__( 'An AJAX request failed. Please try again.', \WPCA_TEXT_DOMAIN ),
+            WPCA_Errors::ERROR_VALIDATION => \__( 'Settings validation failed. Please check your entries.', \WPCA_TEXT_DOMAIN ),
+            WPCA_Errors::ERROR_AUTH => \__( 'Authentication failed. Please log in again.', \WPCA_TEXT_DOMAIN ),
+            WPCA_Errors::ERROR_UNKNOWN => \__( 'An unknown error occurred. Please try again.', \WPCA_TEXT_DOMAIN ),
         );
         
-        return isset( $messages[ $error_code ] ) ? $messages[ $error_code ] : $messages[ \WPCA_Errors::ERROR_UNKNOWN ];
+        return isset( $messages[ $error_code ] ) ? $messages[ $error_code ] : $messages[ WPCA_Errors::ERROR_UNKNOWN ];
     }
     
     /**
@@ -485,7 +485,7 @@ class Helpers {
         }
         
         return $this->create_error_response(
-            \WPCA_Errors::ERROR_VALIDATION,
+            WPCA_Errors::ERROR_VALIDATION,
             $message,
             array( 'validation_errors' => $errors )
         );
@@ -524,7 +524,7 @@ class Helpers {
         if ( function_exists( '\wp_verify_nonce' ) && ! \wp_verify_nonce( $nonce, $action ) ) {
             $this->handle_ajax_error(
                 \__( 'Security verification failed. Please try again.', \WPCA_TEXT_DOMAIN ),
-                \WPCA_Errors::ERROR_AUTH
+                WPCA_Errors::ERROR_AUTH
             );
         }
         

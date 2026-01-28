@@ -92,7 +92,7 @@ class User_Roles {
         if ( isset( $settings['user_roles'] ) && isset( $settings['user_roles']['custom_roles'] ) ) {
             foreach ( $settings['user_roles']['custom_roles'] as $role_slug => $role_data ) {
                 // Register custom role
-                if ( function_exists( 'add_role' ) ) {
+                if ( function_exists( '\add_role' ) ) {
                     \add_role( $role_slug, $role_data['name'], $role_data['capabilities'] );
                 }
             }
@@ -124,7 +124,7 @@ class User_Roles {
      */
     public function update_role_capabilities( string $role_slug, array $capabilities ): bool {
         // Get role object
-        $role = ( function_exists( 'get_role' ) ? \get_role( $role_slug ) : false );
+        $role = ( function_exists( '\get_role' ) ? \get_role( $role_slug ) : false );
         
         if ( ! $role ) {
             return false;
@@ -196,7 +196,7 @@ class User_Roles {
         }
         
         // Delete role
-        if ( function_exists( 'remove_role' ) && \remove_role( $role_slug ) ) {
+        if ( function_exists( '\remove_role' ) && \remove_role( $role_slug ) ) {
             $result['success'] = true;
             $result['message'] = \__( 'Role deleted successfully', \WPCA_TEXT_DOMAIN );
         }
