@@ -55,14 +55,45 @@ if ( function_exists( 'add_action' ) ) {
 // Register activation hook
 if ( function_exists( 'register_activation_hook' ) ) {
     register_activation_hook( __FILE__, function() {
-        WPCleanAdmin\Core::getInstance()->activate();
+        // Set default settings directly
+        $default_settings = array(
+            'general' => array(
+                'clean_admin_bar' => 1,
+                'clean_dashboard' => 1,
+                'remove_wp_logo' => 1,
+            ),
+            'performance' => array(
+                'optimize_database' => 1,
+                'clean_transients' => 1,
+                'disable_emojis' => 1,
+            ),
+            'menu' => array(
+                'remove_dashboard_widgets' => 1,
+                'simplify_admin_menu' => 1,
+            ),
+        );
+        
+        // Update settings if they don't exist
+        if ( function_exists( 'get_option' ) && function_exists( 'update_option' ) ) {
+            $current_settings = get_option( 'wpca_settings', array() );
+            $updated_settings = array_merge( $default_settings, $current_settings );
+            update_option( 'wpca_settings', $updated_settings );
+        }
+        
+        // Flush rewrite rules
+        if ( function_exists( 'flush_rewrite_rules' ) ) {
+            flush_rewrite_rules();
+        }
     });
 }
 
 // Register deactivation hook
 if ( function_exists( 'register_deactivation_hook' ) ) {
     register_deactivation_hook( __FILE__, function() {
-        WPCleanAdmin\Core::getInstance()->deactivate();
+        // Flush rewrite rules
+        if ( function_exists( 'flush_rewrite_rules' ) ) {
+            flush_rewrite_rules();
+        }
     });
 }
 
