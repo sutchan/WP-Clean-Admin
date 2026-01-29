@@ -1,10 +1,20 @@
 <?php
 /**
- * File Name: wp-clean-admin.php
- * Update Date: 2026-01-28
- * @package WPCleanAdmin
- * @since 1.8.0
+ * Plugin Name: WP Clean Admin
+ * Plugin URI: https://github.com/sutchan/WP-Clean-Admin
+ * Description: A comprehensive WordPress admin cleanup and optimization plugin
+ * Version: 1.8.0
+ * Author: Sut
+ * Author URI: https://github.com/sutchan
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain: wp-clean-admin
+ * Domain Path: /languages
+ * Network: true
+ * Requires at least: 5.0
+ * Requires PHP: 7.0
  */
+
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
