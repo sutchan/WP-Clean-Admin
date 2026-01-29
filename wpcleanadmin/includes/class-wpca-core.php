@@ -50,8 +50,11 @@ class Core {
      */
     public function init() {
         // Load core functions
-        if ( defined( '\WPCA_PLUGIN_DIR' ) ) {
-            require_once \WPCA_PLUGIN_DIR . 'includes/wpca-core-functions.php';
+        if ( defined( 'WPCA_PLUGIN_DIR' ) ) {
+            require_once WPCA_PLUGIN_DIR . 'includes/wpca-core-functions.php';
+        } else {
+            // Fallback if WPCA_PLUGIN_DIR not defined
+            require_once dirname( __DIR__ ) . '/wpca-core-functions.php';
         }
         
         // Add security headers

@@ -27,7 +27,38 @@ define( 'WPCA_PLUGIN_URL', ( function_exists( 'plugin_dir_url' ) ? plugin_dir_ur
 define( 'WPCA_TEXT_DOMAIN', 'wp-clean-admin' );
 
 // Load autoloader
-require_once WPCA_PLUGIN_DIR . 'includes/autoload.php';
+$autoloader_path = WPCA_PLUGIN_DIR . 'includes/autoload.php';
+if ( file_exists( $autoloader_path ) ) {
+    require_once $autoloader_path;
+} else {
+    // Log error if autoloader not found
+    if ( function_exists( 'error_log' ) ) {
+        error_log( 'WP Clean Admin Error: Autoloader file not found at ' . $autoloader_path );
+    }
+}
+
+// Fallback autoloader if main autoloader fails
+spl_autoload_register( function( $class ) {
+    // Check if the class belongs to our namespace
+    if ( strpos( $class, 'WPCleanAdmin\\' ) !== 0 ) {
+        return;
+    }
+    
+    // Remove namespace prefix
+    $class_name = str_replace( 'WPCleanAdmin\\', '', $class );
+    
+    // Convert camelCase to kebab-case and replace underscores with hyphens
+    $file_path = strtolower( preg_replace( '/(?<!^)[A-Z]/', '-$0', $class_name ) );
+    $file_path = str_replace( '_', '-', $file_path );
+    
+    // Build full file path
+    $file = __DIR__ . '/includes/class-wpca-' . $file_path . '.php';
+    
+    // Check if file exists and include it
+    if ( file_exists( $file ) ) {
+        require_once $file;
+    }
+});
 
 /**
  * Initialize the WP Clean Admin plugin
@@ -44,7 +75,14 @@ function wpca_init() {
     }
     
     // Initialize core class
-    WPCleanAdmin\Core::getInstance();
+    if ( class_exists( 'WPCleanAdmin\Core' ) ) {
+        WPCleanAdmin\Core::getInstance();
+    } else {
+        // Log error if core class not found
+        if ( function_exists( 'error_log' ) ) {
+            error_log( 'WP Clean Admin Error: Core class not found' );
+        }
+    }
 }
 
 // Hook into WordPress initialization
@@ -75,14 +113,28 @@ if ( function_exists( 'register_activation_hook' ) ) {
         
         // Update settings if they don't exist
         if ( function_exists( 'get_option' ) && function_exists( 'update_option' ) ) {
-            $current_settings = get_option( 'wpca_settings', array() );
-            $updated_settings = array_merge( $default_settings, $current_settings );
-            update_option( 'wpca_settings', $updated_settings );
+            try {
+                $current_settings = get_option( 'wpca_settings', array() );
+                $updated_settings = array_merge( $default_settings, $current_settings );
+                update_option( 'wpca_settings', $updated_settings );
+            } catch ( Exception $e ) {
+                // Log error if settings update fails
+                if ( function_exists( 'error_log' ) ) {
+                    error_log( 'WP Clean Admin Error: Failed to update settings: ' . $e->getMessage() );
+                }
+            }
         }
         
         // Flush rewrite rules
         if ( function_exists( 'flush_rewrite_rules' ) ) {
-            flush_rewrite_rules();
+            try {
+                flush_rewrite_rules();
+            } catch ( Exception $e ) {
+                // Log error if rewrite rules flush fails
+                if ( function_exists( 'error_log' ) ) {
+                    error_log( 'WP Clean Admin Error: Failed to flush rewrite rules: ' . $e->getMessage() );
+                }
+            }
         }
     });
 }

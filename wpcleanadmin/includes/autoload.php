@@ -43,7 +43,8 @@ spl_autoload_register( function( $class ) {
     $file_path = str_replace( '_', '-', $file_path );
     
     // Build full file path
-    $file = \WPCA_PLUGIN_DIR . 'includes/class-wpca-' . $file_path . '.php';
+    $plugin_dir = defined( 'WPCA_PLUGIN_DIR' ) ? WPCA_PLUGIN_DIR : dirname( dirname( __FILE__ ) ) . '/';
+    $file = $plugin_dir . 'includes/class-wpca-' . $file_path . '.php';
     
     // Check if file exists and include it
     if ( file_exists( $file ) ) {
