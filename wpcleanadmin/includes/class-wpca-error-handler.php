@@ -235,7 +235,8 @@ class Error_Handler {
      * @param array $error Error data
      */
     private function log_to_file( array $error ) {
-        $log_dir = WPCA_PLUGIN_DIR . 'logs';
+        $plugin_dir = defined( 'WPCA_PLUGIN_DIR' ) ? WPCA_PLUGIN_DIR : dirname( dirname( __FILE__ ) ) . '/';
+        $log_dir = $plugin_dir . 'logs';
         
         // Create log directory if it doesn't exist
         if ( ! \is_dir( $log_dir ) ) {

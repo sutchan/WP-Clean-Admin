@@ -16,8 +16,12 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Load WordPress stubs for IDE compatibility
-require_once __DIR__ . '/wpca-wordpress-stubs.php';
+// Include menu customization settings
+if ( file_exists( dirname( __FILE__ ) . '/settings/menu-customization.php' ) ) {
+    require_once dirname( __FILE__ ) . '/settings/menu-customization.php';
+}
+
+// WordPress stubs are loaded in autoload.php for IDE compatibility only
 
 class Settings {
     
@@ -43,10 +47,11 @@ class Settings {
     }
     
     public function register_settings_page() {
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
         if ( function_exists( 'add_options_page' ) ) {
             \add_options_page(
-                \__( 'WP Clean Admin', \WPCA_TEXT_DOMAIN ),
-                \__( 'Clean Admin', \WPCA_TEXT_DOMAIN ),
+                \__( 'WP Clean Admin', $text_domain ),
+                \__( 'Clean Admin', $text_domain ),
                 'manage_options',
                 'wp-clean-admin',
                 array( $this, 'render_settings_page' )
@@ -55,11 +60,12 @@ class Settings {
     }
     
     public function register_settings() {
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
         // Register general settings section
         if ( function_exists( 'add_settings_section' ) ) {
             \add_settings_section(
                 'wpca_general_settings',
-                \__( 'General Settings', \WPCA_TEXT_DOMAIN ),
+                \__( 'General Settings', $text_domain ),
                 array( $this, 'render_general_settings_section' ),
                 'wp-clean-admin'
             );
@@ -69,7 +75,7 @@ class Settings {
         if ( function_exists( 'add_settings_section' ) ) {
             \add_settings_section(
                 'wpca_cleanup_settings',
-                \__( 'Cleanup Settings', \WPCA_TEXT_DOMAIN ),
+                \__( 'Cleanup Settings', $text_domain ),
                 array( $this, 'render_cleanup_settings_section' ),
                 'wp-clean-admin'
             );
@@ -79,7 +85,7 @@ class Settings {
         if ( function_exists( 'add_settings_section' ) ) {
             \add_settings_section(
                 'wpca_performance_settings',
-                \__( 'Performance Settings', \WPCA_TEXT_DOMAIN ),
+                \__( 'Performance Settings', $text_domain ),
                 array( $this, 'render_performance_settings_section' ),
                 'wp-clean-admin'
             );
@@ -89,7 +95,7 @@ class Settings {
         if ( function_exists( 'add_settings_section' ) ) {
             \add_settings_section(
                 'wpca_security_settings',
-                \__( 'Security Settings', \WPCA_TEXT_DOMAIN ),
+                \__( 'Security Settings', $text_domain ),
                 array( $this, 'render_security_settings_section' ),
                 'wp-clean-admin'
             );
@@ -99,7 +105,7 @@ class Settings {
         if ( function_exists( 'add_settings_field' ) ) {
             \add_settings_field(
                 'wpca_clean_admin_bar',
-                \__( 'Clean Admin Bar', \WPCA_TEXT_DOMAIN ),
+                \__( 'Clean Admin Bar', $text_domain ),
                 array( $this, 'render_clean_admin_bar_field' ),
                 'wp-clean-admin',
                 'wpca_general_settings'
@@ -107,7 +113,7 @@ class Settings {
             
             \add_settings_field(
                 'wpca_remove_wp_logo',
-                \__( 'Remove WordPress Logo', \WPCA_TEXT_DOMAIN ),
+                \__( 'Remove WordPress Logo', $text_domain ),
                 array( $this, 'render_remove_wp_logo_field' ),
                 'wp-clean-admin',
                 'wpca_general_settings'
@@ -118,7 +124,7 @@ class Settings {
         if ( function_exists( 'add_settings_field' ) ) {
             \add_settings_field(
                 'wpca_remove_dashboard_widgets',
-                \__( 'Remove Dashboard Widgets', \WPCA_TEXT_DOMAIN ),
+                \__( 'Remove Dashboard Widgets', $text_domain ),
                 array( $this, 'render_remove_dashboard_widgets_field' ),
                 'wp-clean-admin',
                 'wpca_cleanup_settings'
@@ -126,7 +132,7 @@ class Settings {
             
             \add_settings_field(
                 'wpca_simplify_admin_menu',
-                \__( 'Simplify Admin Menu', \WPCA_TEXT_DOMAIN ),
+                \__( 'Simplify Admin Menu', $text_domain ),
                 array( $this, 'render_simplify_admin_menu_field' ),
                 'wp-clean-admin',
                 'wpca_cleanup_settings'
@@ -134,7 +140,7 @@ class Settings {
             
             \add_settings_field(
                 'wpca_menu_customization',
-                \__( 'Menu Customization', \WPCA_TEXT_DOMAIN ),
+                \__( 'Menu Customization', $text_domain ),
                 array( $this, 'render_menu_customization_field' ),
                 'wp-clean-admin',
                 'wpca_cleanup_settings'
@@ -145,7 +151,7 @@ class Settings {
         if ( function_exists( 'add_settings_field' ) ) {
             \add_settings_field(
                 'wpca_optimize_database',
-                \__( 'Optimize Database', \WPCA_TEXT_DOMAIN ),
+                \__( 'Optimize Database', $text_domain ),
                 array( $this, 'render_optimize_database_field' ),
                 'wp-clean-admin',
                 'wpca_performance_settings'
@@ -153,7 +159,7 @@ class Settings {
             
             \add_settings_field(
                 'wpca_clean_transients',
-                \__( 'Clean Transients', \WPCA_TEXT_DOMAIN ),
+                \__( 'Clean Transients', $text_domain ),
                 array( $this, 'render_clean_transients_field' ),
                 'wp-clean-admin',
                 'wpca_performance_settings'
@@ -164,7 +170,7 @@ class Settings {
         if ( function_exists( 'add_settings_field' ) ) {
             \add_settings_field(
                 'wpca_hide_wp_version',
-                \__( 'Hide WordPress Version', \WPCA_TEXT_DOMAIN ),
+                \__( 'Hide WordPress Version', $text_domain ),
                 array( $this, 'render_hide_wp_version_field' ),
                 'wp-clean-admin',
                 'wpca_security_settings'
@@ -172,7 +178,7 @@ class Settings {
             
             \add_settings_field(
                 'wpca_disable_xmlrpc',
-                \__( 'Disable XML-RPC', \WPCA_TEXT_DOMAIN ),
+                \__( 'Disable XML-RPC', $text_domain ),
                 array( $this, 'render_disable_xmlrpc_field' ),
                 'wp-clean-admin',
                 'wpca_security_settings'
@@ -180,7 +186,7 @@ class Settings {
             
             \add_settings_field(
                 'wpca_restrict_rest_api',
-                \__( 'Restrict REST API Access', \WPCA_TEXT_DOMAIN ),
+                \__( 'Restrict REST API Access', $text_domain ),
                 array( $this, 'render_restrict_rest_api_field' ),
                 'wp-clean-admin',
                 'wpca_security_settings'
@@ -188,7 +194,7 @@ class Settings {
             
             \add_settings_field(
                 'wpca_restrict_admin_access',
-                \__( 'Restrict Admin Access', \WPCA_TEXT_DOMAIN ),
+                \__( 'Restrict Admin Access', $text_domain ),
                 array( $this, 'render_restrict_admin_access_field' ),
                 'wp-clean-admin',
                 'wpca_security_settings'
@@ -202,22 +208,27 @@ class Settings {
     }
     
     public function render_general_settings_section() {
-        echo '<p>' . \__( 'Configure general settings for WP Clean Admin plugin.', \WPCA_TEXT_DOMAIN ) . '</p>';
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
+        echo '<p>' . \__( 'Configure general settings for WP Clean Admin plugin.', $text_domain ) . '</p>';
     }
     
     public function render_cleanup_settings_section() {
-        echo '<p>' . \__( 'Configure cleanup settings for WP Clean Admin plugin.', \WPCA_TEXT_DOMAIN ) . '</p>';
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
+        echo '<p>' . \__( 'Configure cleanup settings for WP Clean Admin plugin.', $text_domain ) . '</p>';
     }
     
     public function render_performance_settings_section() {
-        echo '<p>' . \__( 'Configure performance optimization settings for WP Clean Admin plugin.', \WPCA_TEXT_DOMAIN ) . '</p>';
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
+        echo '<p>' . \__( 'Configure performance optimization settings for WP Clean Admin plugin.', $text_domain ) . '</p>';
     }
     
     public function render_security_settings_section() {
-        echo '<p>' . \__( 'Configure security settings for WP Clean Admin plugin.', \WPCA_TEXT_DOMAIN ) . '</p>';
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
+        echo '<p>' . \__( 'Configure security settings for WP Clean Admin plugin.', $text_domain ) . '</p>';
     }
     
     public function render_clean_admin_bar_field() {
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
         $settings = array();
         if ( function_exists( 'get_option' ) ) {
             $settings = \get_option( 'wpca_settings', array() );
@@ -225,10 +236,11 @@ class Settings {
         $clean_admin_bar = isset( $settings['general']['clean_admin_bar'] ) ? $settings['general']['clean_admin_bar'] : 1;
         
         echo '<input type="checkbox" name="wpca_settings[general][clean_admin_bar]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $clean_admin_bar, 1, false ) : ( $clean_admin_bar ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_clean_admin_bar"> ' . \__( 'Remove unnecessary items from the admin bar.', \WPCA_TEXT_DOMAIN ) . '</label>';
+        echo '<label for="wpca_clean_admin_bar"> ' . \__( 'Remove unnecessary items from the admin bar.', $text_domain ) . '</label>';
     }
     
     public function render_remove_wp_logo_field() {
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
         $settings = array();
         if ( function_exists( 'get_option' ) ) {
             $settings = \get_option( 'wpca_settings', array() );
@@ -236,10 +248,11 @@ class Settings {
         $remove_wp_logo = isset( $settings['general']['remove_wp_logo'] ) ? $settings['general']['remove_wp_logo'] : 1;
         
         echo '<input type="checkbox" name="wpca_settings[general][remove_wp_logo]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $remove_wp_logo, 1, false ) : ( $remove_wp_logo ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_remove_wp_logo"> ' . \__( 'Remove WordPress logo from admin bar.', \WPCA_TEXT_DOMAIN ) . '</label>';
+        echo '<label for="wpca_remove_wp_logo"> ' . \__( 'Remove WordPress logo from admin bar.', $text_domain ) . '</label>';
     }
     
     public function render_remove_dashboard_widgets_field() {
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
         $settings = array();
         if ( function_exists( 'get_option' ) ) {
             $settings = \get_option( 'wpca_settings', array() );
@@ -247,10 +260,11 @@ class Settings {
         $remove_dashboard_widgets = isset( $settings['menu']['remove_dashboard_widgets'] ) ? $settings['menu']['remove_dashboard_widgets'] : 1;
         
         echo '<input type="checkbox" name="wpca_settings[menu][remove_dashboard_widgets]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $remove_dashboard_widgets, 1, false ) : ( $remove_dashboard_widgets ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_remove_dashboard_widgets"> ' . \__( 'Remove unnecessary dashboard widgets.', \WPCA_TEXT_DOMAIN ) . '</label>';
+        echo '<label for="wpca_remove_dashboard_widgets"> ' . \__( 'Remove unnecessary dashboard widgets.', $text_domain ) . '</label>';
     }
     
     public function render_simplify_admin_menu_field() {
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
         $settings = array();
         if ( function_exists( 'get_option' ) ) {
             $settings = \get_option( 'wpca_settings', array() );
@@ -258,10 +272,19 @@ class Settings {
         $simplify_admin_menu = isset( $settings['menu']['simplify_admin_menu'] ) ? $settings['menu']['simplify_admin_menu'] : 1;
         
         echo '<input type="checkbox" name="wpca_settings[menu][simplify_admin_menu]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $simplify_admin_menu, 1, false ) : ( $simplify_admin_menu ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_simplify_admin_menu"> ' . \__( 'Simplify admin menu by removing unnecessary items.', \WPCA_TEXT_DOMAIN ) . '</label>';
+        echo '<label for="wpca_simplify_admin_menu"> ' . \__( 'Simplify admin menu by removing unnecessary items.', $text_domain ) . '</label>';
     }
     
     public function render_menu_customization_field() {
+        // Call menu customization render function from separate file
+        if ( class_exists( '\WPCleanAdmin\Settings\Menu_Customization' ) ) {
+            \WPCleanAdmin\Settings\Menu_Customization::render_menu_customization_field();
+        }
+        
+        return;
+        
+        // Original code moved to separate file
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
         // Get menu manager instance
         $menu_manager = \WPCleanAdmin\Menu_Manager::getInstance();
         $menu_items = $menu_manager->get_menu_items();
@@ -277,17 +300,17 @@ class Settings {
         
         ?>
         <div class="wpca-menu-customization">
-            <p><?php echo \esc_html( \__( 'Customize admin menu items and their order.', \WPCA_TEXT_DOMAIN ) ); ?></p>
+            <p><?php echo \esc_html( \__( 'Customize admin menu items and their order.', $text_domain ) ); ?></p>
             
             <div class="wpca-menu-items">
                 <div class="wpca-menu-items-header">
-                    <h4><?php echo \esc_html( \__( 'Menu Items', \WPCA_TEXT_DOMAIN ) ); ?></h4>
+                    <h4><?php echo \esc_html( \__( 'Menu Items', $text_domain ) ); ?></h4>
                     <div class="wpca-menu-items-actions">
                         <button type="button" class="button button-small" id="wpca-select-all-menu-items">
-                            <?php echo \esc_html( \__( 'Select All', \WPCA_TEXT_DOMAIN ) ); ?>
+                            <?php echo \esc_html( \__( 'Select All', $text_domain ) ); ?>
                         </button>
                         <button type="button" class="button button-small" id="wpca-deselect-all-menu-items">
-                            <?php echo \esc_html( \__( 'Deselect All', \WPCA_TEXT_DOMAIN ) ); ?>
+                            <?php echo \esc_html( \__( 'Deselect All', $text_domain ) ); ?>
                         </button>
                     </div>
                 </div>
@@ -319,14 +342,14 @@ class Settings {
             
             <div class="wpca-menu-order">
                 <div class="wpca-menu-order-header">
-                    <h4><?php echo \esc_html( \__( 'Menu Order', \WPCA_TEXT_DOMAIN ) ); ?></h4>
+                    <h4><?php echo \esc_html( \__( 'Menu Order', $text_domain ) ); ?></h4>
                     <div class="wpca-menu-order-actions">
                         <button type="button" class="button button-small" id="wpca-reset-menu-order">
-                            <?php echo \esc_html( \__( 'Reset to Default Order', \WPCA_TEXT_DOMAIN ) ); ?>
+                            <?php echo \esc_html( \__( 'Reset to Default Order', $text_domain ) ); ?>
                         </button>
                     </div>
                 </div>
-                <p><?php echo \esc_html( \__( 'Drag and drop to reorder menu items:', \WPCA_TEXT_DOMAIN ) ); ?></p>
+                <p><?php echo \esc_html( \__( 'Drag and drop to reorder menu items:', $text_domain ) ); ?></p>
                 <div class="wpca-menu-order-list" id="wpca-menu-order-list">
                     <?php foreach ( $menu_items as $menu_item ) : ?>
                         <div class="wpca-menu-order-item" data-menu-slug="<?php echo \esc_attr( $menu_item['slug'] ); ?>">
@@ -568,6 +591,7 @@ class Settings {
     }
     
     public function render_optimize_database_field() {
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
         $settings = array();
         if ( function_exists( 'get_option' ) ) {
             $settings = \get_option( 'wpca_settings', array() );
@@ -575,10 +599,11 @@ class Settings {
         $optimize_database = isset( $settings['performance']['optimize_database'] ) ? $settings['performance']['optimize_database'] : 1;
         
         echo '<input type="checkbox" name="wpca_settings[performance][optimize_database]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $optimize_database, 1, false ) : ( $optimize_database ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_optimize_database"> ' . \__( 'Automatically optimize database tables.', \WPCA_TEXT_DOMAIN ) . '</label>';
+        echo '<label for="wpca_optimize_database"> ' . \__( 'Automatically optimize database tables.', $text_domain ) . '</label>';
     }
     
     public function render_clean_transients_field() {
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
         $settings = array();
         if ( function_exists( 'get_option' ) ) {
             $settings = \get_option( 'wpca_settings', array() );
@@ -586,10 +611,11 @@ class Settings {
         $clean_transients = isset( $settings['performance']['clean_transients'] ) ? $settings['performance']['clean_transients'] : 1;
         
         echo '<input type="checkbox" name="wpca_settings[performance][clean_transients]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $clean_transients, 1, false ) : ( $clean_transients ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_clean_transients"> ' . \__( 'Automatically clean expired transients.', \WPCA_TEXT_DOMAIN ) . '</label>';
+        echo '<label for="wpca_clean_transients"> ' . \__( 'Automatically clean expired transients.', $text_domain ) . '</label>';
     }
     
     public function render_hide_wp_version_field() {
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
         $settings = array();
         if ( function_exists( 'get_option' ) ) {
             $settings = \get_option( 'wpca_settings', array() );
@@ -597,10 +623,11 @@ class Settings {
         $hide_wp_version = isset( $settings['security']['hide_wp_version'] ) ? $settings['security']['hide_wp_version'] : 1;
         
         echo '<input type="checkbox" name="wpca_settings[security][hide_wp_version]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $hide_wp_version, 1, false ) : ( $hide_wp_version ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_hide_wp_version"> ' . \__( 'Hide WordPress version information.', \WPCA_TEXT_DOMAIN ) . '</label>';
+        echo '<label for="wpca_hide_wp_version"> ' . \__( 'Hide WordPress version information.', $text_domain ) . '</label>';
     }
     
     public function render_disable_xmlrpc_field() {
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
         $settings = array();
         if ( function_exists( 'get_option' ) ) {
             $settings = \get_option( 'wpca_settings', array() );
@@ -608,10 +635,11 @@ class Settings {
         $disable_xmlrpc = isset( $settings['security']['disable_xmlrpc'] ) ? $settings['security']['disable_xmlrpc'] : 1;
         
         echo '<input type="checkbox" name="wpca_settings[security][disable_xmlrpc]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $disable_xmlrpc, 1, false ) : ( $disable_xmlrpc ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_disable_xmlrpc"> ' . \__( 'Disable XML-RPC functionality.', \WPCA_TEXT_DOMAIN ) . '</label>';
+        echo '<label for="wpca_disable_xmlrpc"> ' . \__( 'Disable XML-RPC functionality.', $text_domain ) . '</label>';
     }
     
     public function render_restrict_rest_api_field() {
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
         $settings = array();
         if ( function_exists( 'get_option' ) ) {
             $settings = \get_option( 'wpca_settings', array() );
@@ -619,10 +647,11 @@ class Settings {
         $restrict_rest_api = isset( $settings['security']['restrict_rest_api'] ) ? $settings['security']['restrict_rest_api'] : 1;
         
         echo '<input type="checkbox" name="wpca_settings[security][restrict_rest_api]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $restrict_rest_api, 1, false ) : ( $restrict_rest_api ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_restrict_rest_api"> ' . \__( 'Restrict REST API access to authenticated users only.', \WPCA_TEXT_DOMAIN ) . '</label>';
+        echo '<label for="wpca_restrict_rest_api"> ' . \__( 'Restrict REST API access to authenticated users only.', $text_domain ) . '</label>';
     }
     
     public function render_restrict_admin_access_field() {
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
         $settings = array();
         if ( function_exists( 'get_option' ) ) {
             $settings = \get_option( 'wpca_settings', array() );
@@ -630,10 +659,11 @@ class Settings {
         $restrict_admin_access = isset( $settings['security']['restrict_admin_access'] ) ? $settings['security']['restrict_admin_access'] : 1;
         
         echo '<input type="checkbox" name="wpca_settings[security][restrict_admin_access]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $restrict_admin_access, 1, false ) : ( $restrict_admin_access ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_restrict_admin_access"> ' . \__( 'Restrict admin area access to users with proper permissions.', \WPCA_TEXT_DOMAIN ) . '</label>';
+        echo '<label for="wpca_restrict_admin_access"> ' . \__( 'Restrict admin area access to users with proper permissions.', $text_domain ) . '</label>';
     }
     
     public function render_settings_page() {
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
         ?>
         <div class="wrap wpca-settings-wrap">
             <h1><?php echo \esc_html( ( function_exists( 'get_admin_page_title' ) ? \get_admin_page_title() : 'WP Clean Admin' ) ); ?></h1>
@@ -650,19 +680,19 @@ class Settings {
                     <div class="wpca-tabs-nav">
                         <button type="button" class="wpca-tab-button active" data-tab="general">
                             <span class="dashicons dashicons-admin-generic"></span>
-                            <?php echo \esc_html( \__( 'General', \WPCA_TEXT_DOMAIN ) ); ?>
+                            <?php echo \esc_html( \__( 'General', $text_domain ) ); ?>
                         </button>
                         <button type="button" class="wpca-tab-button" data-tab="cleanup">
                             <span class="dashicons dashicons-clipboard"></span>
-                            <?php echo \esc_html( \__( 'Cleanup', \WPCA_TEXT_DOMAIN ) ); ?>
+                            <?php echo \esc_html( \__( 'Cleanup', $text_domain ) ); ?>
                         </button>
                         <button type="button" class="wpca-tab-button" data-tab="performance">
                             <span class="dashicons dashicons-chart-line"></span>
-                            <?php echo \esc_html( \__( 'Performance', \WPCA_TEXT_DOMAIN ) ); ?>
+                            <?php echo \esc_html( \__( 'Performance', $text_domain ) ); ?>
                         </button>
                         <button type="button" class="wpca-tab-button" data-tab="security">
                             <span class="dashicons dashicons-shield"></span>
-                            <?php echo \esc_html( \__( 'Security', \WPCA_TEXT_DOMAIN ) ); ?>
+                            <?php echo \esc_html( \__( 'Security', $text_domain ) ); ?>
                         </button>
                     </div>
                     
@@ -713,7 +743,7 @@ class Settings {
                 <div class="wpca-settings-submit">
                     <?php
                     if ( function_exists( 'submit_button' ) ) {
-                        \submit_button( \__( 'Save Changes', \WPCA_TEXT_DOMAIN ), 'primary', 'submit', false, array( 'id' => 'wpca-save-button' ) );
+                        \submit_button( \__( 'Save Changes', $text_domain ), 'primary', 'submit', false, array( 'id' => 'wpca-save-button' ) );
                     }
                     ?>
                     <div class="wpca-save-message" id="wpca-save-message"></div>
@@ -750,7 +780,7 @@ class Settings {
                 // Form submission handling
                 $('#wpca-settings-form').on('submit', function(e) {
                     // Show saving message
-                    $('#wpca-save-message').html('<span class="wpca-saving">' + <?php echo \json_encode( \__( 'Saving...', \WPCA_TEXT_DOMAIN ) ); ?> + '</span>');
+                    $('#wpca-save-message').html('<span class="wpca-saving">' + <?php echo \json_encode( \__( 'Saving...', $text_domain ) ); ?> + '</span>');
                 });
                 
                 // Add toggle functionality to setting sections
@@ -1077,21 +1107,24 @@ class Settings {
             return;
         }
         
+        $plugin_url = defined( 'WPCA_PLUGIN_URL' ) ? WPCA_PLUGIN_URL : '';
+        $plugin_version = defined( 'WPCA_VERSION' ) ? WPCA_VERSION : '1.8.0';
+        
         if ( function_exists( 'wp_enqueue_style' ) ) {
             \wp_enqueue_style(
                 'wpca-admin',
-                \WPCA_PLUGIN_URL . 'assets/css/wpca-admin.css',
+                $plugin_url . 'assets/css/wpca-admin.css',
                 array(),
-                \WPCA_VERSION
+                $plugin_version
             );
         }
         
         if ( function_exists( 'wp_enqueue_script' ) ) {
             \wp_enqueue_script(
                 'wpca-main',
-                \WPCA_PLUGIN_URL . 'assets/js/wpca-main.js',
+                $plugin_url . 'assets/js/wpca-main.js',
                 array( 'jquery' ),
-                \WPCA_VERSION,
+                $plugin_version,
                 true
             );
         }

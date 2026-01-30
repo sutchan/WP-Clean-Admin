@@ -20,6 +20,59 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// Declare WordPress functions for IDE compatibility
+if ( ! function_exists( 'plugin_dir_path' ) ) {
+    function plugin_dir_path() {}
+}
+if ( ! function_exists( 'plugin_dir_url' ) ) {
+    function plugin_dir_url() {}
+}
+if ( ! function_exists( 'load_plugin_textdomain' ) ) {
+    function load_plugin_textdomain() {}
+}
+if ( ! function_exists( 'add_action' ) ) {
+    function add_action() {}
+}
+if ( ! function_exists( 'deactivate_plugins' ) ) {
+    function deactivate_plugins() {}
+}
+if ( ! function_exists( 'wp_die' ) ) {
+    function wp_die() {}
+}
+if ( ! function_exists( 'esc_html__' ) ) {
+    function esc_html__() {}
+}
+if ( ! function_exists( 'register_activation_hook' ) ) {
+    function register_activation_hook() {}
+}
+if ( ! function_exists( 'register_deactivation_hook' ) ) {
+    function register_deactivation_hook() {}
+}
+if ( ! function_exists( 'get_option' ) ) {
+    function get_option() {}
+}
+if ( ! function_exists( 'update_option' ) ) {
+    function update_option() {}
+}
+if ( ! function_exists( 'flush_rewrite_rules' ) ) {
+    function flush_rewrite_rules() {}
+}
+if ( ! function_exists( 'admin_url' ) ) {
+    function admin_url() {}
+}
+if ( ! function_exists( 'esc_url' ) ) {
+    function esc_url() {}
+}
+if ( ! function_exists( 'esc_html' ) ) {
+    function esc_html() {}
+}
+if ( ! function_exists( '__' ) ) {
+    function __() {}
+}
+if ( ! function_exists( 'add_filter' ) ) {
+    function add_filter() {}
+}
+
 // Define plugin constants
 define( 'WPCA_VERSION', '1.8.0' );
 define( 'WPCA_PLUGIN_DIR', ( function_exists( 'plugin_dir_path' ) ? plugin_dir_path( __FILE__ ) : dirname( __FILE__ ) . '/' ) );
@@ -69,18 +122,26 @@ spl_autoload_register( function( $class ) {
  * @since 1.7.15
  */
 function wpca_init() {
-    // Load text domain for translations
-    if ( function_exists( 'load_plugin_textdomain' ) && function_exists( 'plugin_basename' ) ) {
-        load_plugin_textdomain( WPCA_TEXT_DOMAIN, false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-    }
-    
-    // Initialize core class
-    if ( class_exists( 'WPCleanAdmin\Core' ) ) {
-        WPCleanAdmin\Core::getInstance();
-    } else {
-        // Log error if core class not found
+    try {
+        // Load text domain for translations
+        if ( function_exists( 'load_plugin_textdomain' ) && function_exists( 'plugin_basename' ) ) {
+            load_plugin_textdomain( WPCA_TEXT_DOMAIN, false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+        }
+        
+        // Initialize core class
+        if ( class_exists( 'WPCleanAdmin\Core' ) ) {
+            WPCleanAdmin\Core::getInstance();
+        } else {
+            // Log error if core class not found
+            if ( function_exists( 'error_log' ) ) {
+                error_log( 'WP Clean Admin Error: Core class not found' );
+            }
+        }
+    } catch ( \Exception $e ) {
+        // Log any exceptions during initialization
         if ( function_exists( 'error_log' ) ) {
-            error_log( 'WP Clean Admin Error: Core class not found' );
+            error_log( 'WP Clean Admin Error during initialization: ' . $e->getMessage() );
+            error_log( 'WP Clean Admin Error trace: ' . $e->getTraceAsString() );
         }
     }
 }
@@ -89,6 +150,37 @@ function wpca_init() {
 if ( function_exists( 'add_action' ) ) {
     add_action( 'plugins_loaded', 'wpca_init' );
 }
+
+/**
+ * 紧急停用插件函数
+ * 
+ * 当插件出现严重错误时，可手动调用此函数立即停用插件。
+ * 注意：此函数默认未挂载到任何钩子，需手动触发。
+ *
+ * @since 1.8.0
+ */
+function wpca_emergency_deactivate() {
+    // 获取当前插件的 basename
+    $plugin_basename = plugin_basename( __FILE__ );
+
+    // 如果 deactivate_plugins 函数可用，则执行停用
+    if ( function_exists( 'deactivate_plugins' ) ) {
+        deactivate_plugins( array( $plugin_basename ) );
+
+        // 若当前请求为激活操作，则输出停用提示并终止
+        if ( isset( $_GET['action'] ) && $_GET['action'] === 'activate' ) {
+            wp_die(
+                esc_html__(
+                    'WP Clean Admin 插件因严重错误已被自动停用。请查看错误日志以获取更多信息。',
+                    'wp-clean-admin'
+                )
+            );
+        }
+    }
+}
+
+// Emergency deactivation function - call manually when needed
+// Note: This function is not hooked by default to avoid automatic deactivation
 
 // Register activation hook
 if ( function_exists( 'register_activation_hook' ) ) {
@@ -115,9 +207,10 @@ if ( function_exists( 'register_activation_hook' ) ) {
         if ( function_exists( 'get_option' ) && function_exists( 'update_option' ) ) {
             try {
                 $current_settings = get_option( 'wpca_settings', array() );
+                $current_settings = is_array( $current_settings ) ? $current_settings : array();
                 $updated_settings = array_merge( $default_settings, $current_settings );
                 update_option( 'wpca_settings', $updated_settings );
-            } catch ( Exception $e ) {
+            } catch ( \Exception $e ) {
                 // Log error if settings update fails
                 if ( function_exists( 'error_log' ) ) {
                     error_log( 'WP Clean Admin Error: Failed to update settings: ' . $e->getMessage() );
@@ -129,7 +222,7 @@ if ( function_exists( 'register_activation_hook' ) ) {
         if ( function_exists( 'flush_rewrite_rules' ) ) {
             try {
                 flush_rewrite_rules();
-            } catch ( Exception $e ) {
+            } catch ( \Exception $e ) {
                 // Log error if rewrite rules flush fails
                 if ( function_exists( 'error_log' ) ) {
                     error_log( 'WP Clean Admin Error: Failed to flush rewrite rules: ' . $e->getMessage() );
@@ -157,9 +250,9 @@ if ( function_exists( 'register_deactivation_hook' ) ) {
  * @since 1.8.0
  */
 function wpca_add_plugin_action_links( $links ) {
-    if ( function_exists( 'admin_url' ) && function_exists( 'esc_url' ) && function_exists( 'esc_html' ) && function_exists( '__' ) ) {
+    if ( function_exists( '\admin_url' ) && function_exists( '\esc_url' ) && function_exists( '\esc_html' ) && function_exists( '\__' ) ) {
         $settings_link = array(
-            '<a href="' . esc_url( admin_url( 'admin.php?page=wp-clean-admin' ) ) . '">' . esc_html( __( 'Settings', WPCA_TEXT_DOMAIN ) ) . '</a>'
+            '<a href="' . \esc_url( \admin_url( 'admin.php?page=wp-clean-admin' ) ) . '">' . \esc_html( \__( 'Settings', WPCA_TEXT_DOMAIN ) ) . '</a>'
         );
         return array_merge( $settings_link, $links );
     }
@@ -167,8 +260,11 @@ function wpca_add_plugin_action_links( $links ) {
 }
 
 // Hook into plugin action links
-if ( function_exists( 'add_filter' ) ) {
-    add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'wpca_add_plugin_action_links' );
+if ( function_exists( '\add_filter' ) && function_exists( '\plugin_basename' ) ) {
+    $plugin_basename = \plugin_basename( __FILE__ );
+    if ( is_string( $plugin_basename ) ) {
+        \add_filter( 'plugin_action_links_' . $plugin_basename, 'wpca_add_plugin_action_links' );
+    }
 }
 
 

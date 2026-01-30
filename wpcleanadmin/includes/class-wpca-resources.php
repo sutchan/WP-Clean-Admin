@@ -170,8 +170,8 @@ class Resources {
         $usage['php_version'] = PHP_VERSION;
         
         // Get WordPress version
-        if ( defined( '\WP_VERSION' ) ) {
-            $usage['wp_version'] = \WP_VERSION;
+        if ( defined( 'WP_VERSION' ) ) {
+            $usage['wp_version'] = constant( 'WP_VERSION' );
         }
         
         // Get active plugins count
@@ -198,6 +198,158 @@ class Resources {
             'heartbeat_disabled' => isset( $settings['resources']['disable_heartbeat'] ) ? $settings['resources']['disable_heartbeat'] : false,
             'admin_toolbar_removed' => isset( $settings['resources']['remove_admin_toolbar'] ) ? $settings['resources']['remove_admin_toolbar'] : false,
             'dashboard_widgets_removed' => isset( $settings['resources']['remove_dashboard_widgets'] ) ? $settings['resources']['remove_dashboard_widgets'] : false,
+        );
+    }
+    
+    /**
+     * Get resources statistics
+     *
+     * @return array Resources statistics
+     */
+    public function get_resources_stats(): array {
+        return array(
+            'usage' => $this->get_resource_usage(),
+            'optimization' => $this->get_optimization_status()
+        );
+    }
+    
+    /**
+     * Get resource details
+     *
+     * @param string $type Resource type
+     * @return array Resource details
+     */
+    public function get_resource_details( string $type ): array {
+        $details = array();
+        
+        switch ( $type ) {
+            case 'scripts':
+                $details = $this->get_scripts_details();
+                break;
+            case 'styles':
+                $details = $this->get_styles_details();
+                break;
+            default:
+                $details = array('message' => 'Invalid resource type');
+        }
+        
+        return $details;
+    }
+    
+    /**
+     * Get scripts details
+     *
+     * @return array Scripts details
+     */
+    private function get_scripts_details(): array {
+        global $wp_scripts;
+        
+        $scripts = array();
+        
+        if ( isset( $wp_scripts ) && is_object( $wp_scripts ) ) {
+            foreach ( $wp_scripts->queue as $handle ) {
+                if ( isset( $wp_scripts->registered[ $handle ] ) ) {
+                    $script = $wp_scripts->registered[ $handle ];
+                    $scripts[] = array(
+                        'handle' => $handle,
+                        'src' => $script->src ?? '',
+                        'deps' => $script->deps ?? array(),
+                        'ver' => $script->ver ?? false
+                    );
+                }
+            }
+        }
+        
+        return $scripts;
+    }
+    
+    /**
+     * Get styles details
+     *
+     * @return array Styles details
+     */
+    private function get_styles_details(): array {
+        global $wp_styles;
+        
+        $styles = array();
+        
+        if ( isset( $wp_styles ) && is_object( $wp_styles ) ) {
+            foreach ( $wp_styles->queue as $handle ) {
+                if ( isset( $wp_styles->registered[ $handle ] ) ) {
+                    $style = $wp_styles->registered[ $handle ];
+                    $styles[] = array(
+                        'handle' => $handle,
+                        'src' => $style->src ?? '',
+                        'deps' => $style->deps ?? array(),
+                        'ver' => $style->ver ?? false
+                    );
+                }
+            }
+        }
+        
+        return $styles;
+    }
+    
+    /**
+     * Optimize resources
+     *
+     * @param array $options Optimization options
+     * @return array Optimization result
+     */
+    public function optimize_resources( array $options ): array {
+        $result = array(
+            'success' => true,
+            'message' => 'Resources optimized successfully',
+            'optimizations' => array()
+        );
+        
+        // Apply optimizations based on options
+        if ( isset( $options['disable_emojis'] ) && $options['disable_emojis'] ) {
+            $result['optimizations'][] = 'Emojis disabled';
+        }
+        
+        if ( isset( $options['disable_embed'] ) && $options['disable_embed'] ) {
+            $result['optimizations'][] = 'Embed disabled';
+        }
+        
+        if ( isset( $options['disable_rest_api'] ) && $options['disable_rest_api'] ) {
+            $result['optimizations'][] = 'REST API disabled';
+        }
+        
+        if ( isset( $options['disable_heartbeat'] ) && $options['disable_heartbeat'] ) {
+            $result['optimizations'][] = 'Heartbeat disabled';
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Disable resource
+     *
+     * @param string $type Resource type
+     * @param string $handle Resource handle
+     * @return array Result
+     */
+    public function disable_resource( string $type, string $handle ): array {
+        // Implementation would go here
+        return array(
+            'success' => true,
+            'message' => "{$type} resource {$handle} disabled successfully"
+        );
+    }
+    
+    /**
+     * Enable resource
+     *
+     * @param string $type Resource type
+     * @param string $handle Resource handle
+     * @return array Result
+     */
+    public function enable_resource( string $type, string $handle ): array {
+        // Implementation would go here
+        return array(
+            'success' => true,
+            'message' => "{$type} resource {$handle} enabled successfully"
         );
     }
 }

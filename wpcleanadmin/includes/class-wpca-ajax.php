@@ -14,6 +14,17 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+// Include AJAX handler classes
+if ( file_exists( dirname( __FILE__ ) . '/ajax/dashboard-ajax.php' ) ) {
+    require_once dirname( __FILE__ ) . '/ajax/dashboard-ajax.php';
+}
+if ( file_exists( dirname( __FILE__ ) . '/ajax/cleanup-ajax.php' ) ) {
+    require_once dirname( __FILE__ ) . '/ajax/cleanup-ajax.php';
+}
+if ( file_exists( dirname( __FILE__ ) . '/ajax/settings-ajax.php' ) ) {
+    require_once dirname( __FILE__ ) . '/ajax/settings-ajax.php';
+}
+
 // Declare WordPress functions for IDE compatibility
 if ( ! function_exists( 'wp_verify_nonce' ) ) {
     function wp_verify_nonce() {}
@@ -38,6 +49,12 @@ if ( ! function_exists( 'get_option' ) ) {
 }
 if ( ! function_exists( 'update_option' ) ) {
     function update_option() {}
+}
+if ( ! function_exists( 'sanitize_text_field' ) ) {
+    function sanitize_text_field() {}
+}
+if ( ! function_exists( '__' ) ) {
+    function __() {}
 }
 
 /**
@@ -89,21 +106,21 @@ class AJAX {
      */
     private function register_ajax_hooks() {
         // Dashboard AJAX actions
-        \add_action( 'wp_ajax_wpca_get_dashboard_stats', array( $this, 'get_dashboard_stats' ) );
-        \add_action( 'wp_ajax_wpca_get_system_info', array( $this, 'get_system_info' ) );
-        \add_action( 'wp_ajax_wpca_run_quick_action', array( $this, 'run_quick_action' ) );
+        \add_action( 'wp_ajax_wpca_get_dashboard_stats', array( '\WPCleanAdmin\AJAX\Dashboard', 'get_dashboard_stats' ) );
+        \add_action( 'wp_ajax_wpca_get_system_info', array( '\WPCleanAdmin\AJAX\Dashboard', 'get_system_info' ) );
+        \add_action( 'wp_ajax_wpca_run_quick_action', array( '\WPCleanAdmin\AJAX\Dashboard', 'run_quick_action' ) );
         
         // Cleanup AJAX actions
-        \add_action( 'wp_ajax_wpca_cleanup_database', array( $this, 'cleanup_database' ) );
-        \add_action( 'wp_ajax_wpca_cleanup_media', array( $this, 'cleanup_media' ) );
-        \add_action( 'wp_ajax_wpca_cleanup_comments', array( $this, 'cleanup_comments' ) );
-        \add_action( 'wp_ajax_wpca_cleanup_content', array( $this, 'cleanup_content' ) );
-        \add_action( 'wp_ajax_wpca_get_cleanup_stats', array( $this, 'get_cleanup_stats' ) );
+        \add_action( 'wp_ajax_wpca_cleanup_database', array( '\WPCleanAdmin\AJAX\Cleanup', 'cleanup_database' ) );
+        \add_action( 'wp_ajax_wpca_cleanup_media', array( '\WPCleanAdmin\AJAX\Cleanup', 'cleanup_media' ) );
+        \add_action( 'wp_ajax_wpca_cleanup_comments', array( '\WPCleanAdmin\AJAX\Cleanup', 'cleanup_comments' ) );
+        \add_action( 'wp_ajax_wpca_cleanup_content', array( '\WPCleanAdmin\AJAX\Cleanup', 'cleanup_content' ) );
+        \add_action( 'wp_ajax_wpca_get_cleanup_stats', array( '\WPCleanAdmin\AJAX\Cleanup', 'get_cleanup_stats' ) );
         
         // Settings AJAX actions
-        \add_action( 'wp_ajax_wpca_save_settings', array( $this, 'save_settings' ) );
-        \add_action( 'wp_ajax_wpca_get_settings', array( $this, 'get_settings' ) );
-        \add_action( 'wp_ajax_wpca_reset_settings', array( $this, 'reset_settings' ) );
+        \add_action( 'wp_ajax_wpca_save_settings', array( '\WPCleanAdmin\AJAX\Settings', 'save_settings' ) );
+        \add_action( 'wp_ajax_wpca_get_settings', array( '\WPCleanAdmin\AJAX\Settings', 'get_settings' ) );
+        \add_action( 'wp_ajax_wpca_reset_settings', array( '\WPCleanAdmin\AJAX\Settings', 'reset_settings' ) );
         
         // User Roles AJAX actions
         \add_action( 'wp_ajax_wpca_get_user_roles', array( $this, 'get_user_roles' ) );
@@ -122,7 +139,7 @@ class AJAX {
         \add_action( 'wp_ajax_wpca_get_performance_stats', array( $this, 'get_performance_stats' ) );
         
         // Reset AJAX actions
-        \add_action( 'wp_ajax_wpca_reset_settings', array( $this, 'reset_settings' ) );
+        \add_action( 'wp_ajax_wpca_reset_settings', array( '\WPCleanAdmin\AJAX\Settings', 'reset_settings' ) );
         \add_action( 'wp_ajax_wpca_reset_plugin', array( $this, 'reset_plugin' ) );
         
         // Database AJAX actions
@@ -163,16 +180,16 @@ class AJAX {
      * @return bool True if the nonce is valid and user has capabilities, false otherwise.
      */
     private function verify_ajax_request( string $action ): bool {
-        if ( ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( \__( 'Invalid nonce', WPCA_TEXT_DOMAIN ) );
+        if ( ! function_exists( 'wp_verify_nonce' ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( __( 'Invalid nonce', WPCA_TEXT_DOMAIN ) );
             }
             return false;
         }
         
-        if ( ! function_exists( '\current_user_can' ) || ! \current_user_can( 'manage_options' ) ) {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( \__( 'Insufficient permissions', WPCA_TEXT_DOMAIN ) );
+        if ( ! function_exists( 'current_user_can' ) || ! current_user_can( 'manage_options' ) ) {
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( __( 'Insufficient permissions', WPCA_TEXT_DOMAIN ) );
             }
             return false;
         }
@@ -192,8 +209,8 @@ class AJAX {
         
         $dashboard = new Dashboard();
         $stats = $dashboard->get_dashboard_stats();
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $stats );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $stats );
         }
     }
 
@@ -209,8 +226,8 @@ class AJAX {
         
         $dashboard = new Dashboard();
         $system_info = $dashboard->get_system_info();
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $system_info );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $system_info );
         }
     }
 
@@ -230,12 +247,12 @@ class AJAX {
         $result = $dashboard->run_quick_action( $action );
         
         if ( $result['success'] ) {
-            if ( function_exists( '\wp_send_json_success' ) ) {
-                \wp_send_json_success( $result );
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( $result );
             }
         } else {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( $result['message'] );
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( $result['message'] );
             }
         }
     }
@@ -250,12 +267,12 @@ class AJAX {
             return;
         }
         
-        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
+        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
         
         $cleanup = new Cleanup();
         $result = $cleanup->run_database_cleanup( $options );
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $result );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $result );
         }
     }
 
@@ -269,12 +286,12 @@ class AJAX {
             return;
         }
         
-        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
+        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
         
         $cleanup = new Cleanup();
         $result = $cleanup->run_media_cleanup( $options );
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $result );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $result );
         }
     }
 
@@ -288,12 +305,12 @@ class AJAX {
             return;
         }
         
-        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
+        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
         
         $cleanup = new Cleanup();
         $result = $cleanup->run_comments_cleanup( $options );
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $result );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $result );
         }
     }
 
@@ -307,12 +324,12 @@ class AJAX {
             return;
         }
         
-        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
+        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
         
         $cleanup = new Cleanup();
         $result = $cleanup->run_content_cleanup( $options );
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $result );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $result );
         }
     }
 
@@ -328,8 +345,8 @@ class AJAX {
         
         $cleanup = new Cleanup();
         $stats = $cleanup->get_cleanup_stats();
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $stats );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $stats );
         }
     }
 
@@ -343,18 +360,18 @@ class AJAX {
             return;
         }
         
-        $settings = isset( $_POST['settings'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
+        $settings = isset( $_POST['settings'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
         
         $settings_manager = new Settings();
         $result = wpca_update_settings( $settings );
         
         if ( $result ) {
-            if ( function_exists( '\wp_send_json_success' ) ) {
-                \wp_send_json_success( array( 'message' => \__( 'Settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( array( 'message' => \__( 'Settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
             }
         } else {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( \__( 'Failed to save settings', WPCA_TEXT_DOMAIN ) );
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( \__( 'Failed to save settings', WPCA_TEXT_DOMAIN ) );
             }
         }
     }
@@ -370,8 +387,8 @@ class AJAX {
         }
         
         $settings = wpca_get_settings();
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $settings );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $settings );
         }
     }
 
@@ -389,12 +406,12 @@ class AJAX {
         $result = $reset->reset_settings();
         
         if ( $result['success'] ) {
-            if ( function_exists( '\wp_send_json_success' ) ) {
-                \wp_send_json_success( $result );
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( $result );
             }
         } else {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( $result['message'] );
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( $result['message'] );
             }
         }
     }
@@ -411,8 +428,8 @@ class AJAX {
         
         $user_roles = new User_Roles();
         $roles = $user_roles->get_user_roles();
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $roles );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $roles );
         }
     }
 
@@ -427,12 +444,12 @@ class AJAX {
         }
         
         $role_slug = isset( $_POST['role_slug'] ) ? sanitize_text_field( $_POST['role_slug'] ) : '';
-        $capabilities = isset( $_POST['capabilities'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['capabilities'] ) : $_POST['capabilities'] ) : array();
+        $capabilities = isset( $_POST['capabilities'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['capabilities'] ) : $_POST['capabilities'] ) : array();
         
         $user_roles = new User_Roles();
         $result = $user_roles->update_role_capabilities( $role_slug, $capabilities );
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $result );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $result );
         }
     }
 
@@ -448,18 +465,18 @@ class AJAX {
         
         $role_name = isset( $_POST['role_name'] ) ? sanitize_text_field( $_POST['role_name'] ) : '';
         $role_slug = isset( $_POST['role_slug'] ) ? sanitize_text_field( $_POST['role_slug'] ) : '';
-        $capabilities = isset( $_POST['capabilities'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['capabilities'] ) : $_POST['capabilities'] ) : array();
+        $capabilities = isset( $_POST['capabilities'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['capabilities'] ) : $_POST['capabilities'] ) : array();
         
         $user_roles = new User_Roles();
         $result = $user_roles->create_role( $role_slug, $role_name, $capabilities );
         
         if ( $result['success'] ) {
-            if ( function_exists( '\wp_send_json_success' ) ) {
-                \wp_send_json_success( $result );
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( $result );
             }
         } else {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( $result['message'] );
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( $result['message'] );
             }
         }
     }
@@ -480,12 +497,12 @@ class AJAX {
         $result = $user_roles->delete_role( $role_slug );
         
         if ( $result['success'] ) {
-            if ( function_exists( '\wp_send_json_success' ) ) {
-                \wp_send_json_success( $result );
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( $result );
             }
         } else {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( $result['message'] );
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( $result['message'] );
             }
         }
     }
@@ -508,12 +525,12 @@ class AJAX {
         $result = $user_roles->duplicate_role( $role_slug, $new_role_name, $new_role_slug );
         
         if ( $result['success'] ) {
-            if ( function_exists( '\wp_send_json_success' ) ) {
-                \wp_send_json_success( $result );
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( $result );
             }
         } else {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( $result['message'] );
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( $result['message'] );
             }
         }
     }
@@ -530,8 +547,8 @@ class AJAX {
         
         $menu_manager = new Menu_Manager();
         $menu_items = $menu_manager->get_menu_items();
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $menu_items );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $menu_items );
         }
     }
 
@@ -545,18 +562,18 @@ class AJAX {
             return;
         }
         
-        $menu_items = isset( $_POST['menu_items'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['menu_items'] ) : $_POST['menu_items'] ) : array();
+        $menu_items = isset( $_POST['menu_items'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['menu_items'] ) : $_POST['menu_items'] ) : array();
         
         $menu_manager = new Menu_Manager();
         $result = $menu_manager->save_menu_items( $menu_items );
         
         if ( $result['success'] ) {
-            if ( function_exists( '\wp_send_json_success' ) ) {
-                \wp_send_json_success( $result );
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( $result );
             }
         } else {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( $result['message'] );
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( $result['message'] );
             }
         }
     }
@@ -573,8 +590,8 @@ class AJAX {
         
         $database = new Database();
         $result = $database->optimize_database();
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $result );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $result );
         }
     }
 
@@ -590,8 +607,8 @@ class AJAX {
         
         $performance = new Performance();
         $result = $performance->clear_cache();
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $result );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $result );
         }
     }
 
@@ -607,8 +624,8 @@ class AJAX {
         
         $performance = new Performance();
         $stats = $performance->get_performance_stats();
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $stats );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $stats );
         }
     }
 
@@ -626,12 +643,12 @@ class AJAX {
         $result = $reset->reset_plugin();
         
         if ( $result['success'] ) {
-            if ( function_exists( '\wp_send_json_success' ) ) {
-                \wp_send_json_success( $result );
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( $result );
             }
         } else {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( $result['message'] );
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( $result['message'] );
             }
         }
     }
@@ -648,8 +665,8 @@ class AJAX {
         
         $database = new Database();
         $info = $database->get_database_info();
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $info );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $info );
         }
     }
 
@@ -663,18 +680,18 @@ class AJAX {
             return;
         }
         
-        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
+        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
         
         $database = new Database();
         $result = $database->backup_database( $options );
         
         if ( $result['success'] ) {
-            if ( function_exists( '\wp_send_json_success' ) ) {
-                \wp_send_json_success( $result );
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( $result );
             }
         } else {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( $result['message'] );
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( $result['message'] );
             }
         }
     }
@@ -695,12 +712,12 @@ class AJAX {
         $result = $database->restore_database( $backup_file );
         
         if ( $result['success'] ) {
-            if ( function_exists( '\wp_send_json_success' ) ) {
-                \wp_send_json_success( $result );
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( $result );
             }
         } else {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( $result['message'] );
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( $result['message'] );
             }
         }
     }
@@ -717,8 +734,8 @@ class AJAX {
         
         $database = new Database();
         $backups = $database->get_database_backups();
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $backups );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $backups );
         }
     }
 
@@ -738,12 +755,12 @@ class AJAX {
         $result = $database->delete_database_backup( $backup_file );
         
         if ( $result['success'] ) {
-            if ( function_exists( '\wp_send_json_success' ) ) {
-                \wp_send_json_success( $result );
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( $result );
             }
         } else {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( $result['message'] );
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( $result['message'] );
             }
         }
     }
@@ -760,8 +777,8 @@ class AJAX {
         
         $resources = new Resources();
         $stats = $resources->get_resources_stats();
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $stats );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $stats );
         }
     }
 
@@ -779,8 +796,8 @@ class AJAX {
         
         $resources = new Resources();
         $details = $resources->get_resource_details( $type );
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $details );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $details );
         }
     }
 
@@ -794,12 +811,12 @@ class AJAX {
             return;
         }
         
-        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
+        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
         
         $resources = new Resources();
         $result = $resources->optimize_resources( $options );
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $result );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $result );
         }
     }
 
@@ -818,8 +835,8 @@ class AJAX {
         
         $resources = new Resources();
         $result = $resources->disable_resource( $type, $handle );
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $result );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $result );
         }
     }
 
@@ -838,8 +855,8 @@ class AJAX {
         
         $resources = new Resources();
         $result = $resources->enable_resource( $type, $handle );
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $result );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $result );
         }
     }
 
@@ -853,18 +870,18 @@ class AJAX {
             return;
         }
         
-        $settings = isset( $_POST['settings'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
+        $settings = isset( $_POST['settings'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
         
         $menu_customizer = new Menu_Customizer();
         $result = $menu_customizer->save_settings( $settings );
         
         if ( $result ) {
-            if ( function_exists( '\wp_send_json_success' ) ) {
-                \wp_send_json_success( array( 'message' => \__( 'Menu customizer settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( array( 'message' => \__( 'Menu customizer settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
             }
         } else {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( \__( 'Failed to save menu customizer settings', WPCA_TEXT_DOMAIN ) );
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( \__( 'Failed to save menu customizer settings', WPCA_TEXT_DOMAIN ) );
             }
         }
     }
@@ -881,8 +898,8 @@ class AJAX {
         
         $menu_customizer = new Menu_Customizer();
         $settings = $menu_customizer->get_settings();
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $settings );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $settings );
         }
     }
 
@@ -900,12 +917,12 @@ class AJAX {
         $result = $menu_customizer->reset_settings();
         
         if ( $result ) {
-            if ( function_exists( '\wp_send_json_success' ) ) {
-                \wp_send_json_success( array( 'message' => \__( 'Menu customizer settings reset to default', WPCA_TEXT_DOMAIN ) ) );
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( array( 'message' => \__( 'Menu customizer settings reset to default', WPCA_TEXT_DOMAIN ) ) );
             }
         } else {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( \__( 'Failed to reset menu customizer settings', WPCA_TEXT_DOMAIN ) );
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( \__( 'Failed to reset menu customizer settings', WPCA_TEXT_DOMAIN ) );
             }
         }
     }
@@ -920,22 +937,22 @@ class AJAX {
             return;
         }
         
-        $settings = isset( $_POST['settings'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
+        $settings = isset( $_POST['settings'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
         
         // Get current settings
-        $current_settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
+        $current_settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
         
         // Update database settings
         $current_settings['database'] = $settings;
-        $result = function_exists( '\update_option' ) ? \update_option( 'wpca_settings', $current_settings ) : false;
+        $result = function_exists( 'update_option' ) ? update_option( 'wpca_settings', $current_settings ) : false;
         
         if ( $result ) {
-            if ( function_exists( '\wp_send_json_success' ) ) {
-                \wp_send_json_success( array( 'message' => \__( 'Database settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( array( 'message' => \__( 'Database settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
             }
         } else {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( \__( 'Failed to save database settings', WPCA_TEXT_DOMAIN ) );
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( \__( 'Failed to save database settings', WPCA_TEXT_DOMAIN ) );
             }
         }
     }
@@ -951,11 +968,11 @@ class AJAX {
         }
         
         // Get database settings
-        $settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
+        $settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
         $database_settings = isset( $settings['database'] ) ? $settings['database'] : array();
         
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $database_settings );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $database_settings );
         }
     }
 
@@ -970,19 +987,19 @@ class AJAX {
         }
         
         // Get current settings
-        $current_settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
+        $current_settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
         
         // Remove database settings (reset to default)
         unset( $current_settings['database'] );
-        $result = function_exists( '\update_option' ) ? \update_option( 'wpca_settings', $current_settings ) : false;
+        $result = function_exists( 'update_option' ) ? update_option( 'wpca_settings', $current_settings ) : false;
         
         if ( $result ) {
-            if ( function_exists( '\wp_send_json_success' ) ) {
-                \wp_send_json_success( array( 'message' => \__( 'Database settings reset to default', WPCA_TEXT_DOMAIN ) ) );
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( array( 'message' => \__( 'Database settings reset to default', WPCA_TEXT_DOMAIN ) ) );
             }
         } else {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( \__( 'Failed to reset database settings', WPCA_TEXT_DOMAIN ) );
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( \__( 'Failed to reset database settings', WPCA_TEXT_DOMAIN ) );
             }
         }
     }
@@ -997,22 +1014,22 @@ class AJAX {
             return;
         }
         
-        $settings = isset( $_POST['settings'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
+        $settings = isset( $_POST['settings'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
         
         // Get current settings
-        $current_settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
+        $current_settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
         
         // Update performance settings
         $current_settings['performance'] = $settings;
-        $result = function_exists( '\update_option' ) ? \update_option( 'wpca_settings', $current_settings ) : false;
+        $result = function_exists( 'update_option' ) ? update_option( 'wpca_settings', $current_settings ) : false;
         
         if ( $result ) {
-            if ( function_exists( '\wp_send_json_success' ) ) {
-                \wp_send_json_success( array( 'message' => \__( 'Performance settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( array( 'message' => \__( 'Performance settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
             }
         } else {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( \__( 'Failed to save performance settings', WPCA_TEXT_DOMAIN ) );
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( \__( 'Failed to save performance settings', WPCA_TEXT_DOMAIN ) );
             }
         }
     }
@@ -1028,11 +1045,11 @@ class AJAX {
         }
         
         // Get performance settings
-        $settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
+        $settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
         $performance_settings = isset( $settings['performance'] ) ? $settings['performance'] : array();
         
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( $performance_settings );
+        if ( function_exists( 'wp_send_json_success' ) ) {
+            wp_send_json_success( $performance_settings );
         }
     }
 
@@ -1047,19 +1064,19 @@ class AJAX {
         }
         
         // Get current settings
-        $current_settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
+        $current_settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
         
         // Remove performance settings (reset to default)
         unset( $current_settings['performance'] );
-        $result = function_exists( '\update_option' ) ? \update_option( 'wpca_settings', $current_settings ) : false;
+        $result = function_exists( 'update_option' ) ? update_option( 'wpca_settings', $current_settings ) : false;
         
         if ( $result ) {
-            if ( function_exists( '\wp_send_json_success' ) ) {
-                \wp_send_json_success( array( 'message' => \__( 'Performance settings reset to default', WPCA_TEXT_DOMAIN ) ) );
+            if ( function_exists( 'wp_send_json_success' ) ) {
+                wp_send_json_success( array( 'message' => \__( 'Performance settings reset to default', WPCA_TEXT_DOMAIN ) ) );
             }
         } else {
-            if ( function_exists( '\wp_send_json_error' ) ) {
-                \wp_send_json_error( \__( 'Failed to reset performance settings', WPCA_TEXT_DOMAIN ) );
+            if ( function_exists( 'wp_send_json_error' ) ) {
+                wp_send_json_error( \__( 'Failed to reset performance settings', WPCA_TEXT_DOMAIN ) );
             }
         }
     }

@@ -38,13 +38,38 @@ spl_autoload_register( function( $class ) {
     // Remove namespace prefix
     $class_name = str_replace( 'WPCleanAdmin\\', '', $class );
     
-    // Convert camelCase to kebab-case and replace underscores with hyphens
-    $file_path = strtolower( preg_replace( '/(?<!^)[A-Z]/', '-$0', $class_name ) );
-    $file_path = str_replace( '_', '-', $file_path );
+    // Split namespace parts
+    $namespace_parts = explode( '\\', $class_name );
+    $class_basename = array_pop( $namespace_parts );
+    
+    // Convert camelCase to kebab-case and replace underscores with hyphens for class name
+    $class_file = strtolower( preg_replace( '/(?<!^)[A-Z]/', '-$0', $class_basename ) );
+    $class_file = str_replace( '_', '-', $class_file );
+    
+    // Build directory path from namespace parts
+    $dir_path = '';
+    if ( ! empty( $namespace_parts ) ) {
+        foreach ( $namespace_parts as $part ) {
+            $dir_path .= strtolower( $part ) . '/';
+        }
+    }
     
     // Build full file path
     $plugin_dir = defined( 'WPCA_PLUGIN_DIR' ) ? WPCA_PLUGIN_DIR : dirname( dirname( __FILE__ ) ) . '/';
-    $file = $plugin_dir . 'includes/class-wpca-' . $file_path . '.php';
+    
+    // Check for files in subdirectories
+    // For AJAX handlers
+    if ( ! empty( $namespace_parts ) && $namespace_parts[0] === 'AJAX' ) {
+        $file = $plugin_dir . 'includes/' . $dir_path . $class_file . '-ajax.php';
+    } 
+    // For Settings handlers
+    elseif ( ! empty( $namespace_parts ) && $namespace_parts[0] === 'Settings' ) {
+        $file = $plugin_dir . 'includes/' . $dir_path . $class_file . '.php';
+    } 
+    // For main classes
+    else {
+        $file = $plugin_dir . 'includes/class-wpca-' . $class_file . '.php';
+    }
     
     // Check if file exists and include it
     if ( file_exists( $file ) ) {

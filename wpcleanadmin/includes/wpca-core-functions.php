@@ -150,8 +150,9 @@ function wpca_current_user_can() {
  * @return string Full plugin URL
  */
 function wpca_get_plugin_url( $path = '' ) {
-    $url = rtrim(\WPCA_PLUGIN_URL, '/');
-    return $url . '/' . ltrim($path, '/');
+    $base_url = defined( 'WPCA_PLUGIN_URL' ) ? WPCA_PLUGIN_URL : '';
+    $url = rtrim( $base_url, '/' );
+    return $url . '/' . ltrim( $path, '/' );
 }
 
 /**
@@ -161,7 +162,8 @@ function wpca_get_plugin_url( $path = '' ) {
  * @return string Full plugin directory path
  */
 function wpca_get_plugin_dir( $path = '' ) {
-    $dir = rtrim( \WPCA_PLUGIN_DIR, '/' );
+    $base_dir = defined( 'WPCA_PLUGIN_DIR' ) ? WPCA_PLUGIN_DIR : dirname( dirname( __FILE__ ) ) . '/';
+    $dir = rtrim( $base_dir, '/' );
     return $dir . '/' . ltrim( $path, '/' );
 }
 
@@ -221,7 +223,7 @@ function wpca_admin_notice( $message, $type = 'info' ) {
  * @return string Plugin version
  */
 function wpca_get_version() {
-    return \WPCA_VERSION;
+    return defined( 'WPCA_VERSION' ) ? WPCA_VERSION : '1.8.0';
 }
 
 /**
@@ -325,7 +327,7 @@ function wpca_get_menu_slug() {
  * @return string Plugin text domain
  */
 function wpca_get_text_domain() {
-    return \WPCA_TEXT_DOMAIN;
+    return defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
 }
 
 /**
@@ -348,20 +350,21 @@ function wpca_is_wp_version_gte( $version ) {
 function wpca_get_admin_page_title( $tab = '' ) {
     $translate = function_exists( '__' ) ? '\__' : function( $text ) { return $text; };
     
+    $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
     $titles = array(
-        'dashboard' => $translate( 'WP Clean Admin Dashboard', \WPCA_TEXT_DOMAIN ),
-        'settings' => $translate( 'WP Clean Admin Settings', \WPCA_TEXT_DOMAIN ),
-        'database' => $translate( 'Database Optimization', \WPCA_TEXT_DOMAIN ),
-        'performance' => $translate( 'Performance Settings', \WPCA_TEXT_DOMAIN ),
-        'menu' => $translate( 'Menu Management', \WPCA_TEXT_DOMAIN ),
-        'permissions' => $translate( 'Permissions', \WPCA_TEXT_DOMAIN ),
-        'login' => $translate( 'Login Customization', \WPCA_TEXT_DOMAIN ),
-        'cleanup' => $translate( 'Cleanup', \WPCA_TEXT_DOMAIN ),
-        'resources' => $translate( 'Resource Optimization', \WPCA_TEXT_DOMAIN ),
-        'reset' => $translate( 'Reset Settings', \WPCA_TEXT_DOMAIN )
+        'dashboard' => $translate( 'WP Clean Admin Dashboard', $text_domain ),
+        'settings' => $translate( 'WP Clean Admin Settings', $text_domain ),
+        'database' => $translate( 'Database Optimization', $text_domain ),
+        'performance' => $translate( 'Performance Settings', $text_domain ),
+        'menu' => $translate( 'Menu Management', $text_domain ),
+        'permissions' => $translate( 'Permissions', $text_domain ),
+        'login' => $translate( 'Login Customization', $text_domain ),
+        'cleanup' => $translate( 'Cleanup', $text_domain ),
+        'resources' => $translate( 'Resource Optimization', $text_domain ),
+        'reset' => $translate( 'Reset Settings', $text_domain )
     );
     
-    return isset( $titles[ $tab ] ) ? $titles[ $tab ] : $translate( 'WP Clean Admin', \WPCA_TEXT_DOMAIN );
+    return isset( $titles[ $tab ] ) ? $titles[ $tab ] : $translate( 'WP Clean Admin', $text_domain );
 }
 
 

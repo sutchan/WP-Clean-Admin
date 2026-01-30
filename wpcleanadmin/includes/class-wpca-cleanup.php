@@ -436,7 +436,7 @@ class Cleanup {
             
             $deleted = 0;
             foreach ( $duplicates as $comment ) {
-                wp_delete_comment( $comment->comment_ID, true );
+                \wp_delete_comment( $comment->comment_ID, true );
                 $deleted++;
             }
             
@@ -464,7 +464,7 @@ class Cleanup {
         
         $deleted = 0;
         foreach ( $comment_ids as $comment_id ) {
-            wp_delete_comment( $comment_id, true );
+            \wp_delete_comment( $comment_id, true );
             $deleted++;
         }
         
@@ -492,7 +492,7 @@ class Cleanup {
         
         $deleted = 0;
         foreach ( $comment_ids as $comment_id ) {
-            wp_delete_comment( $comment_id, true );
+            \wp_delete_comment( $comment_id, true );
             $deleted++;
         }
         
@@ -830,7 +830,7 @@ class Cleanup {
                 $end_index = count( $group );
                 
                 for ( $i = $start_index; $i < $end_index; $i++ ) {
-                    wp_delete_post( $group[ $i ]->ID, true );
+                    \wp_delete_post( $group[ $i ]->ID, true );
                     $deleted_count++;
                 }
             }

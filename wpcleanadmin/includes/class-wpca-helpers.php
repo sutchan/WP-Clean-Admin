@@ -200,8 +200,8 @@ class Helpers {
      */
     public function is_network_activated() {
         if ( ! function_exists( 'is_plugin_active_for_network' ) ) {
-            if ( defined( 'ABSPATH' ) ) {
-                require_once ABSPATH . '/wp-admin/includes/plugin.php';
+            if ( defined( '\ABSPATH' ) ) {
+                require_once \ABSPATH . '/wp-admin/includes/plugin.php';
             } else {
                 return false;
             }
