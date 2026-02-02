@@ -80,7 +80,7 @@ class Dashboard {
                 ),
                 'server' => array(
                     'php' => PHP_VERSION,
-                    'mysql' => \$GLOBALS['wpdb']->db_version(),
+                    'mysql' => $GLOBALS['wpdb']->db_version(),
                     'server_software' => $_SERVER['SERVER_SOFTWARE']
                 ),
                 'theme' => array(

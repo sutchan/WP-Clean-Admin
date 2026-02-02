@@ -2,13 +2,13 @@
 /**
  * WPCleanAdmin Core Class
  *
- * @package WPCleanAdmin
+ * @package WPCleanAdmin\Modules\Core\Classes
  * @version 1.8.0
  * @author Sut
  * @author URI: https://github.com/sutchan
  * @since 1.7.15
  */
-namespace WPCleanAdmin;
+namespace WPCleanAdmin\Modules\Core\Classes;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -177,6 +177,68 @@ class Core {
                 \error_log( 'WPCA Modular Module Init Error: ' . $e->getMessage() );
             }
         }
+        
+        // Load core modules
+        try {
+            $class_name = 'WPCleanAdmin\\Modules\\Core\\Classes\\Error_Handler';
+            if ( class_exists( $class_name ) ) {
+                if ( method_exists( $class_name, 'getInstance' ) ) {
+                    $class_name::getInstance();
+                }
+            }
+        } catch ( \Exception $e ) {
+            if ( function_exists( 'error_log' ) ) {
+                \error_log( 'WPCA Core Module Init Error: ' . $e->getMessage() );
+            }
+        }
+        
+        // Load admin modules
+        try {
+            $admin_modules = array(
+                'Dashboard',
+                'Menu_Manager',
+                'Menu_Customizer',
+                'Permissions',
+                'User_Roles',
+                'Login'
+            );
+            
+            foreach ( $admin_modules as $module ) {
+                $class_name = 'WPCleanAdmin\\Modules\\Admin\\Classes\\' . $module;
+                if ( class_exists( $class_name ) ) {
+                    if ( method_exists( $class_name, 'getInstance' ) ) {
+                        $class_name::getInstance();
+                    }
+                }
+            }
+        } catch ( \Exception $e ) {
+            if ( function_exists( 'error_log' ) ) {
+                \error_log( 'WPCA Admin Module Init Error: ' . $e->getMessage() );
+            }
+        }
+        
+        // Load utility modules
+        try {
+            $utility_modules = array(
+                'Cache',
+                'Helpers',
+                'i18n',
+                'Resources'
+            );
+            
+            foreach ( $utility_modules as $module ) {
+                $class_name = 'WPCleanAdmin\\Modules\\Utilities\\Classes\\' . $module;
+                if ( class_exists( $class_name ) ) {
+                    if ( method_exists( $class_name, 'getInstance' ) ) {
+                        $class_name::getInstance();
+                    }
+                }
+            }
+        } catch ( \Exception $e ) {
+            if ( function_exists( 'error_log' ) ) {
+                \error_log( 'WPCA Utility Module Init Error: ' . $e->getMessage() );
+            }
+        }
     }
     
     /**
@@ -232,4 +294,3 @@ class Core {
         }
     }
 }
-

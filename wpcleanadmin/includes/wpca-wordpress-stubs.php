@@ -1201,6 +1201,137 @@ function remove_role( $role ) {
 }
 
 /**
+ * Delete comment
+ *
+ * @param int $comment_id Comment ID
+ * @param bool $force_delete Force delete
+ * @return bool True on success, false on failure
+ */
+function wp_delete_comment( $comment_id, $force_delete = false ) {
+    return false;
+}
+
+/**
+ * Get cron array
+ *
+ * @return array Cron events array
+ */
+function _get_cron_array() {
+    return array();
+}
+
+/**
+ * Unschedule event
+ *
+ * @param int $timestamp Timestamp
+ * @param string $hook Hook name
+ * @param array $args Arguments
+ * @return bool True on success, false on failure
+ */
+function wp_unschedule_event( $timestamp, $hook, $args = array() ) {
+    return false;
+}
+
+/**
+ * Delete attachment
+ *
+ * @param int $post_id Post ID
+ * @param bool $force_delete Force delete
+ * @return mixed Deleted post or false
+ */
+function wp_delete_attachment( $post_id, $force_delete = false ) {
+    return false;
+}
+
+/**
+ * Delete post
+ *
+ * @param int $post_id Post ID
+ * @param bool $force_delete Force delete
+ * @return mixed Deleted post or false
+ */
+function wp_delete_post( $post_id, $force_delete = false ) {
+    return false;
+}
+
+/**
+ * Send JSON error response and exit
+ *
+ * @param mixed $response Response data
+ * @param int $status_code HTTP status code
+ */
+function wp_send_json_error( $response = null, $status_code = null ) {
+}
+
+/**
+ * Send JSON success response and exit
+ *
+ * @param mixed $response Response data
+ */
+function wp_send_json_success( $response = null ) {
+}
+
+/**
+ * Count posts of a specific post type
+ *
+ * @param string $type Post type
+ * @param string $perm Permission
+ * @return object Post counts
+ */
+function wp_count_posts( $type = 'post', $perm = '' ) {
+    return (object) array();
+}
+
+/**
+ * Count comments
+ *
+ * @return object Comment counts
+ */
+function wp_count_comments() {
+    return (object) array();
+}
+
+/**
+ * Count users
+ *
+ * @param string $strategy Counting strategy
+ * @return array User counts
+ */
+function count_users( $strategy = 'time' ) {
+    return array();
+}
+
+/**
+ * Get all plugins
+ *
+ * @return array Plugins
+ */
+function get_plugins( $plugin_folder = '' ) {
+    return array();
+}
+
+/**
+ * Get all themes
+ *
+ * @param array $args Arguments
+ * @return array Themes
+ */
+function wp_get_themes( $args = array() ) {
+    return array();
+}
+
+/**
+ * Get theme data
+ *
+ * @param string $stylesheet Stylesheet name
+ * @param string $theme_root Theme root
+ * @return object Theme data
+ */
+function wp_get_theme( $stylesheet = null, $theme_root = null ) {
+    return (object) array();
+}
+
+/**
  * WP_Roles class for IDE support
  */
 class WP_Roles {

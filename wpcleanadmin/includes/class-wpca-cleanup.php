@@ -659,7 +659,7 @@ class Cleanup {
      * @return array Cron events array
      */
     private function _get_cron_array() {
-        if ( function_exists( '\_get_cron_array' ) ) {
+        if ( function_exists( '_get_cron_array' ) ) {
             return \_get_cron_array();
         }
         return array();
@@ -673,7 +673,7 @@ class Cleanup {
      * @param array $args Hook arguments
      */
     private function wp_unschedule_event( $timestamp, $hook, $args = array() ) {
-        if ( function_exists( '\wp_unschedule_event' ) ) {
+        if ( function_exists( 'wp_unschedule_event' ) ) {
             \wp_unschedule_event( $timestamp, $hook, $args );
         }
     }
@@ -686,7 +686,7 @@ class Cleanup {
      * @return mixed Deleted post or false
      */
     private function wp_delete_attachment( $post_id, $force_delete = false ) {
-        if ( function_exists( '\wp_delete_attachment' ) ) {
+        if ( function_exists( 'wp_delete_attachment' ) ) {
             return \wp_delete_attachment( $post_id, $force_delete );
         }
         return false;
