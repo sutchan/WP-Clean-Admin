@@ -65,12 +65,21 @@ spl_autoload_register( function( $class ) {
     
     // Check for modular structure first
     if ( ! empty( $namespace_parts ) && $namespace_parts[0] === 'Modules' ) {
+        // Rebuild dir path without 'modules' prefix
+        $modular_dir_path = '';
+        if ( count( $namespace_parts ) > 1 ) {
+            $modular_parts = array_slice( $namespace_parts, 1 ); // Remove 'Modules' part
+            foreach ( $modular_parts as $part ) {
+                $modular_dir_path .= strtolower( $part ) . '/';
+            }
+        }
+        
         // For modular structure
-        $file_locations[] = $plugin_dir . 'includes/' . $dir_path . 'class-wpca-' . $class_file . '.php';
-        $file_locations[] = $plugin_dir . 'includes/' . $dir_path . $class_file . '.php';
+        $file_locations[] = $plugin_dir . 'includes/modules/' . $modular_dir_path . 'class-wpca-' . $class_file . '.php';
+        $file_locations[] = $plugin_dir . 'includes/modules/' . $modular_dir_path . $class_file . '.php';
         
         // For modular classes without prefix
-        $file_locations[] = $plugin_dir . 'includes/' . $dir_path . $class_basename . '.php';
+        $file_locations[] = $plugin_dir . 'includes/modules/' . $modular_dir_path . $class_basename . '.php';
     } 
     // For AJAX handlers
     elseif ( ! empty( $namespace_parts ) && $namespace_parts[0] === 'AJAX' ) {
