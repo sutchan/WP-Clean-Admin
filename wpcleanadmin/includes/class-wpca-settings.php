@@ -21,6 +21,33 @@ if ( file_exists( dirname( __FILE__ ) . '/settings/menu-customization.php' ) ) {
     require_once dirname( __FILE__ ) . '/settings/menu-customization.php';
 }
 
+// Include settings fields classes
+if ( file_exists( dirname( __FILE__ ) . '/settings/fields/class-wpca-general-settings-fields.php' ) ) {
+    require_once dirname( __FILE__ ) . '/settings/fields/class-wpca-general-settings-fields.php';
+}
+
+if ( file_exists( dirname( __FILE__ ) . '/settings/fields/class-wpca-cleanup-settings-fields.php' ) ) {
+    require_once dirname( __FILE__ ) . '/settings/fields/class-wpca-cleanup-settings-fields.php';
+}
+
+if ( file_exists( dirname( __FILE__ ) . '/settings/fields/class-wpca-performance-settings-fields.php' ) ) {
+    require_once dirname( __FILE__ ) . '/settings/fields/class-wpca-performance-settings-fields.php';
+}
+
+if ( file_exists( dirname( __FILE__ ) . '/settings/fields/class-wpca-security-settings-fields.php' ) ) {
+    require_once dirname( __FILE__ ) . '/settings/fields/class-wpca-security-settings-fields.php';
+}
+
+// Include settings validation class
+if ( file_exists( dirname( __FILE__ ) . '/settings/class-wpca-settings-validation.php' ) ) {
+    require_once dirname( __FILE__ ) . '/settings/class-wpca-settings-validation.php';
+}
+
+// Include settings scripts class
+if ( file_exists( dirname( __FILE__ ) . '/settings/class-wpca-settings-scripts.php' ) ) {
+    require_once dirname( __FILE__ ) . '/settings/class-wpca-settings-scripts.php';
+}
+
 // WordPress stubs are loaded in autoload.php for IDE compatibility only
 
 class Settings {
@@ -106,7 +133,7 @@ class Settings {
             \add_settings_field(
                 'wpca_clean_admin_bar',
                 \__( 'Clean Admin Bar', $text_domain ),
-                array( $this, 'render_clean_admin_bar_field' ),
+                array( '\WPCleanAdmin\Settings\Fields\General_Settings_Fields', 'render_clean_admin_bar_field' ),
                 'wp-clean-admin',
                 'wpca_general_settings'
             );
@@ -114,7 +141,7 @@ class Settings {
             \add_settings_field(
                 'wpca_remove_wp_logo',
                 \__( 'Remove WordPress Logo', $text_domain ),
-                array( $this, 'render_remove_wp_logo_field' ),
+                array( '\WPCleanAdmin\Settings\Fields\General_Settings_Fields', 'render_remove_wp_logo_field' ),
                 'wp-clean-admin',
                 'wpca_general_settings'
             );
@@ -125,7 +152,7 @@ class Settings {
             \add_settings_field(
                 'wpca_remove_dashboard_widgets',
                 \__( 'Remove Dashboard Widgets', $text_domain ),
-                array( $this, 'render_remove_dashboard_widgets_field' ),
+                array( '\WPCleanAdmin\Settings\Fields\Cleanup_Settings_Fields', 'render_remove_dashboard_widgets_field' ),
                 'wp-clean-admin',
                 'wpca_cleanup_settings'
             );
@@ -133,7 +160,7 @@ class Settings {
             \add_settings_field(
                 'wpca_simplify_admin_menu',
                 \__( 'Simplify Admin Menu', $text_domain ),
-                array( $this, 'render_simplify_admin_menu_field' ),
+                array( '\WPCleanAdmin\Settings\Fields\Cleanup_Settings_Fields', 'render_simplify_admin_menu_field' ),
                 'wp-clean-admin',
                 'wpca_cleanup_settings'
             );
@@ -141,7 +168,7 @@ class Settings {
             \add_settings_field(
                 'wpca_menu_customization',
                 \__( 'Menu Customization', $text_domain ),
-                array( $this, 'render_menu_customization_field' ),
+                array( '\WPCleanAdmin\Settings\Fields\Cleanup_Settings_Fields', 'render_menu_customization_field' ),
                 'wp-clean-admin',
                 'wpca_cleanup_settings'
             );
@@ -152,7 +179,7 @@ class Settings {
             \add_settings_field(
                 'wpca_optimize_database',
                 \__( 'Optimize Database', $text_domain ),
-                array( $this, 'render_optimize_database_field' ),
+                array( '\WPCleanAdmin\Settings\Fields\Performance_Settings_Fields', 'render_optimize_database_field' ),
                 'wp-clean-admin',
                 'wpca_performance_settings'
             );
@@ -160,7 +187,7 @@ class Settings {
             \add_settings_field(
                 'wpca_clean_transients',
                 \__( 'Clean Transients', $text_domain ),
-                array( $this, 'render_clean_transients_field' ),
+                array( '\WPCleanAdmin\Settings\Fields\Performance_Settings_Fields', 'render_clean_transients_field' ),
                 'wp-clean-admin',
                 'wpca_performance_settings'
             );
@@ -171,7 +198,7 @@ class Settings {
             \add_settings_field(
                 'wpca_hide_wp_version',
                 \__( 'Hide WordPress Version', $text_domain ),
-                array( $this, 'render_hide_wp_version_field' ),
+                array( '\WPCleanAdmin\Settings\Fields\Security_Settings_Fields', 'render_hide_wp_version_field' ),
                 'wp-clean-admin',
                 'wpca_security_settings'
             );
@@ -179,7 +206,7 @@ class Settings {
             \add_settings_field(
                 'wpca_disable_xmlrpc',
                 \__( 'Disable XML-RPC', $text_domain ),
-                array( $this, 'render_disable_xmlrpc_field' ),
+                array( '\WPCleanAdmin\Settings\Fields\Security_Settings_Fields', 'render_disable_xmlrpc_field' ),
                 'wp-clean-admin',
                 'wpca_security_settings'
             );
@@ -187,7 +214,7 @@ class Settings {
             \add_settings_field(
                 'wpca_restrict_rest_api',
                 \__( 'Restrict REST API Access', $text_domain ),
-                array( $this, 'render_restrict_rest_api_field' ),
+                array( '\WPCleanAdmin\Settings\Fields\Security_Settings_Fields', 'render_restrict_rest_api_field' ),
                 'wp-clean-admin',
                 'wpca_security_settings'
             );
@@ -195,7 +222,7 @@ class Settings {
             \add_settings_field(
                 'wpca_restrict_admin_access',
                 \__( 'Restrict Admin Access', $text_domain ),
-                array( $this, 'render_restrict_admin_access_field' ),
+                array( '\WPCleanAdmin\Settings\Fields\Security_Settings_Fields', 'render_restrict_admin_access_field' ),
                 'wp-clean-admin',
                 'wpca_security_settings'
             );
@@ -203,7 +230,7 @@ class Settings {
         
         // Register setting
         if ( function_exists( 'register_setting' ) ) {
-            \register_setting( 'wp-clean-admin', 'wpca_settings', array( $this, 'validate_settings' ) );
+            \register_setting( 'wp-clean-admin', 'wpca_settings', array( '\WPCleanAdmin\Settings\Settings_Validation', 'validate_settings' ) );
         }
     }
     
@@ -225,441 +252,6 @@ class Settings {
     public function render_security_settings_section() {
         $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
         echo '<p>' . \__( 'Configure security settings for WP Clean Admin plugin.', $text_domain ) . '</p>';
-    }
-    
-    public function render_clean_admin_bar_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $clean_admin_bar = isset( $settings['general']['clean_admin_bar'] ) ? $settings['general']['clean_admin_bar'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[general][clean_admin_bar]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $clean_admin_bar, 1, false ) : ( $clean_admin_bar ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_clean_admin_bar"> ' . \__( 'Remove unnecessary items from the admin bar.', $text_domain ) . '</label>';
-    }
-    
-    public function render_remove_wp_logo_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $remove_wp_logo = isset( $settings['general']['remove_wp_logo'] ) ? $settings['general']['remove_wp_logo'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[general][remove_wp_logo]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $remove_wp_logo, 1, false ) : ( $remove_wp_logo ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_remove_wp_logo"> ' . \__( 'Remove WordPress logo from admin bar.', $text_domain ) . '</label>';
-    }
-    
-    public function render_remove_dashboard_widgets_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $remove_dashboard_widgets = isset( $settings['menu']['remove_dashboard_widgets'] ) ? $settings['menu']['remove_dashboard_widgets'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[menu][remove_dashboard_widgets]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $remove_dashboard_widgets, 1, false ) : ( $remove_dashboard_widgets ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_remove_dashboard_widgets"> ' . \__( 'Remove unnecessary dashboard widgets.', $text_domain ) . '</label>';
-    }
-    
-    public function render_simplify_admin_menu_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $simplify_admin_menu = isset( $settings['menu']['simplify_admin_menu'] ) ? $settings['menu']['simplify_admin_menu'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[menu][simplify_admin_menu]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $simplify_admin_menu, 1, false ) : ( $simplify_admin_menu ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_simplify_admin_menu"> ' . \__( 'Simplify admin menu by removing unnecessary items.', $text_domain ) . '</label>';
-    }
-    
-    public function render_menu_customization_field() {
-        // Call menu customization render function from separate file
-        if ( class_exists( '\WPCleanAdmin\Settings\Menu_Customization' ) ) {
-            \WPCleanAdmin\Settings\Menu_Customization::render_menu_customization_field();
-        }
-        
-        return;
-        
-        // Original code moved to separate file
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        // Get menu manager instance
-        $menu_manager = \WPCleanAdmin\Menu_Manager::getInstance();
-        $menu_items = $menu_manager->get_menu_items();
-        
-        // Get current settings
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $menu_settings = isset( $settings['menu'] ) ? $settings['menu'] : array();
-        $menu_items_settings = isset( $menu_settings['menu_items'] ) ? $menu_settings['menu_items'] : array();
-        $menu_order = isset( $menu_settings['menu_order'] ) ? $menu_settings['menu_order'] : array();
-        
-        ?>
-        <div class="wpca-menu-customization">
-            <p><?php echo \esc_html( \__( 'Customize admin menu items and their order.', $text_domain ) ); ?></p>
-            
-            <div class="wpca-menu-items">
-                <div class="wpca-menu-items-header">
-                    <h4><?php echo \esc_html( \__( 'Menu Items', $text_domain ) ); ?></h4>
-                    <div class="wpca-menu-items-actions">
-                        <button type="button" class="button button-small" id="wpca-select-all-menu-items">
-                            <?php echo \esc_html( \__( 'Select All', $text_domain ) ); ?>
-                        </button>
-                        <button type="button" class="button button-small" id="wpca-deselect-all-menu-items">
-                            <?php echo \esc_html( \__( 'Deselect All', $text_domain ) ); ?>
-                        </button>
-                    </div>
-                </div>
-                <div class="wpca-menu-tree">
-                    <?php foreach ( $menu_items as $menu_item ) : ?>
-                        <div class="wpca-menu-item wpca-menu-item-level-1">
-                            <div class="wpca-menu-item-header">
-                                <input type="checkbox" name="wpca_settings[menu][menu_items][<?php echo \esc_attr( $menu_item['slug'] ); ?>]" value="1" <?php echo ( isset( $menu_items_settings[$menu_item['slug']] ) && $menu_items_settings[$menu_item['slug']] ) ? 'checked="checked"' : ''; ?> />
-                                <label><?php echo \esc_html( $menu_item['title'] ); ?></label>
-                                <span class="wpca-menu-item-slug"><?php echo \esc_html( $menu_item['slug'] ); ?></span>
-                                <span class="wpca-menu-item-toggle">鈻?/span>
-                            </div>
-                            
-                            <?php if ( ! empty( $menu_item['submenu'] ) ) : ?>
-                                <div class="wpca-submenu-items">
-                                    <?php foreach ( $menu_item['submenu'] as $submenu_item ) : ?>
-                                        <div class="wpca-menu-item wpca-menu-item-level-2">
-                                            <input type="checkbox" name="wpca_settings[menu][menu_items][<?php echo \esc_attr( $submenu_item['slug'] ); ?>]" value="1" <?php echo ( isset( $menu_items_settings[$submenu_item['slug']] ) && $menu_items_settings[$submenu_item['slug']] ) ? 'checked="checked"' : ''; ?> />
-                                            <label><?php echo \esc_html( $submenu_item['title'] ); ?></label>
-                                            <span class="wpca-menu-item-slug"><?php echo \esc_html( $submenu_item['slug'] ); ?></span>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-            
-            <div class="wpca-menu-order">
-                <div class="wpca-menu-order-header">
-                    <h4><?php echo \esc_html( \__( 'Menu Order', $text_domain ) ); ?></h4>
-                    <div class="wpca-menu-order-actions">
-                        <button type="button" class="button button-small" id="wpca-reset-menu-order">
-                            <?php echo \esc_html( \__( 'Reset to Default Order', $text_domain ) ); ?>
-                        </button>
-                    </div>
-                </div>
-                <p><?php echo \esc_html( \__( 'Drag and drop to reorder menu items:', $text_domain ) ); ?></p>
-                <div class="wpca-menu-order-list" id="wpca-menu-order-list">
-                    <?php foreach ( $menu_items as $menu_item ) : ?>
-                        <div class="wpca-menu-order-item" data-menu-slug="<?php echo \esc_attr( $menu_item['slug'] ); ?>">
-                            <span class="wpca-menu-order-handle">鈽?/span>
-                            <span class="wpca-menu-order-title"><?php echo \esc_html( $menu_item['title'] ); ?></span>
-                            <input type="hidden" name="wpca_settings[menu][menu_order][]" value="<?php echo \esc_attr( $menu_item['slug'] ); ?>" />
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        </div>
-        
-        <style type="text/css">
-            .wpca-menu-customization {
-                background: #f8f9fa;
-                padding: 15px;
-                border: 1px solid #e1e1e1;
-                border-radius: 6px;
-            }
-            
-            .wpca-menu-items {
-                margin-bottom: 20px;
-            }
-            
-            .wpca-menu-items-header,
-            .wpca-menu-order-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 10px;
-            }
-            
-            .wpca-menu-items-actions,
-            .wpca-menu-order-actions {
-                display: flex;
-                gap: 5px;
-            }
-            
-            .wpca-menu-tree {
-                background: #fff;
-                border: 1px solid #e1e1e1;
-                border-radius: 4px;
-                padding: 10px;
-                max-height: 300px;
-                overflow-y: auto;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            }
-            
-            .wpca-menu-item {
-                margin-bottom: 10px;
-            }
-            
-            .wpca-menu-item-header {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                padding: 8px;
-                background: #f5f5f5;
-                border-radius: 4px;
-                cursor: pointer;
-                transition: all 0.2s ease;
-            }
-            
-            .wpca-menu-item-header:hover {
-                background: #e9ecef;
-            }
-            
-            .wpca-menu-item-header.expanded {
-                background: #dee2e6;
-                border-bottom-left-radius: 0;
-                border-bottom-right-radius: 0;
-            }
-            
-            .wpca-menu-item-toggle {
-                font-size: 10px;
-                color: #666;
-                transition: transform 0.3s ease;
-            }
-            
-            .wpca-menu-item-header.expanded .wpca-menu-item-toggle {
-                transform: rotate(180deg);
-            }
-            
-            .wpca-menu-item-level-2 {
-                margin-left: 30px;
-                margin-top: 5px;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                padding: 5px;
-                background: #f9f9f9;
-                border-radius: 4px;
-                transition: all 0.2s ease;
-            }
-            
-            .wpca-menu-item-level-2:hover {
-                background: #f1f3f5;
-            }
-            
-            .wpca-menu-item-slug {
-                font-size: 12px;
-                color: #666;
-                margin-left: auto;
-            }
-            
-            .wpca-submenu-items {
-                margin-top: 0;
-                background: #fff;
-                border: 1px solid #e1e1e1;
-                border-top: none;
-                border-bottom-left-radius: 4px;
-                border-bottom-right-radius: 4px;
-                padding: 10px;
-            }
-            
-            .wpca-menu-order {
-                margin-top: 20px;
-            }
-            
-            .wpca-menu-order-list {
-                background: #fff;
-                border: 1px solid #e1e1e1;
-                border-radius: 4px;
-                padding: 10px;
-                max-height: 300px;
-                overflow-y: auto;
-                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            }
-            
-            .wpca-menu-order-item {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                padding: 8px;
-                background: #f5f5f5;
-                border-radius: 4px;
-                margin-bottom: 5px;
-                cursor: move;
-                transition: all 0.2s ease;
-            }
-            
-            .wpca-menu-order-item:hover {
-                background: #e9ecef;
-            }
-            
-            .wpca-menu-order-handle {
-                font-size: 16px;
-                color: #666;
-                cursor: move;
-                user-select: none;
-            }
-            
-            .wpca-menu-order-title {
-                flex: 1;
-            }
-            
-            /* Responsive design */
-            @media screen and (max-width: 782px) {
-                .wpca-menu-item-header,
-                .wpca-menu-item-level-2,
-                .wpca-menu-order-item {
-                    flex-direction: column;
-                    align-items: flex-start;
-                    gap: 5px;
-                }
-                
-                .wpca-menu-item-slug {
-                    margin-left: 0;
-                }
-            }
-        </style>
-        
-        <script type="text/javascript">
-        (function($) {
-            'use strict';
-            
-            $(document).ready(function() {
-                // Make menu order list sortable
-                $('#wpca-menu-order-list').sortable({
-                    handle: '.wpca-menu-order-handle',
-                    update: function(event, ui) {
-                        // Update hidden input values
-                        $(this).find('.wpca-menu-order-item').each(function(index) {
-                            $(this).find('input[type="hidden"]').val($(this).data('menu-slug'));
-                        });
-                    }
-                });
-                
-                // Toggle submenu items
-                $('.wpca-menu-item-header').on('click', function(e) {
-                    // Only toggle if clicked on header or toggle icon, not checkbox
-                    if (!$(e.target).is('input[type="checkbox"]')) {
-                        var submenu = $(this).next('.wpca-submenu-items');
-                        if (submenu.length > 0) {
-                            submenu.slideToggle();
-                            $(this).toggleClass('expanded');
-                        }
-                    }
-                });
-                
-                // Select all menu items
-                $('#wpca-select-all-menu-items').on('click', function() {
-                    $('.wpca-menu-tree input[type="checkbox"]').prop('checked', true);
-                });
-                
-                // Deselect all menu items
-                $('#wpca-deselect-all-menu-items').on('click', function() {
-                    $('.wpca-menu-tree input[type="checkbox"]').prop('checked', false);
-                });
-                
-                // Reset menu order to default
-                $('#wpca-reset-menu-order').on('click', function() {
-                    var menuOrderList = $('#wpca-menu-order-list');
-                    var originalOrder = [];
-                    
-                    // Get original order from hidden inputs
-                    menuOrderList.find('.wpca-menu-order-item').each(function() {
-                        originalOrder.push($(this));
-                    });
-                    
-                    // Append items in original order
-                    menuOrderList.empty();
-                    $.each(originalOrder, function(index, item) {
-                        menuOrderList.append(item);
-                    });
-                    
-                    // Update hidden input values
-                    menuOrderList.find('.wpca-menu-order-item').each(function(index) {
-                        $(this).find('input[type="hidden"]').val($(this).data('menu-slug'));
-                    });
-                });
-                
-                // Initially collapse all submenu items
-                $('.wpca-submenu-items').hide();
-            });
-        })(jQuery);
-        </script>
-        <?php
-    }
-    
-    public function render_optimize_database_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $optimize_database = isset( $settings['performance']['optimize_database'] ) ? $settings['performance']['optimize_database'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[performance][optimize_database]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $optimize_database, 1, false ) : ( $optimize_database ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_optimize_database"> ' . \__( 'Automatically optimize database tables.', $text_domain ) . '</label>';
-    }
-    
-    public function render_clean_transients_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $clean_transients = isset( $settings['performance']['clean_transients'] ) ? $settings['performance']['clean_transients'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[performance][clean_transients]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $clean_transients, 1, false ) : ( $clean_transients ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_clean_transients"> ' . \__( 'Automatically clean expired transients.', $text_domain ) . '</label>';
-    }
-    
-    public function render_hide_wp_version_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $hide_wp_version = isset( $settings['security']['hide_wp_version'] ) ? $settings['security']['hide_wp_version'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[security][hide_wp_version]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $hide_wp_version, 1, false ) : ( $hide_wp_version ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_hide_wp_version"> ' . \__( 'Hide WordPress version information.', $text_domain ) . '</label>';
-    }
-    
-    public function render_disable_xmlrpc_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $disable_xmlrpc = isset( $settings['security']['disable_xmlrpc'] ) ? $settings['security']['disable_xmlrpc'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[security][disable_xmlrpc]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $disable_xmlrpc, 1, false ) : ( $disable_xmlrpc ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_disable_xmlrpc"> ' . \__( 'Disable XML-RPC functionality.', $text_domain ) . '</label>';
-    }
-    
-    public function render_restrict_rest_api_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $restrict_rest_api = isset( $settings['security']['restrict_rest_api'] ) ? $settings['security']['restrict_rest_api'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[security][restrict_rest_api]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $restrict_rest_api, 1, false ) : ( $restrict_rest_api ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_restrict_rest_api"> ' . \__( 'Restrict REST API access to authenticated users only.', $text_domain ) . '</label>';
-    }
-    
-    public function render_restrict_admin_access_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $restrict_admin_access = isset( $settings['security']['restrict_admin_access'] ) ? $settings['security']['restrict_admin_access'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[security][restrict_admin_access]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $restrict_admin_access, 1, false ) : ( $restrict_admin_access ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_restrict_admin_access"> ' . \__( 'Restrict admin area access to users with proper permissions.', $text_domain ) . '</label>';
     }
     
     public function render_settings_page() {
@@ -1036,98 +628,7 @@ class Settings {
         <?php
     }
     
-    public function validate_settings( $input ) {
-        $validated = array();
-        
-        // Validate general settings
-        if ( isset( $input['general'] ) ) {
-            $validated['general'] = array();
-            
-            // Validate clean admin bar setting
-            $validated['general']['clean_admin_bar'] = isset( $input['general']['clean_admin_bar'] ) ? 1 : 0;
-            
-            // Validate remove WordPress logo setting
-            $validated['general']['remove_wp_logo'] = isset( $input['general']['remove_wp_logo'] ) ? 1 : 0;
-        }
-        
-        // Validate menu settings
-        if ( isset( $input['menu'] ) ) {
-            $validated['menu'] = array();
-            
-            // Validate remove dashboard widgets setting
-            $validated['menu']['remove_dashboard_widgets'] = isset( $input['menu']['remove_dashboard_widgets'] ) ? 1 : 0;
-            
-            // Validate simplify admin menu setting
-            $validated['menu']['simplify_admin_menu'] = isset( $input['menu']['simplify_admin_menu'] ) ? 1 : 0;
-            
-            // Validate menu items setting
-            if ( isset( $input['menu']['menu_items'] ) ) {
-                $validated['menu']['menu_items'] = $input['menu']['menu_items'];
-            }
-            
-            // Validate menu order setting
-            if ( isset( $input['menu']['menu_order'] ) ) {
-                $validated['menu']['menu_order'] = $input['menu']['menu_order'];
-            }
-        }
-        
-        // Validate performance settings
-        if ( isset( $input['performance'] ) ) {
-            $validated['performance'] = array();
-            
-            // Validate optimize database setting
-            $validated['performance']['optimize_database'] = isset( $input['performance']['optimize_database'] ) ? 1 : 0;
-            
-            // Validate clean transients setting
-            $validated['performance']['clean_transients'] = isset( $input['performance']['clean_transients'] ) ? 1 : 0;
-        }
-        
-        // Validate security settings
-        if ( isset( $input['security'] ) ) {
-            $validated['security'] = array();
-            
-            // Validate hide WordPress version setting
-            $validated['security']['hide_wp_version'] = isset( $input['security']['hide_wp_version'] ) ? 1 : 0;
-            
-            // Validate disable XML-RPC setting
-            $validated['security']['disable_xmlrpc'] = isset( $input['security']['disable_xmlrpc'] ) ? 1 : 0;
-            
-            // Validate restrict REST API setting
-            $validated['security']['restrict_rest_api'] = isset( $input['security']['restrict_rest_api'] ) ? 1 : 0;
-            
-            // Validate restrict admin access setting
-            $validated['security']['restrict_admin_access'] = isset( $input['security']['restrict_admin_access'] ) ? 1 : 0;
-        }
-        
-        return $validated;
-    }
-    
     public function enqueue_scripts( $hook ) {
-        if ( \strpos( $hook, 'wp-clean-admin' ) === false ) {
-            return;
-        }
-        
-        $plugin_url = defined( 'WPCA_PLUGIN_URL' ) ? WPCA_PLUGIN_URL : '';
-        $plugin_version = defined( 'WPCA_VERSION' ) ? WPCA_VERSION : '1.8.0';
-        
-        if ( function_exists( 'wp_enqueue_style' ) ) {
-            \wp_enqueue_style(
-                'wpca-admin',
-                $plugin_url . 'assets/css/wpca-admin.css',
-                array(),
-                $plugin_version
-            );
-        }
-        
-        if ( function_exists( 'wp_enqueue_script' ) ) {
-            \wp_enqueue_script(
-                'wpca-main',
-                $plugin_url . 'assets/js/wpca-main.js',
-                array( 'jquery' ),
-                $plugin_version,
-                true
-            );
-        }
+        \WPCleanAdmin\Settings\Settings_Scripts::enqueue_scripts( $hook );
     }
 }
-
