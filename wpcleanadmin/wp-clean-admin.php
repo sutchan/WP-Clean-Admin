@@ -3,7 +3,7 @@
  * Plugin Name: WP Clean Admin
  * Plugin URI: https://github.com/sutchan/WP-Clean-Admin
  * Description: A comprehensive WordPress admin cleanup and optimization plugin
- * Version: 1.8.0
+ * Version: 1.8.1
  * Author: Sut
  * Author URI: https://github.com/sutchan
  * License: GPL v2 or later
@@ -77,7 +77,7 @@ if ( ! function_exists( '\plugin_basename' ) ) {
 }
 
 // Define plugin constants
-define( 'WPCA_VERSION', '1.8.0' );
+define( 'WPCA_VERSION', '1.8.1' );
 define( 'WPCA_PLUGIN_DIR', ( function_exists( '\plugin_dir_path' ) ? \plugin_dir_path( __FILE__ ) : dirname( __FILE__ ) . '/' ) );
 define( 'WPCA_PLUGIN_URL', ( function_exists( '\plugin_dir_url' ) ? \plugin_dir_url( __FILE__ ) : '' ) );
 define( 'WPCA_TEXT_DOMAIN', 'wp-clean-admin' );
@@ -129,8 +129,8 @@ function wpca_init() {
         // Load text domain for translations
         if ( function_exists( '\load_plugin_textdomain' ) && function_exists( '\plugin_basename' ) ) {
             $plugin_basename = \plugin_basename( __FILE__ );
-            if ( is_string( $plugin_basename ) ) {
-                \load_plugin_textdomain( WPCA_TEXT_DOMAIN, false, dirname( $plugin_basename ) . '/languages/' );
+            if ( \is_string( $plugin_basename ) ) {
+                \load_plugin_textdomain( WPCA_TEXT_DOMAIN, false, \dirname( $plugin_basename ) . '/languages/' );
             }
         }
         
@@ -210,6 +210,18 @@ if ( function_exists( '\register_activation_hook' ) ) {
                 'menu' => array(
                     'remove_dashboard_widgets' => 1,
                     'simplify_admin_menu' => 1,
+                ),
+                'security' => array(
+                    'hide_wp_version' => 1,
+                    'disable_xmlrpc' => 1,
+                    'restrict_rest_api' => 1,
+                    'restrict_admin_access' => 1,
+                ),
+                'diagnostics' => array(
+                    'enable_diagnostics' => 1,
+                    'auto_run_diagnostics' => 0,
+                    'show_warnings' => 1,
+                    'severity_filter' => 'all',
                 ),
             );
             
