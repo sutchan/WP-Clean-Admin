@@ -28,16 +28,16 @@ if ( ! function_exists( '\current_user_can' ) ) {
     function current_user_can() {}
 }
 if ( ! function_exists( '\get_option' ) ) {
-    function get_option() {}
+    function \get_option() {}
 }
 if ( ! function_exists( '\update_option' ) ) {
-    function update_option() {}
+    function \update_option() {}
 }
 if ( ! function_exists( '\sanitize_text_field' ) ) {
     function sanitize_text_field() {}
 }
 if ( ! function_exists( '\wp_unslash' ) ) {
-    function wp_unslash() {}
+    function \wp_unslash() {}
 }
 if ( ! function_exists( '\__' ) ) {
     function \__() {}
@@ -141,14 +141,14 @@ class Performance {
             return;
         }
         
-        $settings = isset( $_POST['settings'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
+        $settings = isset( $_POST['settings'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
         
         // Get current settings
-        $current_settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
+        $current_settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
         
         // Update performance settings
         $current_settings['performance'] = $settings;
-        $result = function_exists( 'update_option' ) ? update_option( 'wpca_settings', $current_settings ) : false;
+        $result = function_exists( '\update_option' ) ? \update_option( 'wpca_settings', $current_settings ) : false;
         
         if ( $result ) {
             if ( function_exists( '\\wp_send_json_success' ) ) {
@@ -172,7 +172,7 @@ class Performance {
         }
         
         // Get performance settings
-        $settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
+        $settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
         $performance_settings = isset( $settings['performance'] ) ? $settings['performance'] : array();
         
         if ( function_exists( '\\wp_send_json_success' ) ) {
@@ -191,11 +191,11 @@ class Performance {
         }
         
         // Get current settings
-        $current_settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
+        $current_settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
         
         // Remove performance settings (reset to default)
         unset( $current_settings['performance'] );
-        $result = function_exists( 'update_option' ) ? update_option( 'wpca_settings', $current_settings ) : false;
+        $result = function_exists( '\update_option' ) ? \update_option( 'wpca_settings', $current_settings ) : false;
         
         if ( $result ) {
             if ( function_exists( '\\wp_send_json_success' ) ) {
