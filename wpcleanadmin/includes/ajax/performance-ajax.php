@@ -63,7 +63,7 @@ class Performance {
      * @return bool True if the nonce is valid and user has capabilities, false otherwise.
      */
     private static function verify_ajax_request( string $action ): bool {
-        if ( ! function_exists( 'wp_verify_nonce' ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
+        if ( ! function_exists( 'wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( 'wp_send_json_error' ) ) {
                 wp_send_json_error( __( 'Invalid nonce', 'wp-clean-admin' ) );
             }
@@ -90,7 +90,7 @@ class Performance {
             return;
         }
         
-        $database = new \WPCleanAdmin\Database();
+        $database = \WPCleanAdmin\Database::getInstance();
         $result = $database->optimize_database();
         if ( function_exists( 'wp_send_json_success' ) ) {
             wp_send_json_success( $result );
@@ -107,7 +107,7 @@ class Performance {
             return;
         }
         
-        $performance = new \WPCleanAdmin\Performance();
+        $performance = \WPCleanAdmin\Performance::getInstance();
         $result = $performance->clear_cache();
         if ( function_exists( 'wp_send_json_success' ) ) {
             wp_send_json_success( $result );
@@ -124,7 +124,7 @@ class Performance {
             return;
         }
         
-        $performance = new \WPCleanAdmin\Performance();
+        $performance = \WPCleanAdmin\Performance::getInstance();
         $stats = $performance->get_performance_stats();
         if ( function_exists( 'wp_send_json_success' ) ) {
             wp_send_json_success( $stats );

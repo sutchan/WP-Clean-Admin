@@ -63,16 +63,16 @@ class Database {
      * @return bool True if the nonce is valid and user has capabilities, false otherwise.
      */
     private static function verify_ajax_request( string $action ): bool {
-        if ( ! function_exists( 'wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( __( 'Invalid nonce', 'wp-clean-admin' ) );
+        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Invalid nonce', 'wp-clean-admin' ) );
             }
             return false;
         }
         
-        if ( ! function_exists( 'current_user_can' ) || ! current_user_can( 'manage_options' ) ) {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( __( 'Insufficient permissions', 'wp-clean-admin' ) );
+        if ( ! function_exists( '\current_user_can' ) || ! \current_user_can( 'manage_options' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Insufficient permissions', 'wp-clean-admin' ) );
             }
             return false;
         }
@@ -92,8 +92,8 @@ class Database {
         
         $database_handler = \WPCleanAdmin\Database::getInstance();
         $info = $database_handler->get_database_info();
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( $info );
+        if ( function_exists( '\wp_send_json_success' ) ) {
+            \wp_send_json_success( $info );
         }
     }
 
@@ -107,18 +107,18 @@ class Database {
             return;
         }
         
-        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
+        $options = isset( $_POST['options'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
         
         $database_handler = \WPCleanAdmin\Database::getInstance();
         $result = $database_handler->backup_database( $options );
         
         if ( $result['success'] ) {
-            if ( function_exists( 'wp_send_json_success' ) ) {
-                wp_send_json_success( $result );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( $result );
             }
         } else {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( $result['message'] );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( $result['message'] );
             }
         }
     }
@@ -133,18 +133,18 @@ class Database {
             return;
         }
         
-        $backup_file = isset( $_POST['backup_file'] ) ? sanitize_text_field( $_POST['backup_file'] ) : '';
+        $backup_file = isset( $_POST['backup_file'] ) ? \sanitize_text_field( $_POST['backup_file'] ) : '';
         
         $database_handler = \WPCleanAdmin\Database::getInstance();
         $result = $database_handler->restore_database( $backup_file );
         
         if ( $result['success'] ) {
-            if ( function_exists( 'wp_send_json_success' ) ) {
-                wp_send_json_success( $result );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( $result );
             }
         } else {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( $result['message'] );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( $result['message'] );
             }
         }
     }
@@ -161,8 +161,8 @@ class Database {
         
         $database_handler = \WPCleanAdmin\Database::getInstance();
         $backups = $database_handler->get_database_backups();
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( $backups );
+        if ( function_exists( '\wp_send_json_success' ) ) {
+            \wp_send_json_success( $backups );
         }
     }
 
@@ -176,18 +176,18 @@ class Database {
             return;
         }
         
-        $backup_file = isset( $_POST['backup_file'] ) ? sanitize_text_field( $_POST['backup_file'] ) : '';
+        $backup_file = isset( $_POST['backup_file'] ) ? \sanitize_text_field( $_POST['backup_file'] ) : '';
         
         $database_handler = \WPCleanAdmin\Database::getInstance();
         $result = $database_handler->delete_database_backup( $backup_file );
         
         if ( $result['success'] ) {
-            if ( function_exists( 'wp_send_json_success' ) ) {
-                wp_send_json_success( $result );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( $result );
             }
         } else {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( $result['message'] );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( $result['message'] );
             }
         }
     }
@@ -202,22 +202,20 @@ class Database {
             return;
         }
         
-        $settings = isset( $_POST['settings'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
+        $settings = isset( $_POST['settings'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
         
-        // Get current settings
-        $current_settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
+        $current_settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
         
-        // Update database settings
         $current_settings['database'] = $settings;
-        $result = function_exists( 'update_option' ) ? update_option( 'wpca_settings', $current_settings ) : false;
+        $result = function_exists( '\update_option' ) ? \update_option( 'wpca_settings', $current_settings ) : false;
         
         if ( $result ) {
-            if ( function_exists( 'wp_send_json_success' ) ) {
-                wp_send_json_success( array( 'message' => __( 'Database settings saved successfully', 'wp-clean-admin' ) ) );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( array( 'message' => \__( 'Database settings saved successfully', 'wp-clean-admin' ) ) );
             }
         } else {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( __( 'Failed to save database settings', 'wp-clean-admin' ) );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Failed to save database settings', 'wp-clean-admin' ) );
             }
         }
     }
@@ -232,12 +230,11 @@ class Database {
             return;
         }
         
-        // Get database settings
-        $settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
+        $settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
         $database_settings = isset( $settings['database'] ) ? $settings['database'] : array();
         
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( $database_settings );
+        if ( function_exists( '\wp_send_json_success' ) ) {
+            \wp_send_json_success( $database_settings );
         }
     }
 
@@ -251,20 +248,18 @@ class Database {
             return;
         }
         
-        // Get current settings
-        $current_settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
+        $current_settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
         
-        // Remove database settings (reset to default)
         unset( $current_settings['database'] );
-        $result = function_exists( 'update_option' ) ? update_option( 'wpca_settings', $current_settings ) : false;
+        $result = function_exists( '\update_option' ) ? \update_option( 'wpca_settings', $current_settings ) : false;
         
         if ( $result ) {
-            if ( function_exists( 'wp_send_json_success' ) ) {
-                wp_send_json_success( array( 'message' => __( 'Database settings reset to default', 'wp-clean-admin' ) ) );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( array( 'message' => \__( 'Database settings reset to default', 'wp-clean-admin' ) ) );
             }
         } else {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( __( 'Failed to reset database settings', 'wp-clean-admin' ) );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Failed to reset database settings', 'wp-clean-admin' ) );
             }
         }
     }

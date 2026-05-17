@@ -57,7 +57,7 @@ class Resources {
      * @return bool True if the nonce is valid and user has capabilities, false otherwise.
      */
     private static function verify_ajax_request( string $action ): bool {
-        if ( ! function_exists( 'wp_verify_nonce' ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
+        if ( ! function_exists( 'wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( 'wp_send_json_error' ) ) {
                 wp_send_json_error( __( 'Invalid nonce', 'wp-clean-admin' ) );
             }
@@ -84,7 +84,7 @@ class Resources {
             return;
         }
         
-        $resources = new \WPCleanAdmin\Resources();
+        $resources = \WPCleanAdmin\Resources::getInstance();
         $stats = $resources->get_resources_stats();
         if ( function_exists( 'wp_send_json_success' ) ) {
             wp_send_json_success( $stats );
@@ -103,7 +103,7 @@ class Resources {
         
         $type = isset( $_POST['type'] ) ? sanitize_text_field( $_POST['type'] ) : '';
         
-        $resources = new \WPCleanAdmin\Resources();
+        $resources = \WPCleanAdmin\Resources::getInstance();
         $details = $resources->get_resource_details( $type );
         if ( function_exists( 'wp_send_json_success' ) ) {
             wp_send_json_success( $details );
@@ -122,7 +122,7 @@ class Resources {
         
         $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
         
-        $resources = new \WPCleanAdmin\Resources();
+        $resources = \WPCleanAdmin\Resources::getInstance();
         $result = $resources->optimize_resources( $options );
         if ( function_exists( 'wp_send_json_success' ) ) {
             wp_send_json_success( $result );
@@ -142,7 +142,7 @@ class Resources {
         $type = isset( $_POST['type'] ) ? sanitize_text_field( $_POST['type'] ) : '';
         $handle = isset( $_POST['handle'] ) ? sanitize_text_field( $_POST['handle'] ) : '';
         
-        $resources = new \WPCleanAdmin\Resources();
+        $resources = \WPCleanAdmin\Resources::getInstance();
         $result = $resources->disable_resource( $type, $handle );
         if ( function_exists( 'wp_send_json_success' ) ) {
             wp_send_json_success( $result );
@@ -162,7 +162,7 @@ class Resources {
         $type = isset( $_POST['type'] ) ? sanitize_text_field( $_POST['type'] ) : '';
         $handle = isset( $_POST['handle'] ) ? sanitize_text_field( $_POST['handle'] ) : '';
         
-        $resources = new \WPCleanAdmin\Resources();
+        $resources = \WPCleanAdmin\Resources::getInstance();
         $result = $resources->enable_resource( $type, $handle );
         if ( function_exists( 'wp_send_json_success' ) ) {
             wp_send_json_success( $result );

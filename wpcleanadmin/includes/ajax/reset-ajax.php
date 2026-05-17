@@ -51,7 +51,7 @@ class Reset {
      * @return bool True if the nonce is valid and user has capabilities, false otherwise.
      */
     private static function verify_ajax_request( string $action ): bool {
-        if ( ! function_exists( 'wp_verify_nonce' ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
+        if ( ! function_exists( 'wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( 'wp_send_json_error' ) ) {
                 wp_send_json_error( __( 'Invalid nonce', 'wp-clean-admin' ) );
             }
@@ -78,7 +78,7 @@ class Reset {
             return;
         }
         
-        $reset = new \WPCleanAdmin\Reset();
+        $reset = \WPCleanAdmin\Reset::getInstance();
         $result = $reset->reset_plugin();
         
         if ( $result['success'] ) {
