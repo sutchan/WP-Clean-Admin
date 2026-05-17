@@ -273,6 +273,27 @@ class Settings {
                 $plugin_version,
                 true
             );
+            
+            // Enqueue settings-specific script from modular structure
+            $settings_script_path = $plugin_url . 'includes/modules/admin/settings/assets/js/wpca-settings.js';
+            \wp_enqueue_script(
+                'wpca-settings',
+                $settings_script_path,
+                array( 'jquery', 'wpca-main' ),
+                $plugin_version,
+                true
+            );
+            
+            // Localize script for translations
+            if ( function_exists( 'wp_localize_script' ) ) {
+                $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
+                \wp_localize_script( 'wpca-settings', 'wpcaSettingsLocalize', array(
+                    'savingText' => \__( 'Saving...', $text_domain ),
+                    'successText' => \__( 'Settings saved successfully.', $text_domain ),
+                    'errorText' => \__( 'Error saving settings.', $text_domain ),
+                    'ajaxurl' => function_exists( 'admin_url' ) ? \admin_url( 'admin-ajax.php' ) : ''
+                ) );
+            }
         }
     }
 }
