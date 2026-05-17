@@ -14,8 +14,6 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-require_once dirname( dirname( __FILE__ ) ) . '/class-wpca-diagnostics.php';
-
 if ( ! function_exists( '\wp_verify_nonce' ) ) {
     function wp_verify_nonce() {}
 }
@@ -60,7 +58,7 @@ class Diagnostics {
             return;
         }
         
-        $diagnostics = \WPCleanAdmin\Diagnostics\WPCA_Diagnostics::getInstance();
+        $diagnostics = \WPCleanAdmin\Diagnostics::getInstance();
         $results = $diagnostics->run_all_checks();
         
         if ( function_exists( '\wp_send_json_success' ) ) {
@@ -82,7 +80,7 @@ class Diagnostics {
             return;
         }
         
-        $diagnostics = \WPCleanAdmin\Diagnostics\WPCA_Diagnostics::getInstance();
+        $diagnostics = \WPCleanAdmin\Diagnostics::getInstance();
         $result = $diagnostics->run_check( $check_id );
         
         if ( function_exists( '\wp_send_json_success' ) ) {
@@ -95,7 +93,7 @@ class Diagnostics {
             return;
         }
         
-        $diagnostics = \WPCleanAdmin\Diagnostics\WPCA_Diagnostics::getInstance();
+        $diagnostics = \WPCleanAdmin\Diagnostics::getInstance();
         $checks = $diagnostics->get_checks();
         $categories = $diagnostics->get_categories();
         
