@@ -45,6 +45,9 @@ if ( file_exists( dirname( __FILE__ ) . '/ajax/menu-customizer-ajax.php' ) ) {
 if ( file_exists( dirname( __FILE__ ) . '/ajax/reset-ajax.php' ) ) {
     require_once dirname( __FILE__ ) . '/ajax/reset-ajax.php';
 }
+if ( file_exists( dirname( __FILE__ ) . '/ajax/diagnostics-ajax.php' ) ) {
+    require_once dirname( __FILE__ ) . '/ajax/diagnostics-ajax.php';
+}
 
 // Declare WordPress functions for IDE compatibility
 if ( ! function_exists( 'wp_verify_nonce' ) ) {
@@ -191,6 +194,11 @@ class AJAX {
         \add_action( 'wp_ajax_wpca_save_performance_settings', array( '\WPCleanAdmin\AJAX\Performance', 'save_performance_settings' ) );
         \add_action( 'wp_ajax_wpca_get_performance_settings', array( '\WPCleanAdmin\AJAX\Performance', 'get_performance_settings' ) );
         \add_action( 'wp_ajax_wpca_reset_performance_settings', array( '\WPCleanAdmin\AJAX\Performance', 'reset_performance_settings' ) );
+        
+        // Diagnostics AJAX actions
+        \add_action( 'wp_ajax_wpca_run_diagnostics', array( '\WPCleanAdmin\AJAX\Diagnostics', 'run_diagnostics' ) );
+        \add_action( 'wp_ajax_wpca_run_single_check', array( '\WPCleanAdmin\AJAX\Diagnostics', 'run_single_check' ) );
+        \add_action( 'wp_ajax_wpca_get_checks_list', array( '\WPCleanAdmin\AJAX\Diagnostics', 'get_checks_list' ) );
     }
 
 }

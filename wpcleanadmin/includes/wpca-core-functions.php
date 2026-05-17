@@ -348,7 +348,7 @@ function wpca_is_wp_version_gte( $version ) {
  * @return string Admin page title
  */
 function wpca_get_admin_page_title( $tab = '' ) {
-    $translate = function_exists( '__' ) ? '\__' : function( $text ) { return $text; };
+    $translate = function_exists( '__' ) ? function( $text, $domain ) { return __( $text, $domain ); } : function( $text, $domain ) { return $text; };
     
     $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
     $titles = array(
