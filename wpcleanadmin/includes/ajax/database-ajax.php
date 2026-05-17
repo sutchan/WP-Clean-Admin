@@ -90,8 +90,8 @@ class Database {
             return;
         }
         
-        $database_handler = new \WPCleanAdmin\Database();
-        $info = $database_handler->get_info();
+        $database_handler = \WPCleanAdmin\Database::getInstance();
+        $info = $database_handler->get_database_info();
         if ( function_exists( 'wp_send_json_success' ) ) {
             wp_send_json_success( $info );
         }
@@ -109,8 +109,8 @@ class Database {
         
         $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
         
-        $database_handler = new \WPCleanAdmin\Database();
-        $result = $database_handler->backup( $options );
+        $database_handler = \WPCleanAdmin\Database::getInstance();
+        $result = $database_handler->backup_database( $options );
         
         if ( $result['success'] ) {
             if ( function_exists( 'wp_send_json_success' ) ) {
@@ -135,8 +135,8 @@ class Database {
         
         $backup_file = isset( $_POST['backup_file'] ) ? sanitize_text_field( $_POST['backup_file'] ) : '';
         
-        $database_handler = new \WPCleanAdmin\Database();
-        $result = $database_handler->restore( $backup_file );
+        $database_handler = \WPCleanAdmin\Database::getInstance();
+        $result = $database_handler->restore_database( $backup_file );
         
         if ( $result['success'] ) {
             if ( function_exists( 'wp_send_json_success' ) ) {
@@ -159,8 +159,8 @@ class Database {
             return;
         }
         
-        $database_handler = new \WPCleanAdmin\Database();
-        $backups = $database_handler->get_backups();
+        $database_handler = \WPCleanAdmin\Database::getInstance();
+        $backups = $database_handler->get_database_backups();
         if ( function_exists( 'wp_send_json_success' ) ) {
             wp_send_json_success( $backups );
         }
@@ -178,8 +178,8 @@ class Database {
         
         $backup_file = isset( $_POST['backup_file'] ) ? sanitize_text_field( $_POST['backup_file'] ) : '';
         
-        $database_handler = new \WPCleanAdmin\Database();
-        $result = $database_handler->delete_backup( $backup_file );
+        $database_handler = \WPCleanAdmin\Database::getInstance();
+        $result = $database_handler->delete_database_backup( $backup_file );
         
         if ( $result['success'] ) {
             if ( function_exists( 'wp_send_json_success' ) ) {

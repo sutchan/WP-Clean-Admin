@@ -57,7 +57,7 @@ class Menu_Customizer {
      * @return bool True if the nonce is valid and user has capabilities, false otherwise.
      */
     private static function verify_ajax_request( string $action ): bool {
-        if ( ! function_exists( 'wp_verify_nonce' ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
+        if ( ! function_exists( 'wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( 'wp_send_json_error' ) ) {
                 wp_send_json_error( __( 'Invalid nonce', 'wp-clean-admin' ) );
             }
@@ -86,7 +86,7 @@ class Menu_Customizer {
         
         $settings = isset( $_POST['settings'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
         
-        $menu_customizer = new \WPCleanAdmin\Menu_Customizer();
+        $menu_customizer = \WPCleanAdmin\Menu_Customizer::getInstance();
         $result = $menu_customizer->save_settings( $settings );
         
         if ( $result ) {
@@ -110,7 +110,7 @@ class Menu_Customizer {
             return;
         }
         
-        $menu_customizer = new \WPCleanAdmin\Menu_Customizer();
+        $menu_customizer = \WPCleanAdmin\Menu_Customizer::getInstance();
         $settings = $menu_customizer->get_settings();
         if ( function_exists( 'wp_send_json_success' ) ) {
             wp_send_json_success( $settings );
@@ -127,7 +127,7 @@ class Menu_Customizer {
             return;
         }
         
-        $menu_customizer = new \WPCleanAdmin\Menu_Customizer();
+        $menu_customizer = \WPCleanAdmin\Menu_Customizer::getInstance();
         $result = $menu_customizer->reset_settings();
         
         if ( $result ) {

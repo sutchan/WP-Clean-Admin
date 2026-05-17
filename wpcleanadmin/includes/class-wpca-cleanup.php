@@ -568,7 +568,7 @@ class Cleanup {
      * This method finds posts containing shortcodes that are no longer registered
      * and removes the shortcode tags from the content.
      *
-     * @global wpdb $wpdb WordPress database object
+     * @global \wpdb $wpdb WordPress database object
      * @return int Number of posts cleaned
      */
     public function cleanup_unused_shortcodes() {

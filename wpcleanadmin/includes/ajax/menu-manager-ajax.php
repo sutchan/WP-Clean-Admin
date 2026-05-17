@@ -57,7 +57,7 @@ class Menu_Manager {
      * @return bool True if the nonce is valid and user has capabilities, false otherwise.
      */
     private static function verify_ajax_request( string $action ): bool {
-        if ( ! function_exists( 'wp_verify_nonce' ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
+        if ( ! function_exists( 'wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( 'wp_send_json_error' ) ) {
                 wp_send_json_error( __( 'Invalid nonce', 'wp-clean-admin' ) );
             }
@@ -84,7 +84,7 @@ class Menu_Manager {
             return;
         }
         
-        $menu_manager = new \WPCleanAdmin\Menu_Manager();
+        $menu_manager = \WPCleanAdmin\Menu_Manager::getInstance();
         $menu_items = $menu_manager->get_menu_items();
         if ( function_exists( 'wp_send_json_success' ) ) {
             wp_send_json_success( $menu_items );
@@ -103,7 +103,7 @@ class Menu_Manager {
         
         $menu_items = isset( $_POST['menu_items'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['menu_items'] ) : $_POST['menu_items'] ) : array();
         
-        $menu_manager = new \WPCleanAdmin\Menu_Manager();
+        $menu_manager = \WPCleanAdmin\Menu_Manager::getInstance();
         $result = $menu_manager->save_menu_items( $menu_items );
         
         if ( $result['success'] ) {

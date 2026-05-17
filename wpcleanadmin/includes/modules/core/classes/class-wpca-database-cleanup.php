@@ -55,7 +55,7 @@ class Database_Cleanup {
         
         $results = array(
             'success' => true,
-            'message' => __( 'Database cleanup completed successfully', WPCA_TEXT_DOMAIN ),
+            'message' => __( 'Database cleanup completed successfully', 'wpcleanadmin' ),
             'cleaned' => array()
         );
         

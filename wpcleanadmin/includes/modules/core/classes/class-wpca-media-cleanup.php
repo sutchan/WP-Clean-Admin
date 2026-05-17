@@ -62,7 +62,7 @@ class Media_Cleanup {
         
         $results = array(
             'success' => true,
-            'message' => __( 'Media cleanup completed successfully', WPCA_TEXT_DOMAIN ),
+            'message' => 'Media cleanup completed successfully',
             'cleaned' => array()
         );
         
