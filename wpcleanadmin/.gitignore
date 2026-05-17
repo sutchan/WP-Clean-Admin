@@ -1,0 +1,28 @@
+# Composer
+vendor/
+composer.lock
+
+# PHPUnit
+tests/logs/
+tests/reports/
+.phpunit.result.cache
+
+# IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# WordPress
+wp-config.php
+wp-content/advanced-cache.php
+wp-content/backup-db/
+wp-content/backups/
+wp-content/blogs.dir/
+wp-content/cache/
+wp-content/upgrade/
+wp-content/uploads/
