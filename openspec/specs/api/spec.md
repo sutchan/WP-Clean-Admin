@@ -1,4 +1,4 @@
-﻿<!-- OPENSPEC:START -->
+<!-- OPENSPEC:START -->
 # WP Clean Admin API 文档
 
 ## 1. 概述
@@ -8,7 +8,7 @@ WP Clean Admin API 提供了一系列用于管理和配置 WP Clean Admin 插件
 ## 2. 基本信息
 
 ### 2.1 API 版本
-当前 API 版本：1.8.0
+当前 API 版本：1.8.1
 
 ### 2.2 命名空间
 核心类位于 `WPCleanAdmin` 命名空间下，全局函数直接可用。
@@ -686,6 +686,7 @@ if ( WPCleanAdmin\Permissions::getInstance()->has_feature_permission( 'manage_op
 
 | 版本 | 日期 | 变更内容 |
 |------|------|----------|
+| 1.8.1 | 2026-05-17 | 修复了诊断模块 API 引用，完善了诊断功能文档 |
 | 1.8.0 | 2026-01-02 | 更新了API文档，添加了所有实际存在的函数 |
 | 1.7.15 | 2025-11-30 | 初始 API 文档 |
 

@@ -1,6 +1,13 @@
 # WP Clean Admin
 
-A comprehensive WordPress plugin for cleaning and optimizing your WordPress admin area and database.
+A comprehensive WordPress plugin for cleaning and optimizing your WordPress admin area and database. **Version 1.8.1**
+
+**Core Features**:
+- Modular design for easy extension and maintenance
+- Follows WordPress best practices
+- Focus on security, performance, and user experience
+- Multi-language support (Chinese, English)
+- Provides rich APIs for developers
 
 ## Features
 
@@ -104,9 +111,15 @@ Get performance statistics
 
 ## License
 
-MIT License
+GPL-2.0+ License
 
 ## Changelog
+
+### 1.8.1
+- Fixed diagnostic module AJAX class reference error
+- Added complete translations for diagnostic module
+- Added comprehensive diagnostic module specification documentation
+- Improved code structure consistency
 
 ### 1.8.0
 - Added tabbed interface for settings page
