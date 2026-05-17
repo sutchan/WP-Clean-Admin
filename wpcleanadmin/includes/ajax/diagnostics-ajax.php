@@ -16,35 +16,38 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once dirname( dirname( __FILE__ ) ) . '/class-wpca-diagnostics.php';
 
-if ( ! function_exists( 'wp_verify_nonce' ) ) {
+if ( ! function_exists( '\wp_verify_nonce' ) ) {
     function wp_verify_nonce() {}
 }
-if ( ! function_exists( 'wp_send_json_error' ) ) {
+if ( ! function_exists( '\wp_send_json_error' ) ) {
     function wp_send_json_error() {}
 }
-if ( ! function_exists( 'wp_send_json_success' ) ) {
+if ( ! function_exists( '\wp_send_json_success' ) ) {
     function wp_send_json_success() {}
 }
-if ( ! function_exists( 'current_user_can' ) ) {
+if ( ! function_exists( '\current_user_can' ) ) {
     function current_user_can() {}
 }
-if ( ! function_exists( '__' ) ) {
+if ( ! function_exists( '\sanitize_text_field' ) ) {
+    function sanitize_text_field() {}
+}
+if ( ! function_exists( '\__' ) ) {
     function __() {}
 }
 
 class Diagnostics {
 
     private static function verify_ajax_request( string $action ): bool {
-        if ( ! function_exists( 'wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( __( 'Invalid nonce', 'wp-clean-admin' ) );
+        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Invalid nonce', 'wp-clean-admin' ) );
             }
             return false;
         }
         
-        if ( ! function_exists( 'current_user_can' ) || ! current_user_can( 'manage_options' ) ) {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( __( 'Insufficient permissions', 'wp-clean-admin' ) );
+        if ( ! function_exists( '\current_user_can' ) || ! \current_user_can( 'manage_options' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Insufficient permissions', 'wp-clean-admin' ) );
             }
             return false;
         }
@@ -60,8 +63,8 @@ class Diagnostics {
         $diagnostics = \WPCleanAdmin\Diagnostics::getInstance();
         $results = $diagnostics->run_all_checks();
         
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( $results );
+        if ( function_exists( '\wp_send_json_success' ) ) {
+            \wp_send_json_success( $results );
         }
     }
 
@@ -70,11 +73,11 @@ class Diagnostics {
             return;
         }
         
-        $check_id = isset( $_POST['check_id'] ) ? sanitize_text_field( $_POST['check_id'] ) : '';
+        $check_id = isset( $_POST['check_id'] ) ? \sanitize_text_field( $_POST['check_id'] ) : '';
         
         if ( empty( $check_id ) ) {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( __( 'Check ID is required', 'wp-clean-admin' ) );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Check ID is required', 'wp-clean-admin' ) );
             }
             return;
         }
@@ -82,8 +85,8 @@ class Diagnostics {
         $diagnostics = \WPCleanAdmin\Diagnostics::getInstance();
         $result = $diagnostics->run_check( $check_id );
         
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( $result );
+        if ( function_exists( '\wp_send_json_success' ) ) {
+            \wp_send_json_success( $result );
         }
     }
 
@@ -101,8 +104,8 @@ class Diagnostics {
             'categories' => $categories
         );
         
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( $result );
+        if ( function_exists( '\wp_send_json_success' ) ) {
+            \wp_send_json_success( $result );
         }
     }
 }

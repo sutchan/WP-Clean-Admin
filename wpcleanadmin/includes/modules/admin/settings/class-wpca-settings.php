@@ -234,6 +234,12 @@ class Settings {
         }
     }
     
+    /**
+     * 验证设置
+     *
+     * @param array|mixed $input 输入的设置数据
+     * @return array|mixed 验证后的设置数据
+     */
     public function validate_settings( $input ) {
         // Include validation
         if ( file_exists( dirname( __FILE__ ) . '/class-wpca-settings-validation.php' ) ) {
@@ -249,7 +255,7 @@ class Settings {
         return $input;
     }
     
-    public function enqueue_scripts( $hook ) {
+    public function enqueue_scripts( string $hook ) {
         if ( \strpos( $hook, 'wp-clean-admin' ) === false ) {
             return;
         }
