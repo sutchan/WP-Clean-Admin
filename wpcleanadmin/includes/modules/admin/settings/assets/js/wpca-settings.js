@@ -73,28 +73,32 @@
      */
     WPCleanAdmin.Settings.setupFormHandling = function() {
         const form = $('#wpca-settings-form');
+        let submitButton;
+        let originalText;
+
+        // Handle successful submission
+        form.on('submit_success', function() {
+            WPCleanAdmin.Settings.showSuccess();
+            if (submitButton) {
+                submitButton.val(originalText).prop('disabled', false);
+            }
+        });
+
+        // Handle failed submission
+        form.on('submit_error', function() {
+            WPCleanAdmin.Settings.showError();
+            if (submitButton) {
+                submitButton.val(originalText).prop('disabled', false);
+            }
+        });
 
         form.on('submit', function(e) {
             WPCleanAdmin.Settings.showSaving();
             
-            const saveMessage = $('#wpca-save-message');
-            
             // Add loading state to submit button
-            const submitButton = form.find('input[type="submit"]');
-            const originalText = submitButton.val();
+            submitButton = form.find('input[type="submit"]');
+            originalText = submitButton.val();
             submitButton.val(wpcaSettingsLocalize.savingText).prop('disabled', true);
-
-            // Handle successful submission
-            form.on('submit_success', function() {
-                WPCleanAdmin.Settings.showSuccess();
-                submitButton.val(originalText).prop('disabled', false);
-            });
-
-            // Handle failed submission
-            form.on('submit_error', function() {
-                WPCleanAdmin.Settings.showError();
-                submitButton.val(originalText).prop('disabled', false);
-            });
         });
 
         // Handle form reset
@@ -236,7 +240,7 @@
      */
     WPCleanAdmin.Settings.ajaxSave = function(data, callback) {
         $.ajax({
-            url: ajaxurl,
+            url: wpcaSettingsLocalize.ajaxurl,
             type: 'POST',
             data: data,
             dataType: 'json',
