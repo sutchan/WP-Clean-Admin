@@ -38,6 +38,10 @@ if ( file_exists( dirname( __FILE__ ) . '/settings/fields/class-wpca-security-se
     require_once dirname( __FILE__ ) . '/settings/fields/class-wpca-security-settings-fields.php';
 }
 
+if ( file_exists( dirname( __FILE__ ) . '/settings/fields/class-wpca-diagnostics-settings-fields.php' ) ) {
+    require_once dirname( __FILE__ ) . '/settings/fields/class-wpca-diagnostics-settings-fields.php';
+}
+
 // Include settings validation class
 if ( file_exists( dirname( __FILE__ ) . '/settings/class-wpca-settings-validation.php' ) ) {
     require_once dirname( __FILE__ ) . '/settings/class-wpca-settings-validation.php';
@@ -129,6 +133,16 @@ class Settings {
                 'wpca_security_settings',
                 \__( 'Security Settings', $text_domain ),
                 array( $this, 'render_security_settings_section' ),
+                'wp-clean-admin'
+            );
+        }
+        
+        // Register diagnostics settings section
+        if ( function_exists( 'add_settings_section' ) ) {
+            \add_settings_section(
+                'wpca_diagnostics_settings',
+                \__( 'Diagnostics Settings', $text_domain ),
+                array( $this, 'render_diagnostics_settings_section' ),
                 'wp-clean-admin'
             );
         }

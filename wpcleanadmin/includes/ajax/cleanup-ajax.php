@@ -44,13 +44,19 @@ class Cleanup {
      */
     public static function cleanup_database() {
         // Verify nonce
-        if ( ! isset( $_POST['nonce'] ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
-            \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
+        if ( ! isset( $_POST['nonce'] ) || ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
+            }
+            return;
         }
         
         // Check permissions
-        if ( ! \current_user_can( 'manage_options' ) ) {
-            \wp_send_json_error( array( 'message' => \__( 'Insufficient permissions', WPCA_TEXT_DOMAIN ) ) );
+        if ( ! function_exists( '\current_user_can' ) || ! \current_user_can( 'manage_options' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => \__( 'Insufficient permissions', WPCA_TEXT_DOMAIN ) ) );
+            }
+            return;
         }
         
         try {
@@ -64,9 +70,13 @@ class Cleanup {
                 )
             );
             
-            \wp_send_json_success( $result );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( $result );
+            }
         } catch ( \Exception $e ) {
-            \wp_send_json_error( array( 'message' => $e->getMessage() ) );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => $e->getMessage() ) );
+            }
         }
     }
     
@@ -77,13 +87,19 @@ class Cleanup {
      */
     public static function cleanup_media() {
         // Verify nonce
-        if ( ! isset( $_POST['nonce'] ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
-            \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
+        if ( ! isset( $_POST['nonce'] ) || ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
+            }
+            return;
         }
         
         // Check permissions
-        if ( ! \current_user_can( 'manage_options' ) ) {
-            \wp_send_json_error( array( 'message' => \__( 'Insufficient permissions', WPCA_TEXT_DOMAIN ) ) );
+        if ( ! function_exists( '\current_user_can' ) || ! \current_user_can( 'manage_options' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => \__( 'Insufficient permissions', WPCA_TEXT_DOMAIN ) ) );
+            }
+            return;
         }
         
         try {
@@ -96,9 +112,13 @@ class Cleanup {
                 )
             );
             
-            \wp_send_json_success( $result );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( $result );
+            }
         } catch ( \Exception $e ) {
-            \wp_send_json_error( array( 'message' => $e->getMessage() ) );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => $e->getMessage() ) );
+            }
         }
     }
     
@@ -109,13 +129,19 @@ class Cleanup {
      */
     public static function cleanup_comments() {
         // Verify nonce
-        if ( ! isset( $_POST['nonce'] ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
-            \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
+        if ( ! isset( $_POST['nonce'] ) || ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
+            }
+            return;
         }
         
         // Check permissions
-        if ( ! \current_user_can( 'manage_options' ) ) {
-            \wp_send_json_error( array( 'message' => \__( 'Insufficient permissions', WPCA_TEXT_DOMAIN ) ) );
+        if ( ! function_exists( '\current_user_can' ) || ! \current_user_can( 'manage_options' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => \__( 'Insufficient permissions', WPCA_TEXT_DOMAIN ) ) );
+            }
+            return;
         }
         
         try {
@@ -129,9 +155,13 @@ class Cleanup {
                 )
             );
             
-            \wp_send_json_success( $result );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( $result );
+            }
         } catch ( \Exception $e ) {
-            \wp_send_json_error( array( 'message' => $e->getMessage() ) );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => $e->getMessage() ) );
+            }
         }
     }
     
@@ -142,13 +172,19 @@ class Cleanup {
      */
     public static function cleanup_content() {
         // Verify nonce
-        if ( ! isset( $_POST['nonce'] ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
-            \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
+        if ( ! isset( $_POST['nonce'] ) || ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
+            }
+            return;
         }
         
         // Check permissions
-        if ( ! \current_user_can( 'manage_options' ) ) {
-            \wp_send_json_error( array( 'message' => \__( 'Insufficient permissions', WPCA_TEXT_DOMAIN ) ) );
+        if ( ! function_exists( '\current_user_can' ) || ! \current_user_can( 'manage_options' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => \__( 'Insufficient permissions', WPCA_TEXT_DOMAIN ) ) );
+            }
+            return;
         }
         
         try {
@@ -162,9 +198,13 @@ class Cleanup {
                 )
             );
             
-            \wp_send_json_success( $result );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( $result );
+            }
         } catch ( \Exception $e ) {
-            \wp_send_json_error( array( 'message' => $e->getMessage() ) );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => $e->getMessage() ) );
+            }
         }
     }
     
@@ -175,13 +215,19 @@ class Cleanup {
      */
     public static function get_cleanup_stats() {
         // Verify nonce
-        if ( ! isset( $_POST['nonce'] ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
-            \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
+        if ( ! isset( $_POST['nonce'] ) || ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
+            }
+            return;
         }
         
         // Check permissions
-        if ( ! \current_user_can( 'manage_options' ) ) {
-            \wp_send_json_error( array( 'message' => \__( 'Insufficient permissions', WPCA_TEXT_DOMAIN ) ) );
+        if ( ! function_exists( '\current_user_can' ) || ! \current_user_can( 'manage_options' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => \__( 'Insufficient permissions', WPCA_TEXT_DOMAIN ) ) );
+            }
+            return;
         }
         
         try {
@@ -194,9 +240,13 @@ class Cleanup {
                 'autosave' => 30 // Example value
             );
             
-            \wp_send_json_success( array( 'stats' => $stats ) );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( array( 'stats' => $stats ) );
+            }
         } catch ( \Exception $e ) {
-            \wp_send_json_error( array( 'message' => $e->getMessage() ) );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => $e->getMessage() ) );
+            }
         }
     }
 }

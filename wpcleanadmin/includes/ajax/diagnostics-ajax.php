@@ -60,7 +60,7 @@ class Diagnostics {
             return;
         }
         
-        $diagnostics = \WPCleanAdmin\Diagnostics::getInstance();
+        $diagnostics = \WPCleanAdmin\Diagnostics\WPCA_Diagnostics::getInstance();
         $results = $diagnostics->run_all_checks();
         
         if ( function_exists( '\wp_send_json_success' ) ) {
@@ -82,7 +82,7 @@ class Diagnostics {
             return;
         }
         
-        $diagnostics = \WPCleanAdmin\Diagnostics::getInstance();
+        $diagnostics = \WPCleanAdmin\Diagnostics\WPCA_Diagnostics::getInstance();
         $result = $diagnostics->run_check( $check_id );
         
         if ( function_exists( '\wp_send_json_success' ) ) {
@@ -95,7 +95,7 @@ class Diagnostics {
             return;
         }
         
-        $diagnostics = \WPCleanAdmin\Diagnostics::getInstance();
+        $diagnostics = \WPCleanAdmin\Diagnostics\WPCA_Diagnostics::getInstance();
         $checks = $diagnostics->get_checks();
         $categories = $diagnostics->get_categories();
         
