@@ -134,17 +134,17 @@ function wpca_init() {
             }
         }
         
-        // Initialize core class
+        // Try to initialize new modular architecture first (primary)
         if ( class_exists( 'WPCleanAdmin\Modules\Core\Classes\Core' ) ) {
             WPCleanAdmin\Modules\Core\Classes\Core::getInstance();
         } else {
-            // Fallback to legacy core class
+            // Fallback to legacy architecture
             if ( class_exists( 'WPCleanAdmin\Core' ) ) {
                 WPCleanAdmin\Core::getInstance();
             } else {
-                // Log error if core class not found
+                // Log error if no core class found
                 if ( function_exists( 'error_log' ) ) {
-                    error_log( 'WP Clean Admin Error: Core class not found' );
+                    error_log( 'WP Clean Admin Error: Neither modular nor legacy core class found' );
                 }
             }
         }

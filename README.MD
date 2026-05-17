@@ -6,6 +6,46 @@
 
 WP Clean Admin 是一个功能强大的 WordPress 插件，专注于帮助管理员清理和优化 WordPress 后台，提升网站性能和管理效率。
 
+## 快速开始
+
+### 安装
+
+1. 下载插件的 ZIP 压缩包
+2. 在 WordPress 后台进入「插件 > 添加新插件」
+3. 点击「上传插件」，选择下载的 ZIP 包
+4. 点击「现在安装」，然后点击「激活插件」
+
+### 开发
+
+插件支持 Composer 管理依赖和 PHPUnit 测试：
+
+```bash
+cd wp-content/plugins/wpcleanadmin
+composer install
+composer test
+```
+
+## 架构说明
+
+### 模块化结构
+
+插件采用模块化设计，主要包含：
+
+- **核心模块** (`modules/core/classes/`) - 核心功能和初始化
+- **后台模块** (`modules/admin/classes/`) - 后台管理功能
+- **设置模块** (`modules/admin/settings/`) - 插件设置页面
+- **工具模块** (`modules/utilities/classes/`) - 通用工具类
+
+### 兼容性
+
+- WordPress 5.0+
+- PHP 7.0+
+- 支持多语言
+
+## 开发指南
+
+详细的开发文档请参考 [openspec/](openspec/) 目录下的规范文档。
+
 ## 功能特点
 
 ### 1. 后台清理
