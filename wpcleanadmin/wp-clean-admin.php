@@ -273,19 +273,19 @@ if ( \function_exists( '\register_deactivation_hook' ) ) {
  * @since 1.8.0
  */
 function wpca_add_plugin_action_links( $links ) {
-    if ( function_exists( '\admin_url' ) && function_exists( '\esc_url' ) && function_exists( '\esc_html' ) && function_exists( '\__' ) ) {
-        $settings_link = array(
-            '<a href="' . \esc_url( \admin_url( 'admin.php?page=wp-clean-admin' ) ) . '">' . \esc_html( \__( 'Settings', WPCA_TEXT_DOMAIN )
+    if ( \function_exists( '\admin_url' ) && \function_exists( '\esc_url' ) && \function_exists( '\esc_html' ) && \function_exists( '\__' ) ) {
+        $settings_link = \array(
+            '<a href="' . \esc_url( \admin_url( 'admin.php?page=wp-clean-admin' ) ) . '">' . \esc_html( \__( 'Settings', WPCA_TEXT_DOMAIN ) ) . '</a>'
         );
-        return array_merge( $settings_link, $links );
+        return \array_merge( $settings_link, $links );
     }
     return $links;
 }
 
 // Hook into plugin action links
-if ( function_exists( '\add_filter' ) && function_exists( '\plugin_basename' ) ) {
+if ( \function_exists( '\add_filter' ) && \function_exists( '\plugin_basename' ) ) {
     $plugin_basename = \plugin_basename( __FILE__ );
-    if ( is_string( $plugin_basename ) ) {
+    if ( \is_string( $plugin_basename ) ) {
         \add_filter( 'plugin_action_links_' . $plugin_basename, 'wpca_add_plugin_action_links' );
     }
 }
