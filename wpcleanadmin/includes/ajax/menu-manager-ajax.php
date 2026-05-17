@@ -15,25 +15,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Declare WordPress functions for IDE compatibility
-if ( ! function_exists( 'wp_verify_nonce' ) ) {
+if ( ! function_exists( '\wp_verify_nonce' ) ) {
     function wp_verify_nonce() {}
 }
-if ( ! function_exists( 'wp_send_json_error' ) ) {
+if ( ! function_exists( '\wp_send_json_error' ) ) {
     function wp_send_json_error() {}
 }
-if ( ! function_exists( 'wp_send_json_success' ) ) {
+if ( ! function_exists( '\wp_send_json_success' ) ) {
     function wp_send_json_success() {}
 }
-if ( ! function_exists( 'current_user_can' ) ) {
+if ( ! function_exists( '\current_user_can' ) ) {
     function current_user_can() {}
 }
-if ( ! function_exists( 'wp_unslash' ) ) {
+if ( ! function_exists( '\wp_unslash' ) ) {
     function wp_unslash() {}
 }
-if ( ! function_exists( 'sanitize_text_field' ) ) {
+if ( ! function_exists( '\sanitize_text_field' ) ) {
     function sanitize_text_field() {}
 }
-if ( ! function_exists( '__' ) ) {
+if ( ! function_exists( '\__' ) ) {
     function __() {}
 }
 
@@ -57,16 +57,16 @@ class Menu_Manager {
      * @return bool True if the nonce is valid and user has capabilities, false otherwise.
      */
     private static function verify_ajax_request( string $action ): bool {
-        if ( ! function_exists( 'wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( __( 'Invalid nonce', 'wp-clean-admin' ) );
+        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Invalid nonce', 'wp-clean-admin' ) );
             }
             return false;
         }
         
-        if ( ! function_exists( 'current_user_can' ) || ! current_user_can( 'manage_options' ) ) {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( __( 'Insufficient permissions', 'wp-clean-admin' ) );
+        if ( ! function_exists( '\current_user_can' ) || ! \current_user_can( 'manage_options' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Insufficient permissions', 'wp-clean-admin' ) );
             }
             return false;
         }
@@ -86,8 +86,8 @@ class Menu_Manager {
         
         $menu_manager = \WPCleanAdmin\Menu_Manager::getInstance();
         $menu_items = $menu_manager->get_menu_items();
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( $menu_items );
+        if ( function_exists( '\wp_send_json_success' ) ) {
+            \wp_send_json_success( $menu_items );
         }
     }
 
@@ -101,18 +101,18 @@ class Menu_Manager {
             return;
         }
         
-        $menu_items = isset( $_POST['menu_items'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['menu_items'] ) : $_POST['menu_items'] ) : array();
+        $menu_items = isset( $_POST['menu_items'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['menu_items'] ) : $_POST['menu_items'] ) : array();
         
         $menu_manager = \WPCleanAdmin\Menu_Manager::getInstance();
         $result = $menu_manager->save_menu_items( $menu_items );
         
         if ( $result['success'] ) {
-            if ( function_exists( 'wp_send_json_success' ) ) {
-                wp_send_json_success( $result );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( $result );
             }
         } else {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( $result['message'] );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( $result['message'] );
             }
         }
     }

@@ -252,7 +252,7 @@ class Dashboard {
         switch ( $action ) {
             case 'cleanup_database':
                 // Run database cleanup
-                $cleanup = new Cleanup();
+                $cleanup = \WPCleanAdmin\Cleanup::getInstance();
                 $cleanup_result = $cleanup->run_database_cleanup( array(
                     'transients' => true,
                     'orphaned_postmeta' => true,
@@ -266,7 +266,7 @@ class Dashboard {
                 
             case 'optimize_database':
                 // Run database optimization
-                $database = new Database();
+                $database = \WPCleanAdmin\Database::getInstance();
                 $optimize_result = $database->optimize_database();
                 
                 $result['success'] = true;

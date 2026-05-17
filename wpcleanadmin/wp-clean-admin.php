@@ -134,18 +134,14 @@ function wpca_init() {
             }
         }
         
-        // Try to initialize new modular architecture first (primary)
-        if ( class_exists( 'WPCleanAdmin\Modules\Core\Classes\Core' ) ) {
-            WPCleanAdmin\Modules\Core\Classes\Core::getInstance();
+        // Initialize the plugin using modular architecture
+        $core_class = 'WPCleanAdmin\Modules\Core\Classes\Core';
+        if ( class_exists( $core_class ) ) {
+            $core_class::getInstance();
         } else {
-            // Fallback to legacy architecture
-            if ( class_exists( 'WPCleanAdmin\Core' ) ) {
-                WPCleanAdmin\Core::getInstance();
-            } else {
-                // Log error if no core class found
-                if ( function_exists( 'error_log' ) ) {
-                    error_log( 'WP Clean Admin Error: Neither modular nor legacy core class found' );
-                }
+            // Log error if core class not found
+            if ( function_exists( 'error_log' ) ) {
+                error_log( 'WP Clean Admin Error: Core class not found - ' . $core_class );
             }
         }
     } catch ( \Exception $e ) {

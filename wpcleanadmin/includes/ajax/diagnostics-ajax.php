@@ -14,6 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+require_once dirname( dirname( __FILE__ ) ) . '/class-wpca-diagnostics.php';
+
 if ( ! function_exists( 'wp_verify_nonce' ) ) {
     function wp_verify_nonce() {}
 }

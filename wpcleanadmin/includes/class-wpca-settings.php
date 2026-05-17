@@ -52,6 +52,11 @@ if ( file_exists( dirname( __FILE__ ) . '/settings/class-wpca-settings-scripts.p
 
 class Settings {
     
+    /**
+     * 单例实例
+     *
+     * @var Settings|null
+     */
     private static $instance = null;
     
     public static function getInstance() {
@@ -628,7 +633,7 @@ class Settings {
         <?php
     }
     
-    public function enqueue_scripts( $hook ) {
+    public function enqueue_scripts( string $hook ) {
         \WPCleanAdmin\Settings\Settings_Scripts::enqueue_scripts( $hook );
     }
 }

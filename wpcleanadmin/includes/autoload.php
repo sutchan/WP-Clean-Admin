@@ -25,8 +25,8 @@ if ( ! defined( 'ABSPATH' ) ) {
         require_once __DIR__ . '/elementor-stub.php';
     }
     
-    // Exit after loading stubs in IDE environment
-    exit;
+    // Define ABSPATH constant for IDE environment to allow autoloader to continue
+    define( 'ABSPATH', dirname( dirname( __FILE__ ) ) . '/' );
 }
 
 /**

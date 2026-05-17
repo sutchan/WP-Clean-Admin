@@ -17,6 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Settings {
     
+    /** @var self|null */
     private static $instance = null;
     
     public static function getInstance() {
