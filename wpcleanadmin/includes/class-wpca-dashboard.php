@@ -69,6 +69,12 @@ class Dashboard {
                 \__( 'WP Clean Admin', WPCA_TEXT_DOMAIN ),
                 array( $this, 'render_dashboard_widget' )
             );
+            
+            \wp_add_dashboard_widget(
+                'wpca_diagnostics_widget',
+                \__( 'Site Health Status', WPCA_TEXT_DOMAIN ),
+                array( $this, 'render_diagnostics_widget' )
+            );
         }
     }
     
@@ -105,6 +111,35 @@ class Dashboard {
                 <button class="button button-secondary wpca-quick-action" data-action="optimize_database">
                     <?php \_e( 'Optimize Database', WPCA_TEXT_DOMAIN ); ?>
                 </button>
+            </div>
+        </div>
+        <?php
+    }
+    
+    /**
+     * Render diagnostics widget
+     */
+    public function render_diagnostics_widget() {
+        ?>
+        <div class="wpca-diagnostics-widget">
+            <div class="wpca-diagnostics-header">
+                <h4><?php \_e( 'Quick Health Check', WPCA_TEXT_DOMAIN ); ?></h4>
+                <button class="button button-secondary wpca-run-diagnostics" style="float:right;margin-top:-28px;">
+                    <?php \_e( 'Run Scan', WPCA_TEXT_DOMAIN ); ?>
+                </button>
+            </div>
+            <div class="wpca-diagnostics-results" style="display:none;">
+                <div class="wpca-diagnostics-summary">
+                    <span class="wpca-diagnostics-status"></span>
+                    <span class="wpca-diagnostics-count"></span>
+                </div>
+                <div class="wpca-diagnostics-list"></div>
+            </div>
+            <div class="wpca-diagnostics-placeholder">
+                <p><?php \_e( 'Click "Run Scan" to check your site health.', WPCA_TEXT_DOMAIN ); ?></p>
+            </div>
+            <div class="wpca-diagnostics-loading" style="display:none;">
+                <p><?php \_e( 'Running diagnostics...', WPCA_TEXT_DOMAIN ); ?></p>
             </div>
         </div>
         <?php

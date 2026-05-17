@@ -16,6 +16,34 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+if ( ! function_exists( 'wp_verify_nonce' ) ) {
+    function wp_verify_nonce() {}
+}
+if ( ! function_exists( 'wp_send_json_error' ) ) {
+    function wp_send_json_error() {}
+}
+if ( ! function_exists( 'wp_send_json_success' ) ) {
+    function wp_send_json_success() {}
+}
+if ( ! function_exists( 'current_user_can' ) ) {
+    function current_user_can() {}
+}
+if ( ! function_exists( '__' ) ) {
+    function __() {}
+}
+if ( ! function_exists( 'wp_unslash' ) ) {
+    function wp_unslash() {}
+}
+if ( ! function_exists( 'update_option' ) ) {
+    function update_option() {}
+}
+if ( ! function_exists( 'get_option' ) ) {
+    function get_option() {}
+}
+if ( ! function_exists( 'delete_option' ) ) {
+    function delete_option() {}
+}
+
 /**
  * Settings AJAX Handler Class
  */
@@ -39,7 +67,7 @@ class Settings {
         
         try {
             // Get settings data
-            $settings = isset( $_POST['settings'] ) ? \wp_unslash( $_POST['settings'] ) : array();
+            $settings = isset( $_POST['settings'] ) ? ( function_exists( 'wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
             
             // Validate and save settings
             if ( function_exists( 'update_option' ) ) {

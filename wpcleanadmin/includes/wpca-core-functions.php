@@ -68,7 +68,7 @@ function wpca_update_settings( $settings ) {
     
     // Allow other plugins to modify settings before saving
     if ( function_exists( 'apply_filters' ) ) {
-        $validated_settings = \apply_filters( 'wpca_update_settings', $validated_settings, $settings );
+        $validated_settings = \apply_filters( 'wpca_update_settings', $validated_settings );
     }
     
     return function_exists( 'update_option' ) ? \update_option( 'wpca_settings', $validated_settings ) : false;

@@ -16,6 +16,46 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+if ( ! function_exists( 'wp_verify_nonce' ) ) {
+    function wp_verify_nonce() {}
+}
+if ( ! function_exists( 'wp_send_json_error' ) ) {
+    function wp_send_json_error() {}
+}
+if ( ! function_exists( 'wp_send_json_success' ) ) {
+    function wp_send_json_success() {}
+}
+if ( ! function_exists( 'current_user_can' ) ) {
+    function current_user_can() {}
+}
+if ( ! function_exists( '__' ) ) {
+    function __() {}
+}
+if ( ! function_exists( 'wp_count_posts' ) ) {
+    function wp_count_posts() {}
+}
+if ( ! function_exists( 'wp_count_comments' ) ) {
+    function wp_count_comments() {}
+}
+if ( ! function_exists( 'count_users' ) ) {
+    function count_users() {}
+}
+if ( ! function_exists( 'get_plugins' ) ) {
+    function get_plugins() {}
+}
+if ( ! function_exists( 'wp_get_themes' ) ) {
+    function wp_get_themes() {}
+}
+if ( ! function_exists( 'get_bloginfo' ) ) {
+    function get_bloginfo() {}
+}
+if ( ! function_exists( 'wp_get_theme' ) ) {
+    function wp_get_theme() {}
+}
+if ( ! function_exists( 'sanitize_text_field' ) ) {
+    function sanitize_text_field() {}
+}
+
 /**
  * Dashboard AJAX Handler Class
  */

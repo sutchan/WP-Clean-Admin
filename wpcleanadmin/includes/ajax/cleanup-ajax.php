@@ -16,6 +16,22 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+if ( ! function_exists( 'wp_verify_nonce' ) ) {
+    function wp_verify_nonce() {}
+}
+if ( ! function_exists( 'wp_send_json_error' ) ) {
+    function wp_send_json_error() {}
+}
+if ( ! function_exists( 'wp_send_json_success' ) ) {
+    function wp_send_json_success() {}
+}
+if ( ! function_exists( 'current_user_can' ) ) {
+    function current_user_can() {}
+}
+if ( ! function_exists( '__' ) ) {
+    function __() {}
+}
+
 /**
  * Cleanup AJAX Handler Class
  */
