@@ -63,7 +63,7 @@ class Database {
      * @return bool True if the nonce is valid and user has capabilities, false otherwise.
      */
     private static function verify_ajax_request( string $action ): bool {
-        if ( ! function_exists( 'wp_verify_nonce' ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
+        if ( ! function_exists( 'wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( 'wp_send_json_error' ) ) {
                 wp_send_json_error( __( 'Invalid nonce', 'wp-clean-admin' ) );
             }
@@ -90,8 +90,8 @@ class Database {
             return;
         }
         
-        $database = new \WPCleanAdmin\Database();
-        $info = $database->get_database_info();
+        $database_handler = new \WPCleanAdmin\Database();
+        $info = $database_handler->get_info();
         if ( function_exists( 'wp_send_json_success' ) ) {
             wp_send_json_success( $info );
         }
@@ -109,8 +109,8 @@ class Database {
         
         $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
         
-        $database = new \WPCleanAdmin\Database();
-        $result = $database->backup_database( $options );
+        $database_handler = new \WPCleanAdmin\Database();
+        $result = $database_handler->backup( $options );
         
         if ( $result['success'] ) {
             if ( function_exists( 'wp_send_json_success' ) ) {
@@ -135,8 +135,8 @@ class Database {
         
         $backup_file = isset( $_POST['backup_file'] ) ? sanitize_text_field( $_POST['backup_file'] ) : '';
         
-        $database = new \WPCleanAdmin\Database();
-        $result = $database->restore_database( $backup_file );
+        $database_handler = new \WPCleanAdmin\Database();
+        $result = $database_handler->restore( $backup_file );
         
         if ( $result['success'] ) {
             if ( function_exists( 'wp_send_json_success' ) ) {
@@ -159,8 +159,8 @@ class Database {
             return;
         }
         
-        $database = new \WPCleanAdmin\Database();
-        $backups = $database->get_database_backups();
+        $database_handler = new \WPCleanAdmin\Database();
+        $backups = $database_handler->get_backups();
         if ( function_exists( 'wp_send_json_success' ) ) {
             wp_send_json_success( $backups );
         }
@@ -178,8 +178,8 @@ class Database {
         
         $backup_file = isset( $_POST['backup_file'] ) ? sanitize_text_field( $_POST['backup_file'] ) : '';
         
-        $database = new \WPCleanAdmin\Database();
-        $result = $database->delete_database_backup( $backup_file );
+        $database_handler = new \WPCleanAdmin\Database();
+        $result = $database_handler->delete_backup( $backup_file );
         
         if ( $result['success'] ) {
             if ( function_exists( 'wp_send_json_success' ) ) {
