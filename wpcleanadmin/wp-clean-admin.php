@@ -22,58 +22,58 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Declare WordPress functions for IDE compatibility
 if ( ! function_exists( '\plugin_dir_path' ) ) {
-    function plugin_dir_path() {}
+    function \plugin_dir_path() {}
 }
 if ( ! function_exists( '\plugin_dir_url' ) ) {
-    function plugin_dir_url() {}
+    function \plugin_dir_url() {}
 }
 if ( ! function_exists( '\load_plugin_textdomain' ) ) {
-    function load_plugin_textdomain() {}
+    function \load_plugin_textdomain() {}
 }
 if ( ! function_exists( '\add_action' ) ) {
-    function add_action() {}
+    function \add_action() {}
 }
 if ( ! function_exists( '\deactivate_plugins' ) ) {
-    function deactivate_plugins() {}
+    function \deactivate_plugins() {}
 }
 if ( ! function_exists( '\wp_die' ) ) {
-    function wp_die() {}
+    function \wp_die() {}
 }
 if ( ! function_exists( '\esc_html__' ) ) {
-    function esc_html__() {}
+    function \esc_html__() {}
 }
 if ( ! function_exists( '\register_activation_hook' ) ) {
-    function register_activation_hook() {}
+    function \register_activation_hook() {}
 }
 if ( ! function_exists( '\register_deactivation_hook' ) ) {
-    function register_deactivation_hook() {}
+    function \register_deactivation_hook() {}
 }
 if ( ! function_exists( '\get_option' ) ) {
-    function get_option() {}
+    function \get_option() {}
 }
 if ( ! function_exists( '\update_option' ) ) {
-    function update_option() {}
+    function \update_option() {}
 }
 if ( ! function_exists( '\flush_rewrite_rules' ) ) {
-    function flush_rewrite_rules() {}
+    function \flush_rewrite_rules() {}
 }
 if ( ! function_exists( '\admin_url' ) ) {
-    function admin_url() {}
+    function \admin_url() {}
 }
 if ( ! function_exists( '\esc_url' ) ) {
-    function esc_url() {}
+    function \esc_url() {}
 }
 if ( ! function_exists( '\esc_html' ) ) {
-    function esc_html() {}
+    function \esc_html() {}
 }
 if ( ! function_exists( '\__' ) ) {
-    function __() {}
+    function \__() {}
 }
 if ( ! function_exists( '\add_filter' ) ) {
-    function add_filter() {}
+    function \add_filter() {}
 }
 if ( ! function_exists( '\plugin_basename' ) ) {
-    function plugin_basename() {}
+    function \plugin_basename() {}
 }
 
 // Define plugin constants
