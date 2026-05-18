@@ -1,144 +1,131 @@
 # WP Clean Admin
 
-A comprehensive WordPress plugin for cleaning and optimizing your WordPress admin area and database. **Version 1.8.1**
+Make your WordPress admin cleaner, faster, and more secure! **Version 1.8.1**
 
-**Core Features**:
-- Modular design for easy extension and maintenance
-- Follows WordPress best practices
-- Focus on security, performance, and user experience
-- Multi-language support (Chinese, English)
-- Provides rich APIs for developers
+✨ **Key Benefits**:
+- ✨ One-click cleanup of cluttered admin area
+- 🚀 Significantly faster admin loading
+- 🔒 Enhanced website security
+- 🎛️ Flexible menu customization
+- 📦 Easy database management
+- 🌐 Multi-language support (Chinese, English)
 
-## Features
+---
 
-### Admin Cleanup
-- **Dashboard Cleanup**: Remove unnecessary dashboard widgets
-- **Admin Menu Simplification**: Remove unused admin menu items
-- **Admin Bar Cleanup**: Remove unnecessary admin bar items
+## Why Choose WP Clean Admin?
+
+Is your WordPress admin area looking messy? Too many unnecessary menu items, widgets, and features? WP Clean Admin helps you:
+
+- **Clean Up Clutter**: Hide unwanted menus, widgets, and redundant information
+- **Speed Things Up**: Disable unnecessary features and make your admin fly
+- **Boost Security**: Protect your site from common security threats
+- **Simplify Management**: Make the admin interface work your way
+
+---
+
+## Core Features
+
+### 🧹 Admin Cleanup
+- **Menu Simplification**: Hide unnecessary admin menu items for a cleaner interface
+- **Dashboard Optimization**: Remove unwanted dashboard widgets
 - **Login Page Customization**: Customize login page appearance
+- **Admin Bar Cleanup**: Hide unnecessary items from the top admin bar
 
-### Database Management
-- **Database Optimization**: Automatically optimize database tables
-- **Database Backup**: Create and download database backups
-- **Database Restore**: Restore database from backups
-- **Cleanup Options**: Clean transients, orphaned metadata, and expired cron events
-
-### Performance Optimization
-- **Disable Emojis**: Improve performance by disabling WordPress emojis
-- **Disable XML-RPC**: Enhance security and performance
-- **Disable REST API**: Restrict REST API access for non-authenticated users
-- **Disable Heartbeat**: Reduce server load by disabling heartbeat
+### 🚀 Performance Optimization
+- **Disable Emojis**: Remove WordPress emoji features for faster loading
 - **Resource Optimization**: Minify and combine CSS/JS files
-- **Resource Preloading**: Preload critical resources
+- **Resource Preloading**: Preload critical resources for better experience
+- **Heartbeat Control**: Disable or adjust WordPress Heartbeat API to reduce server load
 
-### Security Enhancement
-- **Hide WordPress Version**: Remove WordPress version information
-- **Login CAPTCHA**: Add CAPTCHA to login form
-- **Two-Factor Authentication**: Implement two-factor authentication
-- **Login Attempt Restriction**: Limit login attempts to prevent brute force attacks
-- **Admin Access Restriction**: Restrict admin area access
+### 🔒 Security Enhancement
+- **Hide Version**: Remove WordPress version info to prevent targeted attacks
+- **Login Protection**: Add CAPTCHA to prevent spam logins
+- **Two-Factor Authentication**: Support for 2FA to increase account security
+- **Login Attempt Restriction**: Limit login attempts to prevent brute-force attacks
+- **Access Control**: Restrict admin access by user role
 
-### Menu Customization
-- **Role-Based Menu Restrictions**: Customize menu visibility based on user roles
-- **Dashboard Widget Management**: Control which dashboard widgets are displayed
-- **Admin Bar Customization**: Customize admin bar items
+### 🎛️ Menu Customization
+- **Role-Based Restrictions**: Show/hide menus based on user roles
+- **Menu Reordering**: Customize the order of admin menus
+- **Create Groups**: Organize related menus into custom groups
+- **Admin Bar Customization**: Customize what appears in the top admin bar
 
-### API Integration
-- **REST API**: Access plugin functionality via REST API endpoints
-- **Settings Management**: Get and update settings via API
-- **Cleanup Operations**: Run cleanup operations via API
-- **Database Operations**: Run database operations via API
-- **Performance Statistics**: Get performance statistics via API
+### 💾 Database Management
+- **One-Click Optimization**: Automatically optimize database tables
+- **Backup & Restore**: Easily create and download database backups, restore anytime
+- **Smart Cleanup**: Clean transients, orphaned metadata, and expired cron events
 
-## Installation
+---
+
+## Quick Start
+
+### Installation
 
 1. Download the plugin zip file
-2. Upload the zip file to your WordPress site via Plugins > Add New > Upload Plugin
-3. Activate the plugin
-4. Configure settings via Settings > Clean Admin
+2. In your WordPress admin, go to **Plugins > Add New**
+3. Click **Upload Plugin**, select the zip file you downloaded
+4. Click **Install Now**, then click **Activate**
 
-## Usage
+Or you can upload via FTP to `wp-content/plugins/` directory, then activate in admin.
 
-### Settings
-- Navigate to **Settings > Clean Admin** to configure plugin settings
-- Use the tabbed interface to navigate between different settings sections
-- Save changes to apply settings
+### Get Started in 3 Steps
+
+1. **Access Settings**: After activation, find "WP Clean Admin" in the left menu
+2. **Configure Features**: Use the tabbed interface to enable features as needed
+3. **Save & Apply**: Click "Save Settings" and the plugin starts working immediately!
+
+---
+
+## Usage Guide
+
+### Settings Page
+- Navigate to **Settings > Clean Admin** to configure the plugin
+- Use the top tabs to switch between different feature modules
+- Remember to save after each change
 
 ### Database Management
-- Navigate to **Settings > Clean Admin > Database** to manage database operations
-- Click "Optimize Database" to optimize database tables
-- Click "Backup Database" to create a database backup
-- Click "Restore Database" to restore from a backup
+- Go to **Settings > Clean Admin > Database**
+- Click "Optimize Database" to auto-optimize tables
+- Click "Backup Database" to create a backup
+- Click "Restore Database" when you need to restore
 
 ### Cleanup Operations
-- Navigate to **Settings > Clean Admin > Cleanup** to run cleanup operations
+- Go to **Settings > Clean Admin > Cleanup**
 - Select the cleanup options you want to run
-- Click "Run Cleanup" to start the cleanup process
+- Click "Run Cleanup" to start the process
 
 ### Performance Optimization
-- Navigate to **Settings > Clean Admin > Performance** to configure performance settings
-- Enable/disable performance optimization options
-- Save changes to apply settings
+- Go to **Settings > Clean Admin > Performance**
+- Toggle optimization options on/off
+- Save settings to apply immediately
 
 ### Security Settings
-- Navigate to **Settings > Clean Admin > Security** to configure security settings
-- Enable/disable security features
-- Save changes to apply settings
+- Go to **Settings > Clean Admin > Security**
+- Enable security features as needed
+- Save settings to apply immediately
 
-## API Usage
-
-### Endpoints
-
-#### GET /wp-json/wpca/v1/settings
-Get plugin settings
-
-#### POST /wp-json/wpca/v1/settings
-Update plugin settings
-
-#### POST /wp-json/wpca/v1/cleanup
-Run cleanup operations
-
-#### POST /wp-json/wpca/v1/database
-Run database operations
-
-#### GET /wp-json/wpca/v1/performance
-Get performance statistics
+---
 
 ## Requirements
 
-- WordPress 5.0+
-- PHP 7.0+
+- WordPress 5.0 or higher
+- PHP 7.0 or higher
+- MySQL 5.6 or higher
+
+---
+
+## Get Support
+
+Have questions or suggestions? Visit our [GitHub repository](https://github.com/sutchan/WP-Clean-Admin) to submit an issue, we'll respond soon!
+
+---
 
 ## License
 
-GPL-2.0+ License
+WP Clean Admin is licensed under GPL-2.0+.
+
+---
 
 ## Changelog
 
-### 1.8.1
-- Fixed diagnostic module AJAX class reference error
-- Added complete translations for diagnostic module
-- Added comprehensive diagnostic module specification documentation
-- Improved code structure consistency
-
-### 1.8.0
-- Added tabbed interface for settings page
-- Added database backup and restore functionality
-- Added two-factor authentication
-- Added login CAPTCHA
-- Added performance optimization features
-- Added security enhancement features
-- Added REST API endpoints
-- Added role-based menu restrictions
-- Added resource preloading
-- Improved database cleanup functionality
-- Improved media cleanup functionality
-- Improved comments cleanup functionality
-- Improved content cleanup functionality
-
-### 1.7.15
-- Initial release
-
-## Support
-
-For support, please visit the [GitHub repository](https://github.com/sutchan/WP-Clean-Admin) or contact the developer.
+See [CHANGELOG](CHANGELOG.md) for version history.

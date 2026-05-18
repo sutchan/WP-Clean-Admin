@@ -3,7 +3,7 @@
  * WPCleanAdmin PSR-4 Autoloader
  *
  * @package WPCleanAdmin
- * @version 1.8.0
+ * @version 1.8.1
  * @author Sut
  * @author URI: https://github.com/sutchan
  * @since 1.7.15
