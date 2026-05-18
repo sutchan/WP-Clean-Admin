@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Clean Admin 1.8.0\n"
+"Project-Id-Version: WP Clean Admin 1.8.1\n"
 "Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"
 "POT-Creation-Date: 2026-01-27 00:00+0000\n"
 "PO-Revision-Date: 2026-01-27 00:00+0000\n"
@@ -615,6 +615,191 @@ msgstr "WordPress Dashicons"
 msgid "WordPress Events and News"
 msgstr "WordPress 事件和新闻"
 
+
 msgid "Your support helps us continue to develop and improve WP Clean Admin."
 msgstr "您的支持帮助我们继续开发和改进 WP Clean Admin。"
+
+# ===========================================================
+# Diagnostics Module
+# ===========================================================
+msgid "PHP Version"
+msgstr "PHP 版本"
+
+msgid "WordPress Version"
+msgstr "WordPress 版本"
+
+msgid "MySQL Version"
+msgstr "MySQL 版本"
+
+msgid "Memory Limit"
+msgstr "内存限制"
+
+msgid "Debug Mode"
+msgstr "调试模式"
+
+msgid "Plugin Conflicts"
+msgstr "插件冲突"
+
+msgid "Theme Conflicts"
+msgstr "主题冲突"
+
+msgid "File Permissions"
+msgstr "文件权限"
+
+msgid "Database Tables"
+msgstr "数据库表"
+
+msgid "SSL Status"
+msgstr "SSL 状态"
+
+msgid "Cache Status"
+msgstr "缓存状态"
+
+msgid "REST API"
+msgstr "REST API"
+
+msgid "Check failed to execute"
+msgstr "检查执行失败"
+
+msgid "Check not found"
+msgstr "未找到检查项"
+
+msgid "PHP version %s is supported"
+msgstr "PHP 版本 %s 受支持"
+
+msgid "PHP version %s is outdated"
+msgstr "PHP 版本 %s 已过时"
+
+msgid "Please upgrade PHP to version 7.4 or higher"
+msgstr "请将 PHP 升级到 7.4 或更高版本"
+
+msgid "WordPress version %s is supported"
+msgstr "WordPress 版本 %s 受支持"
+
+msgid "WordPress version %s is outdated"
+msgstr "WordPress 版本 %s 已过时"
+
+msgid "Please upgrade WordPress to version 5.8 or higher"
+msgstr "请将 WordPress 升级到 5.8 或更高版本"
+
+msgid "MySQL version %s is supported"
+msgstr "MySQL 版本 %s 受支持"
+
+msgid "MySQL version %s is outdated"
+msgstr "MySQL 版本 %s 已过时"
+
+msgid "Please upgrade MySQL to version 5.6 or higher"
+msgstr "请将 MySQL 升级到 5.6 或更高版本"
+
+msgid "Memory limit %s is sufficient"
+msgstr "内存限制 %s 足够"
+
+msgid "Memory limit %s may be insufficient"
+msgstr "内存限制 %s 可能不足"
+
+msgid "Consider increasing PHP memory limit in php.ini or .htaccess"
+msgstr "考虑在 php.ini 或 .htaccess 中增加 PHP 内存限制"
+
+msgid "WP_DEBUG is enabled"
+msgstr "WP_DEBUG 已启用"
+
+msgid "Disable WP_DEBUG on production sites for better performance and security"
+msgstr "在生产站点上禁用 WP_DEBUG 以获得更好的性能和安全性"
+
+msgid "WP_DEBUG is disabled"
+msgstr "WP_DEBUG 已禁用"
+
+msgid "No known plugin conflicts detected"
+msgstr "未检测到已知的插件冲突"
+
+msgid "%d potential plugin conflicts detected"
+msgstr "检测到 %d 个潜在的插件冲突"
+
+msgid "Some plugins may conflict with performance optimizations. Test compatibility before production use."
+msgstr "某些插件可能与性能优化冲突。在生产使用前请测试兼容性。"
+
+msgid "Parent theme %s may be outdated"
+msgstr "父主题 %s 可能已过时"
+
+msgid "Theme %s may be outdated"
+msgstr "主题 %s 可能已过时"
+
+msgid "Theme %s is compatible"
+msgstr "主题 %s 兼容"
+
+msgid "Potential theme conflicts detected"
+msgstr "检测到潜在的主题冲突"
+
+msgid "Consider updating your theme to the latest version"
+msgstr "考虑将您的主题更新到最新版本"
+
+msgid "wp-content directory is not writable: %s"
+msgstr "wp-content 目录不可写：%s"
+
+msgid "uploads directory is not writable: %s"
+msgstr "uploads 目录不可写：%s"
+
+msgid "File permissions are correct"
+msgstr "文件权限正确"
+
+msgid "%d file permission issues detected"
+msgstr "检测到 %d 个文件权限问题"
+
+msgid "Fix file permissions to allow WordPress to write to necessary directories"
+msgstr "修复文件权限以允许 WordPress 写入必要的目录"
+
+msgid "All required database tables exist"
+msgstr "所有必需的数据库表都存在"
+
+msgid "%d database tables are missing"
+msgstr "缺少 %d 个数据库表"
+
+msgid "Restore missing database tables from backup or run WordPress repair"
+msgstr "从备份恢复缺失的数据库表或运行 WordPress 修复"
+
+msgid "SSL is enabled"
+msgstr "SSL 已启用"
+
+msgid "SSL is not enabled"
+msgstr "SSL 未启用"
+
+msgid "Enable SSL/TLS for better security"
+msgstr "启用 SSL/TLS 以获得更好的安全性"
+
+msgid "Caching plugin %s is active"
+msgstr "缓存插件 %s 处于活动状态"
+
+msgid "No caching plugin detected"
+msgstr "未检测到缓存插件"
+
+msgid "Consider installing a caching plugin for better performance"
+msgstr "考虑安装缓存插件以获得更好的性能"
+
+msgid "REST API is enabled"
+msgstr "REST API 已启用"
+
+msgid "REST API is disabled"
+msgstr "REST API 已禁用"
+
+msgid "Some plugins may require REST API to be enabled"
+msgstr "某些插件可能需要启用 REST API"
+
+msgid "Core"
+msgstr "核心"
+
+msgid "Server"
+msgstr "服务器"
+
+msgid "Security"
+msgstr "安全"
+
+msgid "Performance"
+msgstr "性能"
+
+msgid "Plugins"
+msgstr "插件"
+
+msgid "Themes"
+msgstr "主题"
+
 

@@ -16,6 +16,34 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
+if ( ! function_exists( '\wp_verify_nonce' ) ) {
+    function wp_verify_nonce() {}
+}
+if ( ! function_exists( '\wp_send_json_error' ) ) {
+    function wp_send_json_error() {}
+}
+if ( ! function_exists( '\wp_send_json_success' ) ) {
+    function wp_send_json_success() {}
+}
+if ( ! function_exists( '\current_user_can' ) ) {
+    function current_user_can() {}
+}
+if ( ! function_exists( '\__' ) ) {
+    function __() {}
+}
+if ( ! function_exists( '\wp_unslash' ) ) {
+    function wp_unslash() {}
+}
+if ( ! function_exists( '\update_option' ) ) {
+    function update_option() {}
+}
+if ( ! function_exists( '\get_option' ) ) {
+    function get_option() {}
+}
+if ( ! function_exists( '\delete_option' ) ) {
+    function delete_option() {}
+}
+
 /**
  * Settings AJAX Handler Class
  */
@@ -28,27 +56,37 @@ class Settings {
      */
     public static function save_settings() {
         // Verify nonce
-        if ( ! isset( $_POST['nonce'] ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
-            \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
+        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['nonce'] ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
+            }
+            return;
         }
         
         // Check permissions
-        if ( ! \current_user_can( 'manage_options' ) ) {
-            \wp_send_json_error( array( 'message' => \__( 'Insufficient permissions', WPCA_TEXT_DOMAIN ) ) );
+        if ( ! function_exists( '\current_user_can' ) || ! \current_user_can( 'manage_options' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => \__( 'Insufficient permissions', WPCA_TEXT_DOMAIN ) ) );
+            }
+            return;
         }
         
         try {
             // Get settings data
-            $settings = isset( $_POST['settings'] ) ? \wp_unslash( $_POST['settings'] ) : array();
+            $settings = isset( $_POST['settings'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
             
             // Validate and save settings
-            if ( function_exists( 'update_option' ) ) {
+            if ( function_exists( '\update_option' ) ) {
                 \update_option( 'wpca_settings', $settings );
             }
             
-            \wp_send_json_success( array( 'message' => \__( 'Settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( array( 'message' => \__( 'Settings saved successfully', WPCA_TEXT_DOMAIN ) ) );
+            }
         } catch ( \Exception $e ) {
-            \wp_send_json_error( array( 'message' => $e->getMessage() ) );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => $e->getMessage() ) );
+            }
         }
     }
     
@@ -59,25 +97,35 @@ class Settings {
      */
     public static function get_settings() {
         // Verify nonce
-        if ( ! isset( $_POST['nonce'] ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
-            \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
+        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['nonce'] ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
+            }
+            return;
         }
         
         // Check permissions
-        if ( ! \current_user_can( 'manage_options' ) ) {
-            \wp_send_json_error( array( 'message' => \__( 'Insufficient permissions', WPCA_TEXT_DOMAIN ) ) );
+        if ( ! function_exists( '\current_user_can' ) || ! \current_user_can( 'manage_options' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => \__( 'Insufficient permissions', WPCA_TEXT_DOMAIN ) ) );
+            }
+            return;
         }
         
         try {
             // Get settings
             $settings = array();
-            if ( function_exists( 'get_option' ) ) {
+            if ( function_exists( '\get_option' ) ) {
                 $settings = \get_option( 'wpca_settings', array() );
             }
             
-            \wp_send_json_success( array( 'settings' => $settings ) );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( array( 'settings' => $settings ) );
+            }
         } catch ( \Exception $e ) {
-            \wp_send_json_error( array( 'message' => $e->getMessage() ) );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => $e->getMessage() ) );
+            }
         }
     }
     
@@ -88,24 +136,34 @@ class Settings {
      */
     public static function reset_settings() {
         // Verify nonce
-        if ( ! isset( $_POST['nonce'] ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
-            \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
+        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['nonce'] ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
+            }
+            return;
         }
         
         // Check permissions
-        if ( ! \current_user_can( 'manage_options' ) ) {
-            \wp_send_json_error( array( 'message' => \__( 'Insufficient permissions', WPCA_TEXT_DOMAIN ) ) );
+        if ( ! function_exists( '\current_user_can' ) || ! \current_user_can( 'manage_options' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => \__( 'Insufficient permissions', WPCA_TEXT_DOMAIN ) ) );
+            }
+            return;
         }
         
         try {
             // Reset settings
-            if ( function_exists( 'delete_option' ) ) {
+            if ( function_exists( '\delete_option' ) ) {
                 \delete_option( 'wpca_settings' );
             }
             
-            \wp_send_json_success( array( 'message' => \__( 'Settings reset successfully', WPCA_TEXT_DOMAIN ) ) );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( array( 'message' => \__( 'Settings reset successfully', WPCA_TEXT_DOMAIN ) ) );
+            }
         } catch ( \Exception $e ) {
-            \wp_send_json_error( array( 'message' => $e->getMessage() ) );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( array( 'message' => $e->getMessage() ) );
+            }
         }
     }
 }

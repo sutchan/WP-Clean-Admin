@@ -63,7 +63,7 @@ class Comments_Cleanup {
         
         $results = array(
             'success' => true,
-            'message' => __( 'Comments cleanup completed successfully', WPCA_TEXT_DOMAIN ),
+            'message' => \__( 'Comments cleanup completed successfully', 'wpcleanadmin' ),
             'cleaned' => array()
         );
         

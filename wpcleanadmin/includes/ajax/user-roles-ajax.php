@@ -15,25 +15,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Declare WordPress functions for IDE compatibility
-if ( ! function_exists( 'wp_verify_nonce' ) ) {
+if ( ! function_exists( '\wp_verify_nonce' ) ) {
     function wp_verify_nonce() {}
 }
-if ( ! function_exists( 'wp_send_json_error' ) ) {
+if ( ! function_exists( '\wp_send_json_error' ) ) {
     function wp_send_json_error() {}
 }
-if ( ! function_exists( 'wp_send_json_success' ) ) {
+if ( ! function_exists( '\wp_send_json_success' ) ) {
     function wp_send_json_success() {}
 }
-if ( ! function_exists( 'current_user_can' ) ) {
+if ( ! function_exists( '\current_user_can' ) ) {
     function current_user_can() {}
 }
-if ( ! function_exists( 'wp_unslash' ) ) {
+if ( ! function_exists( '\wp_unslash' ) ) {
     function wp_unslash() {}
 }
-if ( ! function_exists( 'sanitize_text_field' ) ) {
+if ( ! function_exists( '\sanitize_text_field' ) ) {
     function sanitize_text_field() {}
 }
-if ( ! function_exists( '__' ) ) {
+if ( ! function_exists( '\__' ) ) {
     function __() {}
 }
 
@@ -57,16 +57,16 @@ class User_Roles {
      * @return bool True if the nonce is valid and user has capabilities, false otherwise.
      */
     private static function verify_ajax_request( string $action ): bool {
-        if ( ! function_exists( 'wp_verify_nonce' ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( __( 'Invalid nonce', 'wp-clean-admin' ) );
+        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Invalid nonce', 'wp-clean-admin' ) );
             }
             return false;
         }
         
-        if ( ! function_exists( 'current_user_can' ) || ! current_user_can( 'manage_options' ) ) {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( __( 'Insufficient permissions', 'wp-clean-admin' ) );
+        if ( ! function_exists( '\current_user_can' ) || ! \current_user_can( 'manage_options' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Insufficient permissions', 'wp-clean-admin' ) );
             }
             return false;
         }
@@ -84,10 +84,10 @@ class User_Roles {
             return;
         }
         
-        $user_roles = new \WPCleanAdmin\User_Roles();
+        $user_roles = \WPCleanAdmin\User_Roles::getInstance();
         $roles = $user_roles->get_user_roles();
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( $roles );
+        if ( function_exists( '\wp_send_json_success' ) ) {
+            \wp_send_json_success( $roles );
         }
     }
 
@@ -101,13 +101,13 @@ class User_Roles {
             return;
         }
         
-        $role_slug = isset( $_POST['role_slug'] ) ? sanitize_text_field( $_POST['role_slug'] ) : '';
-        $capabilities = isset( $_POST['capabilities'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['capabilities'] ) : $_POST['capabilities'] ) : array();
+        $role_slug = isset( $_POST['role_slug'] ) ? \sanitize_text_field( $_POST['role_slug'] ) : '';
+        $capabilities = isset( $_POST['capabilities'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['capabilities'] ) : $_POST['capabilities'] ) : array();
         
-        $user_roles = new \WPCleanAdmin\User_Roles();
+        $user_roles = \WPCleanAdmin\User_Roles::getInstance();
         $result = $user_roles->update_role_capabilities( $role_slug, $capabilities );
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( $result );
+        if ( function_exists( '\wp_send_json_success' ) ) {
+            \wp_send_json_success( $result );
         }
     }
 
@@ -121,20 +121,20 @@ class User_Roles {
             return;
         }
         
-        $role_name = isset( $_POST['role_name'] ) ? sanitize_text_field( $_POST['role_name'] ) : '';
-        $role_slug = isset( $_POST['role_slug'] ) ? sanitize_text_field( $_POST['role_slug'] ) : '';
-        $capabilities = isset( $_POST['capabilities'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['capabilities'] ) : $_POST['capabilities'] ) : array();
+        $role_name = isset( $_POST['role_name'] ) ? \sanitize_text_field( $_POST['role_name'] ) : '';
+        $role_slug = isset( $_POST['role_slug'] ) ? \sanitize_text_field( $_POST['role_slug'] ) : '';
+        $capabilities = isset( $_POST['capabilities'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['capabilities'] ) : $_POST['capabilities'] ) : array();
         
-        $user_roles = new \WPCleanAdmin\User_Roles();
+        $user_roles = \WPCleanAdmin\User_Roles::getInstance();
         $result = $user_roles->create_role( $role_slug, $role_name, $capabilities );
         
         if ( $result['success'] ) {
-            if ( function_exists( 'wp_send_json_success' ) ) {
-                wp_send_json_success( $result );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( $result );
             }
         } else {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( $result['message'] );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( $result['message'] );
             }
         }
     }
@@ -149,18 +149,18 @@ class User_Roles {
             return;
         }
         
-        $role_slug = isset( $_POST['role_slug'] ) ? sanitize_text_field( $_POST['role_slug'] ) : '';
+        $role_slug = isset( $_POST['role_slug'] ) ? \sanitize_text_field( $_POST['role_slug'] ) : '';
         
-        $user_roles = new \WPCleanAdmin\User_Roles();
+        $user_roles = \WPCleanAdmin\User_Roles::getInstance();
         $result = $user_roles->delete_role( $role_slug );
         
         if ( $result['success'] ) {
-            if ( function_exists( 'wp_send_json_success' ) ) {
-                wp_send_json_success( $result );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( $result );
             }
         } else {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( $result['message'] );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( $result['message'] );
             }
         }
     }
@@ -175,20 +175,20 @@ class User_Roles {
             return;
         }
         
-        $role_slug = isset( $_POST['role_slug'] ) ? sanitize_text_field( $_POST['role_slug'] ) : '';
-        $new_role_name = isset( $_POST['new_role_name'] ) ? sanitize_text_field( $_POST['new_role_name'] ) : '';
-        $new_role_slug = isset( $_POST['new_role_slug'] ) ? sanitize_text_field( $_POST['new_role_slug'] ) : '';
+        $role_slug = isset( $_POST['role_slug'] ) ? \sanitize_text_field( $_POST['role_slug'] ) : '';
+        $new_role_name = isset( $_POST['new_role_name'] ) ? \sanitize_text_field( $_POST['new_role_name'] ) : '';
+        $new_role_slug = isset( $_POST['new_role_slug'] ) ? \sanitize_text_field( $_POST['new_role_slug'] ) : '';
         
-        $user_roles = new \WPCleanAdmin\User_Roles();
+        $user_roles = \WPCleanAdmin\User_Roles::getInstance();
         $result = $user_roles->duplicate_role( $role_slug, $new_role_name, $new_role_slug );
         
         if ( $result['success'] ) {
-            if ( function_exists( 'wp_send_json_success' ) ) {
-                wp_send_json_success( $result );
+            if ( function_exists( '\wp_send_json_success' ) ) {
+                \wp_send_json_success( $result );
             }
         } else {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( $result['message'] );
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( $result['message'] );
             }
         }
     }

@@ -38,6 +38,10 @@ if ( file_exists( dirname( __FILE__ ) . '/settings/fields/class-wpca-security-se
     require_once dirname( __FILE__ ) . '/settings/fields/class-wpca-security-settings-fields.php';
 }
 
+if ( file_exists( dirname( __FILE__ ) . '/settings/fields/class-wpca-diagnostics-settings-fields.php' ) ) {
+    require_once dirname( __FILE__ ) . '/settings/fields/class-wpca-diagnostics-settings-fields.php';
+}
+
 // Include settings validation class
 if ( file_exists( dirname( __FILE__ ) . '/settings/class-wpca-settings-validation.php' ) ) {
     require_once dirname( __FILE__ ) . '/settings/class-wpca-settings-validation.php';
@@ -52,6 +56,11 @@ if ( file_exists( dirname( __FILE__ ) . '/settings/class-wpca-settings-scripts.p
 
 class Settings {
     
+    /**
+     * 单例实例
+     *
+     * @var Settings|null
+     */
     private static $instance = null;
     
     public static function getInstance() {
@@ -124,6 +133,16 @@ class Settings {
                 'wpca_security_settings',
                 \__( 'Security Settings', $text_domain ),
                 array( $this, 'render_security_settings_section' ),
+                'wp-clean-admin'
+            );
+        }
+        
+        // Register diagnostics settings section
+        if ( function_exists( 'add_settings_section' ) ) {
+            \add_settings_section(
+                'wpca_diagnostics_settings',
+                \__( 'Diagnostics Settings', $text_domain ),
+                array( $this, 'render_diagnostics_settings_section' ),
                 'wp-clean-admin'
             );
         }
@@ -228,6 +247,41 @@ class Settings {
             );
         }
         
+        // Register diagnostics settings fields
+        if ( function_exists( 'add_settings_field' ) ) {
+            \add_settings_field(
+                'wpca_enable_diagnostics',
+                \__( 'Enable Diagnostics', $text_domain ),
+                array( '\WPCleanAdmin\Settings\Fields\Diagnostics_Settings_Fields', 'render_enable_diagnostics_field' ),
+                'wp-clean-admin',
+                'wpca_diagnostics_settings'
+            );
+            
+            \add_settings_field(
+                'wpca_auto_run_diagnostics',
+                \__( 'Auto Run Diagnostics', $text_domain ),
+                array( '\WPCleanAdmin\Settings\Fields\Diagnostics_Settings_Fields', 'render_auto_run_diagnostics_field' ),
+                'wp-clean-admin',
+                'wpca_diagnostics_settings'
+            );
+            
+            \add_settings_field(
+                'wpca_show_warnings',
+                \__( 'Show Warnings', $text_domain ),
+                array( '\WPCleanAdmin\Settings\Fields\Diagnostics_Settings_Fields', 'render_show_warnings_field' ),
+                'wp-clean-admin',
+                'wpca_diagnostics_settings'
+            );
+            
+            \add_settings_field(
+                'wpca_severity_filter',
+                \__( 'Severity Filter', $text_domain ),
+                array( '\WPCleanAdmin\Settings\Fields\Diagnostics_Settings_Fields', 'render_severity_filter_field' ),
+                'wp-clean-admin',
+                'wpca_diagnostics_settings'
+            );
+        }
+        
         // Register setting
         if ( function_exists( 'register_setting' ) ) {
             \register_setting( 'wp-clean-admin', 'wpca_settings', array( '\WPCleanAdmin\Settings\Settings_Validation', 'validate_settings' ) );
@@ -252,6 +306,11 @@ class Settings {
     public function render_security_settings_section() {
         $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
         echo '<p>' . \__( 'Configure security settings for WP Clean Admin plugin.', $text_domain ) . '</p>';
+    }
+    
+    public function render_diagnostics_settings_section() {
+        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
+        echo '<p>' . \__( 'Configure site health diagnostics settings for WP Clean Admin plugin.', $text_domain ) . '</p>';
     }
     
     public function render_settings_page() {
@@ -285,6 +344,10 @@ class Settings {
                         <button type="button" class="wpca-tab-button" data-tab="security">
                             <span class="dashicons dashicons-shield"></span>
                             <?php echo \esc_html( \__( 'Security', $text_domain ) ); ?>
+                        </button>
+                        <button type="button" class="wpca-tab-button" data-tab="diagnostics">
+                            <span class="dashicons dashicons-heart"></span>
+                            <?php echo \esc_html( \__( 'Diagnostics', $text_domain ) ); ?>
                         </button>
                     </div>
                     
@@ -324,6 +387,15 @@ class Settings {
                             <?php
                             if ( function_exists( 'do_settings_sections' ) ) {
                                 // Render only security settings
+                                \do_settings_sections( 'wp-clean-admin' );
+                            }
+                            ?>
+                        </div>
+                        
+                        <!-- Diagnostics Tab -->
+                        <div class="wpca-tab-content" id="wpca-tab-diagnostics">
+                            <?php
+                            if ( function_exists( 'do_settings_sections' ) ) {
                                 \do_settings_sections( 'wp-clean-admin' );
                             }
                             ?>
@@ -628,7 +700,7 @@ class Settings {
         <?php
     }
     
-    public function enqueue_scripts( $hook ) {
+    public function enqueue_scripts( string $hook ) {
         \WPCleanAdmin\Settings\Settings_Scripts::enqueue_scripts( $hook );
     }
 }

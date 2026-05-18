@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Clean Admin 1.8.0\n"
+"Project-Id-Version: WP Clean Admin 1.8.1\n"
 "Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"
 "POT-Creation-Date: 2026-01-27 00:00+0000\n"
 "PO-Revision-Date: 2026-01-27 00:00+0000\n"
@@ -615,6 +615,191 @@ msgstr "WordPress Dashicons"
 msgid "WordPress Events and News"
 msgstr "WordPress Events and News"
 
+
 msgid "Your support helps us continue to develop and improve WP Clean Admin."
 msgstr "Your support helps us continue to develop and improve WP Clean Admin."
+
+# ===========================================================
+# Diagnostics Module
+# ===========================================================
+msgid "PHP Version"
+msgstr "PHP Version"
+
+msgid "WordPress Version"
+msgstr "WordPress Version"
+
+msgid "MySQL Version"
+msgstr "MySQL Version"
+
+msgid "Memory Limit"
+msgstr "Memory Limit"
+
+msgid "Debug Mode"
+msgstr "Debug Mode"
+
+msgid "Plugin Conflicts"
+msgstr "Plugin Conflicts"
+
+msgid "Theme Conflicts"
+msgstr "Theme Conflicts"
+
+msgid "File Permissions"
+msgstr "File Permissions"
+
+msgid "Database Tables"
+msgstr "Database Tables"
+
+msgid "SSL Status"
+msgstr "SSL Status"
+
+msgid "Cache Status"
+msgstr "Cache Status"
+
+msgid "REST API"
+msgstr "REST API"
+
+msgid "Check failed to execute"
+msgstr "Check failed to execute"
+
+msgid "Check not found"
+msgstr "Check not found"
+
+msgid "PHP version %s is supported"
+msgstr "PHP version %s is supported"
+
+msgid "PHP version %s is outdated"
+msgstr "PHP version %s is outdated"
+
+msgid "Please upgrade PHP to version 7.4 or higher"
+msgstr "Please upgrade PHP to version 7.4 or higher"
+
+msgid "WordPress version %s is supported"
+msgstr "WordPress version %s is supported"
+
+msgid "WordPress version %s is outdated"
+msgstr "WordPress version %s is outdated"
+
+msgid "Please upgrade WordPress to version 5.8 or higher"
+msgstr "Please upgrade WordPress to version 5.8 or higher"
+
+msgid "MySQL version %s is supported"
+msgstr "MySQL version %s is supported"
+
+msgid "MySQL version %s is outdated"
+msgstr "MySQL version %s is outdated"
+
+msgid "Please upgrade MySQL to version 5.6 or higher"
+msgstr "Please upgrade MySQL to version 5.6 or higher"
+
+msgid "Memory limit %s is sufficient"
+msgstr "Memory limit %s is sufficient"
+
+msgid "Memory limit %s may be insufficient"
+msgstr "Memory limit %s may be insufficient"
+
+msgid "Consider increasing PHP memory limit in php.ini or .htaccess"
+msgstr "Consider increasing PHP memory limit in php.ini or .htaccess"
+
+msgid "WP_DEBUG is enabled"
+msgstr "WP_DEBUG is enabled"
+
+msgid "Disable WP_DEBUG on production sites for better performance and security"
+msgstr "Disable WP_DEBUG on production sites for better performance and security"
+
+msgid "WP_DEBUG is disabled"
+msgstr "WP_DEBUG is disabled"
+
+msgid "No known plugin conflicts detected"
+msgstr "No known plugin conflicts detected"
+
+msgid "%d potential plugin conflicts detected"
+msgstr "%d potential plugin conflicts detected"
+
+msgid "Some plugins may conflict with performance optimizations. Test compatibility before production use."
+msgstr "Some plugins may conflict with performance optimizations. Test compatibility before production use."
+
+msgid "Parent theme %s may be outdated"
+msgstr "Parent theme %s may be outdated"
+
+msgid "Theme %s may be outdated"
+msgstr "Theme %s may be outdated"
+
+msgid "Theme %s is compatible"
+msgstr "Theme %s is compatible"
+
+msgid "Potential theme conflicts detected"
+msgstr "Potential theme conflicts detected"
+
+msgid "Consider updating your theme to the latest version"
+msgstr "Consider updating your theme to the latest version"
+
+msgid "wp-content directory is not writable: %s"
+msgstr "wp-content directory is not writable: %s"
+
+msgid "uploads directory is not writable: %s"
+msgstr "uploads directory is not writable: %s"
+
+msgid "File permissions are correct"
+msgstr "File permissions are correct"
+
+msgid "%d file permission issues detected"
+msgstr "%d file permission issues detected"
+
+msgid "Fix file permissions to allow WordPress to write to necessary directories"
+msgstr "Fix file permissions to allow WordPress to write to necessary directories"
+
+msgid "All required database tables exist"
+msgstr "All required database tables exist"
+
+msgid "%d database tables are missing"
+msgstr "%d database tables are missing"
+
+msgid "Restore missing database tables from backup or run WordPress repair"
+msgstr "Restore missing database tables from backup or run WordPress repair"
+
+msgid "SSL is enabled"
+msgstr "SSL is enabled"
+
+msgid "SSL is not enabled"
+msgstr "SSL is not enabled"
+
+msgid "Enable SSL/TLS for better security"
+msgstr "Enable SSL/TLS for better security"
+
+msgid "Caching plugin %s is active"
+msgstr "Caching plugin %s is active"
+
+msgid "No caching plugin detected"
+msgstr "No caching plugin detected"
+
+msgid "Consider installing a caching plugin for better performance"
+msgstr "Consider installing a caching plugin for better performance"
+
+msgid "REST API is enabled"
+msgstr "REST API is enabled"
+
+msgid "REST API is disabled"
+msgstr "REST API is disabled"
+
+msgid "Some plugins may require REST API to be enabled"
+msgstr "Some plugins may require REST API to be enabled"
+
+msgid "Core"
+msgstr "Core"
+
+msgid "Server"
+msgstr "Server"
+
+msgid "Security"
+msgstr "Security"
+
+msgid "Performance"
+msgstr "Performance"
+
+msgid "Plugins"
+msgstr "Plugins"
+
+msgid "Themes"
+msgstr "Themes"
+
 

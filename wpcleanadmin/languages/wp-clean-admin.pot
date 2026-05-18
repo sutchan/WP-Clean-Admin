@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Clean Admin 1.8.0\n"
+"Project-Id-Version: WP Clean Admin 1.8.1\n"
 "Report-Msgid-Bugs-To: https://github.com/sutchan/WP-Clean-Admin\n"
 "POT-Creation-Date: 2026-01-27 00:00+0000\n"
 "PO-Revision-Date: \n"
@@ -618,4 +618,187 @@ msgid "WordPress Events and News"
 msgstr ""
 
 msgid "Your support helps us continue to develop and improve WP Clean Admin."
+msgstr ""
+
+# ===========================================================
+# Diagnostics Module
+# ===========================================================
+msgid "PHP Version"
+msgstr ""
+
+msgid "WordPress Version"
+msgstr ""
+
+msgid "MySQL Version"
+msgstr ""
+
+msgid "Memory Limit"
+msgstr ""
+
+msgid "Debug Mode"
+msgstr ""
+
+msgid "Plugin Conflicts"
+msgstr ""
+
+msgid "Theme Conflicts"
+msgstr ""
+
+msgid "File Permissions"
+msgstr ""
+
+msgid "Database Tables"
+msgstr ""
+
+msgid "SSL Status"
+msgstr ""
+
+msgid "Cache Status"
+msgstr ""
+
+msgid "REST API"
+msgstr ""
+
+msgid "Check failed to execute"
+msgstr ""
+
+msgid "Check not found"
+msgstr ""
+
+msgid "PHP version %s is supported"
+msgstr ""
+
+msgid "PHP version %s is outdated"
+msgstr ""
+
+msgid "Please upgrade PHP to version 7.4 or higher"
+msgstr ""
+
+msgid "WordPress version %s is supported"
+msgstr ""
+
+msgid "WordPress version %s is outdated"
+msgstr ""
+
+msgid "Please upgrade WordPress to version 5.8 or higher"
+msgstr ""
+
+msgid "MySQL version %s is supported"
+msgstr ""
+
+msgid "MySQL version %s is outdated"
+msgstr ""
+
+msgid "Please upgrade MySQL to version 5.6 or higher"
+msgstr ""
+
+msgid "Memory limit %s is sufficient"
+msgstr ""
+
+msgid "Memory limit %s may be insufficient"
+msgstr ""
+
+msgid "Consider increasing PHP memory limit in php.ini or .htaccess"
+msgstr ""
+
+msgid "WP_DEBUG is enabled"
+msgstr ""
+
+msgid "Disable WP_DEBUG on production sites for better performance and security"
+msgstr ""
+
+msgid "WP_DEBUG is disabled"
+msgstr ""
+
+msgid "No known plugin conflicts detected"
+msgstr ""
+
+msgid "%d potential plugin conflicts detected"
+msgstr ""
+
+msgid "Some plugins may conflict with performance optimizations. Test compatibility before production use."
+msgstr ""
+
+msgid "Parent theme %s may be outdated"
+msgstr ""
+
+msgid "Theme %s may be outdated"
+msgstr ""
+
+msgid "Theme %s is compatible"
+msgstr ""
+
+msgid "Potential theme conflicts detected"
+msgstr ""
+
+msgid "Consider updating your theme to the latest version"
+msgstr ""
+
+msgid "wp-content directory is not writable: %s"
+msgstr ""
+
+msgid "uploads directory is not writable: %s"
+msgstr ""
+
+msgid "File permissions are correct"
+msgstr ""
+
+msgid "%d file permission issues detected"
+msgstr ""
+
+msgid "Fix file permissions to allow WordPress to write to necessary directories"
+msgstr ""
+
+msgid "All required database tables exist"
+msgstr ""
+
+msgid "%d database tables are missing"
+msgstr ""
+
+msgid "Restore missing database tables from backup or run WordPress repair"
+msgstr ""
+
+msgid "SSL is enabled"
+msgstr ""
+
+msgid "SSL is not enabled"
+msgstr ""
+
+msgid "Enable SSL/TLS for better security"
+msgstr ""
+
+msgid "Caching plugin %s is active"
+msgstr ""
+
+msgid "No caching plugin detected"
+msgstr ""
+
+msgid "Consider installing a caching plugin for better performance"
+msgstr ""
+
+msgid "REST API is enabled"
+msgstr ""
+
+msgid "REST API is disabled"
+msgstr ""
+
+msgid "Some plugins may require REST API to be enabled"
+msgstr ""
+
+msgid "Core"
+msgstr ""
+
+msgid "Server"
+msgstr ""
+
+msgid "Security"
+msgstr ""
+
+msgid "Performance"
+msgstr ""
+
+msgid "Plugins"
+msgstr ""
+
+msgid "Themes"
 msgstr ""

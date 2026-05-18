@@ -15,32 +15,32 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Declare WordPress functions for IDE compatibility
-if ( ! function_exists( 'wp_verify_nonce' ) ) {
+if ( ! function_exists( '\wp_verify_nonce' ) ) {
     function wp_verify_nonce() {}
 }
-if ( ! function_exists( 'wp_send_json_error' ) ) {
-    function wp_send_json_error() {}
+if ( ! function_exists( '\\wp_send_json_error' ) ) {
+    function \wp_send_json_error() {}
 }
-if ( ! function_exists( 'wp_send_json_success' ) ) {
-    function wp_send_json_success() {}
+if ( ! function_exists( '\\wp_send_json_success' ) ) {
+    function \wp_send_json_success() {}
 }
-if ( ! function_exists( 'current_user_can' ) ) {
+if ( ! function_exists( '\current_user_can' ) ) {
     function current_user_can() {}
 }
-if ( ! function_exists( 'get_option' ) ) {
-    function get_option() {}
+if ( ! function_exists( '\get_option' ) ) {
+    function \get_option() {}
 }
-if ( ! function_exists( 'update_option' ) ) {
-    function update_option() {}
+if ( ! function_exists( '\update_option' ) ) {
+    function \update_option() {}
 }
-if ( ! function_exists( 'sanitize_text_field' ) ) {
+if ( ! function_exists( '\sanitize_text_field' ) ) {
     function sanitize_text_field() {}
 }
-if ( ! function_exists( 'wp_unslash' ) ) {
-    function wp_unslash() {}
+if ( ! function_exists( '\wp_unslash' ) ) {
+    function \wp_unslash() {}
 }
-if ( ! function_exists( '__' ) ) {
-    function __() {}
+if ( ! function_exists( '\__' ) ) {
+    function \__() {}
 }
 
 /**
@@ -63,16 +63,16 @@ class Performance {
      * @return bool True if the nonce is valid and user has capabilities, false otherwise.
      */
     private static function verify_ajax_request( string $action ): bool {
-        if ( ! function_exists( 'wp_verify_nonce' ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( __( 'Invalid nonce', 'wp-clean-admin' ) );
+        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
+            if ( function_exists( '\\wp_send_json_error' ) ) {
+                \\wp_send_json_error( \\__( 'Invalid nonce', 'wp-clean-admin' ) );
             }
             return false;
         }
         
-        if ( ! function_exists( 'current_user_can' ) || ! current_user_can( 'manage_options' ) ) {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( __( 'Insufficient permissions', 'wp-clean-admin' ) );
+        if ( ! function_exists( '\current_user_can' ) || ! \current_user_can( 'manage_options' ) ) {
+            if ( function_exists( '\\wp_send_json_error' ) ) {
+                \\wp_send_json_error( \\__( 'Insufficient permissions', 'wp-clean-admin' ) );
             }
             return false;
         }
@@ -90,10 +90,10 @@ class Performance {
             return;
         }
         
-        $database = new \WPCleanAdmin\Database();
+        $database = \WPCleanAdmin\Database::getInstance();
         $result = $database->optimize_database();
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( $result );
+        if ( function_exists( '\\wp_send_json_success' ) ) {
+            \wp_send_json_success( $result );
         }
     }
 
@@ -107,10 +107,10 @@ class Performance {
             return;
         }
         
-        $performance = new \WPCleanAdmin\Performance();
+        $performance = \WPCleanAdmin\Performance::getInstance();
         $result = $performance->clear_cache();
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( $result );
+        if ( function_exists( '\\wp_send_json_success' ) ) {
+            \wp_send_json_success( $result );
         }
     }
 
@@ -124,10 +124,10 @@ class Performance {
             return;
         }
         
-        $performance = new \WPCleanAdmin\Performance();
+        $performance = \WPCleanAdmin\Performance::getInstance();
         $stats = $performance->get_performance_stats();
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( $stats );
+        if ( function_exists( '\\wp_send_json_success' ) ) {
+            \wp_send_json_success( $stats );
         }
     }
 
@@ -141,22 +141,22 @@ class Performance {
             return;
         }
         
-        $settings = isset( $_POST['settings'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
+        $settings = isset( $_POST['settings'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
         
         // Get current settings
-        $current_settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
+        $current_settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
         
         // Update performance settings
         $current_settings['performance'] = $settings;
-        $result = function_exists( 'update_option' ) ? update_option( 'wpca_settings', $current_settings ) : false;
+        $result = function_exists( '\update_option' ) ? \update_option( 'wpca_settings', $current_settings ) : false;
         
         if ( $result ) {
-            if ( function_exists( 'wp_send_json_success' ) ) {
-                wp_send_json_success( array( 'message' => __( 'Performance settings saved successfully', 'wp-clean-admin' ) ) );
+            if ( function_exists( '\\wp_send_json_success' ) ) {
+                \wp_send_json_success( array( 'message' => \__( 'Performance settings saved successfully', 'wp-clean-admin' ) ) );
             }
         } else {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( __( 'Failed to save performance settings', 'wp-clean-admin' ) );
+            if ( function_exists( '\\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Failed to save performance settings', 'wp-clean-admin' ) );
             }
         }
     }
@@ -172,11 +172,11 @@ class Performance {
         }
         
         // Get performance settings
-        $settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
+        $settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
         $performance_settings = isset( $settings['performance'] ) ? $settings['performance'] : array();
         
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( $performance_settings );
+        if ( function_exists( '\\wp_send_json_success' ) ) {
+            \wp_send_json_success( $performance_settings );
         }
     }
 
@@ -191,19 +191,19 @@ class Performance {
         }
         
         // Get current settings
-        $current_settings = function_exists( 'get_option' ) ? get_option( 'wpca_settings', array() ) : array();
+        $current_settings = function_exists( '\get_option' ) ? \get_option( 'wpca_settings', array() ) : array();
         
         // Remove performance settings (reset to default)
         unset( $current_settings['performance'] );
-        $result = function_exists( 'update_option' ) ? update_option( 'wpca_settings', $current_settings ) : false;
+        $result = function_exists( '\update_option' ) ? \update_option( 'wpca_settings', $current_settings ) : false;
         
         if ( $result ) {
-            if ( function_exists( 'wp_send_json_success' ) ) {
-                wp_send_json_success( array( 'message' => __( 'Performance settings reset to default', 'wp-clean-admin' ) ) );
+            if ( function_exists( '\\wp_send_json_success' ) ) {
+                \wp_send_json_success( array( 'message' => \__( 'Performance settings reset to default', 'wp-clean-admin' ) ) );
             }
         } else {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( __( 'Failed to reset performance settings', 'wp-clean-admin' ) );
+            if ( function_exists( '\\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Failed to reset performance settings', 'wp-clean-admin' ) );
             }
         }
     }

@@ -3,7 +3,7 @@
  * WPCleanAdmin PSR-4 Autoloader
  *
  * @package WPCleanAdmin
- * @version 1.8.0
+ * @version 1.8.1
  * @author Sut
  * @author URI: https://github.com/sutchan
  * @since 1.7.15
@@ -25,8 +25,8 @@ if ( ! defined( 'ABSPATH' ) ) {
         require_once __DIR__ . '/elementor-stub.php';
     }
     
-    // Exit after loading stubs in IDE environment
-    exit;
+    // Define ABSPATH constant for IDE environment to allow autoloader to continue
+    define( 'ABSPATH', dirname( dirname( __FILE__ ) ) . '/' );
 }
 
 /**

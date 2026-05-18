@@ -15,25 +15,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Declare WordPress functions for IDE compatibility
-if ( ! function_exists( 'wp_verify_nonce' ) ) {
+if ( ! function_exists( '\wp_verify_nonce' ) ) {
     function wp_verify_nonce() {}
 }
-if ( ! function_exists( 'wp_send_json_error' ) ) {
+if ( ! function_exists( '\wp_send_json_error' ) ) {
     function wp_send_json_error() {}
 }
-if ( ! function_exists( 'wp_send_json_success' ) ) {
+if ( ! function_exists( '\wp_send_json_success' ) ) {
     function wp_send_json_success() {}
 }
-if ( ! function_exists( 'current_user_can' ) ) {
+if ( ! function_exists( '\current_user_can' ) ) {
     function current_user_can() {}
 }
-if ( ! function_exists( 'sanitize_text_field' ) ) {
+if ( ! function_exists( '\sanitize_text_field' ) ) {
     function sanitize_text_field() {}
 }
-if ( ! function_exists( 'wp_unslash' ) ) {
+if ( ! function_exists( '\wp_unslash' ) ) {
     function wp_unslash() {}
 }
-if ( ! function_exists( '__' ) ) {
+if ( ! function_exists( '\__' ) ) {
     function __() {}
 }
 
@@ -57,16 +57,16 @@ class Resources {
      * @return bool True if the nonce is valid and user has capabilities, false otherwise.
      */
     private static function verify_ajax_request( string $action ): bool {
-        if ( ! function_exists( 'wp_verify_nonce' ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( __( 'Invalid nonce', 'wp-clean-admin' ) );
+        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Invalid nonce', 'wp-clean-admin' ) );
             }
             return false;
         }
         
-        if ( ! function_exists( 'current_user_can' ) || ! current_user_can( 'manage_options' ) ) {
-            if ( function_exists( 'wp_send_json_error' ) ) {
-                wp_send_json_error( __( 'Insufficient permissions', 'wp-clean-admin' ) );
+        if ( ! function_exists( '\current_user_can' ) || ! \current_user_can( 'manage_options' ) ) {
+            if ( function_exists( '\wp_send_json_error' ) ) {
+                \wp_send_json_error( \__( 'Insufficient permissions', 'wp-clean-admin' ) );
             }
             return false;
         }
@@ -84,10 +84,10 @@ class Resources {
             return;
         }
         
-        $resources = new \WPCleanAdmin\Resources();
+        $resources = \WPCleanAdmin\Resources::getInstance();
         $stats = $resources->get_resources_stats();
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( $stats );
+        if ( function_exists( '\wp_send_json_success' ) ) {
+            \wp_send_json_success( $stats );
         }
     }
 
@@ -101,12 +101,12 @@ class Resources {
             return;
         }
         
-        $type = isset( $_POST['type'] ) ? sanitize_text_field( $_POST['type'] ) : '';
+        $type = isset( $_POST['type'] ) ? \sanitize_text_field( $_POST['type'] ) : '';
         
-        $resources = new \WPCleanAdmin\Resources();
+        $resources = \WPCleanAdmin\Resources::getInstance();
         $details = $resources->get_resource_details( $type );
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( $details );
+        if ( function_exists( '\wp_send_json_success' ) ) {
+            \wp_send_json_success( $details );
         }
     }
 
@@ -120,12 +120,12 @@ class Resources {
             return;
         }
         
-        $options = isset( $_POST['options'] ) ? ( function_exists( 'wp_unslash' ) ? wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
+        $options = isset( $_POST['options'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['options'] ) : $_POST['options'] ) : array();
         
-        $resources = new \WPCleanAdmin\Resources();
+        $resources = \WPCleanAdmin\Resources::getInstance();
         $result = $resources->optimize_resources( $options );
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( $result );
+        if ( function_exists( '\wp_send_json_success' ) ) {
+            \wp_send_json_success( $result );
         }
     }
 
@@ -139,13 +139,13 @@ class Resources {
             return;
         }
         
-        $type = isset( $_POST['type'] ) ? sanitize_text_field( $_POST['type'] ) : '';
-        $handle = isset( $_POST['handle'] ) ? sanitize_text_field( $_POST['handle'] ) : '';
+        $type = isset( $_POST['type'] ) ? \sanitize_text_field( $_POST['type'] ) : '';
+        $handle = isset( $_POST['handle'] ) ? \sanitize_text_field( $_POST['handle'] ) : '';
         
-        $resources = new \WPCleanAdmin\Resources();
+        $resources = \WPCleanAdmin\Resources::getInstance();
         $result = $resources->disable_resource( $type, $handle );
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( $result );
+        if ( function_exists( '\wp_send_json_success' ) ) {
+            \wp_send_json_success( $result );
         }
     }
 
@@ -159,13 +159,13 @@ class Resources {
             return;
         }
         
-        $type = isset( $_POST['type'] ) ? sanitize_text_field( $_POST['type'] ) : '';
-        $handle = isset( $_POST['handle'] ) ? sanitize_text_field( $_POST['handle'] ) : '';
+        $type = isset( $_POST['type'] ) ? \sanitize_text_field( $_POST['type'] ) : '';
+        $handle = isset( $_POST['handle'] ) ? \sanitize_text_field( $_POST['handle'] ) : '';
         
-        $resources = new \WPCleanAdmin\Resources();
+        $resources = \WPCleanAdmin\Resources::getInstance();
         $result = $resources->enable_resource( $type, $handle );
-        if ( function_exists( 'wp_send_json_success' ) ) {
-            wp_send_json_success( $result );
+        if ( function_exists( '\wp_send_json_success' ) ) {
+            \wp_send_json_success( $result );
         }
     }
 }
