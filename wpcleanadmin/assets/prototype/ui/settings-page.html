@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<!--
+  WP Clean Admin 后台设置页 UI 原型
+  设计语言：WP 原生 .wp-* 基底 + 自定义 BEM 组件 .wpca-*
+  响应式断点：782px（WP 移动后台阈值）
+-->
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WP Clean Admin · 设置原型</title>
+    <link rel="stylesheet" href="settings-page.css" />
+</head>
+<body class="wp-admin wp-core-ui">
+    <div class="wrap wpca-page">
+        <h1 class="wpca-page__title"><?php echo esc_html__( 'WP Clean Admin', 'wp-clean-admin' ); ?></h1>
+
+        <form id="wpca-settings-form" class="wpca-form" method="post">
+            <?php
+            // nonce 字段：name 固定为 _wpnonce（与后端网关一致）
+            if ( function_exists( '\wp_nonce_field' ) ) {
+                \wp_nonce_field( 'wpca_ajax_nonce', '_wpnonce' );
+            }
+            ?>
+
+            <section class="wpca-card">
+                <h2 class="wpca-card__title">清理选项</h2>
+
+                <label class="wpca-field">
+                    <span class="wpca-field__label">清理修订版本</span>
+                    <input type="checkbox" name="settings[clean_revisions]" value="1" class="wpca-field__input" />
+                </label>
+
+                <label class="wpca-field">
+                    <span class="wpca-field__label">保留天数</span>
+                    <input type="number" name="settings[retention_days]" value="30" min="0" class="wpca-field__input" />
+                </label>
+            </section>
+
+            <p class="wpca-actions">
+                <button type="submit" class="button button-primary wpca-btn">
+                    <?php echo esc_html__( '保存设置', 'wp-clean-admin' ); ?>
+                </button>
+                <span class="wpca-status" id="wpca-status" role="status" aria-live="polite"></span>
+            </p>
+        </form>
+    </div>
+
+    <script src="settings-page.js"></script>
+</body>
+</html>
