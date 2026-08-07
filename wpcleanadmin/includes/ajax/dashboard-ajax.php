@@ -3,7 +3,7 @@
  * WPCleanAdmin Dashboard AJAX Handler
  *
  * @package WPCleanAdmin
- * @version 1.8.0
+ * @version 1.8.2
  * @update_date 2026-01-30
  * @author Sut
  * @author URI: https://github.com/sutchan
@@ -14,46 +14,6 @@ namespace WPCleanAdmin\AJAX;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
-}
-
-if ( ! function_exists( '\wp_verify_nonce' ) ) {
-    function wp_verify_nonce() {}
-}
-if ( ! function_exists( '\wp_send_json_error' ) ) {
-    function wp_send_json_error() {}
-}
-if ( ! function_exists( '\wp_send_json_success' ) ) {
-    function wp_send_json_success() {}
-}
-if ( ! function_exists( '\current_user_can' ) ) {
-    function current_user_can() {}
-}
-if ( ! function_exists( '\__' ) ) {
-    function __() {}
-}
-if ( ! function_exists( '\wp_count_posts' ) ) {
-    function wp_count_posts() {}
-}
-if ( ! function_exists( '\wp_count_comments' ) ) {
-    function wp_count_comments() {}
-}
-if ( ! function_exists( '\count_users' ) ) {
-    function count_users() {}
-}
-if ( ! function_exists( '\get_plugins' ) ) {
-    function get_plugins() {}
-}
-if ( ! function_exists( '\wp_get_themes' ) ) {
-    function wp_get_themes() {}
-}
-if ( ! function_exists( '\get_bloginfo' ) ) {
-    function get_bloginfo() {}
-}
-if ( ! function_exists( '\wp_get_theme' ) ) {
-    function wp_get_theme() {}
-}
-if ( ! function_exists( '\sanitize_text_field' ) ) {
-    function sanitize_text_field() {}
 }
 
 /**
@@ -68,7 +28,7 @@ class Dashboard {
      */
     public static function get_dashboard_stats() {
         // Verify nonce
-        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['nonce'] ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( '\wp_send_json_error' ) ) {
                 \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
             }
@@ -111,7 +71,7 @@ class Dashboard {
      */
     public static function get_system_info() {
         // Verify nonce
-        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['nonce'] ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( '\wp_send_json_error' ) ) {
                 \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
             }
@@ -162,7 +122,7 @@ class Dashboard {
      */
     public static function run_quick_action() {
         // Verify nonce
-        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['nonce'] ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( '\wp_send_json_error' ) ) {
                 \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
             }

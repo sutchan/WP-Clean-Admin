@@ -1,32 +1,14 @@
 <?php
 /**
- * WP Clean Admin PHPUnit Bootstrap
+ * PHPUnit bootstrap file
+ *
+ * 在 CLI 环境下加载插件 autoloader（含 WordPress 函数 stub），
+ * 使模块类可在非 WordPress 运行时被实例化与测试。
  *
  * @package WPCleanAdmin
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-    define( 'ABSPATH', dirname( __FILE__ ) . '/../../../' );
-}
+$plugin_root = dirname( __DIR__ );
 
-if ( ! defined( 'WPCA_VERSION' ) ) {
-    define( 'WPCA_VERSION', '1.8.0' );
-}
-
-if ( ! defined( 'WPCA_PLUGIN_DIR' ) ) {
-    define( 'WPCA_PLUGIN_DIR', dirname( __FILE__ ) . '/../' );
-}
-
-if ( ! defined( 'WPCA_TEXT_DOMAIN' ) ) {
-    define( 'WPCA_TEXT_DOMAIN', 'wp-clean-admin' );
-}
-
-// Load autoloader
-if ( file_exists( WPCA_PLUGIN_DIR . 'includes/autoload.php' ) ) {
-    require_once WPCA_PLUGIN_DIR . 'includes/autoload.php';
-}
-
-// Load core functions
-if ( file_exists( WPCA_PLUGIN_DIR . 'includes/wpca-core-functions.php' ) ) {
-    require_once WPCA_PLUGIN_DIR . 'includes/wpca-core-functions.php';
-}
+// 加载 PSR-4 autoloader（无 ABSPATH 时会自动定义 WP 函数 stub）
+require_once $plugin_root . '/includes/autoload.php';

@@ -3,7 +3,7 @@
  * WPCleanAdmin Settings AJAX Handler
  *
  * @package WPCleanAdmin
- * @version 1.8.0
+ * @version 1.8.2
  * @update_date 2026-01-30
  * @author Sut
  * @author URI: https://github.com/sutchan
@@ -14,34 +14,6 @@ namespace WPCleanAdmin\AJAX;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
-}
-
-if ( ! function_exists( '\wp_verify_nonce' ) ) {
-    function wp_verify_nonce() {}
-}
-if ( ! function_exists( '\wp_send_json_error' ) ) {
-    function wp_send_json_error() {}
-}
-if ( ! function_exists( '\wp_send_json_success' ) ) {
-    function wp_send_json_success() {}
-}
-if ( ! function_exists( '\current_user_can' ) ) {
-    function current_user_can() {}
-}
-if ( ! function_exists( '\__' ) ) {
-    function __() {}
-}
-if ( ! function_exists( '\wp_unslash' ) ) {
-    function wp_unslash() {}
-}
-if ( ! function_exists( '\update_option' ) ) {
-    function update_option() {}
-}
-if ( ! function_exists( '\get_option' ) ) {
-    function get_option() {}
-}
-if ( ! function_exists( '\delete_option' ) ) {
-    function delete_option() {}
 }
 
 /**
@@ -56,7 +28,7 @@ class Settings {
      */
     public static function save_settings() {
         // Verify nonce
-        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['nonce'] ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( '\wp_send_json_error' ) ) {
                 \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
             }
@@ -73,8 +45,11 @@ class Settings {
         
         try {
             // Get settings data
-            $settings = isset( $_POST['settings'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
-            
+            $raw_settings = isset( $_POST['settings'] ) ? ( function_exists( '\wp_unslash' ) ? \wp_unslash( $_POST['settings'] ) : $_POST['settings'] ) : array();
+
+            // 递归清理所有设置值，防止存储型 XSS / 注入
+            $settings = self::sanitize_settings( $raw_settings );
+
             // Validate and save settings
             if ( function_exists( '\update_option' ) ) {
                 \update_option( 'wpca_settings', $settings );
@@ -97,7 +72,7 @@ class Settings {
      */
     public static function get_settings() {
         // Verify nonce
-        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['nonce'] ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( '\wp_send_json_error' ) ) {
                 \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
             }
@@ -136,7 +111,7 @@ class Settings {
      */
     public static function reset_settings() {
         // Verify nonce
-        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['nonce'] ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+        if ( ! function_exists( '\wp_verify_nonce' ) || ! isset( $_POST['_wpnonce'] ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( '\wp_send_json_error' ) ) {
                 \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
             }
@@ -165,5 +140,29 @@ class Settings {
                 \wp_send_json_error( array( 'message' => $e->getMessage() ) );
             }
         }
+    }
+
+    /**
+     * 递归清理设置数组，防止存储型 XSS / 注入
+     *
+     * @param mixed $value 待清理的值（可为标量、数组）
+     * @return mixed 清理后的值
+     */
+    private static function sanitize_settings( $value ) {
+        if ( is_array( $value ) ) {
+            $clean = array();
+            foreach ( $value as $key => $item ) {
+                $clean[ $key ] = self::sanitize_settings( $item );
+            }
+            return $clean;
+        }
+
+        if ( is_string( $value ) ) {
+            $func = function_exists( '\sanitize_text_field' ) ? '\sanitize_text_field' : null;
+            return $func ? $func( $value ) : strip_tags( trim( $value ) );
+        }
+
+        // 布尔 / 数字等标量原样返回
+        return $value;
     }
 }

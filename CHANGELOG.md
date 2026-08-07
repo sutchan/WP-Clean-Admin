@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.8.2] - 2026-08-07
+### Fixed
+- AJAX nonce 字段名统一: 将 settings/dashboard/cleanup 三类 handler 的 `$_POST['nonce']` 统一为 `$_POST['_wpnonce']`，与前端发送字段及其余 11 个 handler 保持一致，修复数据库/性能/菜单等 AJAX 校验永远失败的功能性 bug
+- 设置存储安全: `settings-ajax.php` 的 `save_settings` 增加递归 `sanitize_settings`，防止未清理输入直接 `update_option` 造成存储型 XSS
+- 版本注释同步: 将 65 个文件头 `@version 1.8.0` 统一更正为 `1.8.1`（主文件/语言文件已为 1.8.1）
+- 消除重复代码: 移除 11 个 AJAX 文件中重复内联的 WordPress 函数 stub，统一依赖 `autoload.php` 已加载的 `wpca-wordpress-stubs.php`
+
+### Added
+- 单元测试: 新增 `phpunit.xml.dist`、`tests/bootstrap.php`，以及 `HelpersTest`、`SettingsAjaxTest` 覆盖 sanitize/nonce/format_bytes 核心逻辑
+
 ## [1.8.1] - 2026-05-17
 ### Added
 - 诊断模块: 添加了完整的诊断功能，包括系统健康检查、安全检查和性能检查

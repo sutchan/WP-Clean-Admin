@@ -3,7 +3,7 @@
  * WPCleanAdmin User Roles AJAX Class
  *
  * @package WPCleanAdmin
- * @version 1.8.0
+ * @version 1.8.2
  * @author Sut
  * @author URI: https://github.com/sutchan
  * @since 1.7.15
@@ -15,27 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Declare WordPress functions for IDE compatibility
-if ( ! function_exists( '\wp_verify_nonce' ) ) {
-    function wp_verify_nonce() {}
-}
-if ( ! function_exists( '\wp_send_json_error' ) ) {
-    function wp_send_json_error() {}
-}
-if ( ! function_exists( '\wp_send_json_success' ) ) {
-    function wp_send_json_success() {}
-}
-if ( ! function_exists( '\current_user_can' ) ) {
-    function current_user_can() {}
-}
-if ( ! function_exists( '\wp_unslash' ) ) {
-    function wp_unslash() {}
-}
-if ( ! function_exists( '\sanitize_text_field' ) ) {
-    function sanitize_text_field() {}
-}
-if ( ! function_exists( '\__' ) ) {
-    function __() {}
-}
 
 /**
  * WPCleanAdmin User Roles AJAX Handler

@@ -1,28 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
          bootstrap="tests/bootstrap.php"
          colors="true"
-         cacheResult="false"
          verbose="true"
-         stopOnError="false"
-         stopOnFailure="false">
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true">
     <testsuites>
         <testsuite name="WPCleanAdmin Test Suite">
-            <directory suffix="Test.php">./tests</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
-    <coverage processUncoveredFiles="true">
+    <coverage>
         <include>
-            <directory suffix=".php">./includes</directory>
+            <directory suffix=".php">includes</directory>
         </include>
-        <report>
-            <clover outputFile="tests/logs/clover.xml"/>
-            <html outputDirectory="tests/reports/coverage" lowUpperBound="50" highLowerBound="80"/>
-        </report>
     </coverage>
-    <php>
-        <const name="WP_TESTS_DIR" value="tests"/>
-        <env name="WP_ENVIRONMENT_TYPE" value="tests"/>
-    </php>
 </phpunit>

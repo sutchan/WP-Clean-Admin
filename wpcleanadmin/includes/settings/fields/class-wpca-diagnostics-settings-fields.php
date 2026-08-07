@@ -3,7 +3,7 @@
  * WPCleanAdmin Diagnostics Settings Fields Class
  *
  * @package WPCleanAdmin
- * @version 1.8.0
+ * @version 1.8.2
  * @author Sut
  * @author URI: https://github.com/sutchan
  * @since 1.8.0

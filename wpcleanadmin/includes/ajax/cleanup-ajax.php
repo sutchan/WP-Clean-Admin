@@ -3,7 +3,7 @@
  * WPCleanAdmin Cleanup AJAX Handler
  *
  * @package WPCleanAdmin
- * @version 1.8.0
+ * @version 1.8.2
  * @update_date 2026-01-30
  * @author Sut
  * @author URI: https://github.com/sutchan
@@ -14,22 +14,6 @@ namespace WPCleanAdmin\AJAX;
 
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
-}
-
-if ( ! function_exists( '\wp_verify_nonce' ) ) {
-    function wp_verify_nonce() {}
-}
-if ( ! function_exists( '\wp_send_json_error' ) ) {
-    function wp_send_json_error() {}
-}
-if ( ! function_exists( '\wp_send_json_success' ) ) {
-    function wp_send_json_success() {}
-}
-if ( ! function_exists( '\current_user_can' ) ) {
-    function current_user_can() {}
-}
-if ( ! function_exists( '\__' ) ) {
-    function __() {}
 }
 
 /**
@@ -44,7 +28,7 @@ class Cleanup {
      */
     public static function cleanup_database() {
         // Verify nonce
-        if ( ! isset( $_POST['nonce'] ) || ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+        if ( ! isset( $_POST['_wpnonce'] ) || ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( '\wp_send_json_error' ) ) {
                 \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
             }
@@ -87,7 +71,7 @@ class Cleanup {
      */
     public static function cleanup_media() {
         // Verify nonce
-        if ( ! isset( $_POST['nonce'] ) || ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+        if ( ! isset( $_POST['_wpnonce'] ) || ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( '\wp_send_json_error' ) ) {
                 \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
             }
@@ -129,7 +113,7 @@ class Cleanup {
      */
     public static function cleanup_comments() {
         // Verify nonce
-        if ( ! isset( $_POST['nonce'] ) || ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+        if ( ! isset( $_POST['_wpnonce'] ) || ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( '\wp_send_json_error' ) ) {
                 \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
             }
@@ -172,7 +156,7 @@ class Cleanup {
      */
     public static function cleanup_content() {
         // Verify nonce
-        if ( ! isset( $_POST['nonce'] ) || ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+        if ( ! isset( $_POST['_wpnonce'] ) || ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( '\wp_send_json_error' ) ) {
                 \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
             }
@@ -215,7 +199,7 @@ class Cleanup {
      */
     public static function get_cleanup_stats() {
         // Verify nonce
-        if ( ! isset( $_POST['nonce'] ) || ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['nonce'], 'wpca_ajax_nonce' ) ) {
+        if ( ! isset( $_POST['_wpnonce'] ) || ! function_exists( '\wp_verify_nonce' ) || ! \wp_verify_nonce( $_POST['_wpnonce'], 'wpca_ajax_nonce' ) ) {
             if ( function_exists( '\wp_send_json_error' ) ) {
                 \wp_send_json_error( array( 'message' => \__( 'Nonce verification failed', WPCA_TEXT_DOMAIN ) ) );
             }
