@@ -7,16 +7,17 @@
 - [x] 安全基线（输入校验、输出转义、权限、SQL）
 - [x] UI/UX 设计语言（布局、组件库、配色）
 
-## 阶段二：PHP 模块骨架原型
-- [x] 抽象基类 `Module_Base`（单例 + hooks + AJAX 注册）
+## 阶段二：PHP 模块骨架原型（高保真）
+- [x] 抽象基类 `Module_Base`（单例 + hooks + AJAX 注册 + sanitize_settings）
 - [x] 统一 AJAX 网关基类（固化 `_wpnonce` 字段名与权限校验）
-- [x] 示例模块 `Dashboard`（展示标准写法）
-- [x] PSR-4 autoload 适配
+- [x] 6 个核心模块：Dashboard / Cleanup / Performance / Security / Database / Diagnostics
+- [x] 模块放置 `assets/prototype/php/modules/`，独立于主代码
 
-## 阶段三：前端 UI 原型
-- [x] 后台设置页 HTML 结构原型
-- [x] 后台 UI CSS（BEM + CSS 变量，对齐 WP 后台风格）
-- [x] JS 原型（标准 `_wpnonce` 发送，含失败处理）
+## 阶段三：前端 UI 原型（高保真）
+- [x] 后台多页签布局 dashboard.html（WP 后台风格 + 响应式 782/600px）
+- [x] 完整组件库样式 wpca-components.css（stat/table/badge/switch/progress/modal/toast 等）
+- [x] 交互脚本 app.js（页签切换、mock 数据渲染、AJAX 封装、危险操作二次确认、toast）
+- [x] 设计规范文档 设计规范_20260808.md（IA/令牌/组件/交互/可访问性）
 
 ## 阶段四：验证
 - [x] 骨架单元测试（`phpunit.xml.dist` 已就绪）
