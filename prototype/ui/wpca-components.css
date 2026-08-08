@@ -1,118 +1,645 @@
-/* WP Clean Admin 高保真原型组件样式
- * 设计语言见 设计规范_20260808.md
- * BEM: .wpca-*，配色集中在 :root 变量
- */
+/* ==========================================================================
+ * WP Clean Admin · shadcn/ui 风格设计系统 (PHP 版)
+ * 单一设计令牌来源：原型 ui/ 与插件 wpcleanadmin/assets/css 共用同名变量/类
+ * 设计原则：中性灰基底 · 卡片化 · 精致圆角/间距/阴影 · 克制动效
+ * 对齐：设计规范.md · openspec/specs/* · wpcleanadmin 前端标记 (.wpca-*)
+ * ========================================================================== */
+
 :root {
-    --wpca-primary: #2271b1;
-    --wpca-primary-hover: #135e96;
-    --wpca-danger: #d63638;
-    --wpca-danger-hover: #b32d2e;
-    --wpca-success: #1a7f37;
-    --wpca-warning: #dba617;
-    --wpca-info: #646970;
-    --wpca-bg: #fff;
-    --wpca-surface: #f0f0f1;
-    --wpca-border: #c3c4c7;
-    --wpca-text: #1d2327;
-    --wpca-text-muted: #646970;
-    --wpca-radius: 4px;
-    --wpca-gap: 16px;
+  /* ---------- 中性色 (Neutral) ---------- */
+  --wpca-bg: 0 0% 100%;            /* 页面背景 */
+  --wpca-fg: 240 10% 3.9%;         /* 主文字 */
+  --wpca-card: 0 0% 100%;          /* 卡片背景 */
+  --wpca-card-foreground: 240 10% 3.9%;
+  --wpca-popover: 0 0% 100%;
+  --wpca-popover-foreground: 240 10% 3.9%;
+  --wpca-muted: 240 4.8% 95.9%;    /* 次级背景 */
+  --wpca-muted-foreground: 240 3.8% 46.1%;
+  --wpca-border: 240 5.9% 90%;     /* 描边 */
+  --wpca-input: 240 5.9% 90%;
+  --wpca-ring: 240 5% 64.9%;
+
+  /* ---------- 品牌主色 (Brand) ---------- */
+  --wpca-primary: 221 83% 53%;     /* 蓝 */
+  --wpca-primary-foreground: 0 0% 100%;
+
+  /* ---------- 语义色 (Semantic) ---------- */
+  --wpca-success: 142 71% 45%;
+  --wpca-success-foreground: 0 0% 100%;
+  --wpca-warning: 38 92% 50%;
+  --wpca-warning-foreground: 0 0% 100%;
+  --wpca-danger: 0 72% 51%;
+  --wpca-danger-foreground: 0 0% 100%;
+  --wpca-info: 199 89% 48%;
+  --wpca-info-foreground: 0 0% 100%;
+
+  /* ---------- 间距 (4px 基准) ---------- */
+  --wpca-space-1: 4px;
+  --wpca-space-2: 8px;
+  --wpca-space-3: 12px;
+  --wpca-space-4: 16px;
+  --wpca-space-5: 20px;
+  --wpca-space-6: 24px;
+  --wpca-space-8: 32px;
+  --wpca-space-10: 40px;
+
+  /* ---------- 圆角 (Radius) ---------- */
+  --wpca-radius-sm: 6px;
+  --wpca-radius: 8px;
+  --wpca-radius-md: 10px;
+  --wpca-radius-lg: 12px;
+  --wpca-radius-xl: 16px;
+  --wpca-radius-full: 9999px;
+
+  /* ---------- 阴影 (Elevation) ---------- */
+  --wpca-shadow-xs: 0 1px 2px 0 hsl(240 10% 3.9% / 0.04);
+  --wpca-shadow-sm: 0 1px 3px 0 hsl(240 10% 3.9% / 0.08), 0 1px 2px -1px hsl(240 10% 3.9% / 0.08);
+  --wpca-shadow-md: 0 4px 12px -2px hsl(240 10% 3.9% / 0.10), 0 2px 6px -2px hsl(240 10% 3.9% / 0.08);
+  --wpca-shadow-lg: 0 12px 32px -6px hsl(240 10% 3.9% / 0.14);
+
+  /* ---------- 动效 (Motion) ---------- */
+  --wpca-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --wpca-dur-fast: 120ms;
+  --wpca-dur: 200ms;
+  --wpca-dur-slow: 320ms;
+
+  /* ---------- 字号 (Typography) ---------- */
+  --wpca-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --wpca-text-xs: 12px;
+  --wpca-text-sm: 13px;
+  --wpca-text-base: 14px;
+  --wpca-text-lg: 16px;
+  --wpca-text-xl: 20px;
+  --wpca-text-2xl: 24px;
+
+  /* 兼容旧变量名（渐进迁移期） */
+  --wpca-color-primary: hsl(var(--wpca-primary));
+  --wpca-color-bg: hsl(var(--wpca-bg));
+  --wpca-color-border: hsl(var(--wpca-border));
+  --wpca-color-text: hsl(var(--wpca-fg));
+  --wpca-gap: var(--wpca-space-4);
+  --wpca-radius-old: var(--wpca-radius);
 }
 
-* { box-sizing: border-box; }
+@media (prefers-color-scheme: dark) {
+  :root {
+    --wpca-bg: 240 10% 3.9%;
+    --wpca-fg: 0 0% 98%;
+    --wpca-card: 240 6% 10%;
+    --wpca-card-foreground: 0 0% 98%;
+    --wpca-popover: 240 6% 10%;
+    --wpca-popover-foreground: 0 0% 98%;
+    --wpca-muted: 240 4% 16%;
+    --wpca-muted-foreground: 240 5% 65%;
+    --wpca-border: 240 4% 18%;
+    --wpca-input: 240 4% 20%;
+    --wpca-ring: 240 5% 45%;
+    --wpca-color-bg: hsl(var(--wpca-bg));
+    --wpca-color-border: hsl(var(--wpca-border));
+    --wpca-color-text: hsl(var(--wpca-fg));
+  }
+}
 
-body.wp-admin { background: var(--wpca-surface); color: var(--wpca-text); }
+/* ==========================================================================
+ * 基础重置
+ * ========================================================================== */
+*,
+*::before,
+*::after { box-sizing: border-box; }
 
-.wpca-app { max-width: 1100px; margin: 0 auto; padding: var(--wpca-gap); }
-.wpca-app__title { margin: 0 0 var(--wpca-gap); font-size: 23px; }
+body.wp-admin {
+  margin: 0;
+  font-family: var(--wpca-font);
+  font-size: var(--wpca-text-base);
+  line-height: 1.55;
+  color: hsl(var(--wpca-fg));
+  background: hsl(var(--wpca-muted));
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
 
-/* 布局 */
-.wpca-layout { display: grid; grid-template-columns: 200px 1fr; gap: var(--wpca-gap); align-items: start; }
+/* 焦点可达性（键盘导航） */
+:focus-visible {
+  outline: 2px solid hsl(var(--wpca-ring));
+  outline-offset: 2px;
+  border-radius: var(--wpca-radius-sm);
+}
 
-/* 导航 */
-.wpca-nav { display: flex; flex-direction: column; gap: 4px; background: var(--wpca-bg); border: 1px solid var(--wpca-border); border-radius: var(--wpca-radius); padding: 8px; }
-.wpca-nav__item { text-align: left; border: 0; background: transparent; padding: 10px 12px; border-radius: var(--wpca-radius); cursor: pointer; color: var(--wpca-text); font-size: 13px; }
-.wpca-nav__item:hover { background: var(--wpca-surface); }
-.wpca-nav__item.is-active { background: var(--wpca-primary); color: #fff; font-weight: 600; }
+/* ==========================================================================
+ * 顶栏 (Topbar) · 玻璃拟态 + 极简
+ * ========================================================================== */
+.wpca-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: var(--wpca-space-3);
+  height: 56px;
+  padding: 0 var(--wpca-space-5);
+  background: hsl(var(--wpca-card) / 0.72);
+  backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid hsl(var(--wpca-border));
+}
+.wpca-topbar__brand { display: flex; align-items: center; gap: var(--wpca-space-2); }
+.wpca-topbar__name { font-weight: 600; font-size: var(--wpca-text-lg); letter-spacing: -0.01em; }
+.wpca-topbar__meta { margin-left: auto; display: flex; align-items: center; gap: var(--wpca-space-3); }
+.wpca-topbar__site { color: hsl(var(--wpca-muted-foreground)); font-size: var(--wpca-text-sm); }
 
-/* 内容面板 */
-.wpca-content { background: var(--wpca-bg); border: 1px solid var(--wpca-border); border-radius: var(--wpca-radius); padding: var(--wpca-gap); min-height: 420px; }
-.wpca-panel[hidden] { display: none; }
-.wpca-panel__head { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--wpca-gap); }
-.wpca-panel__head h2 { margin: 0; font-size: 14px; font-weight: 600; }
+.wpca-logo {
+  width: 28px; height: 28px; border-radius: var(--wpca-radius-sm);
+  background: linear-gradient(135deg, hsl(var(--wpca-primary)), hsl(262 83% 58%));
+  box-shadow: var(--wpca-shadow-sm);
+}
 
-/* 统计卡 */
-.wpca-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
-.wpca-stat { border: 1px solid var(--wpca-border); border-radius: var(--wpca-radius); padding: 14px; background: var(--wpca-surface); }
-.wpca-stat__num { font-size: 24px; font-weight: 700; }
-.wpca-stat__label { font-size: 12px; color: var(--wpca-text-muted); margin-top: 4px; }
-.wpca-stat--danger { border-color: var(--wpca-danger); }
-.wpca-stat--warning { border-color: var(--wpca-warning); }
+.wpca-topbar__menu { display: none; }
 
-/* 表格 */
-.wpca-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.wpca-table th, .wpca-table td { text-align: left; padding: 10px; border-bottom: 1px solid var(--wpca-border); }
-.wpca-table tbody tr:hover { background: var(--wpca-surface); }
+/* 移动端汉堡 */
+.wpca-topbar__menu {
+  flex-direction: column; justify-content: center; gap: 4px;
+  width: 36px; height: 36px; padding: 0;
+  background: transparent; border: 1px solid hsl(var(--wpca-border)); border-radius: var(--wpca-radius-sm);
+  cursor: pointer;
+}
+.wpca-topbar__menu span {
+  display: block; width: 16px; height: 2px; border-radius: 2px;
+  background: hsl(var(--wpca-fg));
+  transition: transform var(--wpca-dur) var(--wpca-ease);
+}
 
-/* 徽标 */
-.wpca-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
-.wpca-badge--success { background: #e6f0e6; color: var(--wpca-success); }
-.wpca-badge--warning { background: #fcf3df; color: var(--wpca-warning); }
-.wpca-badge--danger { background: #fbe9e9; color: var(--wpca-danger); }
-.wpca-badge--info { background: #eef0f2; color: var(--wpca-info); }
+/* ==========================================================================
+ * 布局 (App Shell)
+ * ========================================================================== */
+.wpca-app {
+  display: grid;
+  grid-template-columns: 232px 1fr;
+  gap: var(--wpca-space-6);
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--wpca-space-6) var(--wpca-space-5);
+  align-items: start;
+}
 
-/* 按钮 */
-.wpca-btn { font-size: 13px; }
-.wpca-btn--danger { background: var(--wpca-danger); border-color: var(--wpca-danger); color: #fff; }
-.wpca-btn--danger:hover { background: var(--wpca-danger-hover); }
+/* ==========================================================================
+ * 导航 (Nav) · 侧边
+ * ========================================================================== */
+.wpca-nav {
+  position: sticky;
+  top: 72px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--wpca-space-2);
+  background: hsl(var(--wpca-card));
+  border: 1px solid hsl(var(--wpca-border));
+  border-radius: var(--wpca-radius-lg);
+  box-shadow: var(--wpca-shadow-xs);
+}
+.wpca-nav__item {
+  display: flex;
+  align-items: center;
+  gap: var(--wpca-space-3);
+  width: 100%;
+  padding: var(--wpca-space-2) var(--wpca-space-3);
+  font-size: var(--wpca-text-base);
+  font-weight: 500;
+  color: hsl(var(--wpca-muted-foreground));
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: var(--wpca-radius);
+  cursor: pointer;
+  transition: background var(--wpca-dur) var(--wpca-ease), color var(--wpca-dur) var(--wpca-ease);
+}
+.wpca-nav__item:hover { background: hsl(var(--wpca-muted)); color: hsl(var(--wpca-fg)); }
+.wpca-nav__item.is-active {
+  background: hsl(var(--wpca-primary) / 0.10);
+  color: hsl(var(--wpca-primary));
+  font-weight: 600;
+}
+.wpca-nav__ico {
+  width: 18px; height: 18px; flex: none;
+  background: currentColor;
+  -webkit-mask: var(--wpca-ico) center / contain no-repeat;
+  mask: var(--wpca-ico) center / contain no-repeat;
+  opacity: 0.9;
+}
+.wpca-nav__ico[data-ico="dashboard"] { --wpca-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='9'/%3E%3Crect x='14' y='3' width='7' height='5'/%3E%3Crect x='14' y='12' width='7' height='9'/%3E%3Crect x='3' y='16' width='7' height='5'/%3E%3C/svg%3E"); }
+.wpca-nav__ico[data-ico="cleanup"] { --wpca-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6h18M19 6l-1 14H6L5 6M10 11v6M14 11v6M8 6V4h8v2'/%3E%3C/svg%3E"); }
+.wpca-nav__ico[data-ico="perf"] { --wpca-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12h4l3 8 4-16 3 8h4'/%3E%3C/svg%3E"); }
+.wpca-nav__ico[data-ico="menu"] { --wpca-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/%3E%3C/svg%3E"); }
+.wpca-nav__ico[data-ico="db"] { --wpca-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cellipse cx='12' cy='5' rx='9' ry='3'/%3E%3Cpath d='M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5M3 12c0 1.7 4 3 9 3s9-1.3 9-3'/%3E%3C/svg%3E"); }
+.wpca-nav__ico[data-ico="diag"] { --wpca-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 12h-4l-3 9L9 3l-3 9H2'/%3E%3C/svg%3E"); }
+.wpca-nav__ico[data-ico="settings"] { --wpca-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-2.9 1.2V21a2 2 0 0 1-4 0v-.1A1.7 1.7 0 0 0 7 19.4a1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0-1.2-2.9H1a2 2 0 0 1 0-4h.1A1.7 1.7 0 0 0 2.6 7a1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.7 1.7 0 0 0 9 2.6h.1A1.7 1.7 0 0 0 12 1a2 2 0 0 1 4 0v.1A1.7 1.7 0 0 0 17 2.6a1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0 1.2 2.9H23a2 2 0 0 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z'/%3E%3C/svg%3E"); }
 
-/* 开关 */
-.wpca-switch { position: relative; display: inline-block; width: 40px; height: 22px; }
-.wpca-switch input { opacity: 0; width: 0; height: 0; }
-.wpca-switch__slider { position: absolute; inset: 0; background: var(--wpca-border); border-radius: 22px; transition: .2s; cursor: pointer; }
-.wpca-switch__slider::before { content: ""; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s; }
-.wpca-switch input:checked + .wpca-switch__slider { background: var(--wpca-primary); }
-.wpca-switch input:checked + .wpca-switch__slider::before { transform: translateX(18px); }
+/* ==========================================================================
+ * 内容区 (Content)
+ * ========================================================================== */
+.wpca-content { display: block; min-width: 0; }
+.wpca-panel { display: none; }
+.wpca-panel.is-active { display: block; animation: wpca-fade var(--wpca-dur) var(--wpca-ease); }
 
-/* 进度条 */
-.wpca-progress { height: 6px; background: var(--wpca-surface); border-radius: 3px; overflow: hidden; margin-top: 12px; }
-.wpca-progress__bar { height: 100%; width: 0; background: var(--wpca-primary); transition: width .3s; }
+.wpca-panel__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--wpca-space-4);
+  margin-bottom: var(--wpca-space-5);
+}
+.wpca-panel__title {
+  margin: 0;
+  font-size: var(--wpca-text-2xl);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.wpca-panel__sub {
+  margin: var(--wpca-space-1) 0 0;
+  color: hsl(var(--wpca-muted-foreground));
+  font-size: var(--wpca-text-sm);
+}
+.wpca-panel__actions { display: flex; gap: var(--wpca-space-2); flex: none; }
 
-/* 空状态 */
-.wpca-empty { color: var(--wpca-text-muted); padding: 24px; text-align: center; }
+/* ==========================================================================
+ * 卡片 (Card) · 基础组件
+ * ========================================================================== */
+.wpca-card {
+  background: hsl(var(--wpca-card));
+  border: 1px solid hsl(var(--wpca-border));
+  border-radius: var(--wpca-radius-lg);
+  box-shadow: var(--wpca-shadow-xs);
+  padding: var(--wpca-space-5);
+}
 
-/* 设置字段集 */
-.wpca-fieldset { border: 1px solid var(--wpca-border); border-radius: var(--wpca-radius); padding: 12px 16px; margin: 0 0 var(--wpca-gap); }
-.wpca-fieldset legend { font-weight: 600; padding: 0 6px; font-size: 13px; }
-.wpca-field { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
-.wpca-field__label { min-width: 160px; color: var(--wpca-text); }
-.wpca-field__input { border: 1px solid var(--wpca-border); border-radius: var(--wpca-radius); padding: 6px 8px; }
+/* ==========================================================================
+ * 按钮 (Button) · 基础组件
+ * ========================================================================== */
+.wpca-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--wpca-space-2);
+  height: 38px;
+  padding: 0 var(--wpca-space-4);
+  font-size: var(--wpca-text-base);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  color: hsl(var(--wpca-fg));
+  background: hsl(var(--wpca-card));
+  border: 1px solid hsl(var(--wpca-border));
+  border-radius: var(--wpca-radius);
+  cursor: pointer;
+  transition: background var(--wpca-dur) var(--wpca-ease), border-color var(--wpca-dur) var(--wpca-ease),
+    color var(--wpca-dur) var(--wpca-ease), box-shadow var(--wpca-dur) var(--wpca-ease), transform var(--wpca-dur-fast) var(--wpca-ease);
+}
+.wpca-btn:hover { background: hsl(var(--wpca-muted)); }
+.wpca-btn:active { transform: translateY(0.5px) scale(0.99); }
+.wpca-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* 列表（性能开关） */
-.wpca-list { display: flex; flex-direction: column; gap: 8px; }
-.wpca-list__row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid var(--wpca-border); border-radius: var(--wpca-radius); }
+.wpca-btn--primary {
+  color: hsl(var(--wpca-primary-foreground));
+  background: hsl(var(--wpca-primary));
+  border-color: hsl(var(--wpca-primary));
+  box-shadow: var(--wpca-shadow-xs);
+}
+.wpca-btn--primary:hover { background: hsl(var(--wpca-primary) / 0.90); }
 
-/* 弹窗 */
-.wpca-modal { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 100; }
+.wpca-btn--danger {
+  color: hsl(var(--wpca-danger-foreground));
+  background: hsl(var(--wpca-danger));
+  border-color: hsl(var(--wpca-danger));
+}
+.wpca-btn--danger:hover { background: hsl(var(--wpca-danger) / 0.90); }
+
+.wpca-btn--sm { height: 32px; padding: 0 var(--wpca-space-3); font-size: var(--wpca-text-sm); }
+.wpca-btn--icon { width: 38px; padding: 0; }
+
+.wpca-btn__ico {
+  width: 16px; height: 16px; flex: none;
+  background: currentColor;
+  -webkit-mask: var(--wpca-ico) center / contain no-repeat;
+  mask: var(--wpca-ico) center / contain no-repeat;
+}
+.wpca-btn__ico[data-ico="scan"] { --wpca-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10'/%3E%3C/svg%3E"); }
+.wpca-btn__ico[data-ico="save"] { --wpca-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z'/%3E%3Cpath d='M17 21v-8H7v8M7 3v5h8'/%3E%3C/svg%3E"); }
+.wpca-btn__ico[data-ico="backup"] { --wpca-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E"); }
+.wpca-btn__ico[data-ico="optimize"] { --wpca-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13 2 3 14h9l-1 8 10-12h-9l1-8z'/%3E%3C/svg%3E"); }
+.wpca-btn__ico[data-ico="diag"] { --wpca-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 12h-4l-3 9L9 3l-3 9H2'/%3E%3C/svg%3E"); }
+
+/* ==========================================================================
+ * 徽章 (Badge) · 基础组件
+ * ========================================================================== */
+.wpca-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 var(--wpca-space-2);
+  font-size: var(--wpca-text-xs);
+  font-weight: 600;
+  line-height: 1;
+  border-radius: var(--wpca-radius-full);
+  border: 1px solid transparent;
+}
+.wpca-badge--info { color: hsl(var(--wpca-info)); background: hsl(var(--wpca-info) / 0.12); border-color: hsl(var(--wpca-info) / 0.20); }
+.wpca-badge--success { color: hsl(var(--wpca-success)); background: hsl(var(--wpca-success) / 0.12); border-color: hsl(var(--wpca-success) / 0.20); }
+.wpca-badge--warning { color: hsl(var(--wpca-warning)); background: hsl(var(--wpca-warning) / 0.14); border-color: hsl(var(--wpca-warning) / 0.24); }
+.wpca-badge--danger { color: hsl(var(--wpca-danger)); background: hsl(var(--wpca-danger) / 0.12); border-color: hsl(var(--wpca-danger) / 0.22); }
+
+/* ==========================================================================
+ * 开关 (Switch) · 基础组件
+ * ========================================================================== */
+.wpca-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 40px; height: 22px;
+  flex: none;
+  cursor: pointer;
+}
+.wpca-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+.wpca-switch__slider {
+  position: absolute; inset: 0;
+  background: hsl(var(--wpca-input));
+  border-radius: var(--wpca-radius-full);
+  transition: background var(--wpca-dur) var(--wpca-ease);
+}
+.wpca-switch__slider::after {
+  content: "";
+  position: absolute; top: 2px; left: 2px;
+  width: 18px; height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: var(--wpca-shadow-sm);
+  transition: transform var(--wpca-dur) var(--wpca-ease);
+}
+.wpca-switch input:checked + .wpca-switch__slider { background: hsl(var(--wpca-primary)); }
+.wpca-switch input:checked + .wpca-switch__slider::after { transform: translateX(18px); }
+.wpca-switch input:focus-visible + .wpca-switch__slider { outline: 2px solid hsl(var(--wpca-ring)); outline-offset: 2px; }
+
+/* ==========================================================================
+ * 输入 (Input) · 基础组件
+ * ========================================================================== */
+.wpca-input {
+  height: 38px;
+  padding: 0 var(--wpca-space-3);
+  font-size: var(--wpca-text-base);
+  font-family: inherit;
+  color: hsl(var(--wpca-fg));
+  background: hsl(var(--wpca-card));
+  border: 1px solid hsl(var(--wpca-input));
+  border-radius: var(--wpca-radius);
+  transition: border-color var(--wpca-dur) var(--wpca-ease), box-shadow var(--wpca-dur) var(--wpca-ease);
+}
+.wpca-input:focus {
+  outline: none;
+  border-color: hsl(var(--wpca-primary));
+  box-shadow: 0 0 0 3px hsl(var(--wpca-primary) / 0.18);
+}
+
+/* ==========================================================================
+ * 字段组 (Fieldset/Field) · 复合组件
+ * ========================================================================== */
+.wpca-fieldset {
+  margin: 0 0 var(--wpca-space-5);
+  padding: var(--wpca-space-5);
+  background: hsl(var(--wpca-card));
+  border: 1px solid hsl(var(--wpca-border));
+  border-radius: var(--wpca-radius-lg);
+  box-shadow: var(--wpca-shadow-xs);
+}
+.wpca-fieldset legend {
+  padding: 0 var(--wpca-space-2);
+  font-size: var(--wpca-text-sm);
+  font-weight: 600;
+  color: hsl(var(--wpca-muted-foreground));
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.wpca-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--wpca-space-4);
+  padding: var(--wpca-space-3) 0;
+  border-bottom: 1px solid hsl(var(--wpca-border) / 0.6);
+}
+.wpca-field:last-child { border-bottom: none; }
+.wpca-field__label { font-weight: 500; }
+.wpca-field__hint { display: block; color: hsl(var(--wpca-muted-foreground)); font-size: var(--wpca-text-xs); margin-top: 2px; }
+
+/* ==========================================================================
+ * 表格 (Table) · 复合组件
+ * ========================================================================== */
+.wpca-table-wrap {
+  background: hsl(var(--wpca-card));
+  border: 1px solid hsl(var(--wpca-border));
+  border-radius: var(--wpca-radius-lg);
+  box-shadow: var(--wpca-shadow-xs);
+  overflow: hidden;
+}
+.wpca-table { width: 100%; border-collapse: collapse; font-size: var(--wpca-text-base); }
+.wpca-table th {
+  text-align: left;
+  padding: var(--wpca-space-3) var(--wpca-space-4);
+  font-weight: 600;
+  font-size: var(--wpca-text-sm);
+  color: hsl(var(--wpca-muted-foreground));
+  background: hsl(var(--wpca-muted) / 0.5);
+  border-bottom: 1px solid hsl(var(--wpca-border));
+}
+.wpca-table td {
+  padding: var(--wpca-space-3) var(--wpca-space-4);
+  border-bottom: 1px solid hsl(var(--wpca-border) / 0.6);
+  vertical-align: middle;
+}
+.wpca-table tbody tr { transition: background var(--wpca-dur) var(--wpca-ease); }
+.wpca-table tbody tr:hover { background: hsl(var(--wpca-muted) / 0.5); }
+.wpca-table tbody tr:last-child td { border-bottom: none; }
+.wpca-col-action { width: 1%; white-space: nowrap; }
+.wpca-col-wide { width: 40%; min-width: 180px; }
+
+/* ==========================================================================
+ * 列表 (List) · 复合组件（性能开关）
+ * ========================================================================== */
+.wpca-list {
+  background: hsl(var(--wpca-card));
+  border: 1px solid hsl(var(--wpca-border));
+  border-radius: var(--wpca-radius-lg);
+  box-shadow: var(--wpca-shadow-xs);
+  overflow: hidden;
+}
+.wpca-list__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--wpca-space-4);
+  border-bottom: 1px solid hsl(var(--wpca-border) / 0.6);
+}
+.wpca-list__row:last-child { border-bottom: none; }
+
+/* ==========================================================================
+ * 统计卡 (Stats) · 业务组件（仪表盘）
+ * ========================================================================== */
+.wpca-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--wpca-space-4);
+}
+.wpca-stat {
+  padding: var(--wpca-space-5);
+  background: hsl(var(--wpca-card));
+  border: 1px solid hsl(var(--wpca-border));
+  border-left: 3px solid hsl(var(--wpca-muted-foreground));
+  border-radius: var(--wpca-radius-lg);
+  box-shadow: var(--wpca-shadow-xs);
+}
+.wpca-stat--warning { border-left-color: hsl(var(--wpca-warning)); }
+.wpca-stat--danger { border-left-color: hsl(var(--wpca-danger)); }
+.wpca-stat--info { border-left-color: hsl(var(--wpca-info)); }
+.wpca-stat__num { font-size: var(--wpca-text-2xl); font-weight: 700; letter-spacing: -0.02em; }
+.wpca-stat__label { margin-top: var(--wpca-space-1); color: hsl(var(--wpca-muted-foreground)); font-size: var(--wpca-text-sm); }
+
+/* ==========================================================================
+ * 进度条 (Progress) · 反馈组件
+ * ========================================================================== */
+.wpca-progress {
+  margin-top: var(--wpca-space-4);
+  height: 6px;
+  background: hsl(var(--wpca-muted));
+  border-radius: var(--wpca-radius-full);
+  overflow: hidden;
+}
+.wpca-progress__bar {
+  height: 100%; width: 0;
+  background: hsl(var(--wpca-primary));
+  border-radius: var(--wpca-radius-full);
+  transition: width var(--wpca-dur) var(--wpca-ease);
+}
+
+/* ==========================================================================
+ * 空状态 (Empty) · 交互标准
+ * ========================================================================== */
+.wpca-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--wpca-space-3);
+  padding: var(--wpca-space-10);
+  text-align: center;
+  color: hsl(var(--wpca-muted-foreground));
+  background: hsl(var(--wpca-card));
+  border: 1px dashed hsl(var(--wpca-border));
+  border-radius: var(--wpca-radius-lg);
+}
+.wpca-empty__ico {
+  width: 32px; height: 32px;
+  background: hsl(var(--wpca-muted-foreground));
+  -webkit-mask: var(--wpca-ico) center / contain no-repeat;
+  mask: var(--wpca-ico) center / contain no-repeat;
+}
+.wpca-empty__ico[data-ico="scan"] { --wpca-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10'/%3E%3C/svg%3E"); }
+
+/* ==========================================================================
+ * 弹窗 (Dialog/Modal) · 交互标准
+ * ========================================================================== */
+.wpca-modal {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  padding: var(--wpca-space-4);
+}
 .wpca-modal[hidden] { display: none; }
-.wpca-modal__backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.4); }
-.wpca-modal__box { position: relative; background: var(--wpca-bg); border-radius: var(--wpca-radius); padding: 24px; width: 360px; max-width: 90vw; box-shadow: 0 4px 24px rgba(0,0,0,.2); }
-.wpca-modal__title { margin: 0 0 12px; font-size: 16px; }
-.wpca-modal__actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
-
-/* 轻提示 */
-.wpca-toast-area { position: fixed; top: 32px; right: 32px; display: flex; flex-direction: column; gap: 8px; z-index: 200; }
-.wpca-toast { padding: 10px 16px; border-radius: var(--wpca-radius); color: #fff; font-size: 13px; box-shadow: 0 2px 8px rgba(0,0,0,.2); animation: wpca-toast-in .2s ease; }
-.wpca-toast--success { background: var(--wpca-success); }
-.wpca-toast--error { background: var(--wpca-danger); }
-@keyframes wpca-toast-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
-
-/* 响应式 */
-@media screen and (max-width: 782px) {
-    .wpca-layout { grid-template-columns: 1fr; }
-    .wpca-nav { flex-direction: row; overflow-x: auto; }
-    .wpca-nav__item { white-space: nowrap; }
+.wpca-modal__backdrop {
+  position: absolute; inset: 0;
+  background: hsl(240 10% 3.9% / 0.45);
+  backdrop-filter: blur(2px);
+  animation: wpca-fade var(--wpca-dur) var(--wpca-ease);
 }
-@media screen and (max-width: 600px) {
-    .wpca-panel__head { flex-direction: column; align-items: flex-start; gap: 8px; }
+.wpca-modal__box {
+  position: relative;
+  width: 100%; max-width: 420px;
+  padding: var(--wpca-space-6);
+  background: hsl(var(--wpca-popover));
+  border: 1px solid hsl(var(--wpca-border));
+  border-radius: var(--wpca-radius-xl);
+  box-shadow: var(--wpca-shadow-lg);
+  animation: wpca-pop var(--wpca-dur) var(--wpca-ease);
+}
+.wpca-modal__title { margin: 0 0 var(--wpca-space-3); font-size: var(--wpca-text-xl); font-weight: 650; }
+.wpca-modal__body { margin: 0 0 var(--wpca-space-5); color: hsl(var(--wpca-muted-foreground)); }
+.wpca-modal__actions { display: flex; justify-content: flex-end; gap: var(--wpca-space-2); }
+
+/* ==========================================================================
+ * 轻提示 (Toast) · 反馈组件
+ * ========================================================================== */
+.wpca-toast-area {
+  position: fixed; right: var(--wpca-space-5); bottom: var(--wpca-space-5);
+  z-index: 200;
+  display: flex; flex-direction: column; gap: var(--wpca-space-2);
+}
+.wpca-toast {
+  min-width: 240px; max-width: 360px;
+  padding: var(--wpca-space-3) var(--wpca-space-4);
+  font-size: var(--wpca-text-sm); font-weight: 500;
+  background: hsl(var(--wpca-popover));
+  border: 1px solid hsl(var(--wpca-border));
+  border-left: 3px solid hsl(var(--wpca-muted-foreground));
+  border-radius: var(--wpca-radius);
+  box-shadow: var(--wpca-shadow-md);
+  animation: wpca-slide-in var(--wpca-dur-slow) var(--wpca-ease);
+}
+.wpca-toast--success { border-left-color: hsl(var(--wpca-success)); }
+.wpca-toast--error { border-left-color: hsl(var(--wpca-danger)); }
+.wpca-toast--warning { border-left-color: hsl(var(--wpca-warning)); }
+.wpca-toast--info { border-left-color: hsl(var(--wpca-info)); }
+
+/* 芯片 (Chip) */
+.wpca-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 24px; padding: 0 var(--wpca-space-3);
+  font-size: var(--wpca-text-xs); font-weight: 600;
+  border-radius: var(--wpca-radius-full);
+}
+.wpca-chip--ok { color: hsl(var(--wpca-success)); background: hsl(var(--wpca-success) / 0.12); }
+
+/* ==========================================================================
+ * 动效 (Keyframes)
+ * ========================================================================== */
+@keyframes wpca-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes wpca-pop { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+@keyframes wpca-slide-in { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+/* ==========================================================================
+ * 响应式 (Responsive) · 移动端优先
+ * ========================================================================== */
+@media (max-width: 960px) {
+  .wpca-app { grid-template-columns: 1fr; gap: var(--wpca-space-4); }
+  .wpca-topbar__menu { display: flex; }
+  .wpca-nav {
+    position: fixed;
+    top: 56px; left: 0; bottom: 0;
+    width: 248px;
+    transform: translateX(-100%);
+    transition: transform var(--wpca-dur) var(--wpca-ease);
+    border-radius: 0 var(--wpca-radius-lg) var(--wpca-radius-lg) 0;
+    z-index: 50;
+  }
+  .wpca-nav.is-open { transform: translateX(0); }
+}
+
+@media (max-width: 600px) {
+  .wpca-topbar { padding: 0 var(--wpca-space-3); }
+  .wpca-app { padding: var(--wpca-space-4) var(--wpca-space-3); }
+  .wpca-panel__head { flex-direction: column; align-items: stretch; }
+  .wpca-panel__actions { width: 100%; }
+  .wpca-panel__actions .wpca-btn { flex: 1; }
+  .wpca-stats { grid-template-columns: 1fr 1fr; }
+  .wpca-field { flex-direction: column; align-items: flex-start; gap: var(--wpca-space-2); }
+  .wpca-table-wrap { overflow-x: auto; }
+  .wpca-toast-area { left: var(--wpca-space-3); right: var(--wpca-space-3); }
+  .wpca-toast { max-width: none; }
 }

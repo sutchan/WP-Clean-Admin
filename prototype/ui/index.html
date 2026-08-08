@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
   WP Clean Admin 高保真原型 · 入口
-  设计规范：assets/prototype/DESIGN.md
+  设计规范：docs/设计规范_20260808.md（与 prototype/ 同源）
   真实数据见 app.js 中的 state（mock 模式）
   响应式：桌面 ≥960px / 平板 600–959px / 手机 <600px
 -->
@@ -26,6 +26,9 @@
             <span class="wpca-topbar__site">example.com</span>
         </div>
     </header>
+
+    <!-- 真实环境占位：由 wp_enqueue 注入 wp_create_nonce('wpca_nonce') -->
+    <input type="hidden" id="wpca-nonce" value="<?php echo wp_create_nonce('wpca_nonce'); ?>" />
 
     <div class="wrap wpca-app">
         <nav class="wpca-nav" id="wpca-nav" aria-label="功能导航">

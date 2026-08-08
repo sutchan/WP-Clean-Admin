@@ -38,7 +38,12 @@ class Module_Dashboard extends Module_Base {
     }
 
     public function render_page() {
-        include WPCA_PLUGIN_DIR . 'assets/prototype/ui/dashboard.html';
+        $tpl = dirname( __DIR__, 3 ) . '/ui/index.html';
+        if ( file_exists( $tpl ) ) {
+            include $tpl;
+        } else {
+            echo '<p>原型模板未找到：' . esc_html( $tpl ) . '</p>';
+        }
     }
 
     /**

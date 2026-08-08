@@ -54,8 +54,8 @@ WPCleanAdmin\AJAX\Gateway_Base  ← 统一 nonce + capability
 ```
 
 ### 原型文件位置
-- `wpcleanadmin/assets/prototype/php/` — PHP 骨架
-- `wpcleanadmin/assets/prototype/ui/` — 前端 UI 原型
+- `prototype/php/` — PHP 骨架
+- `prototype/ui/` — 前端 UI 原型（入口 `index.html`，样式 `wpca-components.css`）
 
 ## Security
 

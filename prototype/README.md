@@ -18,15 +18,18 @@ prototype/
 │     ├─ class-wpca-module-database.php     数据库（表/备份/优化）
 │     └─ class-wpca-module-diagnostics.php  诊断（环境检测）
 └─ ui/
-   ├─ dashboard.html        后台多页签布局
-   ├─ wpca-components.css   组件库样式（BEM + 设计令牌）
-   └─ app.js                交互（页签/渲染/AJAX/modal/toast）
+   ├─ index.html           后台多页签布局（唯一入口，shadcn 风格）
+   ├─ wpca-components.css  组件库样式（shadcn 风格设计令牌 + 组件）
+   └─ app.js               交互（页签/渲染/AJAX/modal/toast/移动端抽屉）
 ```
+
+> 合并说明：已删除 `ui/dashboard.html` 与 `ui/settings-page.css` 冗余文件，
+> 统一以 `index.html` + `wpca-components.css` 为单一原型来源（2026-08-08）。
 
 ## 运行方式
 
 ### 前端预览
-直接用浏览器打开 `ui/dashboard.html` 即可预览（默认 `USE_MOCK=true`，
+直接用浏览器打开 `ui/index.html` 即可预览（默认 `USE_MOCK=true`，
 内置模拟数据，无需后端）。接入真实后端时，将 `app.js` 中 `USE_MOCK` 置 `false`
 并确保页面包含 `wp_nonce_field('wpca_ajax_nonce', '_wpnonce')` 渲染的隐藏字段。
 

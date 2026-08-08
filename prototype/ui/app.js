@@ -28,10 +28,20 @@
         setTimeout(function () { el.remove(); }, 2600);
     }
 
-    // 获取 _wpnonce（真实环境由 wp_nonce_field 渲染的隐藏字段提供，name=_wpnonce）
+    // 获取 nonce（优先 #wpca-nonce 占位，兼容 _wpnonce 旧字段）
     function getNonce() {
-        const f = qs('input[name="_wpnonce"]');
+        const f = qs('#wpca-nonce') || qs('input[name="_wpnonce"]');
         return f ? f.value : 'MOCK_NONCE';
+    }
+
+    // 按钮加载态
+    function withLoading(btn, fn) {
+        const old = btn.innerHTML;
+        btn.disabled = true;
+        btn.dataset.loading = '1';
+        return Promise.resolve()
+            .then(fn)
+            .finally(function () { btn.disabled = false; delete btn.dataset.loading; btn.innerHTML = old; });
     }
 
     /**
@@ -60,8 +70,19 @@
                 p.hidden = !on;
                 p.classList.toggle('is-active', on);
             });
+            qs('#wpca-nav').classList.remove('is-open');
         });
     });
+
+    /* ---------- 移动端导航抽屉 ---------- */
+    const navToggle = qs('#wpca-nav-toggle');
+    if (navToggle) {
+        navToggle.addEventListener('click', function () {
+            const nav = qs('#wpca-nav');
+            const open = nav.classList.toggle('is-open');
+            navToggle.setAttribute('aria-expanded', String(open));
+        });
+    }
 
     /* ---------- 仪表盘：一键体检 ---------- */
     qs('#wpca-scan-btn').addEventListener('click', function () {
@@ -287,7 +308,7 @@
                     const badgeTd = document.createElement('td');
                     badgeTd.appendChild(el('span', 'wpca-badge wpca-badge--' + c.status, c.status));
                     tr.appendChild(badgeTd);
-                    tr.appendChild(el('td', null, c.advice || '—'));
+                    tr.appendChild(el('td', 'wpca-col-wide', c.advice || '—'));
                     tb.appendChild(tr);
                 });
                 toast('诊断完成', 'success');

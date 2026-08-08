@@ -1080,7 +1080,7 @@ wpca_restrict_specific_admin_pages();
 - **权限**：默认 `current_user_can('manage_options')`，公开 handler 除外
 - **校验顺序**：`wp_verify_nonce` → `current_user_can` → 分发；失败返回 JSON `{success:false,data:{message:<code>}}` 与对应 HTTP 状态码（详见 api.md §2.4）
 
-**模块 → AJAX action 映射**（与 `assets/prototype/php/modules/*` 一致）：
+**模块 → AJAX action 映射**（与 `prototype/php/modules/*` 一致）：
 
 | 模块类 | action |
 |--------|--------|

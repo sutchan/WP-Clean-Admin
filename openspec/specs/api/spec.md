@@ -21,7 +21,7 @@ WP Clean Admin API 提供了一系列用于管理和配置 WP Clean Admin 插件
 
 ## 2.4 AJAX 接口标准（权威契约）
 
-所有后台交互 AJAX 必须经由 `WPCleanAdmin\AJAX\Gateway_Base::register()`，**禁止裸 `add_action('wp_ajax_*')`**。本契约与 `assets/prototype/` 高保真原型严格对应。
+所有后台交互 AJAX 必须经由 `WPCleanAdmin\AJAX\Gateway_Base::register()`，**禁止裸 `add_action('wp_ajax_*')`**。本契约与 `prototype/` 高保真原型严格对应。
 
 ### 2.4.1 请求
 | 字段 | 值 |

@@ -51,7 +51,7 @@ WP Clean Admin 是一个基于模块化设计的 WordPress 插件，旨在提供
 - **Alternatives considered**: 各 handler 自行校验 —— 曾导致不一致
 
 ### 6. 高保真原型作为开发基线
-- **Decision**: `assets/prototype/`（PHP 模块骨架 + UI 原型）为后续功能的权威参照，新模块须继承 `Module_Base`、经网关注册 AJAX
+- **Decision**: `prototype/`（PHP 模块骨架 + UI 原型）为后续功能的权威参照，新模块须继承 `Module_Base`、经网关注册 AJAX
 - **Reason**: 提供可运行基线，缩短起步成本，保证架构与交互一致性
 - **Alternatives considered**: 仅文档规范 —— 无代码参照易再次产生双份实现
 

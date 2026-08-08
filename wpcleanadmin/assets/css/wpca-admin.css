@@ -158,3 +158,168 @@
     color: #0c5460;
     border: 1px solid #bee5eb;
 }
+
+/* ==========================================================================
+ * shadcn/ui 风格设计系统 (PHP 版) · 与原型 prototype/ui/wpca-components.css 同源
+ * 新增模块统一采用下列 --wpca-* 令牌与 .wpca-* 组件类，确保代码与原型一致。
+ * ========================================================================== */
+:root {
+    --wpca-bg: 0 0% 100%;
+    --wpca-fg: 240 10% 3.9%;
+    --wpca-card: 0 0% 100%;
+    --wpca-card-foreground: 240 10% 3.9%;
+    --wpca-muted: 240 4.8% 95.9%;
+    --wpca-muted-foreground: 240 3.8% 46.1%;
+    --wpca-border: 240 5.9% 90%;
+    --wpca-input: 240 5.9% 90%;
+    --wpca-ring: 240 5% 64.9%;
+    --wpca-primary: 221 83% 53%;
+    --wpca-primary-foreground: 0 0% 100%;
+    --wpca-success: 142 71% 45%;
+    --wpca-success-foreground: 0 0% 100%;
+    --wpca-warning: 38 92% 50%;
+    --wpca-warning-foreground: 0 0% 100%;
+    --wpca-danger: 0 72% 51%;
+    --wpca-danger-foreground: 0 0% 100%;
+    --wpca-info: 199 89% 48%;
+    --wpca-info-foreground: 0 0% 100%;
+    --wpca-space-2: 8px;
+    --wpca-space-3: 12px;
+    --wpca-space-4: 16px;
+    --wpca-space-5: 20px;
+    --wpca-space-6: 24px;
+    --wpca-radius: 8px;
+    --wpca-radius-sm: 6px;
+    --wpca-radius-lg: 12px;
+    --wpca-radius-xl: 16px;
+    --wpca-radius-full: 9999px;
+    --wpca-shadow-xs: 0 1px 2px 0 hsl(240 10% 3.9% / 0.04);
+    --wpca-shadow-sm: 0 1px 3px 0 hsl(240 10% 3.9% / 0.08), 0 1px 2px -1px hsl(240 10% 3.9% / 0.08);
+    --wpca-shadow-md: 0 4px 12px -2px hsl(240 10% 3.9% / 0.10), 0 2px 6px -2px hsl(240 10% 3.9% / 0.08);
+    --wpca-shadow-lg: 0 12px 32px -6px hsl(240 10% 3.9% / 0.14);
+    --wpca-ease: cubic-bezier(0.32, 0.72, 0, 1);
+    --wpca-dur: 200ms;
+    --wpca-dur-fast: 120ms;
+}
+
+/* 卡片 */
+.wpca-card {
+    background: hsl(var(--wpca-card));
+    border: 1px solid hsl(var(--wpca-border));
+    border-radius: var(--wpca-radius-lg);
+    box-shadow: var(--wpca-shadow-xs);
+    padding: var(--wpca-space-5);
+}
+
+/* 按钮 */
+.wpca-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--wpca-space-2);
+    height: 38px;
+    padding: 0 var(--wpca-space-4);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    color: hsl(var(--wpca-fg));
+    background: hsl(var(--wpca-card));
+    border: 1px solid hsl(var(--wpca-border));
+    border-radius: var(--wpca-radius);
+    cursor: pointer;
+    transition: background var(--wpca-dur) var(--wpca-ease), border-color var(--wpca-dur) var(--wpca-ease),
+        color var(--wpca-dur) var(--wpca-ease), box-shadow var(--wpca-dur) var(--wpca-ease),
+        transform var(--wpca-dur-fast) var(--wpca-ease);
+}
+.wpca-btn:hover { background: hsl(var(--wpca-muted)); }
+.wpca-btn:active { transform: translateY(0.5px) scale(0.99); }
+.wpca-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.wpca-btn--primary { color: hsl(var(--wpca-primary-foreground)); background: hsl(var(--wpca-primary)); border-color: hsl(var(--wpca-primary)); box-shadow: var(--wpca-shadow-xs); }
+.wpca-btn--primary:hover { background: hsl(var(--wpca-primary) / 0.90); }
+.wpca-btn--danger { color: hsl(var(--wpca-danger-foreground)); background: hsl(var(--wpca-danger)); border-color: hsl(var(--wpca-danger)); }
+.wpca-btn--danger:hover { background: hsl(var(--wpca-danger) / 0.90); }
+.wpca-btn--sm { height: 32px; padding: 0 var(--wpca-space-3); font-size: 13px; }
+
+/* 徽章 */
+.wpca-badge {
+    display: inline-flex;
+    align-items: center;
+    height: 22px;
+    padding: 0 var(--wpca-space-2);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    border-radius: var(--wpca-radius-full);
+    border: 1px solid transparent;
+}
+.wpca-badge--info { color: hsl(var(--wpca-info)); background: hsl(var(--wpca-info) / 0.12); border-color: hsl(var(--wpca-info) / 0.20); }
+.wpca-badge--success { color: hsl(var(--wpca-success)); background: hsl(var(--wpca-success) / 0.12); border-color: hsl(var(--wpca-success) / 0.20); }
+.wpca-badge--warning { color: hsl(var(--wpca-warning)); background: hsl(var(--wpca-warning) / 0.14); border-color: hsl(var(--wpca-warning) / 0.24); }
+.wpca-badge--danger { color: hsl(var(--wpca-danger)); background: hsl(var(--wpca-danger) / 0.12); border-color: hsl(var(--wpca-danger) / 0.22); }
+
+/* 开关 */
+.wpca-switch { position: relative; display: inline-flex; align-items: center; width: 40px; height: 22px; flex: none; cursor: pointer; }
+.wpca-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+.wpca-switch__slider { position: absolute; inset: 0; background: hsl(var(--wpca-input)); border-radius: var(--wpca-radius-full); transition: background var(--wpca-dur) var(--wpca-ease); }
+.wpca-switch__slider::after { content: ""; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; background: #fff; border-radius: 50%; box-shadow: var(--wpca-shadow-sm); transition: transform var(--wpca-dur) var(--wpca-ease); }
+.wpca-switch input:checked + .wpca-switch__slider { background: hsl(var(--wpca-primary)); }
+.wpca-switch input:checked + .wpca-switch__slider::after { transform: translateX(18px); }
+
+/* 输入 */
+.wpca-input { height: 38px; padding: 0 var(--wpca-space-3); font-size: 14px; font-family: inherit; color: hsl(var(--wpca-fg)); background: hsl(var(--wpca-card)); border: 1px solid hsl(var(--wpca-input)); border-radius: var(--wpca-radius); transition: border-color var(--wpca-dur) var(--wpca-ease), box-shadow var(--wpca-dur) var(--wpca-ease); }
+.wpca-input:focus { outline: none; border-color: hsl(var(--wpca-primary)); box-shadow: 0 0 0 3px hsl(var(--wpca-primary) / 0.18); }
+
+/* 表格 */
+.wpca-table-wrap { background: hsl(var(--wpca-card)); border: 1px solid hsl(var(--wpca-border)); border-radius: var(--wpca-radius-lg); box-shadow: var(--wpca-shadow-xs); overflow: hidden; }
+.wpca-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.wpca-table th { text-align: left; padding: var(--wpca-space-3) var(--wpca-space-4); font-weight: 600; font-size: 13px; color: hsl(var(--wpca-muted-foreground)); background: hsl(var(--wpca-muted) / 0.5); border-bottom: 1px solid hsl(var(--wpca-border)); }
+.wpca-table td { padding: var(--wpca-space-3) var(--wpca-space-4); border-bottom: 1px solid hsl(var(--wpca-border) / 0.6); vertical-align: middle; }
+.wpca-table tbody tr:hover { background: hsl(var(--wpca-muted) / 0.5); }
+.wpca-table tbody tr:last-child td { border-bottom: none; }
+.wpca-col-action { width: 1%; white-space: nowrap; }
+.wpca-col-wide { width: 40%; min-width: 180px; }
+
+/* 字段组 */
+.wpca-fieldset { margin: 0 0 var(--wpca-space-5); padding: var(--wpca-space-5); background: hsl(var(--wpca-card)); border: 1px solid hsl(var(--wpca-border)); border-radius: var(--wpca-radius-lg); box-shadow: var(--wpca-shadow-xs); }
+.wpca-fieldset legend { padding: 0 var(--wpca-space-2); font-size: 13px; font-weight: 600; color: hsl(var(--wpca-muted-foreground)); text-transform: uppercase; letter-spacing: 0.04em; }
+.wpca-field { display: flex; align-items: center; justify-content: space-between; gap: var(--wpca-space-4); padding: var(--wpca-space-3) 0; border-bottom: 1px solid hsl(var(--wpca-border) / 0.6); }
+.wpca-field:last-child { border-bottom: none; }
+.wpca-field__label { font-weight: 500; }
+.wpca-field__hint { display: block; color: hsl(var(--wpca-muted-foreground)); font-size: 12px; margin-top: 2px; }
+
+/* 统计卡（仪表盘） */
+.wpca-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: var(--wpca-space-4); }
+.wpca-stat { padding: var(--wpca-space-5); background: hsl(var(--wpca-card)); border: 1px solid hsl(var(--wpca-border)); border-left: 3px solid hsl(var(--wpca-muted-foreground)); border-radius: var(--wpca-radius-lg); box-shadow: var(--wpca-shadow-xs); }
+.wpca-stat--warning { border-left-color: hsl(var(--wpca-warning)); }
+.wpca-stat--danger { border-left-color: hsl(var(--wpca-danger)); }
+.wpca-stat--info { border-left-color: hsl(var(--wpca-info)); }
+.wpca-stat__num { font-size: 24px; font-weight: 700; letter-spacing: -0.02em; }
+.wpca-stat__label { margin-top: var(--wpca-space-1, 4px); color: hsl(var(--wpca-muted-foreground)); font-size: 13px; }
+
+/* 进度条 */
+.wpca-progress { margin-top: var(--wpca-space-4); height: 6px; background: hsl(var(--wpca-muted)); border-radius: var(--wpca-radius-full); overflow: hidden; }
+.wpca-progress__bar { height: 100%; width: 0; background: hsl(var(--wpca-primary)); border-radius: var(--wpca-radius-full); transition: width var(--wpca-dur) var(--wpca-ease); }
+
+/* 空状态 */
+.wpca-empty { display: flex; flex-direction: column; align-items: center; gap: var(--wpca-space-3); padding: var(--wpca-space-6); text-align: center; color: hsl(var(--wpca-muted-foreground)); background: hsl(var(--wpca-card)); border: 1px dashed hsl(var(--wpca-border)); border-radius: var(--wpca-radius-lg); }
+
+/* 轻提示 */
+.wpca-toast-area { position: fixed; right: var(--wpca-space-5); bottom: var(--wpca-space-5); z-index: 200; display: flex; flex-direction: column; gap: var(--wpca-space-2); }
+.wpca-toast { min-width: 240px; max-width: 360px; padding: var(--wpca-space-3) var(--wpca-space-4); font-size: 13px; font-weight: 500; background: hsl(var(--wpca-card)); border: 1px solid hsl(var(--wpca-border)); border-left: 3px solid hsl(var(--wpca-muted-foreground)); border-radius: var(--wpca-radius); box-shadow: var(--wpca-shadow-md); animation: wpca-slide-in var(--wpca-dur) var(--wpca-ease); }
+.wpca-toast--success { border-left-color: hsl(var(--wpca-success)); }
+.wpca-toast--error { border-left-color: hsl(var(--wpca-danger)); }
+.wpca-toast--warning { border-left-color: hsl(var(--wpca-warning)); }
+.wpca-toast--info { border-left-color: hsl(var(--wpca-info)); }
+
+/* 弹窗 */
+.wpca-modal { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: var(--wpca-space-4); }
+.wpca-modal[hidden] { display: none; }
+.wpca-modal__backdrop { position: absolute; inset: 0; background: hsl(240 10% 3.9% / 0.45); backdrop-filter: blur(2px); }
+.wpca-modal__box { position: relative; width: 100%; max-width: 420px; padding: var(--wpca-space-6); background: hsl(var(--wpca-card)); border: 1px solid hsl(var(--wpca-border)); border-radius: var(--wpca-radius-xl); box-shadow: var(--wpca-shadow-lg); }
+.wpca-modal__title { margin: 0 0 var(--wpca-space-3); font-size: 20px; font-weight: 650; }
+.wpca-modal__body { margin: 0 0 var(--wpca-space-5); color: hsl(var(--wpca-muted-foreground)); }
+.wpca-modal__actions { display: flex; justify-content: flex-end; gap: var(--wpca-space-2); }
+
+@keyframes wpca-slide-in { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }

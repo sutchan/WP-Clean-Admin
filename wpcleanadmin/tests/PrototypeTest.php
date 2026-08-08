@@ -4,7 +4,7 @@
  *
  * 验证 Module_Base 抽象类、AJAX_Gateway_Base 单例，
  * 以及 6 个核心模块可被加载（数据接口可调用）。
- * 原型文件位于 assets/prototype/php，独立于主代码，测试内手动 require。
+ * 原型文件位于 prototype/php，独立于主代码，测试内手动 require。
  *
  * @package WPCleanAdmin
  */
@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class PrototypeTest extends TestCase {
 
     protected function setUp(): void {
-        $base = dirname( __DIR__ ) . '/assets/prototype/php/';
+        $base = dirname( __DIR__, 2 ) . '/prototype/php/';
         require_once $base . 'class-wpca-module-base.php';
         require_once $base . 'class-wpca-ajax-gateway-base.php';
         foreach ( glob( $base . 'modules/class-wpca-module-*.php' ) as $file ) {

@@ -11,11 +11,11 @@
 - [x] 抽象基类 `Module_Base`（单例 + hooks + AJAX 注册 + sanitize_settings）
 - [x] 统一 AJAX 网关基类（固化 `_wpnonce` 字段名与权限校验）
 - [x] 6 个核心模块：Dashboard / Cleanup / Performance / Security / Database / Diagnostics
-- [x] 模块放置 `assets/prototype/php/modules/`，独立于主代码
+- [x] 模块放置 `prototype/php/modules/`，独立于主代码
 
 ## 阶段三：前端 UI 原型（高保真）
-- [x] 后台多页签布局 dashboard.html（WP 后台风格 + 响应式 782/600px）
-- [x] 完整组件库样式 wpca-components.css（stat/table/badge/switch/progress/modal/toast 等）
+- [x] 后台多页签布局 index.html（shadcn 风格 + 响应式 960/600px 抽屉导航）
+- [x] 完整组件库样式 wpca-components.css（card/btn/badge/switch/progress/modal/toast 等 shadcn 风格）
 - [x] 交互脚本 app.js（页签切换、mock 数据渲染、AJAX 封装、危险操作二次确认、toast）
 - [x] 设计规范文档 设计规范_20260808.md（IA/令牌/组件/交互/可访问性）
 
