@@ -113,6 +113,6 @@ _nx('Singular text', 'Plural text', $count, 'Context description', 'wp-clean-adm
 如果您想贡献翻译，请：
 1. 翻译 `.po` 文件
 2. 编译生成 `.mo` 文件
-3. 提交 Pull Request 到 GitHub 仓库：https://github.com/sutchan/WP-Clean-Admin
+3. 提交 Pull Request 到 GitHub 仓库：https://github.com/Tanox/WP-Clean-Admin
 
 感谢您对 WP Clean Admin 国际化的贡献！
