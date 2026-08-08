@@ -158,7 +158,7 @@ openspec/
 ## 8. 重要链接
 
 - GitHub: https://github.com/sutchan/WP-Clean-Admin
-- 项目文档: https://github.com/sutchan/WP-Clean-Admin/tree/main/openspec
+- 项目文档: https://github.com/Tanox/WP-Clean-Admin/tree/main/openspec
 - WordPress.org: 待发布
 
 ## 9. 许可证

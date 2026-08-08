@@ -1,6 +1,6 @@
 # WP Clean Admin
 
-让您的 WordPress 后台变得更简洁、更快、更安全！**版本 1.8.1**
+让您的 WordPress 后台变得更简洁、更快、更安全！**版本 1.8.2**
 
 ✨ **主要优势**：
 - ✨ 一键清理后台杂乱内容
@@ -116,13 +116,37 @@
 
 ## 获取支持
 
-有问题或建议？请访问 [GitHub 仓库](https://github.com/sutchan/WP-Clean-Admin) 提交 Issue，我们会尽快回复！
+有问题或建议？请访问 [GitHub 仓库](https://github.com/Tanox/WP-Clean-Admin) 提交 Issue，我们会尽快回复！
 
 ---
 
 ## 许可证
 
 WP Clean Admin 使用 GPL-2.0+ 许可证。
+
+---
+
+## 原型与设计系统
+
+本项目附带高保真可交互原型与设计规范，便于设计与验收：
+
+- **原型**（`prototype/`）：`ui/index.html` 单入口（shadcn 风格），内置真实 mock 数据；
+  `php/` 为模块骨架（Module_Base + AJAX 网关），与插件运行代码解耦。
+  直接用浏览器打开 `prototype/ui/index.html` 预览，无需后端。
+- **设计系统**（`prototype/ui/wpca-components.css`）：shadcn/ui 风格单一令牌来源，
+  含设计令牌（色彩/字体/间距/圆角/阴影/动效）、组件库（card/btn/badge/switch/table/modal/toast 等）、
+  交互标准与响应式规范。插件 `wpcleanadmin/assets/css/wpca-admin.css` 末尾引用同源同名类。
+- **设计规范**：[`docs/设计规范_20260808.md`](docs/设计规范_20260808.md)
+- **审计报告**：[`docs/审计报告_20260808.md`](docs/审计报告_20260808.md)
+- **OpenSpec 规范**：[`openspec/`](openspec/) — 功能提案与规范文档
+
+---
+
+## 开发者文档
+
+- 开发指南：[`DEVELOPMENT.md`](DEVELOPMENT.md)
+- 项目指令：[`AGENTS.md`](AGENTS.md)（含目录边界约定：插件代码仅驻 `wpcleanadmin/`，
+  原型/文档/规范分别驻 `prototype/`、`docs/`、`openspec/`）
 
 ---
 

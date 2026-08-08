@@ -1,6 +1,14 @@
 # Changelog
 
 ## [1.8.2] - 2026-08-07
+### Docs
+- 设计系统: 新增 shadcn/ui 风格设计系统（`prototype/ui/wpca-components.css` 单一令牌来源），
+  覆盖设计令牌、组件库（card/btn/badge/switch/table/modal/toast 等）、交互与响应式规范
+- 原型合并: 删除冗余 `prototype/ui/dashboard.html` 与 `settings-page.css`，统一以 `index.html` 为入口
+- 文档对齐: 同步 `docs/设计规范_20260808.md` 与 OpenSpec 陈旧路径（`assets/prototype` -> `prototype`），
+  修正 README 版本号（1.8.1 -> 1.8.2）与仓库链接（Tanox/WP-Clean-Admin）
+- 插件对齐: `wpcleanadmin/assets/css/wpca-admin.css` 末尾追加同源 shadcn 组件层
+
 ### Fixed
 - AJAX nonce 字段名统一: 将 settings/dashboard/cleanup 三类 handler 的 `$_POST['nonce']` 统一为 `$_POST['_wpnonce']`，与前端发送字段及其余 11 个 handler 保持一致，修复数据库/性能/菜单等 AJAX 校验永远失败的功能性 bug
 - 设置存储安全: `settings-ajax.php` 的 `save_settings` 增加递归 `sanitize_settings`，防止未清理输入直接 `update_option` 造成存储型 XSS

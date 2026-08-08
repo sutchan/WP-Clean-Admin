@@ -1,6 +1,6 @@
 # WP Clean Admin
 
-Make your WordPress admin cleaner, faster, and more secure! **Version 1.8.1**
+Make your WordPress admin cleaner, faster, and more secure! **Version 1.8.2**
 
 ✨ **Key Benefits**:
 - ✨ One-click cleanup of cluttered admin area
@@ -116,13 +116,35 @@ Or you can upload via FTP to `wp-content/plugins/` directory, then activate in a
 
 ## Get Support
 
-Have questions or suggestions? Visit our [GitHub repository](https://github.com/sutchan/WP-Clean-Admin) to submit an issue, we'll respond soon!
+Have questions or suggestions? Visit our [GitHub repository](https://github.com/Tanox/WP-Clean-Admin) to submit an issue, we'll respond soon!
 
 ---
 
 ## License
 
 WP Clean Admin is licensed under GPL-2.0+.
+
+---
+
+## Prototype & Design System
+
+This project ships a high-fidelity interactive prototype and design specs for design review and acceptance:
+
+- **Prototype** (`prototype/`): `ui/index.html` is the single entry (shadcn style) with realistic mock data;
+  `php/` holds module skeletons (Module_Base + AJAX gateway), decoupled from the plugin runtime.
+  Open `prototype/ui/index.html` in a browser to preview, no backend required.
+- **Design system** (`prototype/ui/wpca-components.css`): the single source of shadcn/ui style tokens
+  covering color/typography/spacing/radius/shadow/motion tokens, component library and responsive rules.
+  The plugin's `wpcleanadmin/assets/css/wpca-admin.css` reuses the same token classes.
+- **Design spec**: [`docs/设计规范_20260808.md`](docs/设计规范_20260808.md)
+- **OpenSpec specs**: [`openspec/`](openspec/)
+
+---
+
+## Developer Docs
+
+- Development guide: [`DEVELOPMENT.md`](DEVELOPMENT.md)
+- Project instructions: [`AGENTS.md`](AGENTS.md)
 
 ---
 
