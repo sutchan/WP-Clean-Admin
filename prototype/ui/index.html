@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<!--
+  WP Clean Admin 高保真原型 · 入口
+  设计规范：assets/prototype/DESIGN.md
+  真实数据见 app.js 中的 state（mock 模式）
+  响应式：桌面 ≥960px / 平板 600–959px / 手机 <600px
+-->
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>WP Clean Admin</title>
+    <link rel="stylesheet" href="wpca-components.css" />
+</head>
+<body class="wp-admin wp-core-ui">
+    <header class="wpca-topbar">
+        <button class="wpca-topbar__menu" id="wpca-nav-toggle" aria-label="菜单" aria-expanded="false">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="wpca-topbar__brand">
+            <span class="wpca-logo" aria-hidden="true"></span>
+            <span class="wpca-topbar__name">WP Clean Admin</span>
+        </div>
+        <div class="wpca-topbar__meta">
+            <span class="wpca-chip wpca-chip--ok">已连接</span>
+            <span class="wpca-topbar__site">example.com</span>
+        </div>
+    </header>
+
+    <div class="wrap wpca-app">
+        <nav class="wpca-nav" id="wpca-nav" aria-label="功能导航">
+            <button class="wpca-nav__item is-active" data-tab="dashboard">
+                <span class="wpca-nav__ico" data-ico="dashboard"></span>仪表盘
+            </button>
+            <button class="wpca-nav__item" data-tab="cleanup">
+                <span class="wpca-nav__ico" data-ico="cleanup"></span>清理
+            </button>
+            <button class="wpca-nav__item" data-tab="performance">
+                <span class="wpca-nav__ico" data-ico="perf"></span>性能
+            </button>
+            <button class="wpca-nav__item" data-tab="security">
+                <span class="wpca-nav__ico" data-ico="menu"></span>安全与菜单
+            </button>
+            <button class="wpca-nav__item" data-tab="database">
+                <span class="wpca-nav__ico" data-ico="db"></span>数据库
+            </button>
+            <button class="wpca-nav__item" data-tab="diagnostics">
+                <span class="wpca-nav__ico" data-ico="diag"></span>诊断
+            </button>
+            <button class="wpca-nav__item" data-tab="settings">
+                <span class="wpca-nav__ico" data-ico="settings"></span>设置
+            </button>
+        </nav>
+
+        <main class="wpca-content" id="wpca-content">
+
+            <section class="wpca-panel is-active" data-panel="dashboard">
+                <div class="wpca-panel__head">
+                    <div>
+                        <h2 class="wpca-panel__title">站点体检</h2>
+                        <p class="wpca-panel__sub">一键扫描可优化项，保持后台轻盈</p>
+                    </div>
+                    <button class="wpca-btn wpca-btn--primary" id="wpca-scan-btn">
+                        <span class="wpca-btn__ico" data-ico="scan"></span>一键体检
+                    </button>
+                </div>
+                <div class="wpca-stats" id="wpca-stats">
+                    <div class="wpca-empty">
+                        <span class="wpca-empty__ico" data-ico="scan"></span>
+                        <p>点击「一键体检」查看可优化项</p>
+                    </div>
+                </div>
+                <div class="wpca-progress" id="wpca-scan-progress" hidden>
+                    <div class="wpca-progress__bar"></div>
+                </div>
+            </section>
+
+            <section class="wpca-panel" data-panel="cleanup" hidden>
+                <div class="wpca-panel__head">
+                    <div>
+                        <h2 class="wpca-panel__title">清理任务</h2>
+                        <p class="wpca-panel__sub">安全移除冗余数据，释放数据库空间</p>
+                    </div>
+                </div>
+                <div class="wpca-table-wrap">
+                    <table class="wpca-table" id="wpca-cleanup-table">
+                        <thead><tr><th>任务</th><th>数量</th><th>风险</th><th class="wpca-col-action">操作</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="wpca-panel" data-panel="performance" hidden>
+                <div class="wpca-panel__head">
+                    <div>
+                        <h2 class="wpca-panel__title">性能优化</h2>
+                        <p class="wpca-panel__sub">开关即生效，无需刷新前台</p>
+                    </div>
+                </div>
+                <div class="wpca-list" id="wpca-perf-list"></div>
+            </section>
+
+            <section class="wpca-panel" data-panel="security" hidden>
+                <div class="wpca-panel__head">
+                    <div>
+                        <h2 class="wpca-panel__title">后台菜单可见性</h2>
+                        <p class="wpca-panel__sub">隐藏无关菜单，聚焦核心操作</p>
+                    </div>
+                    <button class="wpca-btn wpca-btn--primary" id="wpca-menu-save">
+                        <span class="wpca-btn__ico" data-ico="save"></span>保存菜单设置
+                    </button>
+                </div>
+                <div class="wpca-table-wrap">
+                    <table class="wpca-table" id="wpca-menu-table">
+                        <thead><tr><th>菜单</th><th>类型</th><th class="wpca-col-action">可见</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="wpca-panel" data-panel="database" hidden>
+                <div class="wpca-panel__head">
+                    <div>
+                        <h2 class="wpca-panel__title">数据表</h2>
+                        <p class="wpca-panel__sub">备份与优化，维护表健康</p>
+                    </div>
+                    <span class="wpca-panel__actions">
+                        <button class="wpca-btn" id="wpca-db-backup">
+                            <span class="wpca-btn__ico" data-ico="backup"></span>备份
+                        </button>
+                        <button class="wpca-btn wpca-btn--primary" id="wpca-db-optimize">
+                            <span class="wpca-btn__ico" data-ico="optimize"></span>优化
+                        </button>
+                    </span>
+                </div>
+                <div class="wpca-table-wrap">
+                    <table class="wpca-table" id="wpca-db-table">
+                        <thead><tr><th>表名</th><th>行数</th><th>大小</th><th>碎片</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="wpca-panel" data-panel="diagnostics" hidden>
+                <div class="wpca-panel__head">
+                    <div>
+                        <h2 class="wpca-panel__title">环境诊断</h2>
+                        <p class="wpca-panel__sub">检测运行环境与安全隐患</p>
+                    </div>
+                    <button class="wpca-btn wpca-btn--primary" id="wpca-diag-btn">
+                        <span class="wpca-btn__ico" data-ico="diag"></span>运行诊断
+                    </button>
+                </div>
+                <div class="wpca-table-wrap">
+                    <table class="wpca-table" id="wpca-diag-table">
+                        <thead><tr><th>项目</th><th>当前值</th><th>状态</th><th class="wpca-col-wide">建议</th></tr></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="wpca-panel" data-panel="settings" hidden>
+                <div class="wpca-panel__head">
+                    <div>
+                        <h2 class="wpca-panel__title">全局设置</h2>
+                        <p class="wpca-panel__sub">统一的插件偏好配置</p>
+                    </div>
+                    <button class="wpca-btn wpca-btn--primary" id="wpca-settings-save">
+                        <span class="wpca-btn__ico" data-ico="save"></span>保存设置
+                    </button>
+                </div>
+
+                <fieldset class="wpca-fieldset">
+                    <legend>常规</legend>
+                    <label class="wpca-field">
+                        <span class="wpca-field__label">保留修订版本数</span>
+                        <input type="number" name="general[keep_revisions]" value="10" min="0" class="wpca-input" />
+                        <span class="wpca-field__hint">设为 0 表示不限制</span>
+                    </label>
+                    <label class="wpca-field">
+                        <span class="wpca-field__label">自动清理</span>
+                        <label class="wpca-switch"><input type="checkbox" name="general[auto_cleanup]" checked /><span class="wpca-switch__slider"></span></label>
+                    </label>
+                </fieldset>
+
+                <fieldset class="wpca-fieldset">
+                    <legend>性能</legend>
+                    <label class="wpca-field">
+                        <span class="wpca-field__label">禁用 Emoji</span>
+                        <label class="wpca-switch"><input type="checkbox" name="performance[disable_emojis]" checked /><span class="wpca-switch__slider"></span></label>
+                    </label>
+                    <label class="wpca-field">
+                        <span class="wpca-field__label">图片懒加载</span>
+                        <label class="wpca-switch"><input type="checkbox" name="performance[lazy_images]" checked /><span class="wpca-switch__slider"></span></label>
+                    </label>
+                    <label class="wpca-field">
+                        <span class="wpca-field__label">压缩 HTML</span>
+                        <label class="wpca-switch"><input type="checkbox" name="performance[minify_html]" /><span class="wpca-switch__slider"></span></label>
+                    </label>
+                </fieldset>
+
+                <fieldset class="wpca-fieldset">
+                    <legend>菜单</legend>
+                    <label class="wpca-field">
+                        <span class="wpca-field__label">菜单缓存天数</span>
+                        <input type="number" name="menu[retention_days]" value="30" min="1" class="wpca-input" />
+                        <span class="wpca-field__hint">菜单结构变更后重新计算</span>
+                    </label>
+                </fieldset>
+            </section>
+
+        </main>
+    </div>
+
+    <div class="wpca-modal" id="wpca-modal" role="dialog" aria-modal="true" hidden>
+        <div class="wpca-modal__backdrop" data-close></div>
+        <div class="wpca-modal__box">
+            <h3 class="wpca-modal__title">确认操作</h3>
+            <p class="wpca-modal__body" id="wpca-modal-body"></p>
+            <p class="wpca-modal__actions">
+                <button class="wpca-btn" data-close>取消</button>
+                <button class="wpca-btn wpca-btn--danger" id="wpca-modal-confirm">确认</button>
+            </p>
+        </div>
+    </div>
+
+    <div class="wpca-toast-area" id="wpca-toast-area" aria-live="polite"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
