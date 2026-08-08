@@ -52,7 +52,6 @@ WP Clean Admin API 提供了一系列用于管理和配置 WP Clean Admin 插件
 | action | 模块 | 说明 |
 |--------|------|------|
 | `wpca_dashboard_scan` | Dashboard | 一键体检，返回 metrics |
-| `wpca_dashboard_save` | Dashboard | 保存仪表盘设置 |
 | `wpca_cleanup_run` | Cleanup | 执行清理，参数 `task` |
 | `wpca_perf_toggle` | Performance | 切换优化项，参数 `option`/`value` |
 | `wpca_security_save` | Security | 保存菜单可见性，参数 `menus` |

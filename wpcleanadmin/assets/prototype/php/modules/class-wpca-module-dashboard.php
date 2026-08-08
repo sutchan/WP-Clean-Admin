@@ -21,7 +21,6 @@ class Module_Dashboard extends Module_Base {
     protected function init() {
         add_action( 'admin_menu', array( $this, 'register_menu' ) );
         $this->register_ajax( 'wpca_dashboard_scan', array( $this, 'ajax_scan' ) );
-        $this->register_ajax( 'wpca_dashboard_save', array( $this, 'ajax_save' ) );
     }
 
     public function get_module_name() {
@@ -68,20 +67,6 @@ class Module_Dashboard extends Module_Base {
 
         if ( function_exists( '\wp_send_json_success' ) ) {
             \wp_send_json_success( array( 'metrics' => $metrics, 'total_optimizable' => $total ) );
-        }
-    }
-
-    /**
-     * AJAX：保存设置
-     */
-    public function ajax_save() {
-        $raw     = isset( $_POST['settings'] ) ? \wp_unslash( $_POST['settings'] ) : array();
-        $clean   = $this->sanitize_settings( $raw );
-        if ( function_exists( '\update_option' ) ) {
-            \update_option( 'wpca_settings', $clean );
-        }
-        if ( function_exists( '\wp_send_json_success' ) ) {
-            \wp_send_json_success( array( 'saved' => true ) );
         }
     }
 }

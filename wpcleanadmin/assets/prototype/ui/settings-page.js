@@ -21,8 +21,23 @@
         status.textContent = '';
         status.className = 'wpca-status';
 
+        // 设置保存统一走 Settings 模块 wpca_settings_save（结构见 SettingsConfig）
+        const payload = {
+            general: {
+                keep_revisions: form.clean_revisions.checked ? 1 : 0,
+                auto_cleanup: true
+            },
+            performance: {
+                disable_emojis: true,
+                lazy_images: true,
+                minify_html: false
+            },
+            menu: { retention_days: Number(form.retention_days.value) || 30 }
+        };
+
         const formData = new FormData(form);
-        formData.append('action', 'wpca_dashboard_save'); // AJAX action 名
+        formData.append('action', 'wpca_settings_save');
+        formData.append('settings', JSON.stringify(payload));
 
         // 注意：_wpnonce 已由 wp_nonce_field 渲染为隐藏字段，FormData 自动携带
         fetch(window.ajaxurl || '/wp-admin/admin-ajax.php', {

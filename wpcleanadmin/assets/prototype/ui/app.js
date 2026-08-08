@@ -94,13 +94,21 @@
         }, 180);
     });
 
+    // 安全构建文本节点，避免 XSS（所有动态文本经 textContent）
+    function el(tag, cls, text) {
+        const node = document.createElement(tag);
+        if (cls) node.className = cls;
+        if (text !== undefined && text !== null) node.textContent = String(text);
+        return node;
+    }
+
     function renderStats(metrics) {
         const wrap = qs('#wpca-stats');
         wrap.innerHTML = '';
         metrics.forEach(function (m) {
-            const card = document.createElement('div');
-            card.className = 'wpca-stat' + (m.level === 'danger' ? ' wpca-stat--danger' : m.level === 'warning' ? ' wpca-stat--warning' : '');
-            card.innerHTML = '<div class="wpca-stat__num">' + m.count + '</div><div class="wpca-stat__label">' + m.label + '</div>';
+            const card = el('div', 'wpca-stat' + (m.level === 'danger' ? ' wpca-stat--danger' : m.level === 'warning' ? ' wpca-stat--warning' : ''));
+            card.appendChild(el('div', 'wpca-stat__num', m.count));
+            card.appendChild(el('div', 'wpca-stat__label', m.label));
             wrap.appendChild(card);
         });
     }
@@ -121,11 +129,16 @@
         tb.innerHTML = '';
         cleanupTasks.forEach(function (t) {
             const tr = document.createElement('tr');
-            tr.innerHTML =
-                '<td>' + t.label + '</td>' +
-                '<td>' + t.count + '</td>' +
-                '<td><span class="wpca-badge wpca-badge--' + riskBadge[t.risk] + '">' + t.risk + '</span></td>' +
-                '<td><button class="button wpca-btn" data-clean="' + t.id + '">清理</button></td>';
+            tr.appendChild(el('td', null, t.label));
+            tr.appendChild(el('td', null, t.count));
+            const badgeTd = document.createElement('td');
+            badgeTd.appendChild(el('span', 'wpca-badge wpca-badge--' + riskBadge[t.risk], t.risk));
+            tr.appendChild(badgeTd);
+            const btnTd = document.createElement('td');
+            const btn = el('button', 'button wpca-btn', '清理');
+            btn.setAttribute('data-clean', t.id);
+            btnTd.appendChild(btn);
+            tr.appendChild(btnTd);
             tb.appendChild(tr);
         });
         qsa('[data-clean]').forEach(function (b) {
@@ -154,11 +167,16 @@
         const list = qs('#wpca-perf-list');
         list.innerHTML = '';
         perfOptions.forEach(function (o, i) {
-            const row = document.createElement('div');
-            row.className = 'wpca-list__row';
-            row.innerHTML =
-                '<span>' + o.label + '</span>' +
-                '<label class="wpca-switch"><input type="checkbox" ' + (o.on ? 'checked' : '') + ' data-perf="' + i + '"><span class="wpca-switch__slider"></span></label>';
+            const row = el('div', 'wpca-list__row');
+            row.appendChild(el('span', null, o.label));
+            const label = el('label', 'wpca-switch');
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            if (o.on) input.checked = true;
+            input.setAttribute('data-perf', String(i));
+            label.appendChild(input);
+            label.appendChild(el('span', 'wpca-switch__slider'));
+            row.appendChild(label);
             list.appendChild(row);
         });
         qsa('[data-perf]').forEach(function (c) {
@@ -189,10 +207,20 @@
         tb.innerHTML = '';
         menus.forEach(function (m, i) {
             const tr = document.createElement('tr');
-            tr.innerHTML =
-                '<td>' + m.label + '</td>' +
-                '<td><span class="wpca-badge wpca-badge--' + (m.system ? 'info' : 'success') + '">' + (m.system ? '系统' : '自定义') + '</span></td>' +
-                '<td><label class="wpca-switch"><input type="checkbox" ' + (m.visible ? 'checked' : '') + ' data-menu="' + i + '"><span class="wpca-switch__slider"></span></label></td>';
+            tr.appendChild(el('td', null, m.label));
+            const badgeTd = document.createElement('td');
+            badgeTd.appendChild(el('span', 'wpca-badge wpca-badge--' + (m.system ? 'info' : 'success'), m.system ? '系统' : '自定义'));
+            tr.appendChild(badgeTd);
+            const ctrlTd = document.createElement('td');
+            const label = el('label', 'wpca-switch');
+            const input = document.createElement('input');
+            input.type = 'checkbox';
+            if (m.visible) input.checked = true;
+            input.setAttribute('data-menu', String(i));
+            label.appendChild(input);
+            label.appendChild(el('span', 'wpca-switch__slider'));
+            ctrlTd.appendChild(label);
+            tr.appendChild(ctrlTd);
             tb.appendChild(tr);
         });
         qsa('[data-menu]').forEach(function (c) {
@@ -219,7 +247,10 @@
         tb.innerHTML = '';
         tables.forEach(function (t) {
             const tr = document.createElement('tr');
-            tr.innerHTML = '<td>' + t.name + '</td><td>' + t.rows + '</td><td>' + t.size + '</td><td>' + t.overhead + '</td>';
+            tr.appendChild(el('td', null, t.name));
+            tr.appendChild(el('td', null, t.rows));
+            tr.appendChild(el('td', null, t.size));
+            tr.appendChild(el('td', null, t.overhead));
             tb.appendChild(tr);
         });
     }
@@ -251,9 +282,12 @@
                 tb.innerHTML = '';
                 d.checks.forEach(function (c) {
                     const tr = document.createElement('tr');
-                    tr.innerHTML = '<td>' + c.label + '</td><td>' + c.value + '</td>' +
-                        '<td><span class="wpca-badge wpca-badge--' + c.status + '">' + c.status + '</span></td>' +
-                        '<td>' + (c.advice || '—') + '</td>';
+                    tr.appendChild(el('td', null, c.label));
+                    tr.appendChild(el('td', null, c.value));
+                    const badgeTd = document.createElement('td');
+                    badgeTd.appendChild(el('span', 'wpca-badge wpca-badge--' + c.status, c.status));
+                    tr.appendChild(badgeTd);
+                    tr.appendChild(el('td', null, c.advice || '—'));
                     tb.appendChild(tr);
                 });
                 toast('诊断完成', 'success');
