@@ -21,9 +21,15 @@
 
 ## 阶段四：验证
 - [x] 骨架单元测试（`phpunit.xml.dist` 已就绪）
+- [x] 测试覆盖 7 个模块（含 Settings）
 - [ ] 在有 PHP 环境实跑 `composer test` 验证
 
-## 阶段五：归档
+## 阶段五：与原型同步 openspec 规范（2026-08-08）
+- [x] api.md 增补 AJAX 接口标准（_wpnonce/wpca_ajax_nonce、错误码、已注册 action、业务数据结构）、版本 1.8.2
+- [x] plugin-architecture/design.md 增补 AJAX 网关决策 + 原型基线决策，架构层次模块化
+- [x] plugin-architecture/detailed-design.md 同步版本 1.8.2、AJAX 网关标准章节、模块→action 映射
+
+## 阶段六：归档
 - [ ] 将设计规范归档至 `openspec/specs/plugin-architecture/`
-- [ ] 更新 CHANGELOG
+- [ ] 更新 CHANGELOG 至 1.8.2 条目
 <!-- OPENSPEC:END -->

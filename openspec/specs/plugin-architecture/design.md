@@ -45,16 +45,27 @@ WP Clean Admin 是一个基于模块化设计的 WordPress 插件，旨在提供
 - **Alternatives considered**: 
   - 自定义事件系统: 增加复杂性，不便于与其他 WordPress 插件集成
 
+### 5. 统一 AJAX 网关（1.8.2 确立）
+- **Decision**: 所有后台 AJAX 经由 `WPCleanAdmin\AJAX\Gateway_Base`，强制字段名 `_wpnonce` + nonce action `wpca_ajax_nonce` + capability `manage_options`，禁止裸 `add_action('wp_ajax_*')`
+- **Reason**: 终结 1.8.2 前 nonce 字段名（`_wpnonce`/`nonce`）不一致导致半数 handler 校验失败的功能缺陷
+- **Alternatives considered**: 各 handler 自行校验 —— 曾导致不一致
+
+### 6. 高保真原型作为开发基线
+- **Decision**: `assets/prototype/`（PHP 模块骨架 + UI 原型）为后续功能的权威参照，新模块须继承 `Module_Base`、经网关注册 AJAX
+- **Reason**: 提供可运行基线，缩短起步成本，保证架构与交互一致性
+- **Alternatives considered**: 仅文档规范 —— 无代码参照易再次产生双份实现
+
 ## Architecture
 
 ### 架构层次
 
 | 层次 | 描述 | 主要组件 |
 | --- | --- | --- |
-| 核心层 | 插件的基础架构，负责初始化和协调其他模块 | Core、Autoloader、Core Functions |
-| 功能层 | 实现具体功能的模块 | Settings、Dashboard、Cleanup、Performance、Permissions、User_Roles、Menu_Manager、Menu_Customizer、Login、Database、Resources、Reset、AJAX、i18n、Extension_API、Composer、Elementor、Theme_Templates |
+| 核心层 | 插件的基础架构，负责初始化和协调其他模块 | `WPCleanAdmin\Core`（适配层，逐步迁移）、`Autoloader`、`Core Functions` |
+| AJAX 网关层 | 统一校验 nonce + capability 后分发 | `WPCleanAdmin\AJAX\Gateway_Base` |
+| 功能层（权威实现） | 模块化功能类 `WPCleanAdmin\Modules\<Domain>\Classes\Module_<Name>` | `Modules\Admin\Module_Dashboard`、`Modules\Cleanup\Module_Cleanup`、`Modules\Performance\Module_Performance`、`Modules\Security\Module_Security`、`Modules\Database\Module_Database`、`Modules\Diagnostics\Module_Diagnostics`、`Modules\Settings\Module_Settings` |
 | 资源层 | 静态资源文件 | CSS、JavaScript、语言文件 |
-| 配置层 | 插件设置和配置 | Settings、Database Settings、Performance Settings |
+| 配置层 | 插件设置和配置 | `wpca_settings`、`wpca_menu_visibility` |
 | 扩展层 | 插件扩展机制 | Hooks、API |
 
 ### 核心组件

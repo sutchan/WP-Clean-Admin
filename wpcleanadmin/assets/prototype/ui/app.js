@@ -28,9 +28,9 @@
         setTimeout(function () { el.remove(); }, 2600);
     }
 
-    // 获取 _wpnonce（真实环境由 wp_nonce_field 渲染的隐藏字段提供）
+    // 获取 _wpnonce（真实环境由 wp_nonce_field 渲染的隐藏字段提供，name=_wpnonce）
     function getNonce() {
-        const f = qs('#wpca-nonce-field');
+        const f = qs('input[name="_wpnonce"]');
         return f ? f.value : 'MOCK_NONCE';
     }
 
@@ -259,6 +259,25 @@
                 toast('诊断完成', 'success');
             })
             .catch(function () { toast('诊断失败', 'error'); });
+    });
+
+    /* ---------- 设置页 ---------- */
+    qs('#wpca-settings-save').addEventListener('click', function () {
+        const form = qs('.wpca-content');
+        const data = {
+            general: {
+                keep_revisions: parseInt(form.querySelector('[name="general[keep_revisions]"]').value, 10) || 0,
+                auto_cleanup: form.querySelector('[name="general[auto_cleanup]"]').checked
+            },
+            performance: {
+                disable_emojis: form.querySelector('[name="performance[disable_emojis]"]').checked,
+                lazy_images: form.querySelector('[name="performance[lazy_images]"]').checked,
+                minify_html: form.querySelector('[name="performance[minify_html]"]').checked
+            }
+        };
+        api('wpca_settings_save', { settings: JSON.stringify(data) }, function () { return { saved: true }; })
+            .then(function () { toast('设置已保存', 'success'); })
+            .catch(function () { toast('保存失败', 'error'); });
     });
 
     /* ---------- 弹窗（危险操作二次确认） ---------- */

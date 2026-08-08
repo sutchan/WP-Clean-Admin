@@ -81,6 +81,13 @@ body.wp-admin { background: var(--wpca-surface); color: var(--wpca-text); }
 /* 空状态 */
 .wpca-empty { color: var(--wpca-text-muted); padding: 24px; text-align: center; }
 
+/* 设置字段集 */
+.wpca-fieldset { border: 1px solid var(--wpca-border); border-radius: var(--wpca-radius); padding: 12px 16px; margin: 0 0 var(--wpca-gap); }
+.wpca-fieldset legend { font-weight: 600; padding: 0 6px; font-size: 13px; }
+.wpca-field { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.wpca-field__label { min-width: 160px; color: var(--wpca-text); }
+.wpca-field__input { border: 1px solid var(--wpca-border); border-radius: var(--wpca-radius); padding: 6px 8px; }
+
 /* 列表（性能开关） */
 .wpca-list { display: flex; flex-direction: column; gap: 8px; }
 .wpca-list__row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid var(--wpca-border); border-radius: var(--wpca-radius); }

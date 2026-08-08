@@ -46,6 +46,7 @@ class PrototypeTest extends TestCase {
             'WPCleanAdmin\Modules\Security\Module_Security'   => 'security',
             'WPCleanAdmin\Modules\Database\Module_Database'    => 'database',
             'WPCleanAdmin\Modules\Diagnostics\Module_Diagnostics' => 'diagnostics',
+            'WPCleanAdmin\Modules\Settings\Module_Settings'     => 'settings',
         );
         foreach ( $expected as $class => $name ) {
             $this->assertTrue( class_exists( $class ), $class . ' 应存在' );

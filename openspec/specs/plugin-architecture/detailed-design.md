@@ -3,7 +3,7 @@
 
 ## 1. 项目概述
 
-WP Clean Admin 是一个 WordPress 插件，用于管理后台清理和优化，版本 1.8.0。插件采用模块化设计，遵循 WordPress 最佳实践，注重安全性、性能和用户体验。
+WP Clean Admin 是一个 WordPress 插件，用于管理后台清理和优化，版本 1.8.2。插件采用模块化设计（以 `WPCleanAdmin\Modules\*` 为权威实现），遵循 WordPress 最佳实践，注重安全性、性能和用户体验。
 
 **项目特点**：
 - 模块化设计，便于扩展和维护
@@ -84,7 +84,7 @@ wpcleanadmin/
  * Plugin Name: WP Clean Admin
  * Plugin URI: https://github.com/sutchan/WP-Clean-Admin
  * Description: A comprehensive WordPress admin cleanup and optimization plugin
- * Version: 1.8.0
+ * Version: 1.8.2
  * Author: Sut
  * Author URI: https://github.com/sutchan
  * License: GPL v2 or later
@@ -170,7 +170,7 @@ if ( ! function_exists( 'plugin_basename' ) ) {
 
 ```php
 // Define plugin constants
-define( 'WPCA_VERSION', '1.8.0' );
+define( 'WPCA_VERSION', '1.8.2' );
 define( 'WPCA_PLUGIN_DIR', ( function_exists( 'plugin_dir_path' ) ? plugin_dir_path( __FILE__ ) : dirname( __FILE__ ) . '/' ) );
 define( 'WPCA_PLUGIN_URL', ( function_exists( 'plugin_dir_url' ) ? plugin_dir_url( __FILE__ ) : '' ) );
 define( 'WPCA_TEXT_DOMAIN', 'wp-clean-admin' );
@@ -415,7 +415,7 @@ if ( function_exists( '\add_filter' ) && function_exists( '\plugin_basename' ) )
  * WPCleanAdmin PSR-4 Autoloader
  *
  * @package WPCleanAdmin
- * @version 1.8.0
+ * @version 1.8.2
  * @author Sut
  * @author URI: https://github.com/sutchan
  * @since 1.7.15
@@ -534,10 +534,10 @@ spl_autoload_register( function( $class ) {
 ```php
 <?php
 /**
- * WPCleanAdmin Core Class
+ * WPCleanAdmin Core Class（适配层，逐步迁移至 WPCleanAdmin\Modules\*）
  *
  * @package WPCleanAdmin
- * @version 1.8.0
+ * @version 1.8.2
  * @author Sut
  * @author URI: https://github.com/sutchan
  * @since 1.7.15
@@ -1069,6 +1069,28 @@ wpca_restrict_specific_admin_pages();
 
 - **添加安全 HTTP 头部**：增强网站安全性
 - **头部**：X-Frame-Options, X-XSS-Protection, X-Content-Type-Options, Strict-Transport-Security, Content-Security-Policy
+
+### 7.7 AJAX 网关标准（与原型严格对应）
+
+所有后台 AJAX 必须经由统一网关，禁止裸 `add_action('wp_ajax_*')`，以消除 nonce 字段名不一致缺陷（见 1.8.2 修复记录）。
+
+- **网关类**：`WPCleanAdmin\AJAX\Gateway_Base`（方法 `register($action, $callback, $public)`）
+- **nonce 字段名**：请求体固定为 `_wpnonce`（前端经 `wp_nonce_field('wpca_ajax_nonce', '_wpnonce')` 注入）
+- **nonce action**：全局唯一 `wpca_ajax_nonce`
+- **权限**：默认 `current_user_can('manage_options')`，公开 handler 除外
+- **校验顺序**：`wp_verify_nonce` → `current_user_can` → 分发；失败返回 JSON `{success:false,data:{message:<code>}}` 与对应 HTTP 状态码（详见 api.md §2.4）
+
+**模块 → AJAX action 映射**（与 `assets/prototype/php/modules/*` 一致）：
+
+| 模块类 | action |
+|--------|--------|
+| `Modules\Admin\Module_Dashboard` | `wpca_dashboard_scan` / `wpca_dashboard_save` |
+| `Modules\Cleanup\Module_Cleanup` | `wpca_cleanup_run` |
+| `Modules\Performance\Module_Performance` | `wpca_perf_toggle` |
+| `Modules\Security\Module_Security` | `wpca_security_save` |
+| `Modules\Database\Module_Database` | `wpca_db_backup` / `wpca_db_optimize` |
+| `Modules\Diagnostics\Module_Diagnostics` | `wpca_diag_run` |
+| `Modules\Settings\Module_Settings` | `wpca_settings_save` / `wpca_settings_load` |
 
 ## 8. 兼容性
 

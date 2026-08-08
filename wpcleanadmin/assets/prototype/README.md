@@ -42,3 +42,10 @@ prototype/
 | AJAX 网关 | php/class-wpca-ajax-gateway-base.php |
 | UI 组件 | ui/wpca-components.css |
 | 交互流 | ui/app.js |
+
+## AJAX 契约（与 openspec/api.md §2.4 严格一致）
+
+- 请求：`action=<action>`，nonce 字段名 **`_wpnonce`**，nonce action **`wpca_ajax_nonce`**
+- 响应：成功 `{success:true,data:{...}}`；失败 `{success:false,data:{message:<code>}}`
+- 已注册 action：见 `openspec/specs/api/spec.md` §2.4.4
+- 数据结构 Schema：见 `openspec/specs/api/spec.md` §2.4.5 / 设计规范_20260808.md §9

@@ -8,13 +8,82 @@ WP Clean Admin API 提供了一系列用于管理和配置 WP Clean Admin 插件
 ## 2. 基本信息
 
 ### 2.1 API 版本
-当前 API 版本：1.8.1
+当前 API 版本：1.8.2
 
 ### 2.2 命名空间
-核心类位于 `WPCleanAdmin` 命名空间下，全局函数直接可用。
+- 全局函数：`wpca_` 前缀，直接可用（见第 3 节）
+- 模块化类：`WPCleanAdmin\Modules\<Domain>\Classes\Module_<Name>`
+- AJAX 网关：`WPCleanAdmin\AJAX\Gateway_Base`（统一 nonce + capability 校验）
+- 旧式 `WPCleanAdmin\Core` / `Menu_Manager` / `Permissions` / `Login` 已迁移至模块化架构，下版删除
 
 ### 2.3 前缀
 全局函数使用 `wpca_` 前缀，例如 `wpca_get_settings()`。
+
+## 2.4 AJAX 接口标准（权威契约）
+
+所有后台交互 AJAX 必须经由 `WPCleanAdmin\AJAX\Gateway_Base::register()`，**禁止裸 `add_action('wp_ajax_*')`**。本契约与 `assets/prototype/` 高保真原型严格对应。
+
+### 2.4.1 请求
+| 字段 | 值 |
+|------|-----|
+| 后端注册 | `add_action('wp_ajax_<action>', ...)` |
+| 请求体 `action` | `<action>` |
+| nonce 字段名 | **`_wpnonce`**（固定，前端经 `wp_nonce_field('wpca_ajax_nonce', '_wpnonce')` 注入） |
+| nonce action | **`wpca_ajax_nonce`**（全局唯一，所有 handler 共用） |
+| 权限 | `current_user_can('manage_options')`（公开 handler 除外） |
+
+### 2.4.2 成功响应
+```json
+{ "success": true, "data": { /* 业务负载 */ } }
+```
+
+### 2.4.3 失败响应
+```json
+{ "success": false, "data": { "message": "<code>" } }
+```
+| code | HTTP | 含义 |
+|------|------|------|
+| `invalid_nonce` | 403 | nonce 校验失败 |
+| `forbidden` | 403 | 权限不足 |
+| `unknown_action` | 404 | action 未注册 |
+| `unknown_task` / `invalid_option` | 400 | 业务参数非法 |
+
+### 2.4.4 已注册 AJAX action 一览
+| action | 模块 | 说明 |
+|--------|------|------|
+| `wpca_dashboard_scan` | Dashboard | 一键体检，返回 metrics |
+| `wpca_dashboard_save` | Dashboard | 保存仪表盘设置 |
+| `wpca_cleanup_run` | Cleanup | 执行清理，参数 `task` |
+| `wpca_perf_toggle` | Performance | 切换优化项，参数 `option`/`value` |
+| `wpca_security_save` | Security | 保存菜单可见性，参数 `menus` |
+| `wpca_db_backup` | Database | 备份数据库 |
+| `wpca_db_optimize` | Database | 优化数据表 |
+| `wpca_diag_run` | Diagnostics | 运行环境诊断 |
+| `wpca_settings_save` | Settings | 保存全局设置，参数 `settings`（JSON） |
+| `wpca_settings_load` | Settings | 读取全局设置 |
+
+### 2.4.5 业务数据结构（Schema）
+| 模块 | 关键字段 | 类型约束 |
+|------|----------|----------|
+| Dashboard.metrics | `{label, count, level}` | level ∈ success/warning/danger/info |
+| Cleanup.task | `{id, label, count, risk}` | risk ∈ low/medium/high |
+| Performance.option | `{id, label, on}` | on: bool |
+| Security.menu | `{slug, label, visible, system}` | system: bool |
+| Database.table | `{name, rows, size, overhead}` | size/overhead: string |
+| Diagnostics.check | `{label, value, status, advice}` | status ∈ success/warning/danger |
+| Settings.config | `{general, performance, menu}` | 见 2.4.6 |
+
+### 2.4.6 设置数据结构（Settings.config）
+```ts
+type SettingsConfig = {
+  general: { keep_revisions: number; auto_cleanup: boolean };
+  performance: { disable_emojis: boolean; lazy_images: boolean; minify_html: boolean };
+  menu: { [slug: string]: boolean };
+}
+```
+- 写入前递归 `sanitize_settings`（`Module_Base` 提供）
+- 存储于 `wp_options` 键 `wpca_settings`；菜单可见性另存 `wpca_menu_visibility`
+- 保存时合并默认值（业务规则 R4）
 
 ## 3. 核心 API
 
@@ -686,6 +755,7 @@ if ( WPCleanAdmin\Permissions::getInstance()->has_feature_permission( 'manage_op
 
 | 版本 | 日期 | 变更内容 |
 |------|------|----------|
+| 1.8.2 | 2026-08-08 | 增补 AJAX 接口标准（统一网关 _wpnonce/wpca_ajax_nonce、错误码、已注册 action、业务数据结构）、设置模块数据结构；同步模块化架构命名空间 |
 | 1.8.1 | 2026-05-17 | 修复了诊断模块 API 引用，完善了诊断功能文档 |
 | 1.8.0 | 2026-01-02 | 更新了API文档，添加了所有实际存在的函数 |
 | 1.7.15 | 2025-11-30 | 初始 API 文档 |
