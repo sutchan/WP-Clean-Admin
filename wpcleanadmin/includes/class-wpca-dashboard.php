@@ -3,7 +3,7 @@
  * WPCleanAdmin Dashboard Class
  *
  * @package WPCleanAdmin
- * @version 1.8.2
+ * @version 1.8.3
  * @author Sut
  * @author URI: https://github.com/Tanox
  * @since 1.7.15
@@ -171,7 +171,7 @@ class Dashboard {
         if ( function_exists( '\wp_localize_script' ) && function_exists( '\wp_create_nonce' ) && function_exists( '\admin_url' ) ) {
             \wp_localize_script( 'wpca-dashboard', 'wpca_dashboard_vars', array(
                 'ajax_url' => \admin_url( 'admin-ajax.php' ),
-                'nonce' => \wp_create_nonce( 'wpca_dashboard_nonce' )
+                'nonce' => \wp_create_nonce( 'wpca_ajax_nonce' )
             ));
         }
     }

@@ -3,7 +3,7 @@
 
 ## Context
 
-WP Clean Admin 1.8.2 已修复 nonce 字段名不统一、设置未 sanitize、版本注释不一致等缺陷。为避免后续功能开发再次引入同类问题，需建立统一的设计规范与可运行原型，作为所有新功能的落地基线。
+WP Clean Admin 1.8.3 已修复 nonce 字段名不统一、设置未 sanitize、版本注释不一致等缺陷。为避免后续功能开发再次引入同类问题，需建立统一的设计规范与可运行原型，作为所有新功能的落地基线。
 
 ## Goals / Non-Goals
 
@@ -15,7 +15,7 @@ WP Clean Admin 1.8.2 已修复 nonce 字段名不统一、设置未 sanitize、�
 - 产出可运行原型骨架，降低新功能起步成本
 
 ### Non-Goals
-- 不重写现有 1.8.2 已稳定功能
+- 不重写现有 1.8.3 已稳定功能
 - 不引入与 WordPress 后台管理无关的能力
 
 ## Decisions
@@ -27,7 +27,7 @@ WP Clean Admin 1.8.2 已修复 nonce 字段名不统一、设置未 sanitize、�
 
 ### 2. 统一 AJAX 网关
 - **Decision**: 所有 AJAX handler 继承 `AJAX_Gateway_Base`，强制使用 `$_POST['_wpnonce']` 字段名 + `wp_verify_nonce(..., 'wpca_ajax_nonce' )`，统一权限校验 `current_user_can( 'manage_options' )`。
-- **Reason**: 根治 1.8.2 中 nonce 字段名不统一导致的功能失效。
+- **Reason**: 根治 1.8.3 中 nonce 字段名不统一导致的功能失效。
 - **Alternatives considered**: 每 handler 自行校验——曾导致不一致。
 
 ### 3. 前端交互规范
@@ -36,7 +36,7 @@ WP Clean Admin 1.8.2 已修复 nonce 字段名不统一、设置未 sanitize、�
 
 ### 4. 输入/输出安全基线
 - **Decision**: 所有设置写入前递归 `sanitize_*`；所有输出经 `esc_html/esc_attr/esc_url`；SQL 一律 `$wpdb->prepare`；所有写操作 nonce + capability 双校验。
-- **Reason**: 1.8.2 已验证未 sanitize 的存储风险。
+- **Reason**: 1.8.3 已验证未 sanitize 的存储风险。
 
 ### 5. UI/UX 设计语言
 - **Decision**: 后台页面采用 WordPress 原生 `.wp-*` 样式基底 + 自定义 BEM 组件 `wpca-*`；配色变量集中定义；响应式断点 782px（WP 移动后台阈值）。

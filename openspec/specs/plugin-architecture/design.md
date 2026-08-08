@@ -1,4 +1,4 @@
-﻿<!-- OPENSPEC:START -->
+<!-- OPENSPEC:START -->
 ## Context
 WP Clean Admin 是一个基于模块化设计的 WordPress 插件，旨在提供全面的 WordPress 后台清理和优化功能。插件采用面向对象的设计模式，遵循 WordPress 最佳实践，确保插件的可扩展性、可维护性和安全性。
 
@@ -45,9 +45,9 @@ WP Clean Admin 是一个基于模块化设计的 WordPress 插件，旨在提供
 - **Alternatives considered**: 
   - 自定义事件系统: 增加复杂性，不便于与其他 WordPress 插件集成
 
-### 5. 统一 AJAX 网关（1.8.2 确立）
+### 5. 统一 AJAX 网关（1.8.3 确立）
 - **Decision**: 所有后台 AJAX 经由 `WPCleanAdmin\AJAX\Gateway_Base`，强制字段名 `_wpnonce` + nonce action `wpca_ajax_nonce` + capability `manage_options`，禁止裸 `add_action('wp_ajax_*')`
-- **Reason**: 终结 1.8.2 前 nonce 字段名（`_wpnonce`/`nonce`）不一致导致半数 handler 校验失败的功能缺陷
+- **Reason**: 终结 1.8.3 前 nonce 字段名（`_wpnonce`/`nonce`）不一致导致半数 handler 校验失败的功能缺陷
 - **Alternatives considered**: 各 handler 自行校验 —— 曾导致不一致
 
 ### 6. 高保真原型作为开发基线

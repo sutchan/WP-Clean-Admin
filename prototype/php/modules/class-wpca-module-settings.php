@@ -5,7 +5,7 @@
  * 数据结构见 设计规范_20260808.md 第 9.2 节 SettingsConfig。
  *
  * @package WPCleanAdmin\Modules\Settings
- * @version 1.8.2
+ * @version 1.8.3
  */
 
 namespace WPCleanAdmin\Modules\Settings;

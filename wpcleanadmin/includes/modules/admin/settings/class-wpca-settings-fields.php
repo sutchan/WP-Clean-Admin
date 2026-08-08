@@ -3,7 +3,7 @@
  * WPCleanAdmin Settings Fields Class
  *
  * @package WPCleanAdmin\Modules\Admin\Settings
- * @version 1.8.2
+ * @version 1.8.3
  * @author Sut
  * @author URI: https://github.com/Tanox
  * @since 1.7.15

@@ -6,7 +6,7 @@
  * 这是新功能开发的权威基线，替代旧式 includes/class-wpca-*.php。
  *
  * @package WPCleanAdmin\Modules
- * @version 1.8.2
+ * @version 1.8.3
  */
 
 namespace WPCleanAdmin\Modules;
@@ -66,7 +66,7 @@ abstract class Module_Base {
      * 注册 AJAX action，统一走网关校验
      *
      * 注意：字段名固定为 _wpnonce，action 名固定为 wpca_ajax_nonce，
-     * 与前端发送字段保持一致（参见 1.8.2 修复）。
+     * 与前端发送字段保持一致（参见 1.8.3 修复）。
      *
      * @param string   $action   AJAX action 名称（不含 wp_ajax_ 前缀）
      * @param callable $callback 处理方法

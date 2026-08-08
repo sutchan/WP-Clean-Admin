@@ -3,7 +3,7 @@
  * AJAX 网关基类（原型骨架）
  *
  * 统一固化：
- *  - nonce 字段名：_wpnonce（与前端发送字段一致，修复 1.8.2 一致性缺陷）
+ *  - nonce 字段名：_wpnonce（与前端发送字段一致，修复 1.8.3 一致性缺陷）
  *  - nonce action：wpca_ajax_nonce
  *  - 权限校验：current_user_can( 'manage_options' )
  *  - 输出：wp_send_json_success / wp_send_json_error
@@ -11,7 +11,7 @@
  * 所有 AJAX handler 须经由此网关注册，禁止裸 add_action('wp_ajax_*')。
  *
  * @package WPCleanAdmin\AJAX
- * @version 1.8.2
+ * @version 1.8.3
  */
 
 namespace WPCleanAdmin\AJAX;

@@ -1,6 +1,6 @@
 # WP Clean Admin
 
-Make your WordPress admin cleaner, faster, and more secure! **Version 1.8.2**
+Make your WordPress admin cleaner, faster, and more secure! **Version 1.8.3**
 
 ✨ **Key Benefits**:
 - ✨ One-click cleanup of cluttered admin area

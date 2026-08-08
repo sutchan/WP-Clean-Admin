@@ -3,7 +3,7 @@
  * 高保真原型：性能优化模块
  *
  * @package WPCleanAdmin\Modules\Performance
- * @version 1.8.2
+ * @version 1.8.3
  */
 
 namespace WPCleanAdmin\Modules\Performance;

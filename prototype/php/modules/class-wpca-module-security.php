@@ -3,7 +3,7 @@
  * 高保真原型：安全与菜单模块（菜单定制 + 权限 + 登录优化）
  *
  * @package WPCleanAdmin\Modules\Security
- * @version 1.8.2
+ * @version 1.8.3
  */
 
 namespace WPCleanAdmin\Modules\Security;

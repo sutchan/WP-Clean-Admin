@@ -3,7 +3,7 @@
  * 高保真原型：数据库模块（表管理 + 备份/恢复）
  *
  * @package WPCleanAdmin\Modules\Database
- * @version 1.8.2
+ * @version 1.8.3
  */
 
 namespace WPCleanAdmin\Modules\Database;

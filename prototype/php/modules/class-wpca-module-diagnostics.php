@@ -3,7 +3,7 @@
  * 高保真原型：诊断模块（环境检测 + 报告）
  *
  * @package WPCleanAdmin\Modules\Diagnostics
- * @version 1.8.2
+ * @version 1.8.3
  */
 
 namespace WPCleanAdmin\Modules\Diagnostics;

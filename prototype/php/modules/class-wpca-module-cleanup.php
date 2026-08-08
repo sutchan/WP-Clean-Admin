@@ -3,7 +3,7 @@
  * 高保真原型：清理模块（数据库/媒体/评论/内容）
  *
  * @package WPCleanAdmin\Modules\Cleanup
- * @version 1.8.2
+ * @version 1.8.3
  */
 
 namespace WPCleanAdmin\Modules\Cleanup;

@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.8.3] - 2026-08-08
+### Security
+- 错误处理器 XSS: `Error_Handler::exception_handler` 调试输出改用 `esc_html()` 转义异常消息与堆栈，防止 WP_DEBUG 下反射型 XSS
+- AJAX 契约对齐: 前端 nonce action 由 `wpca_dashboard_nonce` 统一为 `wpca_ajax_nonce`，与后端 `wpca_ajax_nonce` 校验一致，修复所有 Dashboard AJAX 校验失败
+
+### Fixed
+- 作者署名: `composer.json` 作者名 `Sut` 更正为 `Tanox`，与仓库归属一致
+
+### Chore
+- 版本同步: 全项目版本号 1.8.2 -> 1.8.3（插件主文件、语言文件、各模块文件头、OpenSpec 规范、原型演示、项目文档）
+
 ## [1.8.2] - 2026-08-07
 ### Docs
 - 设计系统: 新增 shadcn/ui 风格设计系统（`prototype/ui/wpca-components.css` 单一令牌来源），

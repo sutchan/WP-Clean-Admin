@@ -5,7 +5,7 @@
  * 提供体检总览数据与一键体检 AJAX。
  *
  * @package WPCleanAdmin\Modules\Admin
- * @version 1.8.2
+ * @version 1.8.3
  */
 
 namespace WPCleanAdmin\Modules\Admin;

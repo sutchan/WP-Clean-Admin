@@ -3,7 +3,7 @@
  * WPCleanAdmin Menu Customization Settings
  *
  * @package WPCleanAdmin
- * @version 1.8.2
+ * @version 1.8.3
  * @update_date 2026-01-30
  * @author Sut
  * @author URI: https://github.com/Tanox

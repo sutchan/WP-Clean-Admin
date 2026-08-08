@@ -3,7 +3,7 @@
  * WPCleanAdmin Error Handler
  *
  * @package WPCleanAdmin\Modules\Core\Classes
- * @version 1.8.2
+ * @version 1.8.3
  * @author Sut
  * @since 1.8.0
  */
@@ -141,8 +141,8 @@ class Error_Handler {
         // Display error for debugging
         if ( \defined( 'WP_DEBUG' ) && WP_DEBUG ) {
             echo '<pre>';
-            echo 'Uncaught Exception: ' . $exception->getMessage() . ' in ' . $exception->getFile() . ':' . $exception->getLine() . '\n';
-            echo $exception->getTraceAsString();
+            echo \esc_html( 'Uncaught Exception: ' . $exception->getMessage() . ' in ' . $exception->getFile() . ':' . $exception->getLine() . '\n' );
+            echo \esc_html( $exception->getTraceAsString() );
             echo '</pre>';
         }
     }

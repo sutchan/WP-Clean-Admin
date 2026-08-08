@@ -6,7 +6,7 @@
  * 新功能模块应以本文件为模板。
  *
  * @package WPCleanAdmin\Modules\Admin
- * @version 1.8.2
+ * @version 1.8.3
  */
 
 namespace WPCleanAdmin\Modules\Admin;
