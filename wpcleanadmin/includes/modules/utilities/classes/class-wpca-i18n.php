@@ -5,7 +5,7 @@
  * @package WPCleanAdmin
  * @version 1.8.2
  * @author Sut
- * @author URI: https://github.com/sutchan
+ * @author URI: https://github.com/Tanox
  * @since 1.7.15
  *
  * @function get_available_languages(string $plugin_path) WordPress core function to get available languages

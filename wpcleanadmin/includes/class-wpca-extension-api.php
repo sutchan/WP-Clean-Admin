@@ -5,7 +5,7 @@
  * @package WPCleanAdmin
  * @version 1.8.2
  * @author Sut
- * @author URI: https://github.com/sutchan
+ * @author URI: https://github.com/Tanox
  * @since 1.8.0
  * @description Extension API for third-party developers to extend WP Clean Admin functionality
  */

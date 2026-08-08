@@ -6,7 +6,7 @@
  * @version 1.8.2
  * @update_date 2026-01-28
  * @author Sut
- * @author URI: https://github.com/sutchan
+ * @author URI: https://github.com/Tanox
  * @since 1.7.15
  */
 

@@ -1,12 +1,12 @@
 {
-    "name": "sutchan/wp-clean-admin",
+    "name": "Tanox/wp-clean-admin",
     "description": "A comprehensive WordPress admin cleanup and optimization plugin",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "Sut",
-            "homepage": "https://github.com/sutchan"
+            "homepage": "https://github.com/Tanox"
         }
     ],
     "require": {

@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: WP Clean Admin
- * Plugin URI: https://github.com/sutchan/WP-Clean-Admin
+ * Plugin URI: https://github.com/Tanox/WP-Clean-Admin
  * Description: A comprehensive WordPress admin cleanup and optimization plugin
  * Version: 1.8.2
  * Author: Sut
- * Author URI: https://github.com/sutchan
+ * Author URI: https://github.com/Tanox
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: wp-clean-admin
