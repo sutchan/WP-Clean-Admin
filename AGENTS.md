@@ -11,9 +11,28 @@
 - 需求模糊不清，需要权威规范作为参考
 - 需要检查和整理 OpenSpec 文档
 
-## 2. 项目概述
+## 2. 目录边界约定（重要）
 
-WP Clean Admin 是一个 WordPress 插件，用于管理后台清理和优化，版本 1.8.1。
+**`/wpcleanadmin` 为插件目录，只用于存放插件运行所需的代码文件**，包括：
+- `wp-clean-admin.php`（插件主文件）
+- `includes/`（PHP 类、模块、AJAX、autoload）
+- `assets/css/`、`assets/js/`（插件后台样式与脚本）
+- `languages/`（翻译 .po/.mo/.pot）
+- `tests/`（单元测试）
+- `composer.json`、`phpunit.xml.dist`（依赖与测试配置）
+
+**以下项目级文件禁止放入 `/wpcleanadmin`，统一放在项目根目录**：
+- 原型：`/prototype`（高保真 UI 原型、模块演示 PHP）
+- 文档：`/docs`（审计报告、设计规范等）
+- 规范：`/openspec`（OpenSpec 提案与规范）
+- 项目文档：`CHANGELOG.md`、`DEVELOPMENT.md`、`README.*`、`AGENTS.md`、`LICENSE`
+
+> 规则：凡非插件运行时必需的文件（原型、文档、规范、项目级 README/CHANGELOG），
+> 一律置于仓库根目录对应目录，不得写入 `/wpcleanadmin`。
+
+## 3. 项目概述
+
+WP Clean Admin 是一个 WordPress 插件，用于管理后台清理和优化，版本 1.8.2。
 
 **项目特点**：
 - 模块化设计，便于扩展和维护
