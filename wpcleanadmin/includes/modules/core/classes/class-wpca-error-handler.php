@@ -3,43 +3,48 @@
  * WPCleanAdmin Error Handler
  *
  * @package WPCleanAdmin\Modules\Core\Classes
- * @version 1.8.3
+ * @version  1.8.4
  * @author Sut
  * @since 1.8.0
  */
 
+require_once __DIR__ . '/class-wpca-error-levels.php';
+require_once __DIR__ . '/class-wpca-file-logger.php';
+require_once __DIR__ . '/class-wpca-error-config.php';
+
 namespace WPCleanAdmin\Modules\Core\Classes;
+
+use WPCleanAdmin\Modules\Core\Classes\Error_Levels;
+use WPCleanAdmin\Modules\Core\Classes\File_Logger;
+use WPCleanAdmin\Modules\Core\Classes\Error_Config;
 
 /**
  * Error handler class
  */
 class Error_Handler {
+    use Error_Levels;
+
     /**
      * Singleton instance
      *
      * @var Error_Handler
      */
     private static $instance = null;
-    
+
     /**
-     * Log levels
-     */
-    const LOG_LEVELS = array(
-        'debug' => 0,
-        'info' => 1,
-        'notice' => 2,
-        'warning' => 3,
-        'error' => 4,
-        'critical' => 5
-    );
-    
-    /**
-     * Current log level
+     * 文件日志器
      *
-     * @var string
+     * @var File_Logger
      */
-    private $log_level = 'notice';
-    
+    private $file_logger;
+
+    /**
+     * 错误日志配置器
+     *
+     * @var Error_Config
+     */
+    private $config;
+
     /**
      * Get singleton instance
      *
@@ -51,44 +56,33 @@ class Error_Handler {
         }
         return self::$instance;
     }
-    
+
     /**
      * Constructor
      */
     private function __construct() {
+        $this->file_logger = new File_Logger();
+        $this->config      = new Error_Config();
         $this->init();
     }
-    
+
     /**
      * Initialize error handler
      */
     public function init() {
         // Set error handler
         \set_error_handler( array( $this, 'error_handler' ) );
-        
+
         // Set exception handler
         \set_exception_handler( array( $this, 'exception_handler' ) );
-        
+
         // Set shutdown function
         \register_shutdown_function( array( $this, 'shutdown_function' ) );
-        
+
         // Get log level from settings
-        $this->load_log_level();
+        $this->config->load_log_level();
     }
-    
-    /**
-     * Load log level from settings
-     */
-    private function load_log_level() {
-        $settings = ( function_exists( 'get_option' ) ? \get_option( 'wpca_settings', array() ) : array() );
-        if ( isset( $settings['general'] ) && isset( $settings['general']['log_level'] ) ) {
-            $log_level = $settings['general']['log_level'];
-            if ( isset( self::LOG_LEVELS[ $log_level ] ) ) {
-                $this->log_level = $log_level;
-            }
-        }
-    }
-    
+
     /**
      * Custom error handler
      *
@@ -101,25 +95,25 @@ class Error_Handler {
     public function error_handler( int $errno, string $errstr, string $errfile, int $errline ): bool {
         // Convert error number to log level
         $log_level = $this->get_log_level_from_errorno( $errno );
-        
+
         // Check if error should be logged
-        if ( $this->should_log( $log_level ) ) {
+        if ( $this->config->should_log( $log_level ) ) {
             $error = array(
-                'type' => 'error',
-                'level' => $log_level,
+                'type'    => 'error',
+                'level'   => $log_level,
                 'message' => $errstr,
-                'file' => $errfile,
-                'line' => $errline,
-                'time' => \time()
+                'file'    => $errfile,
+                'line'    => $errline,
+                'time'    => \time()
             );
-            
+
             $this->log( $error );
         }
-        
+
         // Return false to let PHP handle the error normally
         return false;
     }
-    
+
     /**
      * Custom exception handler
      *
@@ -127,17 +121,17 @@ class Error_Handler {
      */
     public function exception_handler( \Throwable $exception ) {
         $error = array(
-            'type' => 'exception',
-            'level' => 'error',
+            'type'    => 'exception',
+            'level'   => 'error',
             'message' => $exception->getMessage(),
-            'file' => $exception->getFile(),
-            'line' => $exception->getLine(),
-            'trace' => $exception->getTrace(),
-            'time' => \time()
+            'file'    => $exception->getFile(),
+            'line'    => $exception->getLine(),
+            'trace'   => $exception->getTrace(),
+            'time'    => \time()
         );
-        
+
         $this->log( $error );
-        
+
         // Display error for debugging
         if ( \defined( 'WP_DEBUG' ) && WP_DEBUG ) {
             echo '<pre>';
@@ -146,7 +140,7 @@ class Error_Handler {
             echo '</pre>';
         }
     }
-    
+
     /**
      * Shutdown function
      */
@@ -156,54 +150,7 @@ class Error_Handler {
             $this->error_handler( $error['type'], $error['message'], $error['file'], $error['line'] );
         }
     }
-    
-    /**
-     * Get log level from error number
-     *
-     * @param int $errno Error number
-     * @return string
-     */
-    private function get_log_level_from_errorno( int $errno ): string {
-        switch ( $errno ) {
-            case E_ERROR:
-            case E_PARSE:
-            case E_CORE_ERROR:
-            case E_COMPILE_ERROR:
-            case E_USER_ERROR:
-                return 'error';
-            case E_WARNING:
-            case E_CORE_WARNING:
-            case E_COMPILE_WARNING:
-            case E_USER_WARNING:
-                return 'warning';
-            case E_NOTICE:
-            case E_USER_NOTICE:
-                return 'notice';
-            case E_DEPRECATED:
-            case E_USER_DEPRECATED:
-                return 'info';
-            default:
-                // Handle E_STRICT if it exists (deprecated in PHP 5.4+, removed in PHP 7.0+)
-                if ( defined( 'E_STRICT' ) && $errno === E_STRICT ) {
-                    return 'info';
-                }
-                return 'debug';
-        }
-    }
-    
-    /**
-     * Check if message should be logged
-     *
-     * @param string $log_level Log level
-     * @return bool
-     */
-    public function should_log( string $log_level ): bool {
-        $current_level = self::LOG_LEVELS[ $this->log_level ] ?? 2;
-        $message_level = self::LOG_LEVELS[ $log_level ] ?? 0;
-        
-        return $message_level >= $current_level;
-    }
-    
+
     /**
      * Log error
      *
@@ -219,55 +166,16 @@ class Error_Handler {
                 $error['file'],
                 $error['line']
             );
-            
+
             if ( function_exists( 'error_log' ) ) {
                 \error_log( $message );
             }
         }
-        
+
         // Log to custom log file
-        $this->log_to_file( $error );
+        $this->file_logger->log_to_file( $error );
     }
-    
-    /**
-     * Log to custom file
-     *
-     * @param array $error Error data
-     */
-    private function log_to_file( array $error ) {
-        $plugin_dir = defined( 'WPCA_PLUGIN_DIR' ) ? WPCA_PLUGIN_DIR : dirname( dirname( __FILE__ ) ) . '/';
-        $log_dir = $plugin_dir . 'logs';
-        
-        // Create log directory if it doesn't exist
-        if ( ! \is_dir( $log_dir ) ) {
-            if ( function_exists( 'wp_mkdir_p' ) ) {
-                \wp_mkdir_p( $log_dir );
-            } else {
-                // Fallback to mkdir if wp_mkdir_p is not available
-                \mkdir( $log_dir, 0755, true );
-            }
-        }
-        
-        $log_file = $log_dir . '/wpca-' . \date( 'Y-m-d' ) . '.log';
-        $message = sprintf(
-            '[%s] [%s] %s: %s in %s:%d\n',
-            \date( 'Y-m-d H:i:s' ),
-            $error['type'],
-            strtoupper( $error['level'] ),
-            $error['message'],
-            $error['file'],
-            $error['line']
-        );
-        
-        // Add trace if available
-        if ( isset( $error['trace'] ) ) {
-            $message .= 'Trace: ' . \print_r( $error['trace'], true ) . '\n';
-        }
-        
-        // Write to log file
-        \file_put_contents( $log_file, $message, FILE_APPEND );
-    }
-    
+
     /**
      * Log message
      *
@@ -284,37 +192,35 @@ class Error_Handler {
                 $line = $backtrace[0]['line'] ?? 0;
             }
         }
-        
+
         $error = array(
-            'type' => 'message',
-            'level' => $level,
+            'type'    => 'message',
+            'level'   => $level,
             'message' => $message,
-            'file' => $file,
-            'line' => $line,
-            'time' => \time()
+            'file'    => $file,
+            'line'    => $line,
+            'time'    => \time()
         );
-        
+
         $this->log( $error );
     }
-    
+
     /**
      * Set log level
      *
-     * @param string $log_level Log level
+     * @param string $log_level
      */
     public function set_log_level( string $log_level ) {
-        if ( isset( self::LOG_LEVELS[ $log_level ] ) ) {
-            $this->log_level = $log_level;
-        }
+        $this->config->set_log_level( $log_level );
     }
-    
+
     /**
      * Get log level
      *
      * @return string
      */
     public function get_log_level(): string {
-        return $this->log_level;
+        return $this->config->get_log_level();
     }
 }
 

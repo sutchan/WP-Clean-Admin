@@ -3,11 +3,14 @@
  * WPCleanAdmin Dashboard Class
  *
  * @package WPCleanAdmin
- * @version 1.8.3
+ * @version  1.8.4
  * @author Sut
  * @author URI: https://github.com/Tanox
  * @since 1.7.15
  */
+
+require_once __DIR__ . '/class-wpca-dashboard-data.php';
+
 namespace WPCleanAdmin;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -18,14 +21,21 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Dashboard class
  */
 class Dashboard {
-    
+
     /**
      * Singleton instance
      *
      * @var Dashboard
      */
     private static $instance = null;
-    
+
+    /**
+     * 仪表盘数据获取器
+     *
+     * @var Dashboard_Data
+     */
+    private $data;
+
     /**
      * Get singleton instance
      *
@@ -37,14 +47,15 @@ class Dashboard {
         }
         return self::$instance;
     }
-    
+
     /**
      * Constructor
      */
     private function __construct() {
+        $this->data = new Dashboard_Data();
         $this->init();
     }
-    
+
     /**
      * Initialize the dashboard module
      */
@@ -52,12 +63,12 @@ class Dashboard {
         // Register dashboard widgets
         if ( function_exists( '\add_action' ) ) {
             \add_action( 'wp_dashboard_setup', array( $this, 'register_dashboard_widgets' ) );
-            
+
             // Enqueue dashboard scripts and styles
             \add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_dashboard_scripts' ) );
         }
     }
-    
+
     /**
      * Register dashboard widgets
      */
@@ -71,14 +82,15 @@ class Dashboard {
             );
         }
     }
-    
+
     /**
      * Render dashboard widget
      */
     public function render_dashboard_widget() {
-        $stats = $this->get_dashboard_stats();
-        
-        ?>        <div class="wpca-dashboard-widget">
+        $stats = $this->data->get_dashboard_stats();
+
+        ?>
+        <div class="wpca-dashboard-widget">
             <h3><?php \_e( 'Dashboard Overview', WPCA_TEXT_DOMAIN ); ?></h3>
             <div class="wpca-dashboard-stats">
                 <div class="wpca-stat-item">
@@ -109,7 +121,7 @@ class Dashboard {
         </div>
         <?php
     }
-    
+
     /**
      * Enqueue dashboard scripts and styles
      *
@@ -120,7 +132,7 @@ class Dashboard {
         if ( $hook !== 'index.php' ) {
             return;
         }
-        
+
         // Enqueue dashboard JS
         if ( function_exists( '\wp_enqueue_script' ) ) {
             \wp_enqueue_script(
@@ -131,77 +143,38 @@ class Dashboard {
                 true
             );
         }
-        
+
         // Localize script
         if ( function_exists( '\wp_localize_script' ) && function_exists( '\wp_create_nonce' ) && function_exists( '\admin_url' ) ) {
-            \wp_localize_script( 'wpca-dashboard', 'wpca_dashboard_vars', array(
-                'ajax_url' => \admin_url( 'admin-ajax.php' ),
-                'nonce' => \wp_create_nonce( 'wpca_ajax_nonce' )
-            ));
+            \wp_localize_script(
+                'wpca-dashboard',
+                'wpca_dashboard_vars',
+                array(
+                    'ajax_url' => \admin_url( 'admin-ajax.php' ),
+                    'nonce'    => \wp_create_nonce( 'wpca_ajax_nonce' ),
+                )
+            );
         }
     }
-    
+
     /**
-     * Get dashboard statistics
+     * Get dashboard statistics (delegated to data handler)
      *
-     * @return array Dashboard statistics
+     * @return array
      */
-    public function get_dashboard_stats() {
-        global $wpdb;
-        
-        $stats = array();
-        
-        // Get database size
-        $result = $wpdb->get_row( $wpdb->prepare( "SELECT SUM(data_length + index_length) AS size FROM information_schema.TABLES WHERE table_schema = %s", $wpdb->dbname ), ARRAY_A );
-        $stats['database_size'] = ( function_exists( '\size_format' ) ? \size_format( $result['size'], 2 ) : $result['size'] );
-        
-        // Get transients count
-        $stats['transients'] = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name LIKE '%transient%'" );
-        
-        // Get orphaned postmeta count
-        $stats['orphaned_postmeta'] = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->postmeta} LEFT JOIN {$wpdb->posts} ON {$wpdb->postmeta}.post_id = {$wpdb->posts}.ID WHERE {$wpdb->posts}.ID IS NULL" );
-        
-        // Get orphaned termmeta count
-        $stats['orphaned_termmeta'] = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->termmeta} LEFT JOIN {$wpdb->terms} ON {$wpdb->termmeta}.term_id = {$wpdb->terms}.term_id WHERE {$wpdb->terms}.term_id IS NULL" );
-        
-        return $stats;
+    public function get_dashboard_stats(): array {
+        return $this->data->get_dashboard_stats();
     }
-    
+
     /**
-     * Get system information
+     * Get system information (delegated to data handler)
      *
-     * @return array System information
+     * @return array
      */
-    public function get_system_info() {
-        global $wp_version, $wpdb;
-        
-        $info = array();
-        
-        // WordPress information
-        $info['wordpress'] = array(
-            'version' => $wp_version,
-            'language' => ( function_exists( '\get_locale' ) ? \get_locale() : 'en_US' ),
-            'multisite' => ( function_exists( '\is_multisite' ) && \is_multisite() ) ? \__( 'Yes', WPCA_TEXT_DOMAIN ) : \__( 'No', WPCA_TEXT_DOMAIN ),
-            'debug_mode' => defined( 'WP_DEBUG' ) && WP_DEBUG ? \__( 'Yes', WPCA_TEXT_DOMAIN ) : \__( 'No', WPCA_TEXT_DOMAIN )
-        );
-        
-        // Server information
-        $info['server'] = array(
-            'php_version' => phpversion(),
-            'mysql_version' => $wpdb->db_version(),
-            'server_software' => $_SERVER['SERVER_SOFTWARE'],
-            'memory_limit' => ini_get( 'memory_limit' )
-        );
-        
-        // Plugin information
-        $info['plugin'] = array(
-            'version' => WPCA_VERSION,
-            'active' => ( function_exists( '\is_plugin_active' ) && function_exists( '\plugin_basename' ) && \is_plugin_active( \plugin_basename( WPCA_PLUGIN_DIR . 'wp-clean-admin.php' ) ) ) ? \__( 'Yes', WPCA_TEXT_DOMAIN ) : \__( 'Yes', WPCA_TEXT_DOMAIN )
-        );
-        
-        return $info;
+    public function get_system_info(): array {
+        return $this->data->get_system_info();
     }
-    
+
     /**
      * Run quick action
      *
@@ -213,34 +186,35 @@ class Dashboard {
             'success' => false,
             'message' => \__( 'Invalid action', WPCA_TEXT_DOMAIN )
         );
-        
+
         switch ( $action ) {
             case 'cleanup_database':
                 // Run database cleanup
-                $cleanup = new Cleanup();
-                $cleanup_result = $cleanup->run_database_cleanup( array(
-                    'transients' => true,
-                    'orphaned_postmeta' => true,
-                    'orphaned_termmeta' => true
-                ) );
-                
+                $cleanup        = new Cleanup();
+                $cleanup_result = $cleanup->run_database_cleanup(
+                    array(
+                        'transients'        => true,
+                        'orphaned_postmeta' => true,
+                        'orphaned_termmeta' => true,
+                    )
+                );
+
                 $result['success'] = true;
                 $result['message'] = \__( 'Database cleanup completed successfully', WPCA_TEXT_DOMAIN );
-                $result['data'] = $cleanup_result;
+                $result['data']    = $cleanup_result;
                 break;
-                
+
             case 'optimize_database':
                 // Run database optimization
-                $database = new Database();
+                $database        = new Database();
                 $optimize_result = $database->optimize_database();
-                
+
                 $result['success'] = true;
                 $result['message'] = \__( 'Database optimization completed successfully', WPCA_TEXT_DOMAIN );
-                $result['data'] = $optimize_result;
+                $result['data']    = $optimize_result;
                 break;
         }
-        
+
         return $result;
     }
 }
-

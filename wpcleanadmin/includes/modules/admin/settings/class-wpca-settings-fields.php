@@ -1,13 +1,15 @@
 <?php
 /**
- * WPCleanAdmin Settings Fields Class
+ * WPCleanAdmin Settings Fields
  *
  * @package WPCleanAdmin\Modules\Admin\Settings
- * @version 1.8.3
+ * @version  1.8.4
  * @author Sut
  * @author URI: https://github.com/Tanox
  * @since 1.7.15
  */
+
+require_once __DIR__ . '/class-wpca-settings-field-renderers.php';
 
 namespace WPCleanAdmin\Modules\Admin\Settings;
 
@@ -15,254 +17,173 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-// Include menu customization settings
-if ( file_exists( dirname( __DIR__ ) . '/../settings/menu-customization.php' ) ) {
-    require_once dirname( __DIR__ ) . '/../settings/menu-customization.php';
-} elseif ( file_exists( dirname( __FILE__ ) . '/../../../../settings/menu-customization.php' ) ) {
-    require_once dirname( __FILE__ ) . '/../../../../settings/menu-customization.php';
+if ( ! function_exists( 'add_settings_field' ) ) {
+    function add_settings_field() {}
+}
+if ( ! function_exists( 'add_settings_section' ) ) {
+    function add_settings_section() {}
 }
 
+/**
+ * Settings Fields class
+ */
 class Settings_Fields {
-    
-    private static $instance = null;
-    
-    public static function getInstance() {
-        if ( ! isset( self::$instance ) ) {
-            self::$instance = new self();
-        }
-        return self::$instance;
+
+    /**
+     * 字段渲染器
+     *
+     * @var Settings_Field_Renderers
+     */
+    private $renderers;
+
+    /**
+     * Constructor
+     */
+    public function __construct() {
+        $this->renderers = new Settings_Field_Renderers();
     }
-    
-    private function __construct() {}
-    
+
+    /**
+     * Register all settings fields
+     */
     public function register_fields() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        
-        // Register general settings fields
-        if ( function_exists( 'add_settings_field' ) ) {
-            \add_settings_field(
-                'wpca_clean_admin_bar',
-                \__( 'Clean Admin Bar', $text_domain ),
-                array( $this, 'render_clean_admin_bar_field' ),
-                'wp-clean-admin',
-                'wpca_general_settings'
-            );
-            
-            \add_settings_field(
-                'wpca_remove_wp_logo',
-                \__( 'Remove WordPress Logo', $text_domain ),
-                array( $this, 'render_remove_wp_logo_field' ),
-                'wp-clean-admin',
-                'wpca_general_settings'
+        // General settings
+        if ( function_exists( '\add_settings_section' ) ) {
+            \add_settings_section(
+                'wpca_general_section',
+                \__( 'General Settings', 'wp-clean-admin' ),
+                array( $this, 'render_general_section' ),
+                'wp-clean-admin'
             );
         }
-        
-        // Register cleanup settings fields
-        if ( function_exists( 'add_settings_field' ) ) {
-            \add_settings_field(
-                'wpca_remove_dashboard_widgets',
-                \__( 'Remove Dashboard Widgets', $text_domain ),
-                array( $this, 'render_remove_dashboard_widgets_field' ),
-                'wp-clean-admin',
-                'wpca_cleanup_settings'
-            );
-            
-            \add_settings_field(
-                'wpca_simplify_admin_menu',
-                \__( 'Simplify Admin Menu', $text_domain ),
-                array( $this, 'render_simplify_admin_menu_field' ),
-                'wp-clean-admin',
-                'wpca_cleanup_settings'
-            );
-            
-            \add_settings_field(
-                'wpca_menu_customization',
-                \__( 'Menu Customization', $text_domain ),
-                array( $this, 'render_menu_customization_field' ),
-                'wp-clean-admin',
-                'wpca_cleanup_settings'
-            );
-        }
-        
-        // Register performance settings fields
-        if ( function_exists( 'add_settings_field' ) ) {
-            \add_settings_field(
-                'wpca_optimize_database',
-                \__( 'Optimize Database', $text_domain ),
-                array( $this, 'render_optimize_database_field' ),
-                'wp-clean-admin',
-                'wpca_performance_settings'
-            );
-            
-            \add_settings_field(
-                'wpca_clean_transients',
-                \__( 'Clean Transients', $text_domain ),
-                array( $this, 'render_clean_transients_field' ),
-                'wp-clean-admin',
-                'wpca_performance_settings'
-            );
-        }
-        
-        // Register security settings fields
-        if ( function_exists( 'add_settings_field' ) ) {
-            \add_settings_field(
-                'wpca_hide_wp_version',
-                \__( 'Hide WordPress Version', $text_domain ),
-                array( $this, 'render_hide_wp_version_field' ),
-                'wp-clean-admin',
-                'wpca_security_settings'
-            );
-            
-            \add_settings_field(
-                'wpca_disable_xmlrpc',
-                \__( 'Disable XML-RPC', $text_domain ),
-                array( $this, 'render_disable_xmlrpc_field' ),
-                'wp-clean-admin',
-                'wpca_security_settings'
-            );
-            
-            \add_settings_field(
-                'wpca_restrict_rest_api',
-                \__( 'Restrict REST API Access', $text_domain ),
-                array( $this, 'render_restrict_rest_api_field' ),
-                'wp-clean-admin',
-                'wpca_security_settings'
-            );
-            
-            \add_settings_field(
-                'wpca_restrict_admin_access',
-                \__( 'Restrict Admin Access', $text_domain ),
-                array( $this, 'render_restrict_admin_access_field' ),
-                'wp-clean-admin',
-                'wpca_security_settings'
-            );
+
+        $fields = array(
+            array(
+                'id'          => 'clean_admin_bar',
+                'title'       => \__( 'Clean Admin Bar', 'wp-clean-admin' ),
+                'type'        => 'checkbox',
+                'description' => \__( 'Remove unnecessary items from the admin bar.', 'wp-clean-admin' ),
+                'section'     => 'wpca_general_section',
+            ),
+            array(
+                'id'          => 'clean_dashboard',
+                'title'       => \__( 'Clean Dashboard', 'wp-clean-admin' ),
+                'type'        => 'checkbox',
+                'description' => \__( 'Remove unnecessary dashboard widgets.', 'wp-clean-admin' ),
+                'section'     => 'wpca_general_section',
+            ),
+            array(
+                'id'          => 'remove_wp_logo',
+                'title'       => \__( 'Remove WP Logo', 'wp-clean-admin' ),
+                'type'        => 'checkbox',
+                'description' => \__( 'Remove the WordPress logo from the admin bar.', 'wp-clean-admin' ),
+                'section'     => 'wpca_general_section',
+            ),
+            array(
+                'id'          => 'log_level',
+                'title'       => \__( 'Log Level', 'wp-clean-admin' ),
+                'type'        => 'select',
+                'options'     => array(
+                    'debug'    => \__( 'Debug', 'wp-clean-admin' ),
+                    'info'     => \__( 'Info', 'wp-clean-admin' ),
+                    'notice'   => \__( 'Notice', 'wp-clean-admin' ),
+                    'warning'  => \__( 'Warning', 'wp-clean-admin' ),
+                    'error'    => \__( 'Error', 'wp-clean-admin' ),
+                    'critical' => \__( 'Critical', 'wp-clean-admin' ),
+                ),
+                'description' => \__( 'Select the minimum log level to record.', 'wp-clean-admin' ),
+                'section'     => 'wpca_general_section',
+            ),
+        );
+
+        foreach ( $fields as $field ) {
+            if ( function_exists( '\add_settings_field' ) ) {
+                \add_settings_field(
+                    $field['id'],
+                    $field['title'],
+                    array( $this, 'render_field' ),
+                    'wp-clean-admin',
+                    $field['section'],
+                    $field
+                );
+            }
         }
     }
-    
-    public function render_clean_admin_bar_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $clean_admin_bar = isset( $settings['general']['clean_admin_bar'] ) ? $settings['general']['clean_admin_bar'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[general][clean_admin_bar]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $clean_admin_bar, 1, false ) : ( $clean_admin_bar ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_clean_admin_bar"> ' . \__( 'Remove unnecessary items from the admin bar.', $text_domain ) . '</label>';
-    }
-    
-    public function render_remove_wp_logo_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $remove_wp_logo = isset( $settings['general']['remove_wp_logo'] ) ? $settings['general']['remove_wp_logo'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[general][remove_wp_logo]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $remove_wp_logo, 1, false ) : ( $remove_wp_logo ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_remove_wp_logo"> ' . \__( 'Remove WordPress logo from admin bar.', $text_domain ) . '</label>';
-    }
-    
-    public function render_remove_dashboard_widgets_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $remove_dashboard_widgets = isset( $settings['menu']['remove_dashboard_widgets'] ) ? $settings['menu']['remove_dashboard_widgets'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[menu][remove_dashboard_widgets]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $remove_dashboard_widgets, 1, false ) : ( $remove_dashboard_widgets ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_remove_dashboard_widgets"> ' . \__( 'Remove unnecessary dashboard widgets.', $text_domain ) . '</label>';
-    }
-    
-    public function render_simplify_admin_menu_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $simplify_admin_menu = isset( $settings['menu']['simplify_admin_menu'] ) ? $settings['menu']['simplify_admin_menu'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[menu][simplify_admin_menu]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $simplify_admin_menu, 1, false ) : ( $simplify_admin_menu ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_simplify_admin_menu"> ' . \__( 'Simplify admin menu by removing unnecessary items.', $text_domain ) . '</label>';
-    }
-    
-    public function render_menu_customization_field() {
-        // Call menu customization render function from separate file
-        if ( class_exists( '\WPCleanAdmin\Settings\Menu_Customization' ) ) {
-            \WPCleanAdmin\Settings\Menu_Customization::render_menu_customization_field();
+
+    /**
+     * Render a single field
+     *
+     * @param array $args
+     */
+    public function render_field( $args ) {
+        $value    = isset( $args['value'] ) ? $args['value'] : '';
+        $callback = 'render_' . $args['type'] . '_field';
+
+        if ( method_exists( $this->renderers, $callback ) ) {
+            $args['value'] = \get_option( $args['id'], $value );
+            $this->renderers->{$callback}( $args );
         }
     }
-    
-    public function render_optimize_database_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $optimize_database = isset( $settings['performance']['optimize_database'] ) ? $settings['performance']['optimize_database'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[performance][optimize_database]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $optimize_database, 1, false ) : ( $optimize_database ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_optimize_database"> ' . \__( 'Automatically optimize database tables.', $text_domain ) . '</label>';
+
+    /**
+     * Render general section description
+     */
+    public function render_general_section() {
+        echo '<p>' . \esc_html( \__( 'Configure general plugin behavior.', 'wp-clean-admin' ) ) . '</p>';
     }
-    
-    public function render_clean_transients_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $clean_transients = isset( $settings['performance']['clean_transients'] ) ? $settings['performance']['clean_transients'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[performance][clean_transients]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $clean_transients, 1, false ) : ( $clean_transients ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_clean_transients"> ' . \__( 'Automatically clean expired transients.', $text_domain ) . '</label>';
-    }
-    
-    public function render_hide_wp_version_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $hide_wp_version = isset( $settings['security']['hide_wp_version'] ) ? $settings['security']['hide_wp_version'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[security][hide_wp_version]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $hide_wp_version, 1, false ) : ( $hide_wp_version ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_hide_wp_version"> ' . \__( 'Hide WordPress version information.', $text_domain ) . '</label>';
-    }
-    
-    public function render_disable_xmlrpc_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $disable_xmlrpc = isset( $settings['security']['disable_xmlrpc'] ) ? $settings['security']['disable_xmlrpc'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[security][disable_xmlrpc]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $disable_xmlrpc, 1, false ) : ( $disable_xmlrpc ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_disable_xmlrpc"> ' . \__( 'Disable XML-RPC functionality.', $text_domain ) . '</label>';
-    }
-    
-    public function render_restrict_rest_api_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $restrict_rest_api = isset( $settings['security']['restrict_rest_api'] ) ? $settings['security']['restrict_rest_api'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[security][restrict_rest_api]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $restrict_rest_api, 1, false ) : ( $restrict_rest_api ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_restrict_rest_api"> ' . \__( 'Restrict REST API access to authenticated users only.', $text_domain ) . '</label>';
-    }
-    
-    public function render_restrict_admin_access_field() {
-        $text_domain = defined( 'WPCA_TEXT_DOMAIN' ) ? WPCA_TEXT_DOMAIN : 'wp-clean-admin';
-        $settings = array();
-        if ( function_exists( 'get_option' ) ) {
-            $settings = \get_option( 'wpca_settings', array() );
-        }
-        $restrict_admin_access = isset( $settings['security']['restrict_admin_access'] ) ? $settings['security']['restrict_admin_access'] : 1;
-        
-        echo '<input type="checkbox" name="wpca_settings[security][restrict_admin_access]" value="1" ' . ( function_exists( 'checked' ) ? \checked( $restrict_admin_access, 1, false ) : ( $restrict_admin_access ? 'checked="checked"' : '' ) ) . ' />';
-        echo '<label for="wpca_restrict_admin_access"> ' . \__( 'Restrict admin area access to users with proper permissions.', $text_domain ) . '</label>';
-    }
+
+    /**
+     * Render text field (delegated)
+     */
+    public function render_text_field( $args ) { $this->renderers->render_text_field( $args ); }
+
+    /**
+     * Render textarea field (delegated)
+     */
+    public function render_textarea_field( $args ) { $this->renderers->render_textarea_field( $args ); }
+
+    /**
+     * Render checkbox field (delegated)
+     */
+    public function render_checkbox_field( $args ) { $this->renderers->render_checkbox_field( $args ); }
+
+    /**
+     * Render radio field (delegated)
+     */
+    public function render_radio_field( $args ) { $this->renderers->render_radio_field( $args ); }
+
+    /**
+     * Render select field (delegated)
+     */
+    public function render_select_field( $args ) { $this->renderers->render_select_field( $args ); }
+
+    /**
+     * Render number field (delegated)
+     */
+    public function render_number_field( $args ) { $this->renderers->render_number_field( $args ); }
+
+    /**
+     * Render color field (delegated)
+     */
+    public function render_color_field( $args ) { $this->renderers->render_color_field( $args ); }
+
+    /**
+     * Render date field (delegated)
+     */
+    public function render_date_field( $args ) { $this->renderers->render_date_field( $args ); }
+
+    /**
+     * Render email field (delegated)
+     */
+    public function render_email_field( $args ) { $this->renderers->render_email_field( $args ); }
+
+    /**
+     * Render URL field (delegated)
+     */
+    public function render_url_field( $args ) { $this->renderers->render_url_field( $args ); }
+
+    /**
+     * Render password field (delegated)
+     */
+    public function render_password_field( $args ) { $this->renderers->render_password_field( $args ); }
 }

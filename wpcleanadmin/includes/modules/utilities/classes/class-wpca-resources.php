@@ -3,7 +3,7 @@
  * WPCleanAdmin Resources Class
  *
  * @package WPCleanAdmin
- * @version 1.8.3
+ * @version  1.8.4
  * @author Sut
  * @author URI: https://github.com/Tanox
  * @since 1.7.15

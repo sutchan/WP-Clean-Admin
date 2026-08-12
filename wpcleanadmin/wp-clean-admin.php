@@ -3,7 +3,7 @@
  * Plugin Name: WP Clean Admin
  * Plugin URI: https://github.com/Tanox/WP-Clean-Admin
  * Description: A comprehensive WordPress admin cleanup and optimization plugin
- * Version: 1.8.3
+ * Version:  1.8.4
  * Author: Sut
  * Author URI: https://github.com/Tanox
  * License: GPL v2 or later

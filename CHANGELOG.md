@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.8.4] - 2026-08-12
+### Refactor
+- 模块拆分: 将 core/admin/settings 三簇超 200 行类拆分为单一职责子模块（抽离 data/queries/renderer/helper/trait 等），主类保留公开 API 转发，行为契约不变
+- 文件: 新增 30 个子模块类，改写 14 个主类（dashboard/login/menu-manager/menu-customizer/permissions/user-roles/settings/core/error-handler/*-cleanup 等）
+- 版本同步: 涉及文件头注释 1.8.3 -> 1.8.4
+
 ## [1.8.3] - 2026-08-08
 ### Security
 - 错误处理器 XSS: `Error_Handler::exception_handler` 调试输出改用 `esc_html()` 转义异常消息与堆栈，防止 WP_DEBUG 下反射型 XSS
