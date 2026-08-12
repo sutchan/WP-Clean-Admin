@@ -3,7 +3,7 @@
  * WPCleanAdmin Dashboard AJAX Handler
  *
  * @package WPCleanAdmin
- * @version 1.8.3
+ * @version 1.8.4
  * @update_date 2026-01-30
  * @author Sut
  * @author URI: https://github.com/Tanox

@@ -3,7 +3,7 @@
  * WPCleanAdmin Error Handler
  *
  * @package WPCleanAdmin
- * @version 1.8.3
+ * @version 1.8.4
  * @author Sut
  * @since 1.8.0
  */

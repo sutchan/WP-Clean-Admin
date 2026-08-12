@@ -1,7 +1,7 @@
 # WP Clean Admin 高保真原型
 
 本目录为插件的高保真可运行原型，独立于 `wpcleanadmin/includes/` 主代码，
-用于验证设计规范（`assets/docs/设计规范_20260808.md`）并作为新功能开发基线。
+用于验证设计规范（`../docs/设计规范_20260808.md`）并作为新功能开发基线。
 
 ## 目录结构
 
@@ -51,4 +51,4 @@ prototype/
 - 请求：`action=<action>`，nonce 字段名 **`_wpnonce`**，nonce action **`wpca_ajax_nonce`**
 - 响应：成功 `{success:true,data:{...}}`；失败 `{success:false,data:{message:<code>}}`
 - 已注册 action：见 `openspec/specs/api/spec.md` §2.4.4
-- 数据结构 Schema：见 `openspec/specs/api/spec.md` §2.4.5 / 设计规范_20260808.md §9
+- 数据结构 Schema：见 `openspec/specs/api/spec.md` §2.4.5 / `../docs/设计规范_20260808.md` §9
